@@ -1,0 +1,34 @@
+{
+  "name": "My Admin Panel Services",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.ts",
+  "scripts": {
+    "start": "nodemon --watch src/server.ts",
+    "build": "tsc && node build/src/server.js"
+  },
+  "author": "Mert ÖZÇELİK",
+  "license": "ISC",
+  "dependencies": {
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express-session": "^1.17.4",
+    "@types/session-file-store": "^1.2.2",
+    "@types/express": "^4.17.13",
+    "@types/body-parser": "^1.19.1",
+    "@types/cors": "^2.8.12",
+    "@types/multer": "^1.4.7",
+    "@types/sharp": "^0.29.2",
+    "typescript": "^3.9.10",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "session-file-store": "^1.5.0",
+    "cookie-parser": "^1.4.5",
+    "sync-mysql": "^3.0.1",
+    "chalk": "^4.1.2",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "sharp": "^0.30.6",
+    "multer": "^1.4.5-lts.1"
+  }
+}
