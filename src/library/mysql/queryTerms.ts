@@ -1,6 +1,7 @@
 import V from "../variable"
 import {WhereParamDocument, JoinParamDocument, JoinDocument, WhereDocument} from "./modules/queryTerms/";
 import MySql from "./index";
+import {OrderByDocument} from "./modules/queryTerms/orderBy";
 
 
 export enum QueryValueTypes {
@@ -75,6 +76,34 @@ export class QueryTerms {
             this.queryGroupBy += `${columnName},`;
         }
         this.queryGroupBy =  `${this.queryGroupBy.removeLastChar()}`;
+
+        let self: any = this;
+        return self;
+    }
+
+    public get orderBy() : OrderByDocument {
+        let self: any = this;
+
+        function setQuery(type: string, params: string[]){
+            self.queryOrderBy = (!V.isEmpty(self.queryOrderBy)) ? `${self.queryOrderBy}, ` : "order by ";
+            for (let i = 0; i < params.length; i++){
+                let param = params[i];
+                self.queryOrderBy += `${param},`;
+            }
+            self.queryOrderBy =  `${self.queryOrderBy.removeLastChar()} ${type} `;
+            return self;
+        }
+
+        return {
+            asc(...params) { return setQuery("asc", params); },
+            desc(...params) { return setQuery("desc", params); }
+        }
+    }
+
+    public limit(count: number, start: number = 0) : MySql {
+        this.queryLimit = `limit `;
+        if(start > 0) this.queryLimit += `${start}, ${count} `;
+        else this.queryLimit += `${count} `;
 
         let self: any = this;
         return self;

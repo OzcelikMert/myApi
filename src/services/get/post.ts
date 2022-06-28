@@ -12,6 +12,7 @@ type DataDocument = {
     langId: number
     getContents?: boolean
     statusId?: number
+    maxCount?: number
 } & DataCommonDocument
 
 class Post {
@@ -34,7 +35,6 @@ class Post {
         this.result.checkErrorCode(
             () => {
                 if(
-                    V.isEmpty(this.data.typeId) &&
                     V.isEmpty(this.data.langId)
                 ) return ErrorCodes.emptyValue;
             }

@@ -86,7 +86,7 @@ const Select = {
 
         return query.run();
     },
-    Posts({postId = 0, typeId = 0, langId = 0, statusId = 0, getContents = false}): PostDocument[] {
+    Posts({postId = 0, typeId = 0, langId = 0, statusId = 0, getContents = false, maxCount = 0}): PostDocument[] {
         let columns: string[] = (getContents) ? [
                 `${tables.Posts.TableName}.*`,
                 `${tables.PostContents.TableName}.*`
@@ -130,6 +130,10 @@ const Select = {
                 }
             ).groupBy(
                 tables.Posts.id
+            ).orderBy.desc(
+                tables.Posts.isFixed,
+                tables.Posts.order,
+                tables.Posts.id
             );
 
         if (postId > 0) query.where.equals({
@@ -152,6 +156,7 @@ const Select = {
             value: langId,
             valueType: QueryValueTypes.Number
         });
+        if(maxCount > 0) query.limit(maxCount);
 
         return query.run();
     },
