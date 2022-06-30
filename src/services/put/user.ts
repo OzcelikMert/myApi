@@ -12,6 +12,7 @@ type DataDocument = {
     userId: number
     roleId?: number
     statusId: number
+    image?: string
     name?: string
     email?: string
     password?: string

@@ -1,23 +1,18 @@
 import Create from "./create";
 
 const authWithoutDBName = {
-    host: '192.168.1.109',
+    host: '192.168.1.20',
     port: '3306',
     user: 'root',
     password: '',
-    charset : 'utf8'
+    charset : 'utf8',
+    connectTimeout: 25000,
+    acquireTimeout: 25000,
+    waitForConnections: true,
 }
 
 const auth = Object.assign({
     database: 'myadminpanel',
-    typeCast: function (field: any, next: any) {
-        console.log(field)
-        if (field.type === "JSON") {
-            return JSON.parse(field.string());
-        } else {
-            return next();
-        }
-    }
 }, authWithoutDBName)
 
 let conn: any = null;

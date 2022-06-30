@@ -15,6 +15,7 @@ type DataDocument = {
     order: number,
     termId?: number,
     mainId?: number,
+    image: string
     statusId: number
     url?: string,
     seoTitle?: string,

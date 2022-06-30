@@ -1,5 +1,6 @@
 export interface LanguageDocument {
-    langId: number,
-    langShortKey: string,
+    langId: number
+    langImage: string
+    langShortKey: string
     langTitle: string
 }

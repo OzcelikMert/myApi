@@ -25,11 +25,12 @@ const Insert = {
 
         return query.run();
     },
-    PostTermContent({termId = 0, langId = 0, title = "", url = "", seoTitle = "", seoContent = ""}){
+    PostTermContent({termId = 0, langId = 0, image = "", title = "", url = "", seoTitle = "", seoContent = ""}){
         let query = new Mysql(db.conn).insert(tables.PostTermContents.TableName)
             .columns(
                 tables.PostTermContents.termId,
                 tables.PostTermContents.langId,
+                tables.PostTermContents.image,
                 tables.PostTermContents.title,
                 tables.PostTermContents.url,
                 tables.PostTermContents.seoTitle,
@@ -37,6 +38,7 @@ const Insert = {
             ).values(
                 {value: termId, valueType: QueryValueTypes.Number},
                 {value: langId, valueType: QueryValueTypes.Number},
+                {value: image},
                 {value: title},
                 {value: url},
                 {value: seoTitle},
@@ -79,11 +81,12 @@ const Insert = {
 
         return query.run();
     },
-    PostContent({postId = 0, langId = 0, title = "", shortContent = "", content = "", url = "", seoTitle = "", seoContent = ""}){
+    PostContent({postId = 0, langId = 0, image = "", title = "", shortContent = "", content = "", url = "", seoTitle = "", seoContent = ""}){
         let query = new Mysql(db.conn).insert(tables.PostContents.TableName)
             .columns(
                 tables.PostContents.postId,
                 tables.PostContents.langId,
+                tables.PostContents.image,
                 tables.PostContents.title,
                 tables.PostContents.shortContent,
                 tables.PostContents.content,
@@ -93,6 +96,7 @@ const Insert = {
             ).values(
                 {value: postId, valueType: QueryValueTypes.Number},
                 {value: langId, valueType: QueryValueTypes.Number},
+                {value: image},
                 {value: title},
                 {value: shortContent},
                 {value: content},
@@ -103,27 +107,27 @@ const Insert = {
 
         return query.run();
     },
-    User({roleId = 0, statusId = 0, name = "", email = "", password = "", permissionId = [0], banDateEnd = "", banComment = ""}){
+    User({roleId = 0, statusId = 0, image = "",  name = "", email = "", password = "", permissionId = [0], banDateEnd = "", banComment = ""}){
         if(permissionId === [0]) permissionId = [];
         let query = new Mysql(db.conn).insert(tables.Users.TableName)
             .columns(
                 tables.Users.roleId,
                 tables.Users.statusId,
+                tables.Users.image,
                 tables.Users.name,
                 tables.Users.email,
                 tables.Users.password,
                 tables.Users.permissions,
-                tables.Users.image,
                 tables.Users.banDateEnd,
                 tables.Users.banComment
             ).values(
                 {value: roleId, valueType: QueryValueTypes.Number},
                 {value: statusId, valueType: QueryValueTypes.Number},
+                {value: image},
                 {value: name},
                 {value: email},
                 {value: password},
                 {value: JSON.stringify(permissionId)},
-                {value: ""},
                 {value: banDateEnd},
                 {value: banComment},
             );

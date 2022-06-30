@@ -6,4 +6,6 @@ export interface UserDocument {
     userEmail: string,
     userImage: string,
     userPermissions: string
+    userBanDateEnd: string
+    userBanComment: string
 }

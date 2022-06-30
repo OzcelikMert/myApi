@@ -10,6 +10,7 @@ import {SessionController} from "../../controllers";
 type DataDocument = {
     roleId: number
     statusId: number
+    image: string
     name: string
     email: string
     password: string

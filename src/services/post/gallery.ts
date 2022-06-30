@@ -60,6 +60,7 @@ class Gallery {
                         .webp({quality: 80, force: true, loop: 0})
                         .toBuffer();
                     fs.createWriteStream(Config.paths.uploads.images + ref).write(data);
+                    self.result.data.push(ref);
                 } catch (e) {
                     self.result.status = false;
                     self.result.errorCode = ErrorCodes.uploadError;
@@ -74,6 +75,7 @@ class Gallery {
 
     init(): Promise<ServiceResult>{
         let self = this;
+        this.result.data = [];
         return new Promise( (resolve) => {
             this.checkData();
             if (this.result.status) {

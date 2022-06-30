@@ -23,7 +23,7 @@ class Create {
                 ${tables.Users.name} VARCHAR(100),
                 ${tables.Users.email} VARCHAR(100),
                 ${tables.Users.password} VARCHAR(150),
-                ${tables.Users.image} VARCHAR(50),
+                ${tables.Users.image} TEXT,
                 ${tables.Users.permissions} JSON,
                 ${tables.Users.banDateEnd} VARCHAR(20),
                 ${tables.Users.banComment} TEXT
@@ -60,6 +60,7 @@ class Create {
             );`);
         db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.Languages.TableName} (
                 ${tables.Languages.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
+                ${tables.Languages.image} TEXT,
                 ${tables.Languages.shortKey} VARCHAR(3),
                 ${tables.Languages.title} VARCHAR(20)
             );`);
@@ -82,6 +83,7 @@ class Create {
                 ${tables.PostTermContents.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
                 ${tables.PostTermContents.termId} BIGINT,
                 ${tables.PostTermContents.langId} INT,
+                ${tables.PostTermContents.image} TEXT,
                 ${tables.PostTermContents.title} TEXT,
                 ${tables.PostTermContents.url} TEXT,
                 ${tables.PostTermContents.seoTitle} TEXT,

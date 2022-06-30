@@ -3,6 +3,7 @@ enum PostTermContents {
     id = "postTermContentId",
     termId = "postTermContentTermId",
     langId = "postTermContentLangId",
+    image = "postTermContentImage",
     title = "postTermContentTitle",
     url = "postTermContentUrl",
     seoTitle = "postTermContentSEOTitle",

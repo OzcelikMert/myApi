@@ -14,6 +14,7 @@ type DataDocument = {
     title?: string,
     order?: number,
     mainId?: number,
+    image?: string
     url?: string,
     seoTitle?: string,
     seoContent?: string,

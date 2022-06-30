@@ -14,6 +14,7 @@ type DataDocument = {
     isFixed?: 1 | 0
     dateStart: string
     langId: number
+    image?: string
     title: string
     shortContent?: string
     content?: string

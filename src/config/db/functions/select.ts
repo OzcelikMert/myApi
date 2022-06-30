@@ -48,7 +48,8 @@ const Select = {
                 tables.PostTermContents.id,
                 tables.PostTermContents.langId,
                 tables.PostTermContents.title,
-                tables.PostTermContents.url
+                tables.PostTermContents.url,
+                tables.PostTermContents.image
             ];
 
         let query = new Mysql(db.conn).select(tables.PostTerms.TableName)
@@ -96,7 +97,8 @@ const Select = {
                 tables.PostContents.id,
                 tables.PostContents.langId,
                 tables.PostContents.title,
-                tables.PostContents.url
+                tables.PostContents.url,
+                tables.PostContents.image
             ];
 
         let query = new Mysql(db.conn).select(tables.Posts.TableName)

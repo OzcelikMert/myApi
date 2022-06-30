@@ -23,9 +23,10 @@ const Update = {
 
         return query.run();
     },
-    PostTermContent({termId = 0, langId = 0, title = "", url = "", seoTitle = "", seoContent = ""}){
+    PostTermContent({termId = 0, langId = 0, image = "", title = "", url = "", seoTitle = "", seoContent = ""}){
         let query = new Mysql(db.conn).update(tables.PostTermContents.TableName)
             .set(
+                {columnName: tables.PostTermContents.image, value: image},
                 {columnName: tables.PostTermContents.title, value: title},
                 {columnName: tables.PostTermContents.url, value: url},
                 {columnName: tables.PostTermContents.seoTitle, value: seoTitle},
@@ -54,9 +55,10 @@ const Update = {
 
         return query.run();
     },
-    PostContent({postId = 0, langId = 0, title = "", shortContent = "", content = "", url = "", seoTitle = "", seoContent = ""}){
+    PostContent({postId = 0, langId = 0, image = "", title = "", shortContent = "", content = "", url = "", seoTitle = "", seoContent = ""}){
         let query = new Mysql(db.conn).update(tables.PostContents.TableName)
             .set(
+                {columnName: tables.PostContents.image, value: image},
                 {columnName: tables.PostContents.title, value: title},
                 {columnName: tables.PostContents.shortContent, value: shortContent},
                 {columnName: tables.PostContents.content, value: content},
@@ -70,12 +72,13 @@ const Update = {
 
         return query.run();
     },
-    User({userId = 0, roleId = 0, statusId = 0, name = "", email = "", password = "", permissionId = [0], banDateEnd = "", banComment = ""}){
+    User({userId = 0, roleId = 0, statusId = 0, image = "", name = "", email = "", password = "", permissionId = [0], banDateEnd = "", banComment = ""}){
         if(permissionId === [0]) permissionId = [];
         const setData: UpdateSetDocument[] = [
             {columnName: tables.Users.statusId, value: statusId, valueType: QueryValueTypes.Number}
         ];
 
+        if(!V.isEmpty(image)) setData.push({columnName: tables.Users.image, value: image});
         if(!V.isEmpty(name)) setData.push({columnName: tables.Users.name, value: name});
         if(!V.isEmpty(email)) setData.push({columnName: tables.Users.email, value: email});
         if(!V.isEmpty(password)) setData.push({columnName: tables.Users.password, value: password});
