@@ -34,7 +34,15 @@ class PostTerm {
     private set(termId = 0) {
         this.data.url = (V.isEmpty(this.data.url)) ? V.clear(this.data.title, ClearTypes.SEO_URL) : this.data.url;
         DBFunctions.Update.PostTerm(Object.assign(this.data, {termId: termId}));
-        if(!V.isEmpty(this.data.langId)) DBFunctions.Update.PostTermContent(Object.assign(this.data, {termId: termId}));
+        if(!V.isEmpty(this.data.langId)) {
+            DBFunctions.Select.PostTerms(Object.assign(this.data, {termId: termId})).forEach(postTerm => {
+                if(postTerm.postTermContentLangId){
+                    DBFunctions.Update.PostTermContent(Object.assign(this.data, {termId: termId}));
+                }else {
+                    DBFunctions.Insert.PostTermContent(Object.assign(this.data, {termId: termId}));
+                }
+            })
+        }
     }
 
     private checkData(){

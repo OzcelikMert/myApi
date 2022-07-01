@@ -54,9 +54,12 @@ const Select = {
 
         let query = new Mysql(db.conn).select(tables.PostTerms.TableName)
             .columnsWithArray(columns)
-            .join.inner({
+            .join.left({
                 tableName: tables.PostTermContents.TableName,
-                on: [{columnName: tables.PostTermContents.termId, value: tables.PostTerms.id}]
+                on: [
+                    {columnName: tables.PostTermContents.termId, value: tables.PostTerms.id},
+                    {columnName: tables.PostTermContents.langId, value: langId}
+                ]
             });
 
         if (termId > 0) query.where.equals({
@@ -77,11 +80,6 @@ const Select = {
         if (statusId > 0) query.where.equals({
             columnName: tables.PostTerms.statusId,
             value: statusId,
-            valueType: QueryValueTypes.Number
-        });
-        if (langId > 0) query.where.equals({
-            columnName: tables.PostTermContents.langId,
-            value: langId,
             valueType: QueryValueTypes.Number
         });
 
@@ -115,10 +113,6 @@ const Select = {
             ]))
             .join.inner(
                 {
-                    tableName: tables.PostContents.TableName,
-                    on: [{columnName: tables.PostContents.postId, value: tables.Posts.id}]
-                },
-                {
                     tableName: tables.PostTermLinks.TableName,
                     on: [{columnName: tables.PostTermLinks.postId, value: tables.Posts.id}]
                 },
@@ -129,6 +123,14 @@ const Select = {
                 {
                     tableName: tables.PostTermContents.TableName,
                     on: [{columnName: tables.PostTermContents.termId, value: tables.PostTerms.id}]
+                }
+            ).join.left(
+                {
+                    tableName: tables.PostContents.TableName,
+                    on: [
+                        {columnName: tables.PostContents.postId, value: tables.Posts.id},
+                        {columnName: tables.PostContents.langId, value: langId}
+                    ]
                 }
             ).groupBy(
                 tables.Posts.id
@@ -151,11 +153,6 @@ const Select = {
         if (statusId > 0) query.where.equals({
             columnName: tables.Posts.statusId,
             value: statusId,
-            valueType: QueryValueTypes.Number
-        });
-        if (langId > 0) query.where.equals({
-            columnName: tables.PostContents.langId,
-            value: langId,
             valueType: QueryValueTypes.Number
         });
         if(maxCount > 0) query.limit(maxCount);

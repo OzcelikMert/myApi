@@ -37,7 +37,15 @@ class Post {
     private set(postId = 0) {
         this.data.url = (V.isEmpty(this.data.url)) ? V.clear(this.data.title, ClearTypes.SEO_URL) : this.data.url;
         DBFunctions.Update.Post(Object.assign(this.data, {postId: postId}));
-        if(!V.isEmpty(this.data.langId)) DBFunctions.Update.PostContent(Object.assign(this.data, {postId: postId}));
+        if(!V.isEmpty(this.data.langId)) {
+            DBFunctions.Select.Posts(Object.assign(this.data, {postId: postId})).forEach(post => {
+                if(post.postContentLangId){
+                    DBFunctions.Update.PostContent(Object.assign(this.data, {postId: postId}));
+                }else {
+                    DBFunctions.Insert.PostContent(Object.assign(this.data, {postId: postId}));
+                }
+            })
+        }
         if(!V.isEmpty(this.data.termId)) {
             DBFunctions.Delete.PostTermLinks({postId: postId});
             this.data.termId?.forEach(termId => {
