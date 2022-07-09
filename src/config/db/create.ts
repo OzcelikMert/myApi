@@ -64,6 +64,12 @@ class Create {
                 ${tables.Languages.shortKey} VARCHAR(3),
                 ${tables.Languages.title} VARCHAR(20)
             );`);
+        db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.Navigates.TableName} (
+                ${tables.Navigates.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
+                ${tables.Navigates.mainId} BIGINT,
+                ${tables.Navigates.statusId} INT,
+                ${tables.Navigates.order} INT
+            );`);
     }
 
     private createContentTables(): void {
@@ -96,6 +102,13 @@ class Create {
                 ${tables.SeoContents.content} TEXT,
                 ${tables.SeoContents.tags} TEXT
             );`);
+        db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.NavigateContents.TableName} (
+                ${tables.NavigateContents.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
+                ${tables.NavigateContents.navigateId} BIGINT,
+                ${tables.NavigateContents.langId} INT,
+                ${tables.NavigateContents.title} TEXT,
+                ${tables.NavigateContents.url} TEXT
+            );`);
     }
 
     private addIndexKeys(): void {
@@ -103,10 +116,12 @@ class Create {
         db.conn.query(`ALTER TABLE ${tables.Posts.TableName} ADD INDEX(${tables.Posts.typeId},${tables.Posts.authorId},${tables.Posts.statusId});`);
         db.conn.query(`ALTER TABLE ${tables.PostTerms.TableName} ADD INDEX(${tables.PostTerms.typeId},${tables.PostTerms.postTypeId},${tables.PostTerms.mainId},${tables.PostTerms.statusId});`);
         db.conn.query(`ALTER TABLE ${tables.PostTermLinks.TableName} ADD INDEX(${tables.PostTermLinks.postId},${tables.PostTermLinks.termId});`);
+        db.conn.query(`ALTER TABLE ${tables.Navigates.TableName} ADD INDEX(${tables.Navigates.mainId},${tables.Navigates.statusId});`);
         // Contents
         db.conn.query(`ALTER TABLE ${tables.PostContents.TableName} ADD INDEX(${tables.PostContents.postId},${tables.PostContents.langId});`);
         db.conn.query(`ALTER TABLE ${tables.PostTermContents.TableName} ADD INDEX(${tables.PostTermContents.termId},${tables.PostTermContents.langId});`);
         db.conn.query(`ALTER TABLE ${tables.SeoContents.TableName} ADD INDEX(${tables.SeoContents.langId});`);
+        db.conn.query(`ALTER TABLE ${tables.NavigateContents.TableName} ADD INDEX(${tables.NavigateContents.navigateId},${tables.NavigateContents.langId});`);
     }
 }
 

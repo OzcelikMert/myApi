@@ -6,12 +6,12 @@ import {StatusId} from "../../../public/static";
 import V, {DateMask} from "../../../library/variable";
 
 const Update = {
-    PostTerm({termId = 0, mainId = -1, statusId = 0,  order = -1, isFixed = -1}){
+    PostTerm({termId = 0, mainId = 0, statusId = 0,  order = -1, isFixed = -1}){
         const setData: UpdateSetDocument[] = [
             {columnName: tables.PostTerms.statusId, value: statusId, valueType: QueryValueTypes.Number}
         ];
 
-        if(mainId > -1) setData.push({columnName: tables.PostTerms.mainId, value: mainId, valueType: QueryValueTypes.Number});
+        if(mainId > 0) setData.push({columnName: tables.PostTerms.mainId, value: mainId, valueType: QueryValueTypes.Number});
         if(order > -1) setData.push({columnName: tables.PostTerms.order, value: order, valueType: QueryValueTypes.Number});
         if(isFixed > -1) setData.push({columnName: tables.PostTerms.isFixed, value: isFixed, valueType: QueryValueTypes.Number});
 
@@ -113,6 +113,34 @@ const Update = {
                 {columnName: tables.Settings.value, value: value}
             ).where.equals(
                 {columnName: tables.Settings.id, value: id, valueType: QueryValueTypes.Number}
+            );
+
+        return query.run();
+    },
+    Navigate({navigateId = 0, mainId = 0, statusId = 0,  order = -1}){
+        const setData: UpdateSetDocument[] = [
+            {columnName: tables.Navigates.statusId, value: statusId, valueType: QueryValueTypes.Number}
+        ];
+
+        if(mainId > 0) setData.push({columnName: tables.Navigates.mainId, value: mainId, valueType: QueryValueTypes.Number});
+        if(order > -1) setData.push({columnName: tables.Navigates.order, value: order, valueType: QueryValueTypes.Number});
+
+        let query = new Mysql(db.conn).update(tables.Navigates.TableName)
+            .setWithArray(setData)
+            .where.equals(
+                {columnName: tables.Navigates.id, value: navigateId, valueType: QueryValueTypes.Number}
+            );
+
+        return query.run();
+    },
+    NavigateContent({navigateId = 0, langId = 0, title = "", url = ""}){
+        let query = new Mysql(db.conn).update(tables.NavigateContents.TableName)
+            .set(
+                {columnName: tables.NavigateContents.title, value: title},
+                {columnName: tables.NavigateContents.url, value: url}
+            ).where.equals(
+                {columnName: tables.NavigateContents.navigateId, value: navigateId, valueType: QueryValueTypes.Number},
+                {columnName: tables.NavigateContents.langId, value: langId, valueType: QueryValueTypes.Number}
             );
 
         return query.run();

@@ -163,6 +163,36 @@ const Insert = {
 
         return query.run();
     },
+    Navigate({mainId = 0, statusId = StatusId.Active, order = 0}){
+        let query = new Mysql(db.conn).insert(tables.Navigates.TableName)
+            .columns(
+                tables.Navigates.mainId,
+                tables.Navigates.statusId,
+                tables.Navigates.order
+            ).values(
+                {value: mainId, valueType: QueryValueTypes.Number},
+                {value: statusId, valueType: QueryValueTypes.Number},
+                {value: order, valueType: QueryValueTypes.Number}
+            );
+
+        return query.run();
+    },
+    NavigateContent({navigateId = 0, langId = 0, title = "", url = ""}){
+        let query = new Mysql(db.conn).insert(tables.NavigateContents.TableName)
+            .columns(
+                tables.NavigateContents.navigateId,
+                tables.NavigateContents.langId,
+                tables.NavigateContents.title,
+                tables.NavigateContents.url
+            ).values(
+                {value: navigateId, valueType: QueryValueTypes.Number},
+                {value: langId, valueType: QueryValueTypes.Number},
+                {value: title},
+                {value: url},
+            );
+
+        return query.run();
+    },
 }
 
 export default Insert;

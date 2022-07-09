@@ -13,7 +13,7 @@ type DataDocument = {
     userId?: number
     isCheckSession?: any
     isRefresh?: any
-    requestType: "list" | "session"
+    requestType: "list" | "getSession" | "createSession"
 } & DataCommonDocument
 
 class User {
@@ -35,7 +35,7 @@ class User {
 
     private setSession() {
         if (this.result.data.length > 0) {
-            let user: any = this.result.data[0];
+            let user: UserDocument = this.result.data[0];
             Session.Functions.set(this.sessionMain, {
                 id: user.userId,
                 email: user.userEmail,
@@ -62,16 +62,24 @@ class User {
         this.result.checkErrorCode(
             () => {
                 if (
-                    this.data.requestType !== "session" &&
+                    this.data.requestType !== "getSession" &&
+                    this.data.requestType !== "createSession" &&
                     this.data.requestType !== "list"
                 ) return ErrorCodes.incorrectData;
 
-                if (this.data.requestType === "session") {
+                if (this.data.requestType === "getSession") {
                     if (
                         V.isEmpty(this.data.userId) &&
-                        V.isEmpty(this.data.email) &&
-                        V.isEmpty(this.data.password) &&
                         V.isEmpty(this.data.isCheckSession)
+                    ) return ErrorCodes.emptyValue;
+                }
+
+                if (this.data.requestType === "createSession") {
+                    if (
+                        V.isEmpty(
+                            this.data.email,
+                            this.data.password
+                        )
                     ) return ErrorCodes.emptyValue;
                 }
 
@@ -89,13 +97,17 @@ class User {
         this.checkData();
         if (this.result.status) {
             switch (this.data.requestType) {
-                case "session":
+                case "getSession":
                     if (this.data.isCheckSession == "true") {
                         this.checkSession();
                     } else {
                         this.get();
                         this.setSession();
                     }
+                    break;
+                case "createSession":
+                    this.get();
+                    this.setSession();
                     break;
                 case "list":
                     this.get();

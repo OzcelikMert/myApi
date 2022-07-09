@@ -4,10 +4,12 @@ import Users from "./users";
 import PostTermLinks from "./postTermLinks";
 import Settings from "./settings";
 import Languages from "./languages";
+import Navigates from "./navigates";
 
 import PostContents from "./contents/postContents";
 import PostTermContents from "./contents/postTermContents";
 import SeoContents from "./contents/seoContents";
+import NavigateContents from "./contents/navigateContents";
 
 export default {
     Posts,
@@ -16,8 +18,10 @@ export default {
     PostTermLinks,
     Settings,
     Languages,
+    Navigates,
     // Contents
     PostContents,
     PostTermContents,
-    SeoContents
+    SeoContents,
+    NavigateContents
 }

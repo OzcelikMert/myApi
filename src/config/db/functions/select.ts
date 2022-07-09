@@ -4,6 +4,7 @@ import db from "../";
 import Mysql, {MySqlHelpers, QueryValueTypes} from "../../../library/mysql";
 import {
     LanguageDocument,
+    NavigateDocument,
     PostDocument,
     PostTermDocument,
     SeoDocument,
@@ -111,7 +112,14 @@ const Select = {
                         )
                     ), "postTermContents")
             ]))
-            .join.inner(
+            .join.left(
+                {
+                    tableName: tables.PostContents.TableName,
+                    on: [
+                        {columnName: tables.PostContents.postId, value: tables.Posts.id},
+                        {columnName: tables.PostContents.langId, value: langId}
+                    ]
+                },
                 {
                     tableName: tables.PostTermLinks.TableName,
                     on: [{columnName: tables.PostTermLinks.postId, value: tables.Posts.id}]
@@ -122,14 +130,9 @@ const Select = {
                 },
                 {
                     tableName: tables.PostTermContents.TableName,
-                    on: [{columnName: tables.PostTermContents.termId, value: tables.PostTerms.id}]
-                }
-            ).join.left(
-                {
-                    tableName: tables.PostContents.TableName,
                     on: [
-                        {columnName: tables.PostContents.postId, value: tables.Posts.id},
-                        {columnName: tables.PostContents.langId, value: langId}
+                        {columnName: tables.PostTermContents.termId, value: tables.PostTerms.id},
+                        {columnName: tables.PostTermContents.langId, value: langId}
                     ]
                 }
             ).groupBy(
@@ -192,6 +195,44 @@ const Select = {
         if (id > 0) query.where.equals({
             columnName: tables.Languages.id,
             value: id,
+            valueType: QueryValueTypes.Number
+        });
+
+        return query.run();
+    },
+    Navigates({navigateId = 0, langId = 0, statusId = 0, getContents = false}): NavigateDocument[] {
+        let columns: string[] = (getContents) ? [
+                `${tables.Navigates.TableName}.*`,
+                `${tables.NavigateContents.TableName}.*`
+            ]
+            : [
+                `${tables.Navigates.TableName}.*`,
+                tables.NavigateContents.id,
+                tables.NavigateContents.navigateId,
+                tables.NavigateContents.langId,
+                tables.NavigateContents.title,
+                tables.NavigateContents.url
+            ];
+
+        let query = new Mysql(db.conn).select(tables.Navigates.TableName)
+            .columnsWithArray(columns)
+            .join.left({
+                tableName: tables.NavigateContents.TableName,
+                on: [
+                    {columnName: tables.NavigateContents.navigateId, value: tables.Navigates.id},
+                    {columnName: tables.NavigateContents.langId, value: langId}
+                ]
+            });
+
+        if (navigateId > 0) query.where.equals({
+            columnName: tables.Navigates.id,
+            value: navigateId,
+            valueType: QueryValueTypes.Number
+        });
+
+        if (statusId > 0) query.where.equals({
+            columnName: tables.Navigates.statusId,
+            value: statusId,
             valueType: QueryValueTypes.Number
         });
 

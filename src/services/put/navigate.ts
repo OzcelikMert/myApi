@@ -8,20 +8,16 @@ import {SessionDataDocument, SessionDocument} from "../../modules/config";
 import {DataCommonDocument} from "../../modules/services";
 
 type DataDocument = {
-    termId: number | number[],
+    navigateId: number | number[],
     statusId: number,
     langId?: number,
     title?: string,
     order?: number,
     mainId?: number,
-    image?: string
     url?: string,
-    seoTitle?: string,
-    seoContent?: string,
-    isFixed?: number,
 } & DataCommonDocument
 
-class PostTerm {
+class Navigate {
     public result: ServiceResult = new ServiceResult();
     private readonly data: DataDocument;
     private readonly session: SessionDataDocument;
@@ -31,15 +27,14 @@ class PostTerm {
         this.data = V.clearAllData(data);
     }
 
-    private set(termId = 0) {
-        this.data.url = (V.isEmpty(this.data.url)) ? V.clear(this.data.title, ClearTypes.SEO_URL) : this.data.url;
-        DBFunctions.Update.PostTerm(Object.assign(this.data, {termId: termId}));
+    private set(navigateId = 0) {
+        DBFunctions.Update.Navigate(Object.assign(this.data, {navigateId: navigateId}));
         if(!V.isEmpty(this.data.langId)) {
-            DBFunctions.Select.PostTerms(Object.assign(this.data, {termId: termId})).forEach(postTerm => {
-                if(postTerm.postTermContentLangId){
-                    DBFunctions.Update.PostTermContent(Object.assign(this.data, {termId: termId}));
+            DBFunctions.Select.Navigates(Object.assign(this.data, {navigateId: navigateId})).forEach(navigate => {
+                if(navigate.navigateContentLangId){
+                    DBFunctions.Update.NavigateContent(Object.assign(this.data, {navigateId: navigateId}));
                 }else {
-                    DBFunctions.Insert.PostTermContent(Object.assign(this.data, {termId: termId}));
+                    DBFunctions.Insert.NavigateContent(Object.assign(this.data, {navigateId: navigateId}));
                 }
             })
         }
@@ -49,7 +44,7 @@ class PostTerm {
         this.result.checkErrorCode(
             () => {
                 if(V.isEmpty(
-                    this.data.termId,
+                    this.data.navigateId,
                     this.data.statusId,
                 )) return ErrorCodes.emptyValue;
 
@@ -57,6 +52,7 @@ class PostTerm {
                     !V.isEmpty(this.data.langId) &&
                     V.isEmpty(
                         this.data.title,
+                        this.data.url,
                         this.data.order,
                         this.data.langId,
                         this.data.statusId
@@ -64,8 +60,7 @@ class PostTerm {
                 ) return ErrorCodes.emptyValue;
 
                 if(
-                    !SessionController.checkPerm(this.session, PermissionId.BlogEdit) &&
-                    !SessionController.checkPerm(this.session, PermissionId.PortfolioEdit)
+                    !SessionController.checkPerm(this.session, PermissionId.NavigateEdit)
                 ) return ErrorCodes.noPerm;
             }
         );
@@ -74,16 +69,16 @@ class PostTerm {
     init(): ServiceResult{
         this.checkData();
         if(this.result.status){
-            if(Array.isArray(this.data.termId)){
-                this.data.termId.forEach(termId => {
-                    this.set(termId);
+            if(Array.isArray(this.data.navigateId)){
+                this.data.navigateId.forEach(navigateId => {
+                    this.set(navigateId);
                 })
             }else{
-                this.set(this.data.termId);
+                this.set(this.data.navigateId);
             }
         }
         return this.result;
     }
 }
 
-export default PostTerm;
+export default Navigate;

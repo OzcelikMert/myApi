@@ -19,7 +19,10 @@ const Permissions: Array<PermissionDocument> = [
     {id: 16, groupId:5, defaultRoleRank: 3},
     {id: 17, groupId:6, defaultRoleRank: 2},
     {id: 18, groupId:6, defaultRoleRank: 3},
-    {id: 19, groupId:6, defaultRoleRank: 3}
+    {id: 19, groupId:6, defaultRoleRank: 3},
+    {id: 20, groupId:7, defaultRoleRank: 2},
+    {id: 21, groupId:7, defaultRoleRank: 3},
+    {id: 22, groupId:7, defaultRoleRank: 3}
 ]
 
 enum PermissionId {
@@ -41,7 +44,10 @@ enum PermissionId {
     UserDelete,
     PageAdd,
     PageEdit,
-    PageDelete
+    PageDelete,
+    NavigateAdd,
+    NavigateEdit,
+    NavigateDelete
 }
 
 export {Permissions, PermissionId};

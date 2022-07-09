@@ -19,10 +19,42 @@ const Delete = {
 
         return query.run();
     },
+    Post({postId = 0}){
+        let query = new Mysql(db.conn).delete(tables.Posts.TableName)
+            .where.equals(
+                {columnName: tables.Posts.id, value: postId, valueType: QueryValueTypes.Number}
+            );
+
+        return query.run();
+    },
+    PostContent({postId = 0}){
+        let query = new Mysql(db.conn).delete(tables.PostContents.TableName)
+            .where.equals(
+                {columnName: tables.PostContents.postId, value: postId, valueType: QueryValueTypes.Number}
+            );
+
+        return query.run();
+    },
     PostTermLinks({postId = 0}){
         let query = new Mysql(db.conn).delete(tables.PostTermLinks.TableName)
             .where.equals(
                 {columnName: tables.PostTermLinks.postId, value: postId, valueType: QueryValueTypes.Number}
+            );
+
+        return query.run();
+    },
+    Navigate({navigateId = 0}){
+        let query = new Mysql(db.conn).delete(tables.Navigates.TableName)
+            .where.equals(
+                {columnName: tables.Navigates.id, value: navigateId, valueType: QueryValueTypes.Number}
+            );
+
+        return query.run();
+    },
+    NavigateContent({navigateId = 0}){
+        let query = new Mysql(db.conn).delete(tables.NavigateContents.TableName)
+            .where.equals(
+                {columnName: tables.NavigateContents.navigateId, value: navigateId, valueType: QueryValueTypes.Number}
             );
 
         return query.run();

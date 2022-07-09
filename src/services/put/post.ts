@@ -10,12 +10,12 @@ import {DataCommonDocument} from "../../modules/services";
 type DataDocument = {
     postId: number | number[]
     statusId: number
-    order: number
+    order?: number
     isFixed?: 1 | 0
-    dateStart: string
-    langId: number
+    dateStart?: string
+    langId?: number
     image?: string
-    title: string
+    title?: string
     shortContent?: string
     content?: string
     url?: string
@@ -63,6 +63,17 @@ class Post {
                 if(
                     V.isEmpty(
                         this.data.postId,
+                        this.data.statusId
+                    )
+                ) return ErrorCodes.emptyValue;
+
+                if(
+                    !V.isEmpty(this.data.langId) &&
+                    V.isEmpty(
+                        this.data.title,
+                        this.data.order,
+                        this.data.langId,
+                        this.data.dateStart,
                         this.data.statusId
                     )
                 ) return ErrorCodes.emptyValue;

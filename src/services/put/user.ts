@@ -10,8 +10,9 @@ import {UserDocument} from "../../modules/ajax/result/data";
 
 type DataDocument = {
     userId: number
+    isSignOut?: any
     roleId?: number
-    statusId: number
+    statusId?: number
     image?: string
     name?: string
     email?: string
@@ -25,8 +26,10 @@ class User {
     public result: ServiceResult = new ServiceResult();
     private readonly data: DataDocument;
     private readonly session: SessionDataDocument;
+    private readonly sessionMain: SessionDocument;
 
     constructor(data: any, res: any, session: SessionDocument) {
+        this.sessionMain = session;
         this.session = session.data;
         this.data = V.clearAllData(data);
     }
@@ -35,10 +38,15 @@ class User {
         DBFunctions.Update.User(this.data);
     }
 
+    private deleteSession() {
+        this.sessionMain.destroy();
+    }
+
     private checkData(){
         this.result.checkErrorCode(
             () => {
                 if(
+                    V.isEmpty(this.data.isSignOut) &&
                     V.isEmpty(
                         this.data.userId,
                         this.data.statusId
@@ -65,7 +73,12 @@ class User {
     init(): ServiceResult{
         this.checkData();
         if(this.result.status){
-            this.set();
+            if (this.data.isSignOut == "true") {
+                this.deleteSession();
+            }else {
+                this.set();
+            }
+
         }
         return this.result;
     }
