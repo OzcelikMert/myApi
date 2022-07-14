@@ -3,13 +3,18 @@ enum Users {
     id = "userId",
     roleId = "userRoleId",
     statusId = "userStatusId",
+    image = "userImage",
     name = "userName",
+    comment = "userComment",
+    phone = "userPhone",
     email = "userEmail",
     password = "userPassword",
-    image = "userImage",
     permissions = "userPermissions",
     banDateEnd = "userBanDateEnd",
-    banComment = "userBanComment"
+    banComment = "userBanComment",
+    facebook = "userFacebook",
+    instagram = "userInstagram",
+    twitter = "userTwitter"
 }
 
 export default Users;

@@ -6,6 +6,7 @@ import ErrorCodes from "../../public/ajax/errorCodes";
 import {DataCommonDocument} from "../../modules/services";
 import {PermissionId, UserRoles} from "../../public/static";
 import {SessionController} from "../../controllers";
+import {UserFunctions} from "../../public/functions";
 
 type DataDocument = {
     roleId: number
@@ -30,6 +31,7 @@ class User {
     }
 
     private set() {
+        this.data.password = UserFunctions.encodePassword(this.data.password);
         DBFunctions.Insert.User(this.data);
     }
 

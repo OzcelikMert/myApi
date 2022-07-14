@@ -10,11 +10,11 @@ import {DataCommonDocument} from "../../modules/services";
 type DataDocument = {
     navigateId: number | number[],
     statusId: number,
-    langId?: number,
-    title?: string,
-    order?: number,
-    mainId?: number,
-    url?: string,
+    langId: number,
+    title: string,
+    order: number,
+    mainId: number,
+    url: string,
 } & DataCommonDocument
 
 class Navigate {
@@ -28,13 +28,14 @@ class Navigate {
     }
 
     private set(navigateId = 0) {
-        DBFunctions.Update.Navigate(Object.assign(this.data, {navigateId: navigateId}));
-        if(!V.isEmpty(this.data.langId)) {
-            DBFunctions.Select.Navigates(Object.assign(this.data, {navigateId: navigateId})).forEach(navigate => {
+        let params = Object.assign(this.data, {navigateId: navigateId});
+        DBFunctions.Update.Navigate(params);
+        if(this.data.langId) {
+            DBFunctions.Select.Navigates(params).forEach(navigate => {
                 if(navigate.navigateContentLangId){
-                    DBFunctions.Update.NavigateContent(Object.assign(this.data, {navigateId: navigateId}));
+                    DBFunctions.Update.NavigateContent(params);
                 }else {
-                    DBFunctions.Insert.NavigateContent(Object.assign(this.data, {navigateId: navigateId}));
+                    DBFunctions.Insert.NavigateContent(params);
                 }
             })
         }

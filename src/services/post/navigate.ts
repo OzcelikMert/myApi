@@ -8,13 +8,13 @@ import {Permissions, PermissionId} from "../../public/static";
 import {DataCommonDocument} from "../../modules/services";
 
 type DataDocument = {
-    navigateId?: number,
+    navigateId: number,
     langId: number,
     title: string,
     order: number,
-    mainId?: number,
+    mainId: number,
     statusId: number
-    url?: string,
+    url: string,
 } & DataCommonDocument
 
 class Navigate {

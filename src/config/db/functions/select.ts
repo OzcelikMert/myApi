@@ -12,35 +12,33 @@ import {
 } from "../../../modules/ajax/result/data";
 import {StatusId} from "../../../public/static";
 import {SettingsDocument} from "../../../modules/ajax/result/data/settings";
+import SelectPostParamDocument from "../../../modules/config/db/functions/select/post";
+import SelectUserParamDocument from "../../../modules/config/db/functions/select/user";
+import SelectPostTermParamDocument from "../../../modules/config/db/functions/select/postTerm";
+import SelectSeoParamDocument from "../../../modules/config/db/functions/select/seo";
+import SelectSettingParamDocument from "../../../modules/config/db/functions/select/setting";
+import SelectLanguageParamDocument from "../../../modules/config/db/functions/select/language";
+import SelectNavigateParamDocument from "../../../modules/config/db/functions/select/navigate";
 
 const Select = {
-    Users({email = "", password = "", userId = 0}): UserDocument[] {
+    Users(params: SelectUserParamDocument): UserDocument[] {
         let query = new Mysql(db.conn).select(tables.Users.TableName)
-            .columns(
-                tables.Users.id,
-                tables.Users.name,
-                tables.Users.email,
-                tables.Users.roleId,
-                tables.Users.statusId,
-                tables.Users.permissions,
-                tables.Users.banDateEnd,
-                tables.Users.banComment,
-                tables.Users.image
-            ).where.notEquals(
+            .columns("*")
+            .where.notEquals(
                 {columnName: tables.Users.statusId, value: StatusId.Deleted, valueType: QueryValueTypes.Number}
             );
-        if (!V.isEmpty(email, password)) {
+        if (!V.isEmpty(params.email, params.password)) {
             query.where.equals(
-                {columnName: tables.Users.email, value: email},
-                {columnName: tables.Users.password, value: password}
+                {columnName: tables.Users.email, value: params.email},
+                {columnName: tables.Users.password, value: params.password}
             );
-        } else if (userId > 0) {
-            query.where.equals({columnName: tables.Users.id, value: userId, valueType: QueryValueTypes.Number});
+        } else if (params.userId) {
+            query.where.equals({columnName: tables.Users.id, value: params.userId, valueType: QueryValueTypes.Number});
         }
         return query.run();
     },
-    PostTerms({termId = 0, postTypeId = 0, typeId = 0, langId = 0, statusId = 0, getContents = false}): PostTermDocument[] {
-        let columns: string[] = (getContents) ? [
+    PostTerms(params: SelectPostTermParamDocument): PostTermDocument[] {
+        let columns: string[] = (params.getContents) ? [
                 `${tables.PostTerms.TableName}.*`,
                 `${tables.PostTermContents.TableName}.*`
             ]
@@ -59,35 +57,35 @@ const Select = {
                 tableName: tables.PostTermContents.TableName,
                 on: [
                     {columnName: tables.PostTermContents.termId, value: tables.PostTerms.id},
-                    {columnName: tables.PostTermContents.langId, value: langId}
+                    {columnName: tables.PostTermContents.langId, value: params.langId}
                 ]
             });
 
-        if (termId > 0) query.where.equals({
+        if (params.termId) query.where.equals({
             columnName: tables.PostTerms.id,
-            value: termId,
+            value: params.termId,
             valueType: QueryValueTypes.Number
         });
-        if (postTypeId > 0) query.where.equals({
+        if (params.postTypeId) query.where.equals({
             columnName: tables.PostTerms.postTypeId,
-            value: postTypeId,
+            value: params.postTypeId,
             valueType: QueryValueTypes.Number
         });
-        if (typeId > 0) query.where.equals({
+        if (params.typeId ) query.where.equals({
             columnName: tables.PostTerms.typeId,
-            value: typeId,
+            value: params.typeId,
             valueType: QueryValueTypes.Number
         });
-        if (statusId > 0) query.where.equals({
+        if (params.statusId) query.where.equals({
             columnName: tables.PostTerms.statusId,
-            value: statusId,
+            value: params.statusId,
             valueType: QueryValueTypes.Number
         });
 
         return query.run();
     },
-    Posts({postId = 0, typeId = 0, langId = 0, statusId = 0, getContents = false, maxCount = 0}): PostDocument[] {
-        let columns: string[] = (getContents) ? [
+    Posts(params: SelectPostParamDocument): PostDocument[] {
+        let columns: string[] = (params.getContents) ? [
                 `${tables.Posts.TableName}.*`,
                 `${tables.PostContents.TableName}.*`
             ]
@@ -117,7 +115,7 @@ const Select = {
                     tableName: tables.PostContents.TableName,
                     on: [
                         {columnName: tables.PostContents.postId, value: tables.Posts.id},
-                        {columnName: tables.PostContents.langId, value: langId}
+                        {columnName: tables.PostContents.langId, value: params.langId}
                     ]
                 },
                 {
@@ -132,7 +130,7 @@ const Select = {
                     tableName: tables.PostTermContents.TableName,
                     on: [
                         {columnName: tables.PostTermContents.termId, value: tables.PostTerms.id},
-                        {columnName: tables.PostTermContents.langId, value: langId}
+                        {columnName: tables.PostTermContents.langId, value: params.langId}
                     ]
                 }
             ).groupBy(
@@ -143,65 +141,62 @@ const Select = {
                 tables.Posts.id
             );
 
-        if (postId > 0) query.where.equals({
+        if (params.postId) query.where.equals({
             columnName: tables.Posts.id,
-            value: postId,
+            value: params.postId,
             valueType: QueryValueTypes.Number
         });
-        if (typeId > 0) query.where.equals({
+        if (params.typeId) query.where.equals({
             columnName: tables.Posts.typeId,
-            value: typeId,
+            value: params.typeId,
             valueType: QueryValueTypes.Number
         });
-        if (statusId > 0) query.where.equals({
+        if (params.statusId) query.where.equals({
             columnName: tables.Posts.statusId,
-            value: statusId,
+            value: params.statusId,
             valueType: QueryValueTypes.Number
         });
-        if(maxCount > 0) query.limit(maxCount);
+        if(params.maxCount) query.limit(params.maxCount);
 
         return query.run();
     },
-    Seo({langId = 0}): SeoDocument[] {
+    Seo(params: SelectSeoParamDocument): SeoDocument[] {
         let query = new Mysql(db.conn).select(tables.SeoContents.TableName)
-            .columns(`*`);
-
-        if (langId > 0) {
-            query.where.equals({
+            .columns(`*`)
+            .where.equals({
                 columnName: tables.SeoContents.langId,
-                value: langId,
+                value: params.langId,
                 valueType: QueryValueTypes.Number
             });
-        }
 
         return query.run();
     },
-    Settings({id = 0}): SettingsDocument[] {
+    Settings(params: SelectSettingParamDocument): SettingsDocument[] {
         let query = new Mysql(db.conn).select(tables.Settings.TableName)
             .columns(`*`);
 
-        if (id > 0) query.where.equals({
+        if (params.id) query.where.equals({
             columnName: tables.Settings.id,
-            value: id,
+            value: params.id,
             valueType: QueryValueTypes.Number
         });
 
         return query.run();
     },
-    Languages({id = 0}): LanguageDocument[] {
+    Languages(params: SelectLanguageParamDocument): LanguageDocument[] {
         let query = new Mysql(db.conn).select(tables.Languages.TableName)
             .columns(`*`);
 
-        if (id > 0) query.where.equals({
+        if (params.id) query.where.equals({
             columnName: tables.Languages.id,
-            value: id,
+            value: params.id,
             valueType: QueryValueTypes.Number
         });
 
         return query.run();
     },
-    Navigates({navigateId = 0, langId = 0, statusId = 0, getContents = false}): NavigateDocument[] {
-        let columns: string[] = (getContents) ? [
+    Navigates(params: SelectNavigateParamDocument): NavigateDocument[] {
+        let columns: string[] = (params.getContents) ? [
                 `${tables.Navigates.TableName}.*`,
                 `${tables.NavigateContents.TableName}.*`
             ]
@@ -220,19 +215,19 @@ const Select = {
                 tableName: tables.NavigateContents.TableName,
                 on: [
                     {columnName: tables.NavigateContents.navigateId, value: tables.Navigates.id},
-                    {columnName: tables.NavigateContents.langId, value: langId}
+                    {columnName: tables.NavigateContents.langId, value: params.langId}
                 ]
             });
 
-        if (navigateId > 0) query.where.equals({
+        if (params.navigateId) query.where.equals({
             columnName: tables.Navigates.id,
-            value: navigateId,
+            value: params.navigateId,
             valueType: QueryValueTypes.Number
         });
 
-        if (statusId > 0) query.where.equals({
+        if (params.statusId) query.where.equals({
             columnName: tables.Navigates.statusId,
-            value: statusId,
+            value: params.statusId,
             valueType: QueryValueTypes.Number
         });
 

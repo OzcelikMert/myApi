@@ -20,13 +20,18 @@ class Create {
                 ${tables.Users.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
                 ${tables.Users.roleId} INT,
                 ${tables.Users.statusId} INT,
+                ${tables.Users.image} TEXT,
                 ${tables.Users.name} VARCHAR(100),
+                ${tables.Users.comment} TEXT,
+                ${tables.Users.phone} VARCHAR(15),
                 ${tables.Users.email} VARCHAR(100),
                 ${tables.Users.password} VARCHAR(150),
-                ${tables.Users.image} TEXT,
                 ${tables.Users.permissions} JSON,
                 ${tables.Users.banDateEnd} VARCHAR(20),
-                ${tables.Users.banComment} TEXT
+                ${tables.Users.banComment} TEXT,
+                ${tables.Users.facebook} TEXT,
+                ${tables.Users.instagram} TEXT,
+                ${tables.Users.twitter} TEXT
             );`);
         db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.Posts.TableName} (
                 ${tables.Posts.id} BIGINT PRIMARY KEY AUTO_INCREMENT,

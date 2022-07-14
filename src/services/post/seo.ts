@@ -9,9 +9,9 @@ import {DataCommonDocument} from "../../modules/services";
 
 type DataDocument = {
     langId: number
-    title?: string
-    content?: string
-    tags?: string[]
+    title: string
+    content: string
+    tags: string[]
     separatorId: number
 } & DataCommonDocument
 

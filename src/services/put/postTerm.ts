@@ -10,15 +10,15 @@ import {DataCommonDocument} from "../../modules/services";
 type DataDocument = {
     termId: number | number[],
     statusId: number,
-    langId?: number,
-    title?: string,
-    order?: number,
-    mainId?: number,
-    image?: string
-    url?: string,
-    seoTitle?: string,
-    seoContent?: string,
-    isFixed?: number,
+    langId: number,
+    title: string,
+    order: number,
+    mainId: number,
+    image: string
+    url: string,
+    seoTitle: string,
+    seoContent: string,
+    isFixed: 1 | 0,
 } & DataCommonDocument
 
 class PostTerm {
@@ -33,13 +33,14 @@ class PostTerm {
 
     private set(termId = 0) {
         this.data.url = (V.isEmpty(this.data.url)) ? V.clear(this.data.title, ClearTypes.SEO_URL) : this.data.url;
-        DBFunctions.Update.PostTerm(Object.assign(this.data, {termId: termId}));
-        if(!V.isEmpty(this.data.langId)) {
-            DBFunctions.Select.PostTerms(Object.assign(this.data, {termId: termId})).forEach(postTerm => {
+        let params = Object.assign(this.data, {termId: termId});
+        DBFunctions.Update.PostTerm(params);
+        if(params.langId) {
+            DBFunctions.Select.PostTerms(params).forEach(postTerm => {
                 if(postTerm.postTermContentLangId){
-                    DBFunctions.Update.PostTermContent(Object.assign(this.data, {termId: termId}));
+                    DBFunctions.Update.PostTermContent(params);
                 }else {
-                    DBFunctions.Insert.PostTermContent(Object.assign(this.data, {termId: termId}));
+                    DBFunctions.Insert.PostTermContent(params);
                 }
             })
         }
@@ -49,8 +50,7 @@ class PostTerm {
         this.result.checkErrorCode(
             () => {
                 if(V.isEmpty(
-                    this.data.termId,
-                    this.data.statusId,
+                    this.data.termId
                 )) return ErrorCodes.emptyValue;
 
                 if(

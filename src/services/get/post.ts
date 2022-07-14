@@ -8,7 +8,7 @@ import {PostDocument} from "../../modules/ajax/result/data";
 
 type DataDocument = {
     postId?: number
-    typeId: number
+    typeId?: number | number[]
     langId: number
     getContents?: boolean
     statusId?: number

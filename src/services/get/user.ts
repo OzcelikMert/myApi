@@ -6,6 +6,7 @@ import V from "../../library/variable"
 import ErrorCodes from "../../public/ajax/errorCodes";
 import {DataCommonDocument} from "../../modules/services";
 import {PostDocument, UserDocument} from "../../modules/ajax/result/data";
+import {UserFunctions} from "../../public/functions";
 
 type DataDocument = {
     email?: string
@@ -29,8 +30,13 @@ class User {
     }
 
     private get() {
+        if(!V.isEmpty(this.data.password)) this.data.password = UserFunctions.encodePassword(this.data.password || "");
         this.result.data = DBFunctions.Select.Users(this.data);
-        this.result.data.map((item: UserDocument) => {item.userPermissions = JSON.parse(item.userPermissions)})
+        this.result.data.map((item: UserDocument) => {
+            item.userPermissions = JSON.parse(item.userPermissions)
+            delete item.userPassword;
+            return item;
+        })
     }
 
     private setSession() {

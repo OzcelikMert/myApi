@@ -13,14 +13,14 @@ type DataDocument = {
     langId: number,
     title: string,
     order: number,
-    termId?: number,
-    mainId?: number,
+    termId: number,
+    mainId: number,
     image: string
     statusId: number
-    url?: string,
-    seoTitle?: string,
-    seoContent?: string,
-    isFixed?: number | any,
+    url: string,
+    seoTitle: string,
+    seoContent: string,
+    isFixed: number | any,
 } & DataCommonDocument
 
 class PostTerm {

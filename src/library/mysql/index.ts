@@ -53,7 +53,6 @@ class MySql extends Queries{
             catch (err) { result = err; }
             finally { if (typeof result == "undefined") result = []; }
         } else result = queryString;
-
         return result;
     }
 

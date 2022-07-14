@@ -8,22 +8,22 @@ import {Permissions, PermissionId} from "../../public/static";
 import {DataCommonDocument} from "../../modules/services";
 
 type DataDocument = {
-    postId?: number
+    postId: number
     typeId: number
     statusId: number
     order: number
-    authorId?: number
-    isFixed?: 1 | 0
+    authorId: number
+    isFixed: 1 | 0
     dateStart: string
     langId: number
     image: string
     title: string
-    shortContent?: string
-    content?: string
-    url?: string
-    seoTitle?: string
-    seoContent?: string
-    termId?: number[]
+    shortContent: string
+    content: string
+    url: string
+    seoTitle: string
+    seoContent: string
+    termId: number[]
 } & DataCommonDocument
 
 class Post {

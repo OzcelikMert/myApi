@@ -7,6 +7,7 @@ import {DataCommonDocument} from "../../modules/services";
 import {PermissionId, UserRoles} from "../../public/static";
 import {SessionController} from "../../controllers";
 import {UserDocument} from "../../modules/ajax/result/data";
+import {UserFunctions} from "../../public/functions";
 
 type DataDocument = {
     userId: number
@@ -15,11 +16,17 @@ type DataDocument = {
     statusId?: number
     image?: string
     name?: string
+    comment?: string
+    phone?: string
     email?: string
     password?: string
+    newPassword?: string,
     permissionId?: number[]
     banDateEnd?: string
     banComment?: string
+    facebook?: string,
+    instagram?: string,
+    twitter?: string
 } & DataCommonDocument
 
 class User {
@@ -35,6 +42,7 @@ class User {
     }
 
     private set() {
+        if(!V.isEmpty(this.data.newPassword)) this.data.password = UserFunctions.encodePassword(this.data.newPassword || "");
         DBFunctions.Update.User(this.data);
     }
 
@@ -48,14 +56,9 @@ class User {
                 if(
                     V.isEmpty(this.data.isSignOut) &&
                     V.isEmpty(
-                        this.data.userId,
-                        this.data.statusId
+                        this.data.userId
                     )
                 ) return ErrorCodes.emptyValue;
-
-                if(
-                    !SessionController.checkPerm(this.session, PermissionId.UserEdit)
-                ) return ErrorCodes.noPerm;
 
                 let user: UserDocument[] = DBFunctions.Select.Users({userId: this.data.userId});
 
@@ -64,8 +67,40 @@ class User {
                 ) return ErrorCodes.incorrectData;
 
                 if(
-                    UserRoles.findSingle("id", this.session.roleId).rank < UserRoles.findSingle("id", user[0].userRoleId).rank
-                ) return ErrorCodes.noPerm;
+                    this.session.id == this.data.userId
+                ) {
+                    if(
+                        !V.isEmpty(this.data.email) ||
+                        !V.isEmpty(this.data.roleId) ||
+                        !V.isEmpty(this.data.statusId) ||
+                        !V.isEmpty(this.data.permissionId) ||
+                        !V.isEmpty(this.data.banDateEnd) ||
+                        !V.isEmpty(this.data.banComment)
+                    ) return ErrorCodes.noPerm;
+
+                    if(
+                        !V.isEmpty(this.data.newPassword)
+                    ) {
+                        if(
+                            V.isEmpty(this.data.password)
+                        ) return ErrorCodes.emptyValue;
+
+                        if(
+                            UserFunctions.encodePassword(this.data.password || "") != user[0].userPassword
+                        ) return ErrorCodes.wrongPassword;
+                    }
+                }
+
+                if(this.session.id != this.data.userId) {
+                    if(
+                        !SessionController.checkPerm(this.session, PermissionId.UserEdit) &&
+                        this.session.id == this.data.userId
+                    ) return ErrorCodes.noPerm;
+
+                    if(
+                        UserRoles.findSingle("id", this.session.roleId).rank < UserRoles.findSingle("id", user[0].userRoleId).rank
+                    ) return ErrorCodes.noPerm;
+                }
             }
         );
     }
