@@ -18,7 +18,6 @@ class Post {
     constructor(data: any, res: any, session: SessionDocument) {
         this.session = session.data;
         this.data = V.clearAllData(data);
-
     }
 
     private get() {

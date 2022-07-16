@@ -10,25 +10,32 @@
   "author": "Mert ÖZÇELİK",
   "license": "ISC",
   "dependencies": {
-    "@types/cookie-parser": "^1.4.2",
-    "@types/express-session": "^1.17.4",
-    "@types/session-file-store": "^1.2.2",
-    "@types/express": "^4.17.13",
     "@types/body-parser": "^1.19.1",
+    "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/express-session": "^1.17.4",
     "@types/multer": "^1.4.7",
+    "@types/session-file-store": "^1.2.2",
     "@types/sharp": "^0.29.2",
-    "typescript": "^3.9.10",
     "body-parser": "^1.19.0",
+    "chalk": "^4.1.2",
+    "check-disk-space": "^3.3.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
+    "multer": "^1.4.5-lts.1",
+    "node-os-utils": "^1.3.7",
+    "os-utils": "^0.0.14",
     "session-file-store": "^1.5.0",
-    "cookie-parser": "^1.4.5",
-    "sync-mysql": "^3.0.1",
-    "chalk": "^4.1.2",
-    "compression": "^1.7.4",
-    "cors": "^2.8.5",
     "sharp": "^0.30.6",
-    "multer": "^1.4.5-lts.1"
+    "sync-mysql": "^3.0.1",
+    "typescript": "^3.9.10"
+  },
+  "devDependencies": {
+    "@types/node-os-utils": "^1.3.0",
+    "@types/os-utils": "^0.0.1"
   }
 }

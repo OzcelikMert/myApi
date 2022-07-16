@@ -47,7 +47,8 @@ class ServiceInit {
 
                 if(
                     (method === "POST" && page === ServicePages.gallery) ||
-                    (method === "DELETE" && page === ServicePages.gallery)
+                    (method === "DELETE" && page === ServicePages.gallery) ||
+                    (method === "GET" && page === ServicePages.serverDetail)
                 ) {
                     wait = true;
                     service = new (require(path).default)(this.req, this.res, session);
