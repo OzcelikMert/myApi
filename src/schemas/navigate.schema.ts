@@ -51,8 +51,8 @@ export default {
         })
     }),
     delete: object({
-        params: object({
-            navigateId: number().required({navigateId: ErrorCodes.emptyValue}),
+        body: object({
+            navigateId: array(number().required({navigateId: ErrorCodes.incorrectData})).required({navigateId: ErrorCodes.emptyValue}),
         })
     })
 };
