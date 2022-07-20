@@ -1,0 +1,15 @@
+const ServicePages = {
+    auth: "/auth",
+    profile: "/profile",
+    user: "/user",
+    gallery: "/gallery",
+    postTerm: "/postTerm",
+    post: "/post",
+    seo: "/seo",
+    setting: "/setting",
+    language: "/language",
+    navigate: "/navigate",
+    serverInfo: "/serverInfo"
+}
+
+export default ServicePages;

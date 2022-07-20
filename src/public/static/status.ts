@@ -1,4 +1,4 @@
-import {StatusDocument} from "../../modules/static";
+import {StatusDocument} from "../../modules/public/static";
 
 const Status: Array<StatusDocument> = [
     {id: 1, order: 1},

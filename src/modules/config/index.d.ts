@@ -1,4 +1,4 @@
-import {SessionDataDocument, SessionDocument} from "./session";
+import {SessionDataDocument} from "../session";
 
 interface ConfigDocument {
     app: any
@@ -15,6 +15,5 @@ interface ConfigDocument {
 }
 
 export {
-    ConfigDocument,
-    SessionDocument, SessionDataDocument
+    ConfigDocument, SessionDataDocument
 }

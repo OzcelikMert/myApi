@@ -32,7 +32,7 @@ class Create {
                 ${tables.Users.facebook} TEXT,
                 ${tables.Users.instagram} TEXT,
                 ${tables.Users.twitter} TEXT
-            );`);
+            ) ENGINE = MYISAM;`);
         db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.Posts.TableName} (
                 ${tables.Posts.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
                 ${tables.Posts.typeId} INT,
@@ -43,7 +43,7 @@ class Create {
                 ${tables.Posts.order} INT,
                 ${tables.Posts.views} INT,
                 ${tables.Posts.isFixed} BOOLEAN
-            );`);
+            ) ENGINE = MYISAM;`);
         db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.PostTerms.TableName} (
                 ${tables.PostTerms.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
                 ${tables.PostTerms.typeId} INT,
@@ -53,28 +53,28 @@ class Create {
                 ${tables.PostTerms.order} INT,
                 ${tables.PostTerms.views} INT,
                 ${tables.PostTerms.isFixed} BOOLEAN
-            );`);
+            ) ENGINE = MYISAM;`);
         db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.PostTermLinks.TableName} (
                 ${tables.PostTermLinks.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
                 ${tables.PostTermLinks.postId} BIGINT,
                 ${tables.PostTermLinks.termId} BIGINT
-            );`);
+            ) ENGINE = MYISAM;`);
         db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.Settings.TableName} (
                 ${tables.Settings.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
                 ${tables.Settings.value} JSON
-            );`);
+            ) ENGINE = MYISAM;`);
         db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.Languages.TableName} (
                 ${tables.Languages.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
                 ${tables.Languages.image} TEXT,
                 ${tables.Languages.shortKey} VARCHAR(3),
                 ${tables.Languages.title} VARCHAR(20)
-            );`);
+            ) ENGINE = MYISAM;`);
         db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.Navigates.TableName} (
                 ${tables.Navigates.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
                 ${tables.Navigates.mainId} BIGINT,
                 ${tables.Navigates.statusId} INT,
                 ${tables.Navigates.order} INT
-            );`);
+            ) ENGINE = MYISAM;`);
     }
 
     private createContentTables(): void {
@@ -89,7 +89,7 @@ class Create {
                 ${tables.PostContents.url} TEXT,
                 ${tables.PostContents.seoTitle} TEXT,
                 ${tables.PostContents.seoContent} TEXT
-            );`);
+            ) ENGINE = MYISAM;`);
         db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.PostTermContents.TableName} (
                 ${tables.PostTermContents.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
                 ${tables.PostTermContents.termId} BIGINT,
@@ -99,21 +99,21 @@ class Create {
                 ${tables.PostTermContents.url} TEXT,
                 ${tables.PostTermContents.seoTitle} TEXT,
                 ${tables.PostTermContents.seoContent} TEXT
-            );`);
+            ) ENGINE = MYISAM;`);
         db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.SeoContents.TableName} (
                 ${tables.SeoContents.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
                 ${tables.SeoContents.langId} INT,
                 ${tables.SeoContents.title} TEXT,
                 ${tables.SeoContents.content} TEXT,
                 ${tables.SeoContents.tags} TEXT
-            );`);
+            ) ENGINE = MYISAM;`);
         db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.NavigateContents.TableName} (
                 ${tables.NavigateContents.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
                 ${tables.NavigateContents.navigateId} BIGINT,
                 ${tables.NavigateContents.langId} INT,
                 ${tables.NavigateContents.title} TEXT,
                 ${tables.NavigateContents.url} TEXT
-            );`);
+            ) ENGINE = MYISAM;`);
     }
 
     private addIndexKeys(): void {

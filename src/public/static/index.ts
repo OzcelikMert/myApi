@@ -1,6 +1,6 @@
 import {Languages, LanguageId} from "./languages";
 import {PermissionGroups, PermissionGroupId} from "./permissionGroups";
-import {Permissions, PermissionId} from "./permissions";
+import {PermissionId} from "./permissions";
 import {PostTermTypes, PostTermTypeId} from "./postTermTypes";
 import {PostTypes, PostTypeId} from "./postTypes";
 import {Status, StatusId} from "./status";
@@ -18,7 +18,7 @@ import {UserRoleContents} from "./contents/userRoleContents";
 export {
     Languages, LanguageId,
     PermissionGroups, PermissionGroupId,
-    Permissions, PermissionId,
+    PermissionId,
     PostTermTypes, PostTermTypeId,
     PostTypes, PostTypeId,
     Status, StatusId,
