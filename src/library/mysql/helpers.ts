@@ -3,6 +3,10 @@ class MySqlHelpers {
         return `GROUP_CONCAT(${columnName.join(",")})`;
     }
 
+    static count(columnName: string): string {
+        return `COUNT(${columnName})`;
+    }
+
     static concat(...columnName: string[]): string {
         return `CONCAT(${columnName.join(",")})`;
     }

@@ -58,7 +58,7 @@ export default {
                 tables.Navigates.statusId,
                 tables.Navigates.order
             ).values(
-                {value: params.mainId, valueType: QueryValueTypes.Number},
+                {value: params.mainId || 0, valueType: QueryValueTypes.Number},
                 {value: params.statusId, valueType: QueryValueTypes.Number},
                 {value: params.order, valueType: QueryValueTypes.Number}
             );
@@ -87,7 +87,7 @@ export default {
 
         let query = new Mysql(db.conn).update(tables.Navigates.TableName)
             .setWithArray(setData)
-            .where.equals(
+            .where.in(
                 {columnName: tables.Navigates.id, value: params.navigateId, valueType: QueryValueTypes.Number}
             );
 
@@ -96,7 +96,7 @@ export default {
     delete(params: DeleteNavigateParamDocument) {
         params = V.clearAllData(params);
         let query = new Mysql(db.conn).delete(tables.Navigates.TableName)
-            .where.equals(
+            .where.in(
                 {columnName: tables.Navigates.id, value: params.navigateId, valueType: QueryValueTypes.Number}
             );
 

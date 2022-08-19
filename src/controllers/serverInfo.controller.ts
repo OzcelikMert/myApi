@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ErrorCodes, ServiceResult, StatusCodes} from "../utils/ajax";
+import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import osu from "node-os-utils";
 import checkDiskSpace from "check-disk-space";
 import os from "os";
@@ -10,7 +10,7 @@ export default {
         req: Request,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let cpu = await osu.cpu.usage();
         let diskSpace = await checkDiskSpace(Config.paths.root);

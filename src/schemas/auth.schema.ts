@@ -1,5 +1,5 @@
 import { object, string, boolean } from "yup";
-import {ErrorCodes} from "../utils/ajax";
+import {ErrorCodes} from "../utils/service";
 
 export default {
     get: object({

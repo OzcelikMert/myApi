@@ -1,4 +1,6 @@
-export default interface PostDocument {
+import PostContentDocument from "./postContent";
+
+type PostDocument = {
     postId: number,
     postTypeId: number,
     postAuthorId: number,
@@ -8,23 +10,11 @@ export default interface PostDocument {
     postOrder: number,
     postViews: number,
     postIsFixed: boolean,
-    // Content
-    postContentId: number,
-    postContentTags: string,
-    postContentPostId: number,
-    postContentLangId: number,
-    postContentImage: string,
-    postContentTitle: string,
-    postContent: string,
-    postContentShort: string,
-    postContentUrl: string,
-    postContentSEOTitle: string,
-    postContentSEO: string
-    postTermContents: string
-}
+} & PostContentDocument
+export default PostDocument;
 
 export interface UpdatePostParamDocument {
-    postId: number
+    postId: number | number[]
     typeId?: number
     statusId?: number
     order?: number
@@ -34,7 +24,7 @@ export interface UpdatePostParamDocument {
 }
 
 export interface DeletePostParamDocument {
-    postId: number
+    postId: number | number[]
 }
 
 export interface InsertPostParamDocument {

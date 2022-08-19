@@ -1,32 +1,36 @@
-import ServicePages from "../../utils/ajax/servicePages";
+import Pages from "../../utils/service/pages";
 import PermissionPathDocument from "../../modules/public/permissions/paths";
 import {PermissionId, PostTermTypeId, PostTypeId} from "../static";
 
 const PermissionPaths: PermissionPathDocument = {};
 
-PermissionPaths[ServicePages.user] = {
+PermissionPaths[Pages.user] = {
     post: PermissionId.UserAdd,
     put: PermissionId.UserEdit,
     delete: PermissionId.UserDelete
 }
 
-PermissionPaths[ServicePages.navigate] = {
+PermissionPaths[Pages.navigate] = {
     post: PermissionId.NavigateAdd,
     put: PermissionId.NavigateEdit,
     delete: PermissionId.NavigateDelete
 }
 
-PermissionPaths[ServicePages.gallery] = {
+PermissionPaths[Pages.gallery] = {
     post: PermissionId.GalleryEdit,
     delete: PermissionId.GalleryEdit
 }
 
-PermissionPaths[ServicePages.seo] = {
+PermissionPaths[Pages.seo] = {
     put: PermissionId.SeoEdit
 }
 
-PermissionPaths[ServicePages.setting] = {
+PermissionPaths[Pages.setting] = {
     put: PermissionId.SettingEdit
+}
+
+PermissionPaths[Pages.serverInfo] = {
+    get: PermissionId.SettingEdit
 }
 
 Object.keys(PostTypeId).forEach((postType: any) => {
@@ -38,12 +42,12 @@ Object.keys(PostTypeId).forEach((postType: any) => {
         // @ts-ignore
         deletePerm: any = PermissionId[`${postType}Delete`];
 
-    PermissionPaths[`${ServicePages.post}/${postTypeId}`] = {
+    PermissionPaths[`${Pages.post}/${postTypeId}`] = {
         post: addPerm,
         put: editPerm,
         delete: deletePerm
     }
-    PermissionPaths[`${ServicePages.postTerm}/${postTypeId}`] = {
+    PermissionPaths[`${Pages.postTerm}/${postTypeId}`] = {
         post: addPerm,
         put: editPerm,
         delete: deletePerm

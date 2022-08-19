@@ -76,7 +76,7 @@ export default {
             ).values(
                 {value: params.typeId, valueType: QueryValueTypes.Number},
                 {value: params.postTypeId, valueType: QueryValueTypes.Number},
-                {value: params.mainId, valueType: QueryValueTypes.Number},
+                {value: params.mainId || 0, valueType: QueryValueTypes.Number},
                 {value: params.statusId, valueType: QueryValueTypes.Number},
                 {value: params.order, valueType: QueryValueTypes.Number},
                 {value: params.isFixed, valueType: QueryValueTypes.Number},
@@ -111,7 +111,7 @@ export default {
 
         let query = new Mysql(db.conn).update(tables.PostTerms.TableName)
             .setWithArray(setData)
-            .where.equals(
+            .where.in(
                 {columnName: tables.PostTerms.id, value: params.termId, valueType: QueryValueTypes.Number}
             );
 
@@ -131,7 +131,7 @@ export default {
     delete(params: DeletePostTermParamDocument) {
         params = V.clearAllData(params);
         let query = new Mysql(db.conn).delete(tables.PostTerms.TableName)
-            .where.equals(
+            .where.in(
                 {columnName: tables.PostTerms.id, value: params.termId, valueType: QueryValueTypes.Number}
             );
 

@@ -22,31 +22,49 @@ export class QueryTerms {
         let self: any = this;
         self.queryWhere = (!V.isEmpty(self.queryWhere)) ? `${self.queryWhere} and ` : " where ";
 
-        function setQuery(operator: string, params: Array<WhereParamDocument>, nextOperator: "and" | "or" = "and") {
-            self.queryWhere += `(`;
-            for (let i = 0; i < params.length; i++) {
-                let param = params[i];
-                if (Array.isArray(param.value)) {
-                    let newQueryParams: Array<WhereParamDocument> = param.value.map(value => {
-                        return {
-                            value: value,
-                            columnName: param.columnName,
-                            valueType: param.valueType
-                        }
-                    });
-                    setQuery(operator, newQueryParams, "or")
-                } else {
-                    self.queryWhere += `${param.columnName} ${operator} ${self.convertValueTypeToQuery(param.value, param.valueType)}`;
-                }
-                if(i + 1 < params.length) {
-                    self.queryWhere += ` ${nextOperator} `;
-                }
+        function inOperator(param: WhereParamDocument) {
+            if (Array.isArray(param.value)) {
+                let inValues = "";
+                param.value.forEach(value => {
+                    inValues = `${self.convertValueTypeToQuery(value, param.valueType)},`
+                });
+                self.queryWhere += `${param.columnName} in(${inValues.removeLastChar()})`;
+            } else {
+                self.queryWhere += `${param.columnName} in(${self.convertValueTypeToQuery(param.value, param.valueType)})`;
             }
+        }
+
+        function setQuery(operator: string, params: Array<WhereParamDocument>) {
+            self.queryWhere += `(`;
+            params.forEach((param, index) => {
+                if(operator === "in"){
+                    inOperator(param);
+                }else {
+                    if (Array.isArray(param.value)) {
+                        setQuery(operator, param.value.map(value => {
+                            return {
+                                value: value,
+                                columnName: param.columnName,
+                                valueType: param.valueType,
+                                nextOperator: "or"
+                            }
+                        }))
+                    } else {
+                        self.queryWhere += `${param.columnName} ${operator} ${self.convertValueTypeToQuery(param.value, param.valueType)}`;
+                    }
+                }
+                if(index + 1 < params.length) {
+                    self.queryWhere += ` ${param.nextOperator ?? "and"} `;
+                }
+            })
             self.queryWhere += `)`;
             return self;
         }
 
         return {
+            in(...params) {
+                return setQuery("in", params);
+            },
             equals(...params) {
                 return setQuery("=", params);
             },
@@ -78,8 +96,7 @@ export class QueryTerms {
         let self: any = this;
 
         function setQuery(operator: string, params: Array<JoinParamDocument>) {
-            for (let i = 0; i < params.length; i++) {
-                let param = params[i];
+            params.forEach(param => {
                 self.queryJoin += `${operator} join ${param.tableName} on `;
                 for (let i = 0; i < param.on.length; i++) {
                     let on = param.on[i];
@@ -87,7 +104,7 @@ export class QueryTerms {
                     self.queryJoin += `${on.columnName} = ${self.convertValueTypeToQuery(on.value, on.valueType)} and `;
                 }
                 self.queryJoin = `${self.queryJoin.removeLastChar(4)} `;
-            }
+            })
             return self;
         }
 
@@ -107,10 +124,9 @@ export class QueryTerms {
     public groupBy(...columnNames: string[]): MySql {
         this.queryGroupBy = (!V.isEmpty(this.queryGroupBy)) ? `${this.queryGroupBy}, ` : "group by ";
 
-        for (let i = 0; i < columnNames.length; i++) {
-            let columnName = columnNames[i];
+        columnNames.forEach(columnName => {
             this.queryGroupBy += `${columnName},`;
-        }
+        })
         this.queryGroupBy = `${this.queryGroupBy.removeLastChar()}`;
 
         let self: any = this;
@@ -122,10 +138,9 @@ export class QueryTerms {
 
         function setQuery(type: string, params: string[]) {
             self.queryOrderBy = (!V.isEmpty(self.queryOrderBy)) ? `${self.queryOrderBy}, ` : "order by ";
-            for (let i = 0; i < params.length; i++) {
-                let param = params[i];
+            params.forEach(param => {
                 self.queryOrderBy += `${param},`;
-            }
+            })
             self.queryOrderBy = `${self.queryOrderBy.removeLastChar()} ${type} `;
             return self;
         }

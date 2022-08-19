@@ -27,7 +27,7 @@ export default {
     },
     insert(params: InsertSeoParamDocument) {
         params = V.clearAllData(params);
-        if(params.tags === [""]) params.tags = [];
+        if(!params.tags || params.tags === [""]) params.tags = [];
         let query = new Mysql(db.conn).insert(tables.SeoContents.TableName)
             .columns(
                 tables.SeoContents.langId,
@@ -36,8 +36,8 @@ export default {
                 tables.SeoContents.tags,
             ).values(
                 {value: params.langId, valueType: QueryValueTypes.Number},
-                {value: params.title},
-                {value: params.content},
+                {value: params.title || ""},
+                {value: params.content || ""},
                 {value: JSON.stringify(params.tags)}
             );
 

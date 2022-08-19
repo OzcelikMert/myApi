@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ErrorCodes, ServiceResult, StatusCodes} from "../utils/ajax";
+import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {InferType} from "yup";
 import seoSchema from "../schemas/seo.schema";
 import seoService from "../services/seo.service";
@@ -9,7 +9,7 @@ export default {
         req: Request<any, any,any, any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof seoSchema.get> = req;
 
         serviceResult.data = seoService.select(data.query);
@@ -20,7 +20,7 @@ export default {
         req: Request,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof seoSchema.put> = req;
 
         if(seoService.select(data.body).length > 0) {

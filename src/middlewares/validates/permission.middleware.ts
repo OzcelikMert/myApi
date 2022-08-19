@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {UserRoleId} from "../../public/static";
-import {ErrorCodes, ServiceResult, StatusCodes} from "../../utils/ajax";
+import {ErrorCodes, Result, StatusCodes} from "../../utils/service";
 import {Config} from "../../config";
 import PermissionPaths from "../../public/permissions/paths";
 import {PermissionPathDataDocument} from "../../modules/public/permissions/paths";
@@ -11,11 +11,10 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let session = req.session.data;
 
-        let page = req.url.replace(`ajax/`, "");
-
+        let page = req.originalUrl.replace(`/ajax`, "");
         Object.keys(PermissionPaths).forEach(key => {
             if(page.search(key) > -1){
                 page = key;

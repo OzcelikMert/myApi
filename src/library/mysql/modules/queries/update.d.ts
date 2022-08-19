@@ -7,6 +7,6 @@ interface UpdateSetDocument {
 }
 
 interface UpdateDocument {
-    set(...setData: UpdateSetDocument[]): MySql,
-    setWithArray(setData: UpdateSetDocument[]): MySql,
+    set(...args: UpdateSetDocument[]): MySql,
+    setWithArray(args: UpdateSetDocument[]): MySql,
 }

@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {ErrorCodes, ServiceResult, StatusCodes} from "../utils/ajax";
+import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import postTermService from "../services/postTerm.service";
 
 export default {
@@ -8,7 +8,7 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let termId = req.params.termId;
         termId = termId ? termId : req.body.termId;
@@ -42,7 +42,7 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let url = req.body.url;
         let typeId = req.params.typeId;

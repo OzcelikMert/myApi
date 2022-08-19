@@ -6,6 +6,7 @@ interface InsertValuesDocument {
 }
 
 interface InsertDocument {
-    columns(...columnNames: string[]): InsertDocument,
-    values(...columnNames: InsertValuesDocument[]): MySql,
+    columns(...args: string[]): InsertDocument,
+    values(...args: InsertValuesDocument[]): MySql,
+    valuesMulti(args: InsertValuesDocument[][]): MySql,
 }

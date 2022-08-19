@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {ErrorCodes, ServiceResult, StatusCodes} from "../utils/ajax";
+import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import navigateService from "../services/navigate.service";
 
 export default {
@@ -8,7 +8,7 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let navigateId = req.params.navigateId;
         navigateId = navigateId ? navigateId : req.body.navigateId;

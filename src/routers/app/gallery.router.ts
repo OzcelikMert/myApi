@@ -7,7 +7,7 @@ const galleryRouter = Router();
 
 galleryRouter.route(`/`)
     .get([sessionMiddleware.check], galleryController.get)
-    .post([requestMiddleware.check(gallerySchema.post), sessionMiddleware.check, permissionMiddleware.check], galleryController.add)
-    .delete([requestMiddleware.check(gallerySchema.delete), sessionMiddleware.check], galleryController.delete, permissionMiddleware.check)
+    .post([sessionMiddleware.check], galleryController.add)
+    .delete([requestMiddleware.check(gallerySchema.delete), sessionMiddleware.check, permissionMiddleware.check], galleryController.delete)
 
 export default galleryRouter;

@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ErrorCodes, ServiceResult, StatusCodes} from "../utils/ajax";
+import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {InferType} from "yup";
 import settingSchema from "../schemas/setting.schema";
 import settingService from "../services/setting.service";
@@ -9,7 +9,7 @@ export default {
         req: Request<any, any,any, any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof settingSchema.get> = req;
 
         serviceResult.data = settingService.select(data.query);
@@ -20,7 +20,7 @@ export default {
         req: Request,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof settingSchema.put> = req;
 
         data.body.settings.forEach(setting => {

@@ -1,11 +1,11 @@
 import ErrorCodes from "./errorCodes";
-import ServiceResult from "./serviceResult";
+import Result from "./result";
 import StatusCodes from "./statusCodes";
-import ServicePages from "./servicePages";
+import Pages from "./pages";
 
 export {
     ErrorCodes,
     StatusCodes,
-    ServiceResult,
-    ServicePages
+    Result,
+    Pages
 }

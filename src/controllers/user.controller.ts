@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ErrorCodes, ServiceResult} from "../utils/ajax";
+import {ErrorCodes, Result} from "../utils/service";
 import {InferType} from "yup";
 import userSchema from "../schemas/user.schema";
 import {StatusId} from "../public/static";
@@ -10,7 +10,7 @@ export default {
         req: Request<any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof userSchema.get> = req;
 
         serviceResult.data = userService.select(data.params);
@@ -21,7 +21,7 @@ export default {
         req: Request,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof userSchema.post> = req;
 
         serviceResult.data = userService.insert(data.body);
@@ -32,7 +32,7 @@ export default {
         req: Request<any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof userSchema.put> = req;
 
         serviceResult.data = userService.update({
@@ -46,7 +46,7 @@ export default {
         req: Request<any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof userSchema.delete> = req;
 
         serviceResult.data = userService.update({

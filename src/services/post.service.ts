@@ -144,7 +144,7 @@ export default {
 
         let query = new Mysql(db.conn).update(tables.Posts.TableName)
             .setWithArray(setData)
-            .where.equals(
+            .where.in(
                 {columnName: tables.Posts.id, value: params.postId, valueType: QueryValueTypes.Number}
             );
 
@@ -159,7 +159,7 @@ export default {
     delete(params: DeletePostParamDocument) {
         params = V.clearAllData(params);
         let query = new Mysql(db.conn).delete(tables.Posts.TableName)
-            .where.equals(
+            .where.in(
                 {columnName: tables.Posts.id, value: params.postId, valueType: QueryValueTypes.Number}
             );
 

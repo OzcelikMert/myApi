@@ -3,13 +3,24 @@ import db from "../config/db";
 import tables from "../config/db/tables";
 import {UpdateSetDocument} from "../library/mysql/modules/queries/update";
 import V, {DateMask} from "../library/variable";
-import {
+import NavigateContentDocument, {
     DeleteNavigateContentParamDocument,
-    InsertNavigateContentParamDocument,
+    InsertNavigateContentParamDocument, SelectNavigateContentParamDocument,
     UpdateNavigateContentParamDocument
 } from "../modules/services/navigateContent";
 
 export default {
+    select(params: SelectNavigateContentParamDocument) : NavigateContentDocument[] {
+        params = V.clearAllData(params);
+        let query = new Mysql(db.conn).select(tables.NavigateContents.TableName)
+            .columns("*")
+            .where.equals(
+                {columnName: tables.NavigateContents.navigateId, value: params.navigateId, valueType: QueryValueTypes.Number},
+                {columnName: tables.NavigateContents.langId, value: params.langId, valueType: QueryValueTypes.Number}
+            );
+
+        return query.run();
+    },
     insert(params: InsertNavigateContentParamDocument) {
         params = V.clearAllData(params, ["content"]);
         let query = new Mysql(db.conn).insert(tables.NavigateContents.TableName)
@@ -22,7 +33,7 @@ export default {
                 {value: params.navigateId, valueType: QueryValueTypes.Number},
                 {value: params.langId, valueType: QueryValueTypes.Number},
                 {value: params.title},
-                {value: params.url},
+                {value: params.url || ""},
             );
 
         return query.run();
@@ -49,7 +60,7 @@ export default {
     delete(params: DeleteNavigateContentParamDocument) {
         params = V.clearAllData(params);
         let query = new Mysql(db.conn).delete(tables.NavigateContents.TableName)
-            .where.equals(
+            .where.in(
                 {columnName: tables.NavigateContents.navigateId, value: params.navigateId, valueType: QueryValueTypes.Number}
             );
 

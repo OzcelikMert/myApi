@@ -26,7 +26,7 @@ class MySql extends Queries{
                 `;
                 break;
             case QueryTypes.Insert:
-                queryString = `insert into ${this.queryTableName}(${this.queryColumn}) values (${this.queryValues})`;
+                queryString = `insert into ${this.queryTableName}(${this.queryColumn}) values ${this.queryValues}`;
                 break;
             case QueryTypes.Update:
                 queryString = `
@@ -46,24 +46,12 @@ class MySql extends Queries{
                 break;
         }
 
-        this.clearQueryStrings();
-
         if (!justShowSql) {
             try { result = this.conn.query(queryString) }
             catch (err) { result = err; }
             finally { if (typeof result == "undefined") result = []; }
         } else result = queryString;
         return result;
-    }
-
-    private clearQueryStrings() {
-        this.queryColumn = "";
-        this.queryTableName = "";
-        this.queryJoin = "";
-        this.queryWhere = "";
-        this.queryGroupBy = "";
-        this.queryOrderBy = "";
-        this.queryLimit = "";
     }
 }
 

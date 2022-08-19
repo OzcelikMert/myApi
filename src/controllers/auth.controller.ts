@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import V from "../library/variable"
-import {ErrorCodes, ServiceResult, StatusCodes} from "../utils/ajax";
+import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {InferType} from "yup";
 import authSchema from "../schemas/auth.schema";
 import userService from "../services/user.service";
@@ -11,7 +11,7 @@ export default {
         req: Request<any, any,any, any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof authSchema.get> = req;
 
         if (data.query.isRefresh) {
@@ -24,7 +24,7 @@ export default {
         req: Request,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof authSchema.post> = req;
 
         let resData = userService.select(data.body);
@@ -47,6 +47,10 @@ export default {
                 serviceResult.statusCode = StatusCodes.notFound;
             }
             serviceResult.data = resData;
+
+            if(user.userStatusId != StatusId.Active && user.userStatusId != StatusId.Banned){
+                serviceResult.data = [];
+            }
         }else {
             serviceResult.status = false;
             serviceResult.errorCode = ErrorCodes.notFound;
@@ -59,7 +63,7 @@ export default {
         req: Request,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         req.session.destroy(() => {
             res.status(serviceResult.statusCode).json(serviceResult)

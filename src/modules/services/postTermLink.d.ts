@@ -5,8 +5,8 @@ export default interface PostTermLinkDocument {
 }
 
 export interface DeletePostTermLinkParamDocument {
-    postId?: number
-    termId?: number
+    postId?: number | number[]
+    termId?: number | number[]
 }
 
 export interface InsertPostTermLinkParamDocument {

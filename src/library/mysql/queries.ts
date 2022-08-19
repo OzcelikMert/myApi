@@ -22,11 +22,12 @@ export class Queries extends QueryTerms{
         this.queryTableName = tableName;
         let self: any = this;
         return {
-            columns(...values): MySql {
+            columns(...args): MySql {
                 self.queryColumn = ``;
-                for (let i = 0; i < values.length; i++){
-                    self.queryColumn += `${values[i]},`;
-                }
+                args.forEach(arg => {
+                    self.queryColumn += `${arg},`;
+
+                })
                 self.queryColumn = self.queryColumn.removeLastChar();
                 return self;
             },
@@ -39,20 +40,31 @@ export class Queries extends QueryTerms{
         this.queryTableName = tableName;
         let self: any = this;
         return {
-            columns(...values) {
+            columns(...args) {
                 self.queryColumn = ``;
-                for (let i = 0; i < values.length; i++){
-                    self.queryColumn += `${values[i]},`;
-                }
+                args.forEach(arg => {
+                    self.queryColumn += `${arg},`;
+                })
                 self.queryColumn = self.queryColumn.removeLastChar();
                 return this;
             },
-            values(...values) {
-                self.queryValues = ``;
-                for (let i = 0; i < values.length; i++){
-                    let value = values[i];
-                    self.queryValues += `${self.convertValueTypeToQuery(value.value, value.valueType)},`;
-                }
+            values(...args) {
+                self.queryValues = `(`;
+                args.forEach(arg => {
+                    self.queryValues += `${self.convertValueTypeToQuery(arg.value, arg.valueType)},`;
+                })
+                self.queryValues = self.queryValues.removeLastChar() + ")";
+                return self;
+            },
+            valuesMulti(args) {
+                self.queryValues = "";
+                args.forEach(arg => {
+                    self.queryValues += `(`;
+                    arg.forEach(value => {
+                        self.queryValues += `${self.convertValueTypeToQuery(value.value, value.valueType)},`;
+                    })
+                    self.queryValues = self.queryValues.removeLastChar() + "),";
+                });
                 self.queryValues = self.queryValues.removeLastChar();
                 return self;
             }
@@ -64,12 +76,11 @@ export class Queries extends QueryTerms{
         this.queryTableName = tableName;
         let self: any = this;
         return {
-            set(...values) {
+            set(...args) {
                 self.queryColumn = ``;
-                for (let i = 0; i < values.length; i++){
-                    let value = values[i];
-                    self.queryColumn += `${value.columnName}=${self.convertValueTypeToQuery(value.value, value.valueType)},`;
-                }
+                args.forEach(arg => {
+                    self.queryColumn += `${arg.columnName}=${self.convertValueTypeToQuery(arg.value, arg.valueType)},`;
+                })
                 self.queryColumn = self.queryColumn.removeLastChar();
                 return self;
             },

@@ -1,17 +1,18 @@
 import {Request, Response} from "express";
-import {ErrorCodes, ServiceResult} from "../utils/ajax";
+import {ErrorCodes, Result} from "../utils/service";
 import {InferType} from "yup";
 import V, {ClearTypes} from "../library/variable";
 import navigateSchema from "../schemas/navigate.schema";
 import navigateService from "../services/navigate.service";
 import navigateContentService from "../services/navigateContent.service";
+import postContentService from "../services/postContent.service";
 
 export default {
     get: (
         req: Request<any, any, any, any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let data: InferType<typeof navigateSchema.get> = req;
 
@@ -25,7 +26,7 @@ export default {
         req: Request<any, any, any, any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let data: InferType<typeof navigateSchema.getWithId> = req;
 
@@ -40,11 +41,11 @@ export default {
         req: Request<any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let data: InferType<typeof navigateSchema.post> = req;
 
-        data.body.url = (data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
+        data.body.url = (!data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
 
         serviceResult.data = navigateService.insert({
             ...data.body,
@@ -63,20 +64,30 @@ export default {
         req: Request<any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof navigateSchema.put> = req;
 
-        data.body.url = (data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
+        data.body.url = (!data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
 
         serviceResult.data = navigateService.update({
             ...data.body,
             ...data.params
         });
 
-        navigateContentService.update({
+        if(navigateContentService.select({
             ...data.body,
             ...data.params
-        })
+        }).length > 0) {
+            navigateContentService.update({
+                ...data.body,
+                ...data.params
+            })
+        }else {
+            navigateContentService.insert({
+                ...data.body,
+                ...data.params
+            })
+        }
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
@@ -84,15 +95,10 @@ export default {
         req: Request<any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof navigateSchema.putStatus> = req;
 
-        data.body.navigateId.forEach(navigateId => {
-            serviceResult.data = navigateService.update({
-                ...data.body,
-                navigateId: navigateId
-            });
-        })
+        serviceResult.data = navigateService.update(data.body);
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
@@ -100,11 +106,11 @@ export default {
         req: Request<any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof navigateSchema.delete> = req;
 
-        serviceResult.data = navigateService.delete(data.params);
-        navigateContentService.delete(data.params);
+        serviceResult.data = navigateService.delete(data.body);
+        navigateContentService.delete(data.body);
 
         res.status(serviceResult.statusCode).json(serviceResult)
     }

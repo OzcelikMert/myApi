@@ -1,4 +1,4 @@
-const ServicePages = {
+const Pages = {
     auth: "/auth",
     profile: "/profile",
     user: "/user",
@@ -9,7 +9,8 @@ const ServicePages = {
     setting: "/setting",
     language: "/language",
     navigate: "/navigate",
-    serverInfo: "/serverInfo"
+    serverInfo: "/serverInfo",
+    view: "/view"
 }
 
-export default ServicePages;
+export default Pages;

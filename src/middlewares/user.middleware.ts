@@ -1,19 +1,19 @@
 import {NextFunction, Request, Response} from "express";
 import {UserRoles} from "../public/static";
-import {ErrorCodes, ServiceResult, StatusCodes} from "../utils/ajax";
+import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import userService from "../services/user.service";
 
 export default {
     check: (
-        req: Request<any>,
+        req: Request,
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let userId = req.params.userId;
 
-        let resData = userService.select({userId: userId});
+        let resData = userService.select({userId: Number(userId)});
         if (resData.length === 0) {
             serviceResult.status = false;
             serviceResult.errorCode = ErrorCodes.notFound;
@@ -27,11 +27,11 @@ export default {
         }
     },
     checkRoleRank: (
-        req: Request<any>,
+        req: Request,
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let roleId = req.body.roleId;
         let userId = req.params.userId;
@@ -40,7 +40,7 @@ export default {
         if (roleId) {
             userRoleId = roleId;
         } else if (userId) {
-            let resData = userService.select({userId: userId});
+            let resData = userService.select({userId: Number(userId)});
             if (resData.length > 0) {
                 userRoleId = resData[0].userRoleId;
             }
@@ -65,15 +65,28 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
+        let userId = req.params.userId;
         let email = req.body.email;
+
+        if(userId){
+            let resData = userService.select({userId: Number(userId)});
+            if (resData.length > 0) {
+                if (email) {
+                    if(resData[0].userEmail == email) {
+                        next();
+                        return;
+                    }
+                }
+            }
+        }
+
 
         if (email) {
             let resData = userService.select({
                 email: email
             });
-
             if (resData.length > 0) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.alreadyData;

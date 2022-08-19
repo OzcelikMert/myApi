@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {SettingId, UserRoles} from "../public/static";
-import {ErrorCodes, ServiceResult, StatusCodes} from "../utils/ajax";
+import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {InferType} from "yup";
 import settingSchema from "../schemas/setting.schema";
 import languageService from "../services/language.service";
@@ -11,7 +11,7 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof settingSchema.put> = req;
 
         data.body.settings.forEach(setting => {

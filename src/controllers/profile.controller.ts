@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from "express";
-import {ServiceResult} from "../utils/ajax";
+import {Result} from "../utils/service";
 import {InferType} from "yup";
 import userSchema from "../schemas/user.schema";
 import userService from "../services/user.service";
@@ -10,7 +10,7 @@ export default {
         req: Request<any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof profileSchema.put> = req;
 
         serviceResult.data = userService.update({
@@ -24,7 +24,7 @@ export default {
         req: Request<any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof profileSchema.putPassword> = req;
 
         serviceResult.data = userService.update({

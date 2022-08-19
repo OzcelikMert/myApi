@@ -1,24 +1,21 @@
-export default interface NavigateDocument {
+import NavigateContentDocument from "./navigateContent";
+
+type NavigateDocument = {
     navigateId: number,
     navigateMainId: number,
     navigateOrder: number,
     navigateStatusId: number,
-    // Content
-    navigateContentId: number,
-    navigateContentNavigateId: number,
-    navigateContentLangId: number,
-    navigateContentTitle: string,
-    navigateContentUrl: string,
-}
+} & NavigateContentDocument
+export default NavigateDocument
 
 export interface InsertNavigateParamDocument {
-    mainId: number
+    mainId?: number
     statusId: number
     order: number
 }
 
 export interface DeleteNavigateParamDocument {
-    navigateId: number
+    navigateId: number | number[]
 }
 
 
@@ -30,7 +27,7 @@ export interface SelectNavigateParamDocument {
 }
 
 export interface UpdateNavigateParamDocument {
-    navigateId: number
+    navigateId: number | number[]
     mainId?: number
     statusId?: number
     order?: number

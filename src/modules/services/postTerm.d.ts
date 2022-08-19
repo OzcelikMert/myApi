@@ -1,4 +1,6 @@
-export default interface PostTermDocument {
+import PostTermContentDocument from "./postTermContent";
+
+type PostTermDocument = {
     postTermId: number,
     postTermTypeId: number,
     postTermPostTypeId: number,
@@ -7,19 +9,11 @@ export default interface PostTermDocument {
     postTermStatusId: number,
     postTermViews: number,
     postTermIsFixed: boolean
-    // Content
-    postTermContentId: number,
-    postTermContentTermId: number,
-    postTermContentLangId: number,
-    postTermContentImage: string
-    postTermContentTitle: string,
-    postTermContentUrl: string,
-    postTermContentSEOTitle: string,
-    postTermContentSEO: string
-}
+} & PostTermContentDocument
+export default PostTermDocument;
 
 export interface UpdatePostTermParamDocument {
-    termId: number
+    termId: number | number[]
     postTypeId?: number,
     typeId?: number
     mainId?: number
@@ -41,12 +35,12 @@ export interface SelectPostTermParamDocument {
 export interface InsertPostTermParamDocument {
     typeId: number
     postTypeId: number
-    mainId: number
+    mainId?: number
     statusId: number
     order: number
     isFixed: 1 | 0
 }
 
 export interface DeletePostTermParamDocument {
-    termId: number
+    termId: number | number[]
 }

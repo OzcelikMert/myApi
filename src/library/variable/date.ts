@@ -1,7 +1,8 @@
 declare global {
     interface Date {
+        tomorrow() : void
+        yesterday() : void
         addDays(n: any): void
-        nextDay() : void
         addMonths(n: any): void
         addYears(n: any): void
         getStringWithMask(mask: string | DateMask, utc?: boolean) : string
@@ -18,8 +19,11 @@ export enum DateMask {
 Date.prototype.addDays = function (n) {
     this.setDate(this.getDate() + n);
 }
-Date.prototype.nextDay = function () {
+Date.prototype.tomorrow = function () {
     this.addDays(1);
+};
+Date.prototype.yesterday = function () {
+    this.addDays(-1);
 };
 Date.prototype.addMonths = function (n) {
     this.setMonth(this.getMonth() + n);

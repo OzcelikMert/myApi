@@ -1,6 +1,6 @@
 import ErrorCodes from "./errorCodes";
 
-class ServiceResult {
+class Result {
     constructor(
         data: any = [],
         customData: any = null,
@@ -28,4 +28,4 @@ class ServiceResult {
     source: string;
 }
 
-export default ServiceResult;
+export default Result;

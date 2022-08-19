@@ -75,6 +75,16 @@ class Create {
                 ${tables.Navigates.statusId} INT,
                 ${tables.Navigates.order} INT
             ) ENGINE = MYISAM;`);
+        db.conn.query(`CREATE TABLE IF NOT EXISTS ${tables.Views.TableName} (
+                ${tables.Views.id} BIGINT PRIMARY KEY AUTO_INCREMENT,
+                ${tables.Views.url} TEXT,
+                ${tables.Views.lang} VARCHAR(3),
+                ${tables.Views.ip} VARCHAR(15),
+                ${tables.Views.country} TEXT,
+                ${tables.Views.city} TEXT,
+                ${tables.Views.region} TEXT,
+                ${tables.Views.date} VARCHAR(20)
+            ) ENGINE = INNODB;`);
     }
 
     private createContentTables(): void {

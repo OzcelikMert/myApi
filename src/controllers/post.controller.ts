@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ErrorCodes, ServiceResult} from "../utils/ajax";
+import {ErrorCodes, Result} from "../utils/service";
 import {InferType} from "yup";
 import postSchema from "../schemas/post.schema";
 import postService from "../services/post.service";
@@ -12,7 +12,7 @@ export default {
         req: Request<any, any, any, any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof postSchema.getGeneral> = req;
 
         serviceResult.data = postService.select(data.query);
@@ -23,7 +23,7 @@ export default {
         req: Request<any, any, any, any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let data: InferType<typeof postSchema.get> = req;
 
@@ -38,7 +38,7 @@ export default {
         req: Request<any, any, any, any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let data: InferType<typeof postSchema.getWithType> = req;
 
@@ -53,11 +53,11 @@ export default {
         req: Request,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let data: InferType<typeof postSchema.post> = req;
 
-        data.body.url = (data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
+        data.body.url = (!data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
 
         serviceResult.data = postService.insert({
             ...data.body,
@@ -71,12 +71,10 @@ export default {
             })
 
             if(data.body.termId) {
-                data.body.termId.forEach(termId => {
-                    postTermLinkService.insert({
-                        postId: serviceResult.data.insertId,
-                        termId: termId
-                    });
-                })
+                postTermLinkService.insert(data.body.termId.map(termId => ({
+                    termId: termId,
+                    postId: serviceResult.data.insertId
+                })));
             }
         }
 
@@ -86,29 +84,38 @@ export default {
         req: Request<any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof postSchema.put> = req;
 
-        data.body.url = (data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
+        data.body.url = (!data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
 
         serviceResult.data = postService.update({
             ...data.body,
             ...data.params
         });
 
-        postContentService.update({
+        if(postContentService.select({
             ...data.body,
             ...data.params
-        })
+        }).length > 0) {
+            postContentService.update({
+                ...data.body,
+                ...data.params
+            })
+        }else {
+            postContentService.insert({
+                ...data.body,
+                ...data.params
+            })
+        }
+
 
         if(data.body.termId) {
             postTermLinkService.delete(data.params);
-            data.body.termId.forEach(termId => {
-                postTermLinkService.insert({
-                    postId: serviceResult.data.insertId,
-                    termId: termId
-                });
-            })
+            postTermLinkService.insert(data.body.termId.map(termId => ({
+                termId: termId,
+                postId: data.params.postId
+            })));
         }
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -117,29 +124,26 @@ export default {
         req: Request<any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof postSchema.putStatus> = req;
 
-        data.body.postId.forEach(postId => {
-            serviceResult.data = postService.update({
-                ...data.body,
-                ...data.params,
-                postId: postId
-            });
-        })
+        serviceResult.data = postService.update({
+            ...data.body,
+            ...data.params
+        });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
     delete: (
-        req: Request<any>,
+        req: Request,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof postSchema.delete> = req;
 
-        serviceResult.data = postService.delete(data.params);
-        postContentService.delete(data.params);
-        postTermLinkService.delete(data.params);
+        serviceResult.data = postService.delete(data.body);
+        postContentService.delete(data.body);
+        postTermLinkService.delete(data.body);
 
         res.status(serviceResult.statusCode).json(serviceResult)
     }

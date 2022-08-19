@@ -3,13 +3,24 @@ import db from "../config/db";
 import tables from "../config/db/tables";
 import {UpdateSetDocument} from "../library/mysql/modules/queries/update";
 import V, {DateMask} from "../library/variable";
-import {
+import PostTermContentDocument, {
     DeletePostTermContentParamDocument,
-    InsertPostTermContentParamDocument,
+    InsertPostTermContentParamDocument, SelectPostTermContentParamDocument,
     UpdatePostTermContentParamDocument
 } from "../modules/services/postTermContent";
 
 export default {
+    select(params: SelectPostTermContentParamDocument) : PostTermContentDocument[] {
+        params = V.clearAllData(params);
+        let query = new Mysql(db.conn).select(tables.PostTermContents.TableName)
+            .columns("*")
+            .where.equals(
+                {columnName: tables.PostTermContents.termId, value: params.termId, valueType: QueryValueTypes.Number},
+                {columnName: tables.PostTermContents.langId, value: params.langId, valueType: QueryValueTypes.Number}
+            );
+
+        return query.run();
+    },
     insert(params: InsertPostTermContentParamDocument) {
         params = V.clearAllData(params, ["content"]);
         let query = new Mysql(db.conn).insert(tables.PostTermContents.TableName)
@@ -24,11 +35,11 @@ export default {
             ).values(
                 {value: params.termId, valueType: QueryValueTypes.Number},
                 {value: params.langId, valueType: QueryValueTypes.Number},
-                {value: params.image},
+                {value: params.image || ""},
                 {value: params.title},
-                {value: params.url},
-                {value: params.seoTitle},
-                {value: params.seoContent}
+                {value: params.url || ""},
+                {value: params.seoTitle || ""},
+                {value: params.seoContent || ""}
             );
 
         return query.run();
@@ -54,7 +65,7 @@ export default {
     delete(params: DeletePostTermContentParamDocument) {
         params = V.clearAllData(params);
         let query = new Mysql(db.conn).delete(tables.PostTermContents.TableName)
-            .where.equals(
+            .where.in(
                 {columnName: tables.PostTermContents.termId, value: params.termId, valueType: QueryValueTypes.Number}
             );
 

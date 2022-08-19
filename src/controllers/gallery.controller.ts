@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import V, {DateMask} from "../library/variable"
-import {ErrorCodes, ServiceResult, StatusCodes} from "../utils/ajax";
+import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {InferType} from "yup";
 import fs from "fs";
 import {Config} from "../config";
@@ -14,7 +14,7 @@ export default {
         req: Request<any, any,any, any>,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         const fileType = [".jpg", ".png", ".webp", ".gif", ".jpeg"];
         const images = fs.readdirSync(Config.paths.uploads.images);
@@ -33,8 +33,7 @@ export default {
         req: Request,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
-        let data: InferType<typeof gallerySchema.post> = req;
+        let serviceResult = new Result();
 
         function newName() {
             const timestamp = new Date().getStringWithMask(DateMask.UNIFIED_ALL);
@@ -89,7 +88,7 @@ export default {
         req: Request,
         res: Response
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
         let data: InferType<typeof gallerySchema.delete> = req;
 
         await new Promise(resolve => {

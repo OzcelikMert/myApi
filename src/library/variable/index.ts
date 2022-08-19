@@ -55,10 +55,8 @@ class Variable{
     static clearAllData(data: object | any, not_column: Array<string> = []) : object | any {
         if(!this.isSet(() => data)) return false;
 
-        // @ts-ignore
         for (let [key, _1] of Object.entries(data)) {
             _1 = (_1 === "on") ? 1 : _1;
-            // @ts-ignore
             if (not_column.includes(key)) continue;
             let clear_type = ClearTypes.STRING;
             if(!this.isEmpty(_1)) {

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {ServicePages} from "../../utils/ajax";
+import {Pages} from "../../utils/service";
 
 import userRouter from "./user.router";
 import authRouter from "./auth.router";
@@ -12,19 +12,21 @@ import seoRouter from "./seo.router";
 import settingRouter from "./setting.router";
 import languageRouter from "./language.router";
 import serverInfoRouter from "./serverInfo.router";
+import viewRouter from "./view.router";
 
 const App = Router();
 
-App.use(ServicePages.auth, authRouter)
-App.use(ServicePages.user, userRouter)
-App.use(ServicePages.profile, profileRouter)
-App.use(ServicePages.post, postRouter)
-App.use(ServicePages.postTerm, postTermRouter)
-App.use(ServicePages.navigate, navigateRouter)
-App.use(ServicePages.gallery, galleryRouter)
-App.use(ServicePages.seo, seoRouter)
-App.use(ServicePages.setting, settingRouter)
-App.use(ServicePages.language, languageRouter)
-App.use(ServicePages.serverInfo, serverInfoRouter)
+App.use(Pages.auth, authRouter)
+App.use(Pages.user, userRouter)
+App.use(Pages.profile, profileRouter)
+App.use(Pages.post, postRouter)
+App.use(Pages.postTerm, postTermRouter)
+App.use(Pages.navigate, navigateRouter)
+App.use(Pages.gallery, galleryRouter)
+App.use(Pages.seo, seoRouter)
+App.use(Pages.setting, settingRouter)
+App.use(Pages.language, languageRouter)
+App.use(Pages.serverInfo, serverInfoRouter)
+App.use(Pages.view, viewRouter)
 
 export default App;

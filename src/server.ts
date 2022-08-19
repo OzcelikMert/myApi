@@ -1,4 +1,4 @@
-import Express,{Router} from 'express';
+import Express from 'express';
 import InitConfig from "./config";
 const chalk = require('chalk');
 let compression = require('compression');
@@ -30,10 +30,7 @@ new InitConfig(app).init().then(()=> {
     app.use(bodyParser.urlencoded({limit: "2mb", extended: true, parameterLimit: 10000}));
 
     app.use(cors({
-        origin: function(origin: any, callback: any){
-            let originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-            callback(null, originIsWhitelisted);
-        },
+        origin: whitelist,
         methods: ['POST', 'PUT', 'GET', "DELETE", 'OPTIONS', 'HEAD'],
         credentials: true,
     }));

@@ -1,6 +1,6 @@
 import MySql from "../../index";
 
 interface SelectDocument {
-    columns(...columnNames: string[]): MySql,
-    columnsWithArray(columnNames: string[]): MySql,
+    columns(...args: string[]): MySql,
+    columnsWithArray(args: string[]): MySql,
 }

@@ -1,5 +1,5 @@
 import { object, string, number, boolean, array } from "yup";
-import {ErrorCodes} from "../utils/ajax";
+import {ErrorCodes} from "../utils/service";
 
 export default {
     get: object({
@@ -25,10 +25,10 @@ export default {
         body: object({
             langId: number().required({langId: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue}),
-            mainId: number().required({mainId: ErrorCodes.emptyValue}),
+            mainId: number(),
             title: string().required({title: ErrorCodes.emptyValue}),
             order: number().required({order: ErrorCodes.emptyValue}),
-            url: string().required({url: ErrorCodes.emptyValue}),
+            url: string(),
         })
     }),
     put: object({

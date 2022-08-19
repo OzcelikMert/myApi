@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {ErrorCodes, ServiceResult, StatusCodes} from "../utils/ajax";
+import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import postService from "../services/post.service";
 
 export default {
@@ -8,7 +8,7 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let postId = req.params.postId;
         postId = postId ? postId : req.body.postId;
@@ -41,7 +41,7 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new ServiceResult();
+        let serviceResult = new Result();
 
         let url = req.body.url;
         let langId = req.body.langId;
