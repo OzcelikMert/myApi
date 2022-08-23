@@ -2,11 +2,11 @@ import {Request, Response} from "express";
 import {ErrorCodes, Result} from "../utils/service";
 import {InferType} from "yup";
 import V, {ClearTypes} from "../library/variable";
-import postTermLinkService from "../services/postTermLink.service";
+import postTermLinkService from "../services/mysql/postTermLink.service";
 import postTermSchema from "../schemas/postTerm.schema";
-import postTermService from "../services/postTerm.service";
-import postTermContentService from "../services/postTermContent.service";
-import postContentService from "../services/postContent.service";
+import postTermService from "../services/mysql/postTerm.service";
+import postTermContentService from "../services/mysql/postTermContent.service";
+import postContentService from "../services/mysql/postContent.service";
 
 export default {
     get: (

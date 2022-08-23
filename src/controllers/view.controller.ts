@@ -3,7 +3,7 @@ import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {lookup} from "geoip-lite";
 import {InferType} from "yup";
 import viewSchema from "../schemas/view.schema";
-import viewService from "../services/view.service";
+import viewService from "../services/mysql/view.service";
 import {Config} from "../config";
 
 export default {

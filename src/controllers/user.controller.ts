@@ -3,7 +3,7 @@ import {ErrorCodes, Result} from "../utils/service";
 import {InferType} from "yup";
 import userSchema from "../schemas/user.schema";
 import {StatusId} from "../public/static";
-import userService from "../services/user.service";
+import userService from "../services/mysql/user.service";
 
 export default {
     get: (

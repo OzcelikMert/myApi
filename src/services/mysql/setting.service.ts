@@ -1,12 +1,12 @@
-import Mysql, {QueryValueTypes} from "../library/mysql";
-import db from "../config/db";
-import tables from "../config/db/tables";
-import V, {DateMask} from "../library/variable";
+import Mysql, {QueryValueTypes} from "../../library/mysql";
+import db from "../../config/db";
+import tables from "../../config/db/tables";
+import V, {DateMask} from "../../library/variable";
 import SettingDocument, {
     InsertSettingParamDocument,
     SelectSettingParamDocument,
     UpdateSettingParamDocument
-} from "../modules/services/setting";
+} from "../../modules/services/setting";
 
 export default {
     select(params: SelectSettingParamDocument): SettingDocument[] {

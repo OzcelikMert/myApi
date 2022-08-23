@@ -1,15 +1,15 @@
-import Mysql, {QueryValueTypes} from "../library/mysql";
-import db from "../config/db";
-import tables from "../config/db/tables";
-import {StatusId} from "../public/static";
-import UserFunctions from "../utils/functions/user";
-import {UpdateSetDocument} from "../library/mysql/modules/queries/update";
-import V, {DateMask} from "../library/variable";
+import Mysql, {QueryValueTypes} from "../../library/mysql";
+import db from "../../config/db";
+import tables from "../../config/db/tables";
+import {StatusId} from "../../public/static";
+import UserFunctions from "../../utils/functions/user";
+import {UpdateSetDocument} from "../../library/mysql/modules/queries/update";
+import V, {DateMask} from "../../library/variable";
 import UserDocument, {
     InsertUserParamDocument,
     SelectUserParamDocument,
     UpdateUserParamDocument
-} from "../modules/services/user";
+} from "../../modules/services/user";
 
 export default {
     select(params: SelectUserParamDocument): UserDocument[] {

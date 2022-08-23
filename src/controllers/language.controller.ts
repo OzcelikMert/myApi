@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {InferType} from "yup";
 import languageSchema from "../schemas/language.schema";
-import languageService from "../services/language.service";
+import languageService from "../services/mysql/language.service";
 
 export default {
     get: (

@@ -1,13 +1,13 @@
-import Mysql, {MySqlHelpers, QueryValueTypes} from "../library/mysql";
-import db from "../config/db";
-import tables from "../config/db/tables";
-import V, {DateMask} from "../library/variable";
+import Mysql, {MySqlHelpers, QueryValueTypes} from "../../library/mysql";
+import db from "../../config/db";
+import tables from "../../config/db/tables";
+import V, {DateMask} from "../../library/variable";
 import ViewDocument, {
     DeleteViewParamDocument,
     InsertViewParamDocument,
     SelectViewParamDocument,
     ViewTotalDocument, ViewTotalForCountryDocument, ViewTotalForDateDocument
-} from "../modules/services/view";
+} from "../../modules/services/view";
 
 export default {
     select(params: SelectViewParamDocument): ViewDocument[] {

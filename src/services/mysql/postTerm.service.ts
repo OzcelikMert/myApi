@@ -1,14 +1,14 @@
-import Mysql, {MySqlHelpers, QueryValueTypes} from "../library/mysql";
-import db from "../config/db";
-import tables from "../config/db/tables";
-import {UpdateSetDocument} from "../library/mysql/modules/queries/update";
-import V, {DateMask} from "../library/variable";
+import Mysql, {MySqlHelpers, QueryValueTypes} from "../../library/mysql";
+import db from "../../config/db";
+import tables from "../../config/db/tables";
+import {UpdateSetDocument} from "../../library/mysql/modules/queries/update";
+import V, {DateMask} from "../../library/variable";
 import PostTermDocument, {
     DeletePostTermParamDocument,
     InsertPostTermParamDocument,
     SelectPostTermParamDocument,
     UpdatePostTermParamDocument
-} from "../modules/services/postTerm";
+} from "../../modules/services/postTerm";
 
 export default {
     select(params: SelectPostTermParamDocument): PostTermDocument[] {

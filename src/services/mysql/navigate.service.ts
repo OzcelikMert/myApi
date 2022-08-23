@@ -1,14 +1,14 @@
-import Mysql, {MySqlHelpers, QueryValueTypes} from "../library/mysql";
-import db from "../config/db";
-import tables from "../config/db/tables";
-import {UpdateSetDocument} from "../library/mysql/modules/queries/update";
-import V, {DateMask} from "../library/variable";
+import Mysql, {MySqlHelpers, QueryValueTypes} from "../../library/mysql";
+import db from "../../config/db";
+import tables from "../../config/db/tables";
+import {UpdateSetDocument} from "../../library/mysql/modules/queries/update";
+import V, {DateMask} from "../../library/variable";
 import NavigateDocument, {
     DeleteNavigateParamDocument,
     InsertNavigateParamDocument,
     SelectNavigateParamDocument,
     UpdateNavigateParamDocument
-} from "../modules/services/navigate";
+} from "../../modules/services/navigate";
 
 export default {
     select(params: SelectNavigateParamDocument): NavigateDocument[] {

@@ -10,7 +10,7 @@ postRouter.route(`/`)
     .get([requestMiddleware.check(postSchema.getGeneral)], postController.getGeneral)
 
 postRouter.route(`/:typeId`)
-    .get([requestMiddleware.check(postSchema.getWithType), sessionMiddleware.check, postMiddleware.check], postController.getWithType)
+    .get([requestMiddleware.check(postSchema.getWithType)], postController.getWithType)
     .post([requestMiddleware.check(postSchema.post), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkUrlAlready], postController.add)
     .put([requestMiddleware.check(postSchema.putStatus), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.check], postController.updateStatus)
     .delete([requestMiddleware.check(postSchema.delete), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.check], postController.delete)

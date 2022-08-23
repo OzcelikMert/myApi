@@ -1,9 +1,9 @@
-import LanguageDocument, {SelectLanguageParamDocument} from "../modules/services/language";
-import Mysql, {QueryValueTypes} from "../library/mysql";
-import db from "../config/db";
-import tables from "../config/db/tables";
-import V from "../library/variable";
-import Statement from "../library/statement";
+import LanguageDocument, {SelectLanguageParamDocument} from "../../modules/services/language";
+import Mysql, {QueryValueTypes} from "../../library/mysql";
+import db from "../../config/db";
+import tables from "../../config/db/tables";
+import V from "../../library/variable";
+import Statement from "../../library/statement";
 
 export default {
     select(params: SelectLanguageParamDocument): LanguageDocument[] {

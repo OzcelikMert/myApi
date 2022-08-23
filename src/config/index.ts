@@ -6,6 +6,8 @@ import https from "https";
 import db from "./db";
 import Session from "./session";
 import {ConfigDocument} from "../modules/config";
+import dbConnect from "./mongodb";
+import userService from "../services/mongodb/user.service";
 const chalk = require('chalk');
 
 let Config: ConfigDocument = {
@@ -31,9 +33,10 @@ class InitConfig{
      }
 
      init() {
-         return new Promise<void>(resolve => {
+         return new Promise<void>(async resolve => {
              this.setPublicFolders();
              this.dbConnect();
+             await this.mongodbConnect();
              this.setSession();
              this.security();
              resolve()
@@ -66,11 +69,22 @@ class InitConfig{
     }
 
     private dbConnect(){
-        try {
-            new db.Create();
+         try {
+           // new db.Create();
             console.log(chalk.green(`#Mysql \n  ${chalk.blue(`- Connected`)}`))
         }catch (e) {
             console.error("Mysql Connection Error")
+            console.error(e)
+        }
+    }
+
+    private async mongodbConnect(){
+        try {
+            await dbConnect();
+            console.log(await userService.select({}))
+            console.log(chalk.green(`#MongoDB \n  ${chalk.blue(`- Connected`)}`))
+        }catch (e) {
+            console.error("MongoDB Connection Error")
             console.error(e)
         }
     }

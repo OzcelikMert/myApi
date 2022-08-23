@@ -1,14 +1,14 @@
-import Mysql, {QueryValueTypes} from "../library/mysql";
-import db from "../config/db";
-import tables from "../config/db/tables";
-import {UpdateSetDocument} from "../library/mysql/modules/queries/update";
-import V from "../library/variable";
+import Mysql, {QueryValueTypes} from "../../library/mysql";
+import db from "../../config/db";
+import tables from "../../config/db/tables";
+import {UpdateSetDocument} from "../../library/mysql/modules/queries/update";
+import V from "../../library/variable";
 import PostContentDocument, {
     DeletePostContentParamDocument,
     InsertPostContentParamDocument,
     SelectPostContentParamDocument,
     UpdatePostContentParamDocument
-} from "../modules/services/postContent";
+} from "../../modules/services/postContent";
 
 export default {
     select(params: SelectPostContentParamDocument) : PostContentDocument[] {

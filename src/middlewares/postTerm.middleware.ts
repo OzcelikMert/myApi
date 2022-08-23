@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
-import postTermService from "../services/postTerm.service";
+import postTermService from "../services/mysql/postTerm.service";
 
 export default {
     check: (

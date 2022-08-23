@@ -49,7 +49,7 @@ class MySql extends Queries{
         if (!justShowSql) {
             try { result = this.conn.query(queryString) }
             catch (err) { result = err; }
-            finally { if (typeof result == "undefined") result = []; }
+            finally { if (typeof result == "undefined" || !Array.isArray(result)) result = []; }
         } else result = queryString;
         return result;
     }

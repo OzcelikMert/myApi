@@ -1,9 +1,9 @@
-import Mysql, {QueryValueTypes} from "../library/mysql";
-import db from "../config/db";
-import tables from "../config/db/tables";
-import V from "../library/variable";
-import {DeletePostTermLinkParamDocument, InsertPostTermLinkParamDocument} from "../modules/services/postTermLink";
-import {InsertValuesDocument} from "../library/mysql/modules/queries";
+import Mysql, {QueryValueTypes} from "../../library/mysql";
+import db from "../../config/db";
+import tables from "../../config/db/tables";
+import V from "../../library/variable";
+import {DeletePostTermLinkParamDocument, InsertPostTermLinkParamDocument} from "../../modules/services/postTermLink";
+import {InsertValuesDocument} from "../../library/mysql/modules/queries";
 
 export default {
     insert(params: InsertPostTermLinkParamDocument[]){

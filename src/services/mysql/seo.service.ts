@@ -1,13 +1,13 @@
-import Mysql, {QueryValueTypes} from "../library/mysql";
-import db from "../config/db";
-import tables from "../config/db/tables";
-import {UpdateSetDocument} from "../library/mysql/modules/queries/update";
-import V, {DateMask} from "../library/variable";
+import Mysql, {QueryValueTypes} from "../../library/mysql";
+import db from "../../config/db";
+import tables from "../../config/db/tables";
+import {UpdateSetDocument} from "../../library/mysql/modules/queries/update";
+import V, {DateMask} from "../../library/variable";
 import SeoDocument, {
     InsertSeoParamDocument,
     SelectSeoParamDocument,
     UpdateSeoParamDocument
-} from "../modules/services/seo";
+} from "../../modules/services/seo";
 
 export default {
     select(params: SelectSeoParamDocument): SeoDocument[] {
