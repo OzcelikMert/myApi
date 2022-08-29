@@ -1,10 +1,13 @@
-export default interface LanguageDocument {
-    langId: number
-    langImage: string
-    langShortKey: string
-    langTitle: string
-}
+import mongoose from "mongoose";
 
 export interface SelectLanguageParamDocument {
-    id?: number,
+    id?: mongoose.Types.ObjectId,
+}
+
+export type InsertLanguageDocument = {} & LanguageDocument
+
+export interface LanguageDocument {
+    title: string,
+    image: string,
+    shortKey: string
 }

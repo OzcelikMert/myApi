@@ -1,18 +1,24 @@
-export default interface SettingDocument {
-    settingId: number,
-    settingValue: string
+import mongoose from "mongoose";
+
+export type InsertSettingParamDocument = {
+    defaultLangId: mongoose.Types.ObjectId,
+    icon?: string,
+    logo?: string,
+    seoContents?: SettingSeoContentDocument
 }
 
-export interface SelectSettingParamDocument {
-    id?: number,
+export type UpdateSettingParamDocument = {} & InsertSettingParamDocument
+
+export interface SettingSeoContentDocument {
+    langId: mongoose.Types.ObjectId
+    title: string,
+    content: string,
+    tags: string[]
 }
 
-export interface InsertSettingParamDocument {
-    id: number,
-    value: string
-}
-
-export interface UpdateSettingParamDocument {
-    id: number,
-    value: string
+export interface SettingDocument {
+    defaultLangId: mongoose.Types.ObjectId
+    icon: string,
+    logo: string,
+    seoContents: SettingSeoContentDocument[]
 }

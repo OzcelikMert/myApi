@@ -3,7 +3,7 @@ import {SettingId, UserRoles} from "../public/static";
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {InferType} from "yup";
 import settingSchema from "../schemas/setting.schema";
-import languageService from "../services/mysql/language.service";
+import languageService from "../services/language.service";
 
 export default {
     check: (

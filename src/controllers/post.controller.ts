@@ -2,10 +2,10 @@ import {Request, Response} from "express";
 import {ErrorCodes, Result} from "../utils/service";
 import {InferType} from "yup";
 import postSchema from "../schemas/post.schema";
-import postService from "../services/mysql/post.service";
-import postContentService from "../services/mysql/postContent.service";
+import postService from "../services/post.service";
+import postContentService from "../services/postContent.service";
 import V, {ClearTypes} from "../library/variable";
-import postTermLinkService from "../services/mysql/postTermLink.service";
+import postTermLinkService from "../services/postTermLink.service";
 
 export default {
     getGeneral: (

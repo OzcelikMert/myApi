@@ -2,7 +2,7 @@ import {Request, Response, NextFunction} from "express";
 import {Result} from "../utils/service";
 import {InferType} from "yup";
 import userSchema from "../schemas/user.schema";
-import userService from "../services/mysql/user.service";
+import userService from "../services/user.service";
 import profileSchema from "../schemas/profile.schema";
 
 export default {

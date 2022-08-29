@@ -1,50 +1,11 @@
 import * as mongoose from "mongoose";
 import languageModel from "./language.model";
-
-export interface SelectViewParamDocument {
-    ip?: string
-    langId?: mongoose.Types.ObjectId
-    url?: string
-    country?: string
-    city?: string
-    region?: string
-    date?: string
-    dateStart?: string
-    dateEnd?: string
-}
-
-export interface InsertViewParamDocument {
-    url: string,
-    languageId: mongoose.Types.ObjectId,
-    ip: string,
-    country?: string,
-    city?: string,
-    region?: string
-}
-
-export type ViewTotalWithDocument = {
-    total: number
-    _id: string
-}
-
-export type ViewTotalWithCountryDocument = {
-    total: number
-    viewCountry: string
-}
-
-export interface ViewDocument {
-    url: string,
-    languageId: mongoose.Types.ObjectId,
-    ip: string,
-    country: string,
-    city: string,
-    region: string
-}
+import {ViewDocument} from "../types/services/view";
 
 const schema = new mongoose.Schema<ViewDocument>(
     {
         url: {type: String, required: true},
-        languageId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel},
+        languageId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
         ip: {type: String, default: "", required: true},
         country: {type: String, default: ""},
         city: {type: String, default: ""},

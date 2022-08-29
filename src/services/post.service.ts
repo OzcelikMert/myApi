@@ -1,11 +1,13 @@
 import * as mongoose from "mongoose";
-import V, {DateMask} from "../../library/variable";
-import postModel, {
+import V, {DateMask} from "../library/variable";
+import postModel from "../model/post.model";
+import {
+    DeletePostParamDocument,
+    InsertPostParamDocument,
     PostDocument,
     SelectPostParamDocument,
-    InsertPostParamDocument,
-    UpdatePostParamDocument, DeletePostParamDocument
-} from "../../model/post.model";
+    UpdatePostParamDocument
+} from "../types/services/post";
 
 export default {
     async select(params: SelectPostParamDocument): Promise<PostDocument[]> {
@@ -30,12 +32,12 @@ export default {
             statusId: params.statusId
         }
 
-
         let query = postModel.find(filters);
 
         if (params.maxCount) query.limit(params.maxCount);
 
         return (await query.exec()).map(doc => {
+            doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
             if (!params.getContents) {
                 doc.contents.map(content => {
                     delete content.content;
@@ -49,23 +51,8 @@ export default {
         params = V.clearAllData(params);
 
         return await postModel.create({
-            typeId: params.typeId,
-            statusId: params.statusId,
-            order: params.order,
-            isFixed: params.isFixed,
-            authorId: params.authorId,
-            lastAuthorId: params.authorId,
-            dateStart: new Date(params.dateStart),
-            contents: {
-                langId: params.contents.langId,
-                image: params.contents.image || "",
-                title: params.contents.title || "",
-                content: params.contents.content || "",
-                shortContent: params.contents.shortContent || "",
-                url: params.contents.url || "",
-                seoTitle: params.contents.seoTitle || "",
-                seoContent: params.contents.seoContent || ""
-            }
+            ...params,
+            lastAuthorId: params.authorId
         })
     },
     async update(params: UpdatePostParamDocument) {
@@ -92,27 +79,20 @@ export default {
 
         let docs = await postModel.find(filters);
         if (docs) {
+            delete params.postId;
+            delete params.typeId;
             docs.map( async doc => {
-                if (params.statusId) doc.statusId = params.statusId;
-                if (params.dateStart) doc.dateStart = params.dateStart;
-                if (params.order) doc.order = params.order;
-                if (params.isFixed) doc.isFixed = params.isFixed;
-                if (params.authorId) doc.lastAuthorId = params.authorId;
-
-                doc.contents.map(content => {
-                    if(params.contents){
-                        if(params.contents.langId == content.langId) {
-                            if(params.contents.image) content.image = params.contents.image;
-                            if(params.contents.title) content.title = params.contents.title;
-                            if(params.contents.shortContent) content.shortContent = params.contents.shortContent;
-                            if(params.contents.content) content.content = params.contents.content;
-                            if(params.contents.url) content.url = params.contents.url;
-                            if(params.contents.seoTitle) content.seoTitle = params.contents.seoTitle;
-                            if(params.contents.seoContent) content.seoContent = params.contents.seoContent;
-                        }
+                if(params.contents) {
+                    const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
+                    if(findIndex > -1) {
+                        doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
+                    }else {
+                        doc.contents.push(params.contents)
                     }
-                    return content;
-                })
+                    delete params.contents;
+                }
+
+                doc = Object.assign(doc, params);
 
                 await doc.save();
             })

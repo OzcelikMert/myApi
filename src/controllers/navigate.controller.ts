@@ -3,9 +3,9 @@ import {ErrorCodes, Result} from "../utils/service";
 import {InferType} from "yup";
 import V, {ClearTypes} from "../library/variable";
 import navigateSchema from "../schemas/navigate.schema";
-import navigateService from "../services/mysql/navigate.service";
-import navigateContentService from "../services/mysql/navigateContent.service";
-import postContentService from "../services/mysql/postContent.service";
+import navigateService from "../services/navigate.service";
+import navigateContentService from "../services/navigateContent.service";
+import postContentService from "../services/postContent.service";
 
 export default {
     get: (

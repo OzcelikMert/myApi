@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {InferType} from "yup";
 import seoSchema from "../schemas/seo.schema";
-import seoService from "../services/mysql/seo.service";
+import seoService from "../services/seo.service";
 
 export default {
     get: (

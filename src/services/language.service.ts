@@ -1,7 +1,7 @@
 import * as mongoose from "mongoose";
-import {SelectLanguageParamDocument} from "../../types/services/language";
-import V from "../../library/variable";
-import languageModel, {InsertLanguageDocument, LanguageDocument} from "../../model/language.model";
+import V from "../library/variable";
+import languageModel from "../model/language.model";
+import {InsertLanguageDocument, LanguageDocument, SelectLanguageParamDocument} from "../types/services/language";
 
 export default {
     async select(params: SelectLanguageParamDocument): Promise<LanguageDocument[]> {
@@ -22,9 +22,7 @@ export default {
         params = V.clearAllData(params);
 
         return await languageModel.create({
-            title: params.title,
-            image: params.image,
-            shortKey: params.shortKey
+            ...params
         })
     }
 };

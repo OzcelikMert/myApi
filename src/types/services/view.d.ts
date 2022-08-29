@@ -1,48 +1,45 @@
-export default interface ViewDocument {
-    viewId: number
-    viewUrl: string
-    viewIp: string
-    viewCountry: string
-    viewCity: string
-    viewRegion: string
-    viewDate: string
+import mongoose from "mongoose";
+
+export interface SelectViewParamDocument {
+    ip?: string
+    langId?: mongoose.Types.ObjectId
+    url?: string
+    country?: string
+    city?: string
+    region?: string
+    date?: string
+    dateStart?: Date
+    dateEnd?: Date
+}
+
+export interface InsertViewParamDocument {
+    url: string,
+    languageId: mongoose.Types.ObjectId,
+    ip: string,
+    country?: string,
+    city?: string,
+    region?: string
 }
 
 export interface ViewTotalDocument {
     total: number
 }
 
-export type ViewTotalForDateDocument = {
+export type ViewTotalWithDocument = {
     total: number
-    viewDate: string
+    _id: string
 }
 
-export type ViewTotalForCountryDocument = {
+export type ViewTotalWithCountryDocument = {
     total: number
     viewCountry: string
 }
 
-export interface InsertViewParamDocument {
-    url: string
-    lang: string
-    ip: string
-    country?: string
-    city?: string
-    region?: string
-}
-
-export interface SelectViewParamDocument {
-    ip?: string
-    lang?: string
-    url?: string
-    country?: string
-    city?: string
-    region?: string
-    date?: string
-    dateStart?: string
-    dateEnd?: string
-}
-
-export interface DeleteViewParamDocument {
-    dateEnd: string
+export interface ViewDocument {
+    url: string,
+    languageId: mongoose.Types.ObjectId,
+    ip: string,
+    country: string,
+    city: string,
+    region: string
 }

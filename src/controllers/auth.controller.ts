@@ -3,7 +3,7 @@ import V from "../library/variable"
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {InferType} from "yup";
 import authSchema from "../schemas/auth.schema";
-import userService from "../services/mysql/user.service";
+import userService from "../services/user.service";
 import {StatusId} from "../public/static";
 
 export default {

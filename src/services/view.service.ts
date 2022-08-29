@@ -1,12 +1,12 @@
 import * as mongoose from "mongoose";
-import V, {DateMask} from "../../library/variable";
-import viewModel, {
+import V, {DateMask} from "../library/variable";
+import viewModel from "../model/view.model";
+import {
     InsertViewParamDocument,
     SelectViewParamDocument,
-    ViewDocument,
+    ViewDocument, ViewTotalDocument,
     ViewTotalWithDocument
-} from "../../model/view.model";
-import {ViewTotalDocument} from "../../types/services/view";
+} from "../types/services/view";
 
 export default {
     async select(params: SelectViewParamDocument): Promise<ViewDocument[]> {
@@ -40,14 +40,14 @@ export default {
         }
         if (params.date) filters = {
             ...filters,
-            createdAt: new Date(params.date)
+            createdAt: params.date
         }
         if (params.dateStart) {
             filters = {
                 ...filters,
                 createdAt: {
-                    $gt: new Date(params.dateStart),
-                    ...((params.dateEnd) ? {$lt: new Date(params.dateEnd)} : {})
+                    $gt: params.dateStart,
+                    ...((params.dateEnd) ? {$lt: params.dateEnd} : {})
                 }
             }
         }
@@ -63,8 +63,8 @@ export default {
             filters = {
                 ...filters,
                 createdAt: {
-                    $gt: new Date(params.dateStart),
-                    ...((params.dateEnd) ? {$lt: new Date(params.dateEnd)} : {})
+                    $gt: params.dateStart,
+                    ...((params.dateEnd) ? {$lt: params.dateEnd} : {})
                 }
             }
         }
@@ -83,8 +83,8 @@ export default {
                 ...filters,
 
                 createdAt: {
-                    $gt: new Date(params.dateStart),
-                    ...((params.dateEnd) ? {$lt: new Date(params.dateEnd)} : {})
+                    $gt: params.dateStart,
+                    ...((params.dateEnd) ? {$lt: params.dateEnd} : {})
                 }
             }
         }
@@ -129,12 +129,7 @@ export default {
         params = V.clearAllData(params);
 
         return await viewModel.create({
-            url: params.url,
-            ip: params.ip,
-            languageId: params.languageId,
-            city: params.city || "",
-            country: params.country || "",
-            region: params.region || ""
+            ...params
         })
     }
 };

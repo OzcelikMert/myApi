@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
-import navigateService from "../services/mysql/navigate.service";
+import navigateService from "../services/navigate.service";
 
 export default {
     check: (

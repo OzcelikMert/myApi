@@ -1,23 +1,6 @@
 import * as mongoose from "mongoose";
 import {StatusId, UserRoleId} from "../public/static";
-
-export interface UserDocument {
-        roleId: number,
-        statusId: number,
-        image: string,
-        name: string,
-        comment: string,
-        phone: string,
-        email: string,
-        password: string,
-        permissions: number[],
-        banDateEnd: string,
-        banComment: string,
-        facebook: string,
-        instagram: string,
-        twitter: string,
-        views: number,
-}
+import {UserDocument} from "../types/services/user";
 
 const schema = new mongoose.Schema<UserDocument>(
     {
@@ -30,8 +13,8 @@ const schema = new mongoose.Schema<UserDocument>(
         email: {type: String, required: true},
         password: {type: String, required: true},
         permissions: {type: [Number], default: []},
-        banDateEnd: {type: String},
-        banComment: {type: String},
+        banDateEnd: {type: Date, default: new Date()},
+        banComment: {type: String, default: ""},
         facebook: {type: String, default: ""},
         instagram: {type: String, default: ""},
         twitter: {type: String, default: ""},

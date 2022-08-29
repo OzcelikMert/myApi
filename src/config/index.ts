@@ -3,13 +3,9 @@ import ExpressSession from "express-session";
 import CookieParser from "cookie-parser";
 import http from "http";
 import https from "https";
-import db from "./db";
 import Session from "./session";
 import {ConfigDocument} from "../types/config";
-import dbConnect from "./mongodb";
-import settingService from "../services/mongodb/setting.service";
-import MongoDBHelpers from "../library/mongodb/helpers";
-import viewService from "../services/mongodb/view.service";
+import dbConnect from "./db";
 const chalk = require('chalk');
 
 let Config: ConfigDocument = {
@@ -37,7 +33,6 @@ class InitConfig{
      init() {
          return new Promise<void>(async resolve => {
              this.setPublicFolders();
-             //this.dbConnect();
              await this.mongodbConnect();
              this.setSession();
              this.security();
@@ -70,20 +65,9 @@ class InitConfig{
         Config.app.use(ExpressSession(Session.config))
     }
 
-    private dbConnect(){
-         try {
-            new db.Create();
-            console.log(chalk.green(`#Mysql \n  ${chalk.blue(`- Connected`)}`))
-        }catch (e) {
-            console.error("Mysql Connection Error")
-            console.error(e)
-        }
-    }
-
     private async mongodbConnect(){
         try {
             await dbConnect();
-            console.log(await viewService.selectTotalWithDate({}))
             console.log(chalk.green(`#MongoDB \n  ${chalk.blue(`- Connected`)}`))
         }catch (e) {
             console.error("MongoDB Connection Error")

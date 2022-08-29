@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
-import viewService from "../services/mysql/view.service";
+import viewService from "../services/view.service";
 import {DateMask} from "../library/variable";
 
 export default {

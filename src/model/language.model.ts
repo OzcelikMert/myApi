@@ -1,14 +1,5 @@
 import * as mongoose from "mongoose";
-
-export type InsertLanguageDocument = {
-
-} & LanguageDocument
-
-export interface LanguageDocument {
-    title: string,
-    image: string,
-    shortKey: string
-}
+import {LanguageDocument} from "../types/services/language";
 
 const schema = new mongoose.Schema<LanguageDocument>(
     {
