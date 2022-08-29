@@ -9,7 +9,7 @@ import UserDocument, {
     InsertUserParamDocument,
     SelectUserParamDocument,
     UpdateUserParamDocument
-} from "../../modules/services/user";
+} from "../../types/services/user";
 
 export default {
     select(params: SelectUserParamDocument): UserDocument[] {

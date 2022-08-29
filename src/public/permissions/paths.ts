@@ -1,5 +1,5 @@
 import Pages from "../../utils/service/pages";
-import PermissionPathDocument from "../../modules/public/permissions/paths";
+import PermissionPathDocument from "../../types/public/permissions/paths";
 import {PermissionId, PostTermTypeId, PostTypeId} from "../static";
 
 const PermissionPaths: PermissionPathDocument = {};

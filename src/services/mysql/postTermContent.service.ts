@@ -7,7 +7,7 @@ import PostTermContentDocument, {
     DeletePostTermContentParamDocument,
     InsertPostTermContentParamDocument, SelectPostTermContentParamDocument,
     UpdatePostTermContentParamDocument
-} from "../../modules/services/postTermContent";
+} from "../../types/services/postTermContent";
 
 export default {
     select(params: SelectPostTermContentParamDocument) : PostTermContentDocument[] {

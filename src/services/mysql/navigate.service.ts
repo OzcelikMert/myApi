@@ -8,7 +8,7 @@ import NavigateDocument, {
     InsertNavigateParamDocument,
     SelectNavigateParamDocument,
     UpdateNavigateParamDocument
-} from "../../modules/services/navigate";
+} from "../../types/services/navigate";
 
 export default {
     select(params: SelectNavigateParamDocument): NavigateDocument[] {

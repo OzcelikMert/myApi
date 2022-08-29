@@ -5,9 +5,11 @@ import http from "http";
 import https from "https";
 import db from "./db";
 import Session from "./session";
-import {ConfigDocument} from "../modules/config";
+import {ConfigDocument} from "../types/config";
 import dbConnect from "./mongodb";
-import userService from "../services/mongodb/user.service";
+import settingService from "../services/mongodb/setting.service";
+import MongoDBHelpers from "../library/mongodb/helpers";
+import viewService from "../services/mongodb/view.service";
 const chalk = require('chalk');
 
 let Config: ConfigDocument = {
@@ -35,7 +37,7 @@ class InitConfig{
      init() {
          return new Promise<void>(async resolve => {
              this.setPublicFolders();
-             this.dbConnect();
+             //this.dbConnect();
              await this.mongodbConnect();
              this.setSession();
              this.security();
@@ -70,7 +72,7 @@ class InitConfig{
 
     private dbConnect(){
          try {
-           // new db.Create();
+            new db.Create();
             console.log(chalk.green(`#Mysql \n  ${chalk.blue(`- Connected`)}`))
         }catch (e) {
             console.error("Mysql Connection Error")
@@ -81,7 +83,7 @@ class InitConfig{
     private async mongodbConnect(){
         try {
             await dbConnect();
-            console.log(await userService.select({}))
+            console.log(await viewService.selectTotalWithDate({}))
             console.log(chalk.green(`#MongoDB \n  ${chalk.blue(`- Connected`)}`))
         }catch (e) {
             console.error("MongoDB Connection Error")

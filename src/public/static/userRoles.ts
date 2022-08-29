@@ -1,4 +1,4 @@
-import {UserRoleDocument} from "../../modules/public/static";
+import {UserRoleDocument} from "../../types/public/static";
 
 const UserRoles: Array<UserRoleDocument> = [
     {id: 1, rank: 1, order: 1},

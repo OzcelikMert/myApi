@@ -1,4 +1,4 @@
-import {LanguageDocument} from "../../modules/public/static";
+import {LanguageDocument} from "../../types/public/static";
 
 const Languages: Array<LanguageDocument> = [
     { id: 1, code: "tr", title: "Türkçe", order: 1, image: "" },

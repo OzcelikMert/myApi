@@ -3,7 +3,7 @@ import {UserRoleId} from "../../public/static";
 import {ErrorCodes, Result, StatusCodes} from "../../utils/service";
 import {Config} from "../../config";
 import PermissionPaths from "../../public/permissions/paths";
-import {PermissionPathDataDocument} from "../../modules/public/permissions/paths";
+import {PermissionPathDataDocument} from "../../types/public/permissions/paths";
 
 export default {
     check: (

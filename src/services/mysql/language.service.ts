@@ -1,4 +1,4 @@
-import LanguageDocument, {SelectLanguageParamDocument} from "../../modules/services/language";
+import LanguageDocument, {SelectLanguageParamDocument} from "../../types/services/language";
 import Mysql, {QueryValueTypes} from "../../library/mysql";
 import db from "../../config/db";
 import tables from "../../config/db/tables";

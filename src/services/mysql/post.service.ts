@@ -8,7 +8,7 @@ import PostDocument, {
     InsertPostParamDocument,
     SelectPostParamDocument,
     UpdatePostParamDocument
-} from "../../modules/services/post";
+} from "../../types/services/post";
 
 export default {
     select(params: SelectPostParamDocument): PostDocument[] {

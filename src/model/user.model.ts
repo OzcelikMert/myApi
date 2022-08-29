@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import {StatusId} from "../public/static";
+import {StatusId, UserRoleId} from "../public/static";
 
 export interface UserDocument {
         roleId: number,
@@ -21,7 +21,7 @@ export interface UserDocument {
 
 const schema = new mongoose.Schema<UserDocument>(
     {
-        roleId: {type: Number, required: true},
+        roleId: {type: Number, required: true, enum: UserRoleId},
         statusId: {type: Number, required: true, enum: StatusId},
         image: {type: String, default: ""},
         name: {type: String, default: ""},
@@ -38,6 +38,6 @@ const schema = new mongoose.Schema<UserDocument>(
         views: {type: Number, default: 0},
     },
     {timestamps: true}
-);
+).index({roleId: 1, statusId: 1}, {unique: true});
 
 export default mongoose.model("users", schema)

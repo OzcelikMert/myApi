@@ -8,7 +8,7 @@ import PostContentDocument, {
     InsertPostContentParamDocument,
     SelectPostContentParamDocument,
     UpdatePostContentParamDocument
-} from "../../modules/services/postContent";
+} from "../../types/services/postContent";
 
 export default {
     select(params: SelectPostContentParamDocument) : PostContentDocument[] {

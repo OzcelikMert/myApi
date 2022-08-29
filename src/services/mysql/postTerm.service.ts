@@ -8,7 +8,7 @@ import PostTermDocument, {
     InsertPostTermParamDocument,
     SelectPostTermParamDocument,
     UpdatePostTermParamDocument
-} from "../../modules/services/postTerm";
+} from "../../types/services/postTerm";
 
 export default {
     select(params: SelectPostTermParamDocument): PostTermDocument[] {

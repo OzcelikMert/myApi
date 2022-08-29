@@ -1,4 +1,4 @@
-import {PermissionGroupContentDocument} from "../../../modules/public/static";
+import {PermissionGroupContentDocument} from "../../../types/public/static";
 
 const PermissionGroupsContents: Array<PermissionGroupContentDocument> = [
     { groupId: 1, contents: [{langId: 1, content: "Yazı"}, {langId: 2, content: "Blog"}] },

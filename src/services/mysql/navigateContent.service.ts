@@ -7,7 +7,7 @@ import NavigateContentDocument, {
     DeleteNavigateContentParamDocument,
     InsertNavigateContentParamDocument, SelectNavigateContentParamDocument,
     UpdateNavigateContentParamDocument
-} from "../../modules/services/navigateContent";
+} from "../../types/services/navigateContent";
 
 export default {
     select(params: SelectNavigateContentParamDocument) : NavigateContentDocument[] {

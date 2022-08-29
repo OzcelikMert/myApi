@@ -7,7 +7,7 @@ import SeoDocument, {
     InsertSeoParamDocument,
     SelectSeoParamDocument,
     UpdateSeoParamDocument
-} from "../../modules/services/seo";
+} from "../../types/services/seo";
 
 export default {
     select(params: SelectSeoParamDocument): SeoDocument[] {

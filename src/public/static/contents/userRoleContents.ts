@@ -1,4 +1,4 @@
-import {UserRoleContentDocument} from "../../../modules/public/static";
+import {UserRoleContentDocument} from "../../../types/public/static";
 
 const UserRoleContents: Array<UserRoleContentDocument> = [
     { roleId: 1, contents: [{langId: 1, content: "Kullanıcı"}, {langId: 2, content: "User"}] },

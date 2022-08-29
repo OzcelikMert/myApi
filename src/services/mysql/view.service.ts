@@ -7,7 +7,7 @@ import ViewDocument, {
     InsertViewParamDocument,
     SelectViewParamDocument,
     ViewTotalDocument, ViewTotalForCountryDocument, ViewTotalForDateDocument
-} from "../../modules/services/view";
+} from "../../types/services/view";
 
 export default {
     select(params: SelectViewParamDocument): ViewDocument[] {

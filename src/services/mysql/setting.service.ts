@@ -6,7 +6,7 @@ import SettingDocument, {
     InsertSettingParamDocument,
     SelectSettingParamDocument,
     UpdateSettingParamDocument
-} from "../../modules/services/setting";
+} from "../../types/services/setting";
 
 export default {
     select(params: SelectSettingParamDocument): SettingDocument[] {

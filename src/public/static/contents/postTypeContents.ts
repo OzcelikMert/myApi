@@ -1,4 +1,4 @@
-import {PostTypeContentDocument} from "../../../modules/public/static";
+import {PostTypeContentDocument} from "../../../types/public/static";
 
 const PostTypeContents: Array<PostTypeContentDocument> = [
     { typeId: 1, contents: [{langId: 1, content: "Yazı"}, {langId: 2, content: "Blog"}] },
