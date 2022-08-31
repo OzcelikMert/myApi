@@ -4,7 +4,7 @@ import viewService from "../services/view.service";
 import {DateMask} from "../library/variable";
 
 export default {
-    check: (
+    check: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
@@ -13,10 +13,10 @@ export default {
 
         let url = req.body.url;
 
-        let resData = viewService.select({
+        let resData = await viewService.select({
             ip: req.ip,
             url: url,
-            date: new Date().getStringWithMask(DateMask.DATE)
+            date: new Date()
         });
 
         if (resData.length > 0) {
@@ -31,21 +31,20 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         }
     },
-    delete: (
+    delete: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
     ) => {
         let dateEnd = new Date();
         dateEnd.addDays(-7);
-        let dateEndString = dateEnd.toLocaleString();
 
-        let resData = viewService.selectTotal({dateEnd: dateEndString});
+        let resData = await viewService.selectTotal({dateEnd: dateEnd});
 
-        if (resData.length > 0 && resData[0].total > 0) {
-            viewService.delete({dateEnd: dateEndString})
+        if (resData.total > 0) {
+            viewService.delete({dateEnd: dateEnd})
         }
-
+        
         next();
     }
 };

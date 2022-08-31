@@ -1,25 +1,26 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import postTermService from "../services/postTerm.service";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
-    check: (
+    check: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
     ) => {
         let serviceResult = new Result();
 
-        let termId = req.params.termId;
-        termId = termId ? termId : req.body.termId;
+        let termId = req.params.termId ?? req.body.termId;
         let typeId = req.params.typeId;
         let postTypeId = req.params.postTypeId;
+        let langId = req.params.langId ?? req.body.langId;
 
-        let resData = postTermService.select({
+        let resData = await postTermService.select({
             termId: termId,
             postTypeId: postTypeId,
             typeId: typeId,
-            langId: 1
+            langId: MongoDBHelpers.createObjectId(langId)
         });
 
         if (
@@ -37,7 +38,7 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         }
     },
-    checkUrlAlready: (
+    checkUrlAlready: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
@@ -51,7 +52,7 @@ export default {
 
         let urlAlreadyCount = 2;
 
-        while(postTermService.select({postTypeId: postTypeId, typeId: typeId, langId: langId, url: url}).length > 0) {
+        while((await postTermService.select({postTypeId: postTypeId, typeId: typeId, langId: MongoDBHelpers.createObjectId(langId), url: url})).length > 0) {
             url += `-${urlAlreadyCount}`;
             urlAlreadyCount++;
         }

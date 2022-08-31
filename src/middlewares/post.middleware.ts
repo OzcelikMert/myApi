@@ -1,24 +1,24 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import postService from "../services/post.service";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
-    check: (
+    check: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
     ) => {
         let serviceResult = new Result();
 
-        let postId = req.params.postId;
-        postId = postId ? postId : req.body.postId;
+        let postId = req.params.postId ?? req.body.postId;
         let typeId = req.params.typeId;
+        let langId = req.params.langId ?? req.body.langId;
 
-
-        let resData = postService.select({
+        let resData = await postService.select({
             postId: postId,
             typeId: typeId,
-            langId: 1
+            langId: MongoDBHelpers.createObjectId(langId)
         });
 
         if (
@@ -36,7 +36,7 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         }
     },
-    checkUrlAlready: (
+    checkUrlAlready: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
@@ -49,7 +49,7 @@ export default {
 
         let urlAlreadyCount = 2;
 
-        while(postService.select({langId: langId, typeId: typeId, url: url}).length > 0) {
+        while((await postService.select({langId: MongoDBHelpers.createObjectId(langId), typeId: typeId, url: url})).length > 0) {
             url += `-${urlAlreadyCount}`;
             urlAlreadyCount++;
         }

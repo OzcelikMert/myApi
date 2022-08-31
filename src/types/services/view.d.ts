@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
 
+export interface DeleteViewParamDocument {
+    dateEnd: Date
+}
+
 export interface SelectViewParamDocument {
     ip?: string
     langId?: mongoose.Types.ObjectId
@@ -7,14 +11,14 @@ export interface SelectViewParamDocument {
     country?: string
     city?: string
     region?: string
-    date?: string
+    date?: Date
     dateStart?: Date
     dateEnd?: Date
 }
 
 export interface InsertViewParamDocument {
     url: string,
-    languageId: mongoose.Types.ObjectId,
+    languageId: mongoose.Types.ObjectId
     ip: string,
     country?: string,
     city?: string,
@@ -36,8 +40,9 @@ export type ViewTotalWithCountryDocument = {
 }
 
 export interface ViewDocument {
+    _id: mongoose.Types.ObjectId
     url: string,
-    languageId: mongoose.Types.ObjectId,
+    languageId: mongoose.Types.ObjectId
     ip: string,
     country: string,
     city: string,

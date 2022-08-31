@@ -4,7 +4,7 @@ import {ErrorCodes} from "../utils/service";
 export default {
     get: object({
         query: object({
-            id: number(),
+            id: string(),
         })
     })
 };

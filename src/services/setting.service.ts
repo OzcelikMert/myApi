@@ -19,22 +19,21 @@ export default {
     async update(params: UpdateSettingParamDocument) {
         params = V.clearAllData(params);
 
-        await settingModel.findOne({}).then(async doc => {
-            if(doc) {
-                if (params.seoContents) {
-                    const findIndex = doc.seoContents.indexOfKey("langId", params.seoContents.langId);
-                    if(findIndex > -1) {
-                        doc.seoContents[findIndex] = Object.assign(doc.seoContents[findIndex], params.seoContents);
-                    }else {
-                        doc.seoContents.push(params.seoContents)
-                    }
-                    delete params.seoContents;
+        let doc = await settingModel.findOne({})
+        if(doc) {
+            if (params.seoContents) {
+                const findIndex = doc.seoContents.indexOfKey("langId", params.seoContents.langId);
+                if(findIndex > -1) {
+                    doc.seoContents[findIndex] = Object.assign(doc.seoContents[findIndex], params.seoContents);
+                }else {
+                    doc.seoContents.push(params.seoContents)
                 }
-
-                doc = Object.assign(doc, params);
-
-                await doc.save();
+                delete params.seoContents;
             }
-        });
+
+            doc = Object.assign(doc, params);
+
+            await doc.save();
+        }
     }
 };

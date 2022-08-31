@@ -1,17 +1,16 @@
 import * as mongoose from "mongoose";
-import V, {DateMask} from "../library/variable";
 import viewModel from "../model/view.model";
 import {
+    DeleteViewParamDocument,
     InsertViewParamDocument,
     SelectViewParamDocument,
     ViewDocument, ViewTotalDocument,
     ViewTotalWithDocument
 } from "../types/services/view";
+import postModel from "../model/post.model";
 
 export default {
     async select(params: SelectViewParamDocument): Promise<ViewDocument[]> {
-        params = V.clearAllData(params);
-
         let filters: mongoose.FilterQuery<ViewDocument> = {}
 
         if (params.ip) filters = {
@@ -55,8 +54,6 @@ export default {
         return await viewModel.find(filters, {}, {lean: true});
     },
     async selectTotal(params: SelectViewParamDocument): Promise<ViewTotalDocument> {
-        params = V.clearAllData(params);
-
         let filters: mongoose.FilterQuery<ViewDocument> = {}
 
         if (params.dateStart) {
@@ -74,8 +71,6 @@ export default {
         };
     },
     async selectTotalWithDate(params: SelectViewParamDocument): Promise<ViewTotalWithDocument[]> {
-        params = V.clearAllData(params);
-
         let filters: mongoose.FilterQuery<ViewDocument> = {}
 
         if (params.dateStart) {
@@ -102,8 +97,6 @@ export default {
         ]);
     },
     async selectTotalWithCountry(params: SelectViewParamDocument): Promise<ViewTotalWithDocument[]> {
-        params = V.clearAllData(params);
-
         let filters: mongoose.FilterQuery<ViewDocument> = {}
 
         if (params.dateStart) {
@@ -126,10 +119,13 @@ export default {
         ]);
     },
     async insert(params: InsertViewParamDocument) {
-        params = V.clearAllData(params);
-
         return await viewModel.create({
             ...params
         })
+    },
+    async delete(params: DeleteViewParamDocument) {
+        return await postModel.deleteMany({
+            createdAt: {$lt: params.dateEnd}
+        });
     }
 };

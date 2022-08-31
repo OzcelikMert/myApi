@@ -1,22 +1,22 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import navigateService from "../services/navigate.service";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
-    check: (
+    check: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
     ) => {
         let serviceResult = new Result();
 
-        let navigateId = req.params.navigateId;
-        navigateId = navigateId ? navigateId : req.body.navigateId;
+        let navigateId = req.params.navigateId ?? req.body.navigateId;
+        let langId = req.params.langId ?? req.body.langId;
 
-
-        let resData = navigateService.select({
+        let resData = await navigateService.select({
             navigateId: navigateId,
-            langId: 1
+            langId: MongoDBHelpers.createObjectId(langId)
         });
 
         if (

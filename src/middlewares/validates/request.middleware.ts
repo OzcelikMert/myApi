@@ -3,14 +3,14 @@ import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../../utils/service";
 
 export default {
-    check: (schema: AnySchema) => (
+    check: (schema: AnySchema) => async (
         req: Request,
         res: Response,
         next: NextFunction
     ) => {
         let serviceResult = new Result();
         try {
-            let validatedData = schema.validateSync({
+            let validatedData = await schema.validate({
                 body: req.body,
                 query: req.query,
                 params: req.params

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export type InsertSettingParamDocument = {
-    defaultLangId: mongoose.Types.ObjectId,
+    defaultLangId: mongoose.Types.ObjectId
     icon?: string,
     logo?: string,
     seoContents?: SettingSeoContentDocument
@@ -17,6 +17,7 @@ export interface SettingSeoContentDocument {
 }
 
 export interface SettingDocument {
+    _id: mongoose.Types.ObjectId
     defaultLangId: mongoose.Types.ObjectId
     icon: string,
     logo: string,

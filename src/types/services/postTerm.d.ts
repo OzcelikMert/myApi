@@ -28,8 +28,8 @@ export interface InsertPostTermParamDocument {
 }
 
 export interface SelectPostTermParamDocument {
-    langId: mongoose.Types.ObjectId,
-    termId?: mongoose.Types.ObjectId,
+    langId: mongoose.Types.ObjectId
+    termId?: mongoose.Types.ObjectId
     typeId?: number | number[],
     postTypeId?: number,
     url?: string
@@ -37,7 +37,7 @@ export interface SelectPostTermParamDocument {
 }
 
 export interface PostTermContentDocument {
-    langId: mongoose.Types.ObjectId,
+    langId: mongoose.Types.ObjectId
     image?: string,
     title?: string,
     shortContent?: string,
@@ -47,12 +47,13 @@ export interface PostTermContentDocument {
 }
 
 export interface PostTermDocument {
+    _id: mongoose.Types.ObjectId
     postTypeId: number,
     typeId: number,
     mainId?: mongoose.Types.ObjectId
     statusId: number,
-    authorId: mongoose.Types.ObjectId,
-    lastAuthorId: mongoose.Types.ObjectId,
+    authorId: mongoose.Types.ObjectId
+    lastAuthorId: mongoose.Types.ObjectId
     order: number,
     views: number,
     isFixed: boolean,

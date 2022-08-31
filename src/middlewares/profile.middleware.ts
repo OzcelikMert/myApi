@@ -3,7 +3,7 @@ import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import userService from "../services/user.service";
 
 export default {
-    checkPassword: (
+    checkPassword: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
@@ -12,7 +12,7 @@ export default {
 
         let password = req.body.password;
 
-        let resData = userService.select({
+        let resData = await userService.select({
             email: req.session.data.email,
             password: password
         });

@@ -10,7 +10,7 @@ import multer from "multer";
 import gallerySchema from "../schemas/gallery.schema";
 
 export default {
-    get: (
+    get: async (
         req: Request<any, any,any, any>,
         res: Response
     ) => {

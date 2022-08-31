@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 declare module 'express-session' {
     interface Session {
         data: SessionDataDocument
@@ -5,7 +7,7 @@ declare module 'express-session' {
 }
 
 interface SessionDataDocument {
-    id: number,
+    id: mongoose.Types.ObjectId,
     roleId: number,
     email: string,
     ip: string,

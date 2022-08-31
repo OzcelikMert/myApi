@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 export interface SelectUserParamDocument {
     userId?: mongoose.Types.ObjectId
+    statusId?: number
     email?: string,
     password?: string
 }
@@ -34,6 +35,7 @@ export interface UpdateUserParamDocument {
 }
 
 export interface UserDocument {
+    _id: mongoose.Types.ObjectId
     roleId: number,
     statusId: number,
     image: string,

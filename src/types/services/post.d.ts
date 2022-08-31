@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export interface DeletePostParamDocument {
-    postId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[]
+    postId: string | string[]
 }
 
 export interface UpdatePostParamDocument {
@@ -9,7 +9,7 @@ export interface UpdatePostParamDocument {
     typeId?: number,
     statusId?: number,
     order?: number,
-    lastAuthorId: mongoose.Types.ObjectId,
+    lastAuthorId: mongoose.Types.ObjectId
     dateStart?: Date,
     isFixed?: boolean,
     contents?: InsertPostParamDocument["contents"]
@@ -19,16 +19,16 @@ export interface InsertPostParamDocument {
     typeId: number,
     statusId: number,
     order: number,
-    authorId: mongoose.Types.ObjectId,
+    authorId: mongoose.Types.ObjectId
     dateStart: Date,
     isFixed: boolean,
     contents: PostContentDocument
 }
 
 export interface SelectPostParamDocument {
-    postId?: mongoose.Types.ObjectId,
+    postId?: mongoose.Types.ObjectId
     typeId?: number | number[],
-    langId: mongoose.Types.ObjectId,
+    langId: mongoose.Types.ObjectId
     url?: string
     statusId?: number,
     getContents?: boolean,
@@ -36,7 +36,7 @@ export interface SelectPostParamDocument {
 }
 
 export interface PostContentDocument {
-    langId: mongoose.Types.ObjectId,
+    langId: mongoose.Types.ObjectId
     image?: string,
     title?: string,
     content?: string,
@@ -47,14 +47,15 @@ export interface PostContentDocument {
 }
 
 export interface PostDocument {
+    _id: mongoose.Types.ObjectId
     typeId: number,
     statusId: number,
-    authorId: mongoose.Types.ObjectId,
-    lastAuthorId: mongoose.Types.ObjectId,
+    authorId: mongoose.Types.ObjectId
+    lastAuthorId: mongoose.Types.ObjectId
     dateStart: Date,
     order: number,
     views: number,
     isFixed: boolean,
-    terms: mongoose.Types.ObjectId[],
+    terms: mongoose.Types.ObjectId[]
     contents: PostContentDocument[]
 }

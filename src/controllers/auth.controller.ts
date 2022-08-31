@@ -7,7 +7,7 @@ import userService from "../services/user.service";
 import {StatusId} from "../public/static";
 
 export default {
-    getSession: (
+    getSession: async (
         req: Request<any, any,any, any>,
         res: Response
     ) => {
@@ -15,30 +15,30 @@ export default {
         let data: InferType<typeof authSchema.get> = req;
 
         if (data.query.isRefresh) {
-            serviceResult.data = userService.select({userId: req.session.data.id});
+            serviceResult.data = await userService.select({userId: req.session.data.id});
         }
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    login: (
+    login: async (
         req: Request,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof authSchema.post> = req;
 
-        let resData = userService.select(data.body);
+        let resData = await userService.select(data.body);
 
         if(resData.length > 0){
             let user = resData[0];
-            if(user.userStatusId == StatusId.Active) {
+            if(user.statusId == StatusId.Active) {
                 req.session.data = {
-                    id: user.userId,
-                    email: user.userEmail,
-                    roleId: user.userRoleId,
+                    id: user._id,
+                    email: user.email,
+                    roleId: user.roleId,
                     ip: req.ip,
-                    permission: [],
-                    token: V.hash((user.userId + req.ip).toString(), "sha256")
+                    permission: user.permissions,
+                    token: V.hash((user._id.toString() + req.ip).toString(), "sha256")
                 }
                 req.session.save();
             }else {
@@ -47,10 +47,6 @@ export default {
                 serviceResult.statusCode = StatusCodes.notFound;
             }
             serviceResult.data = resData;
-
-            if(user.userStatusId != StatusId.Active && user.userStatusId != StatusId.Banned){
-                serviceResult.data = [];
-            }
         }else {
             serviceResult.status = false;
             serviceResult.errorCode = ErrorCodes.notFound;
@@ -59,13 +55,13 @@ export default {
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    logOut: (
+    logOut: async (
         req: Request,
         res: Response
     ) => {
         let serviceResult = new Result();
 
-        req.session.destroy(() => {
+        await req.session.destroy(() => {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     }

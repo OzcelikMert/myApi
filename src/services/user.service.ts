@@ -23,15 +23,21 @@ export default {
                 email: params.email,
                 password: params.password
             }
-        } else if (params.userId) {
+        }
+        if (params.userId) {
             filters = {
                 ...filters,
                 _id: params.userId
             }
         }
+        if(params.statusId){
+            filters = {
+                ...filters,
+                statusId: params.statusId
+            }
+        }
 
         let query = await userModel.find(filters, {}, {lean: true});
-
         return query.map(user => {
             delete user.password;
             return user;
@@ -49,12 +55,12 @@ export default {
         params = V.clearAllData(params);
         if (params.permissionId || params.permissionId === [0]) params.permissionId = [];
 
-        await userModel.findOne({_id: params.userId}).then(async doc => {
-            if(doc){
-                delete params.userId;
-                doc = Object.assign(doc, params);
-                await doc.save();
-            }
-        })
+        let doc = await userModel.findOne({_id: params.userId})
+
+        if(doc){
+            delete params.userId;
+            doc = Object.assign(doc, params);
+            await doc.save();
+        }
     }
 };

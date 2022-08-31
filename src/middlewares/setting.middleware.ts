@@ -4,9 +4,10 @@ import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {InferType} from "yup";
 import settingSchema from "../schemas/setting.schema";
 import languageService from "../services/language.service";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
-    check: (
+    check: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
@@ -14,10 +15,10 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof settingSchema.put> = req;
 
-        data.body.settings.forEach(setting => {
+        data.body.settings.forEach(async setting => {
             if(serviceResult.status){
                 if(setting.id == SettingId.WebsiteMainLanguage){
-                    if(languageService.select({id: Number(setting.value)}).length === 0){
+                    if((await languageService.select({id: MongoDBHelpers.createObjectId(setting.value)})).length === 0){
                         serviceResult.status = false;
                         serviceResult.errorCode = ErrorCodes.notFound;
                         serviceResult.statusCode = StatusCodes.notFound;

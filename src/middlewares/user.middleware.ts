@@ -2,9 +2,10 @@ import {NextFunction, Request, Response} from "express";
 import {UserRoles} from "../public/static";
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import userService from "../services/user.service";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
-    check: (
+    check: async (
         req: Request,
         res: Response,
         next: NextFunction
@@ -13,7 +14,7 @@ export default {
 
         let userId = req.params.userId;
 
-        let resData = userService.select({userId: Number(userId)});
+        let resData = await userService.select({userId: MongoDBHelpers.createObjectId(userId)});
         if (resData.length === 0) {
             serviceResult.status = false;
             serviceResult.errorCode = ErrorCodes.notFound;
@@ -26,7 +27,7 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         }
     },
-    checkRoleRank: (
+    checkRoleRank: async (
         req: Request,
         res: Response,
         next: NextFunction
@@ -40,9 +41,9 @@ export default {
         if (roleId) {
             userRoleId = roleId;
         } else if (userId) {
-            let resData = userService.select({userId: Number(userId)});
+            let resData = await userService.select({userId: MongoDBHelpers.createObjectId(userId)});
             if (resData.length > 0) {
-                userRoleId = resData[0].userRoleId;
+                userRoleId = resData[0].roleId;
             }
         }
 
@@ -60,7 +61,7 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         }
     },
-    checkAlreadyEmail: (
+    checkAlreadyEmail: async (
         req: Request,
         res: Response,
         next: NextFunction
@@ -71,10 +72,10 @@ export default {
         let email = req.body.email;
 
         if(userId){
-            let resData = userService.select({userId: Number(userId)});
+            let resData = await userService.select({userId: MongoDBHelpers.createObjectId(userId)});
             if (resData.length > 0) {
                 if (email) {
-                    if(resData[0].userEmail == email) {
+                    if(resData[0].email == email) {
                         next();
                         return;
                     }
@@ -84,7 +85,7 @@ export default {
 
 
         if (email) {
-            let resData = userService.select({
+            let resData = await userService.select({
                 email: email
             });
             if (resData.length > 0) {
