@@ -3,16 +3,19 @@ import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import {InferType} from "yup";
 import settingSchema from "../schemas/setting.schema";
 import settingService from "../services/setting.service";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     get: async (
-        req: Request<any, any,any, any>,
+        req: Request<any, any, any, any>,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof settingSchema.get> = req;
 
-        serviceResult.data = await settingService.select();
+        serviceResult.data = await settingService.select({
+            langId: MongoDBHelpers.createObjectId(data.query.langId),
+        });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
@@ -23,13 +26,25 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof settingSchema.put> = req;
 
-        /*data.body.settings.forEach(async setting => {
-            if(await (settingService.select(setting)).length > 0) {
-                serviceResult.data = settingService.update(setting);
-            }else {
-                serviceResult.data = settingService.insert(setting);
-            }
-        })*/
+        if((await settingService.select({})).length > 0) {
+            await settingService.update({
+                ...data.body,
+                defaultLangId: data.body.defaultLangId ? MongoDBHelpers.createObjectId(data.body.defaultLangId) : undefined,
+                seoContents: data.body.seoContents ? {
+                    ...data.body.seoContents,
+                    langId: MongoDBHelpers.createObjectId(data.body.langId)
+                } : undefined
+            })
+        }else {
+            serviceResult.data = await settingService.insert({
+                ...data.body,
+                defaultLangId: MongoDBHelpers.createObjectId(data.body.defaultLangId ?? data.body.langId),
+                seoContents: data.body.seoContents ? {
+                    ...data.body.seoContents,
+                    langId: MongoDBHelpers.createObjectId(data.body.langId)
+                } : undefined
+            })
+        }
 
         res.status(serviceResult.statusCode).json(serviceResult)
     }

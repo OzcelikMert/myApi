@@ -4,15 +4,20 @@ import {ErrorCodes} from "../utils/service";
 export default {
     get: object({
         query: object({
-            id: number(),
-        })
+            langId: string().required({langId: ErrorCodes.emptyValue}),
+        }),
     }),
     put: object({
         body: object({
-            settings: array(object({
-                id: number().required({id: ErrorCodes.emptyValue}),
-                value: string().required({value: ErrorCodes.emptyValue})
-            }).required({settings: ErrorCodes.incorrectData})).required({settings: ErrorCodes.emptyValue})
+            defaultLangId: string(),
+            icon: string(),
+            logo: string(),
+            langId: string().required({langId: ErrorCodes.emptyValue}),
+            seoContents: object({
+                title: string(),
+                content: string(),
+                tags: array(string().required({tags: ErrorCodes.incorrectData}))
+            })
         })
     })
 };

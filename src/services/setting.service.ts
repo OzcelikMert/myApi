@@ -1,13 +1,28 @@
 import * as mongoose from "mongoose";
 import V, {DateMask} from "../library/variable";
 import settingModel from "../model/setting.model";
-import {InsertSettingParamDocument, SettingDocument, UpdateSettingParamDocument} from "../types/services/setting";
+import {
+    InsertSettingParamDocument,
+    SelectSettingParamDocument,
+    SettingDocument,
+    UpdateSettingParamDocument
+} from "../types/services/setting";
 
 export default {
-    async select(): Promise<SettingDocument[]> {
+    async select(params: SelectSettingParamDocument): Promise<SettingDocument[]> {
         let filters: mongoose.FilterQuery<SettingDocument> = {}
 
-        return await settingModel.find(filters, {}, {lean: true});
+        let docs = await settingModel.find(filters, {}, {lean: true});
+        if(docs){
+            docs.map( doc => {
+                if(params.langId){
+                    let langId = params.langId;
+                    doc.seoContents = doc.seoContents.filter(seoContents => seoContents.langId.toString() == langId.toString());
+                }
+                return doc;
+            })
+        }
+        return docs;
     },
     async insert(params: InsertSettingParamDocument) {
         params = V.clearAllData(params);
