@@ -5,9 +5,10 @@ import {InferType} from "yup";
 import viewSchema from "../schemas/view.schema";
 import viewService from "../services/view.service";
 import {Config} from "../config";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
-    getNumber: (
+    getNumber: async (
         req: Request<any, any, any, any>,
         res: Response
     ) => {
@@ -16,17 +17,12 @@ export default {
         let dateStart = new Date();
         dateStart.addDays(-7);
 
-        let resData = viewService.selectTotal({
-            dateStart: dateStart.toLocaleString()
+        let resData = await viewService.selectTotal({
+            dateStart: dateStart
         });
 
-        let averageTotal = 0;
-        let weeklyTotal = 0;
-
-        if(resData.length > 0) {
-            averageTotal = Math.ceil(resData[0].total / 7);
-            weeklyTotal = resData[0].total;
-        }
+        let averageTotal = Math.ceil(resData.total / 7);
+        let weeklyTotal = resData.total;
 
         serviceResult.data = {
             liveTotal: Config.activeUsers.length,
@@ -36,7 +32,7 @@ export default {
 
         res.status(serviceResult.statusCode).json(serviceResult);
     },
-    getStatistics: (
+    getStatistics: async (
         req: Request<any, any, any, any>,
         res: Response
     ) => {
@@ -44,16 +40,15 @@ export default {
 
         let dateStart = new Date();
         dateStart.addDays(-7);
-        let dateStartString = dateStart.toLocaleString();
 
         serviceResult.data = {
-            day: viewService.selectTotalForDate({dateStart: dateStartString}),
-            country: viewService.selectTotalForCountry({dateStart: dateStartString}),
+            day: await viewService.selectTotalWithDate({dateStart: dateStart}),
+            country: await viewService.selectTotalWithCountry({dateStart: dateStart}),
         };
 
         res.status(serviceResult.statusCode).json(serviceResult);
     },
-    set: (
+    set: async (
         req: Request,
         res: Response
     ) => {
@@ -63,9 +58,10 @@ export default {
         let ip = req.ip;
         let ipDetail = lookup(req.ip);
 
-        serviceResult.data = viewService.insert({
-            ip: ip,
+        serviceResult.data = await viewService.insert({
             ...data.body,
+            ip: ip,
+            languageId: MongoDBHelpers.createObjectId(data.body.lang),
             ...ipDetail
         })
 

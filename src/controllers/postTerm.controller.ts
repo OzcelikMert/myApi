@@ -2,14 +2,12 @@ import {Request, Response} from "express";
 import {ErrorCodes, Result} from "../utils/service";
 import {InferType} from "yup";
 import V, {ClearTypes} from "../library/variable";
-import postTermLinkService from "../services/postTermLink.service";
 import postTermSchema from "../schemas/postTerm.schema";
 import postTermService from "../services/postTerm.service";
-import postTermContentService from "../services/postTermContent.service";
-import postContentService from "../services/postContent.service";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
-    get: (
+    get: async (
         req: Request<any, any, any, any>,
         res: Response
     ) => {
@@ -17,14 +15,16 @@ export default {
 
         let data: InferType<typeof postTermSchema.get> = req;
 
-        serviceResult.data = postTermService.select({
+        serviceResult.data = await postTermService.select({
             ...data.params,
-            ...data.query
+            ...data.query,
+            langId: MongoDBHelpers.createObjectId(data.query.langId),
+            termId: data.params.termId ? MongoDBHelpers.createObjectId(data.params.termId) : undefined
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    getWithType: (
+    getWithType: async (
         req: Request<any, any, any, any>,
         res: Response
     ) => {
@@ -32,14 +32,15 @@ export default {
 
         let data: InferType<typeof postTermSchema.getWithType> = req;
 
-        serviceResult.data = postTermService.select({
+        serviceResult.data = await postTermService.select({
             ...data.params,
-            ...data.query
+            ...data.query,
+            langId: MongoDBHelpers.createObjectId(data.query.langId)
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    add: (
+    add: async (
         req: Request<any>,
         res: Response
     ) => {
@@ -47,77 +48,70 @@ export default {
 
         let data: InferType<typeof postTermSchema.post> = req;
 
-        data.body.url = (!data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
+        data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
 
-        serviceResult.data = postTermService.insert({
+        serviceResult.data = await postTermService.insert({
             ...data.body,
-            ...data.params
+            ...data.params,
+            authorId: req.session.data.id,
+            mainId: data.body.mainId ? MongoDBHelpers.createObjectId(data.body.mainId) : undefined,
+            contents: {
+                ...data.body.contents,
+                langId: MongoDBHelpers.createObjectId(data.body.langId)
+            }
         });
-
-        if(serviceResult.data.insertId) {
-            postTermContentService.insert({
-                termId: serviceResult.data.insertId,
-                ...data.body
-            })
-        }
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    update: (
+    update: async (
         req: Request<any>,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof postTermSchema.put> = req;
 
-        data.body.url = (!data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
+        data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
 
-        serviceResult.data = postTermService.update({
+        serviceResult.data = await postTermService.update({
             ...data.body,
-            ...data.params
+            ...data.params,
+            termId: MongoDBHelpers.createObjectId(data.params.termId),
+            lastAuthorId: req.session.data.id,
+            mainId: data.body.mainId ? MongoDBHelpers.createObjectId(data.body.mainId) : undefined,
+            contents: {
+                ...data.body.contents,
+                langId: MongoDBHelpers.createObjectId(data.body.langId)
+            }
         });
-
-        if(postTermContentService.select({
-            ...data.body,
-            ...data.params
-        }).length > 0) {
-            postTermContentService.update({
-                ...data.body,
-                ...data.params
-            })
-        }else {
-            postTermContentService.insert({
-                ...data.body,
-                ...data.params
-            })
-        }
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    updateStatus: (
+    updateStatus: async (
         req: Request<any>,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof postTermSchema.putStatus> = req;
 
-        serviceResult.data = postTermService.update({
+        serviceResult.data = await postTermService.update({
             ...data.body,
-            ...data.params
+            ...data.params,
+            lastAuthorId: req.session.data.id,
+            termId: data.body.termId.map(termId => MongoDBHelpers.createObjectId(termId))
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    delete: (
+    delete: async (
         req: Request<any>,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof postTermSchema.delete> = req;
 
-        serviceResult.data = postTermService.delete(data.body);
-        postTermContentService.delete(data.body);
-        postTermLinkService.delete(data.body);
+        serviceResult.data = await postTermService.delete({
+            termId: data.body.termId.map(termId => MongoDBHelpers.createObjectId(termId))
+        });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     }

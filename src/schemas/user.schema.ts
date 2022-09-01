@@ -4,7 +4,7 @@ import {ErrorCodes} from "../utils/service";
 export default {
     get: object({
         params: object({
-            userId: number(),
+            userId: string(),
         })
     }),
     post: object({
@@ -19,7 +19,7 @@ export default {
     }),
     put: object({
         params: object({
-            userId: number().required({userId: ErrorCodes.emptyValue}),
+            userId: string().required({userId: ErrorCodes.emptyValue}),
         }).required({params: ErrorCodes.emptyValue}),
         body: object({
             roleId: number(),
@@ -34,7 +34,7 @@ export default {
     }),
     delete: object({
         params: object({
-            userId: number().required({userId: ErrorCodes.emptyValue}),
+            userId: string().required({userId: ErrorCodes.emptyValue}),
         }).required({params: ErrorCodes.emptyValue})
     })
 };

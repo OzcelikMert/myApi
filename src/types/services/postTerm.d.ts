@@ -17,11 +17,11 @@ export interface UpdatePostTermParamDocument {
 }
 
 export interface InsertPostTermParamDocument {
+    mainId?: mongoose.Types.ObjectId
+    authorId: mongoose.Types.ObjectId,
     postTypeId: number,
     typeId: number,
     statusId: number,
-    mainId?: mongoose.Types.ObjectId
-    authorId: mongoose.Types.ObjectId,
     order: number,
     isFixed: boolean,
     contents: PostTermContentDocument

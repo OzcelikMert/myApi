@@ -3,19 +3,11 @@ import {ErrorCodes} from "../utils/service";
 
 export default {
     get: object({
-        query: object({
-            langId: number().required({langId: ErrorCodes.emptyValue}),
-            getContents: boolean(),
-            statusId: number(),
-            maxCount: number()
-        })
-    }),
-    getWithId: object({
         params: object({
-            navigateId: number().required({navigateId: ErrorCodes.emptyValue}),
+            navigateId: string(),
         }),
         query: object({
-            langId: number().required({langId: ErrorCodes.emptyValue}),
+            langId: string().required({langId: ErrorCodes.emptyValue}),
             getContents: boolean(),
             statusId: number(),
             maxCount: number()
@@ -23,36 +15,40 @@ export default {
     }),
     post: object({
         body: object({
-            langId: number().required({langId: ErrorCodes.emptyValue}),
+            langId: string().required({langId: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue}),
-            mainId: number(),
-            title: string().required({title: ErrorCodes.emptyValue}),
+            mainId: string(),
             order: number().required({order: ErrorCodes.emptyValue}),
-            url: string(),
+            contents: object({
+                title: string().required({title: ErrorCodes.emptyValue}),
+                url: string(),
+            }).required({contents: ErrorCodes.emptyValue})
         })
     }),
     put: object({
         params: object({
-            navigateId: number().required({navigateId: ErrorCodes.emptyValue})
+            navigateId: string().required({navigateId: ErrorCodes.emptyValue})
         }),
         body: object({
-            langId: number().required({langId: ErrorCodes.emptyValue}),
+            langId: string().required({langId: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue}),
-            mainId: number().required({mainId: ErrorCodes.emptyValue}),
-            title: string().required({title: ErrorCodes.emptyValue}),
+            mainId: string().required({mainId: ErrorCodes.emptyValue}),
             order: number().required({order: ErrorCodes.emptyValue}),
-            url: string().required({url: ErrorCodes.emptyValue}),
+            contents: object({
+                title: string().required({title: ErrorCodes.emptyValue}),
+                url: string(),
+            }).required({contents: ErrorCodes.emptyValue})
         })
     }),
     putStatus: object({
         body: object({
-            navigateId: array(number().required({navigateId: ErrorCodes.incorrectData})).required({navigateId: ErrorCodes.emptyValue}),
+            navigateId: array(string().required({navigateId: ErrorCodes.incorrectData})).required({navigateId: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue})
         })
     }),
     delete: object({
         body: object({
-            navigateId: array(number().required({navigateId: ErrorCodes.incorrectData})).required({navigateId: ErrorCodes.emptyValue}),
+            navigateId: array(string().required({navigateId: ErrorCodes.incorrectData})).required({navigateId: ErrorCodes.emptyValue}),
         })
     })
 };

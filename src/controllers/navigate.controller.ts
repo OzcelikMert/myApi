@@ -4,11 +4,10 @@ import {InferType} from "yup";
 import V, {ClearTypes} from "../library/variable";
 import navigateSchema from "../schemas/navigate.schema";
 import navigateService from "../services/navigate.service";
-import navigateContentService from "../services/navigateContent.service";
-import postContentService from "../services/postContent.service";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
-    get: (
+    get: async (
         req: Request<any, any, any, any>,
         res: Response
     ) => {
@@ -16,28 +15,16 @@ export default {
 
         let data: InferType<typeof navigateSchema.get> = req;
 
-        serviceResult.data = navigateService.select({
-            ...data.query
-        });
-
-        res.status(serviceResult.statusCode).json(serviceResult)
-    },
-    getWithId: (
-        req: Request<any, any, any, any>,
-        res: Response
-    ) => {
-        let serviceResult = new Result();
-
-        let data: InferType<typeof navigateSchema.getWithId> = req;
-
-        serviceResult.data = navigateService.select({
+        serviceResult.data = await navigateService.select({
             ...data.params,
-            ...data.query
+            ...data.query,
+            langId: MongoDBHelpers.createObjectId(data.query.langId),
+            navigateId: data.params.navigateId ? MongoDBHelpers.createObjectId(data.params.navigateId) : undefined
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    add: (
+    add: async (
         req: Request<any>,
         res: Response
     ) => {
@@ -45,72 +32,68 @@ export default {
 
         let data: InferType<typeof navigateSchema.post> = req;
 
-        data.body.url = (!data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
+        data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
 
-        serviceResult.data = navigateService.insert({
+        serviceResult.data = await navigateService.insert({
             ...data.body,
+            authorId: req.session.data.id,
+            mainId: data.body.mainId ? MongoDBHelpers.createObjectId(data.body.mainId) : undefined,
+            contents: {
+                ...data.body.contents,
+                langId: MongoDBHelpers.createObjectId(data.body.langId)
+            }
         });
-
-        if(serviceResult.data.insertId) {
-            navigateContentService.insert({
-                navigateId: serviceResult.data.insertId,
-                ...data.body
-            })
-        }
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    update: (
+    update: async (
         req: Request<any>,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof navigateSchema.put> = req;
 
-        data.body.url = (!data.body.url) ? V.clear(data.body.title, ClearTypes.SEO_URL) : data.body.url;
+        data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
 
-        serviceResult.data = navigateService.update({
+        serviceResult.data = await navigateService.update({
             ...data.body,
-            ...data.params
+            ...data.params,
+            navigateId: MongoDBHelpers.createObjectId(data.params.navigateId),
+            lastAuthorId: req.session.data.id,
+            mainId: data.body.mainId ? MongoDBHelpers.createObjectId(data.body.mainId) : undefined,
+            contents: {
+                ...data.body.contents,
+                langId: MongoDBHelpers.createObjectId(data.body.langId)
+            }
         });
-
-        if(navigateContentService.select({
-            ...data.body,
-            ...data.params
-        }).length > 0) {
-            navigateContentService.update({
-                ...data.body,
-                ...data.params
-            })
-        }else {
-            navigateContentService.insert({
-                ...data.body,
-                ...data.params
-            })
-        }
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    updateStatus: (
+    updateStatus: async (
         req: Request<any>,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof navigateSchema.putStatus> = req;
 
-        serviceResult.data = navigateService.update(data.body);
+        serviceResult.data = await navigateService.update({
+            ...data.body,
+            lastAuthorId: req.session.data.id,
+            navigateId: data.body.navigateId.map(navigateId => MongoDBHelpers.createObjectId(navigateId))
+        });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    delete: (
+    delete: async (
         req: Request<any>,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof navigateSchema.delete> = req;
 
-        serviceResult.data = navigateService.delete(data.body);
-        navigateContentService.delete(data.body);
+        serviceResult.data = await navigateService.delete({
+            navigateId: data.body.navigateId.map(navigateId => MongoDBHelpers.createObjectId(navigateId))
+        });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     }

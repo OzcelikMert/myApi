@@ -4,53 +4,59 @@ import {InferType} from "yup";
 import userSchema from "../schemas/user.schema";
 import {StatusId} from "../public/static";
 import userService from "../services/user.service";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
-    get: (
+    get: async (
         req: Request<any>,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof userSchema.get> = req;
 
-        serviceResult.data = userService.select(data.params);
+        serviceResult.data = await userService.select({
+            ...data.params,
+            userId: data.params.userId ?  MongoDBHelpers.createObjectId(data.params.userId) : undefined
+        });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    add: (
+    add: async (
         req: Request,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof userSchema.post> = req;
 
-        serviceResult.data = userService.insert(data.body);
+        serviceResult.data = await userService.insert(data.body);
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    update: (
+    update: async (
         req: Request<any>,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof userSchema.put> = req;
 
-        serviceResult.data = userService.update({
+        serviceResult.data = await userService.update({
             ...data.body,
-            ...data.params
+            ...data.params,
+            userId: MongoDBHelpers.createObjectId(data.params.userId),
+            banDateEnd: data.body.banDateEnd ? new Date(data.body.banDateEnd) : undefined
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    delete: (
+    delete: async (
         req: Request<any>,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof userSchema.delete> = req;
 
-        serviceResult.data = userService.update({
-            userId: data.params.userId,
+        serviceResult.data = await userService.update({
+            userId:  MongoDBHelpers.createObjectId(data.params.userId),
             statusId: StatusId.Deleted
         });
 

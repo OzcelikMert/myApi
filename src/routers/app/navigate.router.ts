@@ -13,7 +13,7 @@ navigateRouter.route(`/`)
     .delete([requestMiddleware.check(navigateSchema.delete), sessionMiddleware.check, permissionMiddleware.check, navigateMiddleware.check], navigateController.delete)
 
 navigateRouter.route(`/:navigateId`)
-    .get([requestMiddleware.check(navigateSchema.getWithId)], navigateController.getWithId)
+    .get([requestMiddleware.check(navigateSchema.get)], navigateController.get)
     .put([requestMiddleware.check(navigateSchema.put), sessionMiddleware.check, permissionMiddleware.check, navigateMiddleware.check], navigateController.update)
 
 export default navigateRouter;

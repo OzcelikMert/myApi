@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export interface DeletePostParamDocument {
-    postId: string | string[]
+    postId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[]
 }
 
 export interface UpdatePostParamDocument {
