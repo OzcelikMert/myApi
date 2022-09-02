@@ -34,11 +34,6 @@ export type ViewTotalWithDocument = {
     _id: string
 }
 
-export type ViewTotalWithCountryDocument = {
-    total: number
-    viewCountry: string
-}
-
 export interface ViewDocument {
     _id: mongoose.Types.ObjectId
     url: string,

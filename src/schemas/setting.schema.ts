@@ -2,12 +2,12 @@ import { object, number, boolean, string, array } from "yup";
 import {ErrorCodes} from "../utils/service";
 
 export default {
-    get: object({
+    get: {
         query: object({
             langId: string().required({langId: ErrorCodes.emptyValue}),
         }),
-    }),
-    put: object({
+    },
+    put: {
         body: object({
             defaultLangId: string(),
             icon: string(),
@@ -19,5 +19,5 @@ export default {
                 tags: array(string().required({tags: ErrorCodes.incorrectData}))
             })
         })
-    })
+    }
 };

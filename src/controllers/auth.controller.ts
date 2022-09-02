@@ -5,6 +5,7 @@ import {InferType} from "yup";
 import authSchema from "../schemas/auth.schema";
 import userService from "../services/user.service";
 import {StatusId} from "../public/static";
+import userUtil from "../utils/functions/user.util";
 
 export default {
     getSession: async (
@@ -27,7 +28,10 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof authSchema.post> = req;
 
-        let resData = await userService.select(data.body);
+        let resData = await userService.select({
+            ...data.body,
+            password: data.body.password ? userUtil.encodePassword(data.body.password) : undefined
+        });
 
         if(resData.length > 0){
             let user = resData[0];

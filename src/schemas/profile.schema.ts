@@ -1,8 +1,8 @@
-import { object, string, number, boolean, array } from "yup";
+import {object, string, number, boolean, array} from "yup";
 import {ErrorCodes} from "../utils/service";
 
 export default {
-    put: object({
+    put: {
         body: object({
             image: string(),
             name: string(),
@@ -12,11 +12,11 @@ export default {
             instagram: string().url({instagram: ErrorCodes.incorrectData}),
             twitter: string().url({twitter: ErrorCodes.incorrectData})
         })
-    }),
-    putPassword: object({
+    },
+    putPassword: {
         body: object({
             password: string().required({password: ErrorCodes.emptyValue}),
             newPassword: string().required({newPassword: ErrorCodes.emptyValue})
         })
-    }),
+    },
 };
