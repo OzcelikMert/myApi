@@ -3,11 +3,12 @@ import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../
 import profileSchema from "../../schemas/profile.schema";
 import profileController from "../../controllers/profile.controller";
 import profileMiddleware from "../../middlewares/profile.middleware";
+import userMiddleware from "../../middlewares/user.middleware";
 
 const profileRouter = Router();
 
 profileRouter.route(`/`)
-    .put([requestMiddleware.check(profileSchema.put), sessionMiddleware.check], profileController.update)
+    .put([requestMiddleware.check(profileSchema.put), sessionMiddleware.check, profileMiddleware.setIsProfile, userMiddleware.checkAndSetUrlAlready], profileController.update)
 
 profileRouter.route(`/changePassword`)
     .put([requestMiddleware.check(profileSchema.putPassword), sessionMiddleware.check, profileMiddleware.checkPassword], profileController.updatePassword)

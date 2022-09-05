@@ -7,6 +7,7 @@ import {
     SelectNavigateParamDocument,
     UpdateNavigateParamDocument
 } from "../types/services/navigate";
+import {PostTermDocument} from "../types/services/postTerm";
 
 export default {
     async select(params: SelectNavigateParamDocument): Promise<NavigateDocument[]> {
@@ -22,14 +23,25 @@ export default {
             url: params.statusId
         }
 
-        let docs = await navigateModel.find(filters, {}, {lean: true});
-        if(docs){
-            docs.map( doc => {
+        let query = navigateModel.find(filters, {}).populate({
+            path: "mainId",
+            select: "_id contents.title contents.url contents.langId",
+            transform: (doc: PostTermDocument) => {
                 doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                 return doc;
-            })
-        }
-        return docs;
+            }
+        }).populate({
+            path: "authorId",
+            select: "_id name email url"
+        }).populate({
+            path: "lastAuthorId",
+            select: "_id name email url"
+        });
+
+        return (await query.exec()).map(doc => {
+            doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+            return doc;
+        });
     },
     async insert(params: InsertNavigateParamDocument) {
         return await navigateModel.create({
@@ -54,12 +66,12 @@ export default {
         let docs = await navigateModel.find(filters);
         if (docs) {
             delete params.navigateId;
-            docs.map( async doc => {
-                if(params.contents) {
+            docs.map(async doc => {
+                if (params.contents) {
                     const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
-                    if(findIndex > -1) {
+                    if (findIndex > -1) {
                         doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
-                    }else {
+                    } else {
                         doc.contents.push(params.contents)
                     }
                     delete params.contents;

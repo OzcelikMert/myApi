@@ -6,9 +6,9 @@ import {NavigateContentDocument, NavigateDocument} from "../types/services/navig
 
 const schemaContent = new mongoose.Schema<NavigateContentDocument>(
     {
-            langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
-            title: {type: String, default: ""},
-            url: {type: String, default: ""},
+        langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
+        title: {type: String, default: ""},
+        url: {type: String, default: ""},
     },
     {timestamps: true}
 ).index({langId: 1}, {unique: true});
@@ -16,7 +16,7 @@ const schemaContent = new mongoose.Schema<NavigateContentDocument>(
 const schema = new mongoose.Schema<NavigateDocument>(
     {
         statusId: {type: Number, required: true, enum: StatusId},
-        mainId: {type: mongoose.Schema.Types.ObjectId},
+        mainId: {type: mongoose.Schema.Types.ObjectId, ref: "navigates"},
         authorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         lastAuthorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         order: {type: Number, default: 0},

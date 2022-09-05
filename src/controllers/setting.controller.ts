@@ -14,7 +14,7 @@ export default {
         let data: InferType<typeof settingSchema.get> = req;
 
         serviceResult.data = await settingService.select({
-            langId: MongoDBHelpers.createObjectId(data.query.langId),
+            langId: data.query.langId ? MongoDBHelpers.createObjectId(data.query.langId) : undefined,
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)

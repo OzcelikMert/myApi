@@ -55,7 +55,7 @@ export default {
         res.status(serviceResult.statusCode).json(serviceResult)
     },
     add: async (
-        req: Request,
+        req: Request<any>,
         res: Response
     ) => {
         let serviceResult = new Result();
@@ -65,6 +65,7 @@ export default {
         data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
 
         serviceResult.data = await postService.insert({
+            ...data.params,
             ...data.body,
             authorId: req.session.data.id,
             dateStart: new Date(data.body.dateStart),

@@ -8,11 +8,11 @@ const userRouter = Router();
 
 userRouter.route(`/`)
     .get([sessionMiddleware.check], userController.get)
-    .post([requestMiddleware.check(userSchema.post), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.checkRoleRank, userMiddleware.checkAlreadyEmail], userController.add)
+    .post([requestMiddleware.check(userSchema.post), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.checkRoleRank, userMiddleware.checkAlreadyEmail, userMiddleware.checkAndSetUrlAlready], userController.add)
 
 userRouter.route(`/:userId`)
     .get([sessionMiddleware.check], userController.get)
-    .put([requestMiddleware.check(userSchema.put), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.check, userMiddleware.checkRoleRank, userMiddleware.checkAlreadyEmail], userController.update)
+    .put([requestMiddleware.check(userSchema.put), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.check, userMiddleware.checkRoleRank, userMiddleware.checkAlreadyEmail, userMiddleware.checkAndSetUrlAlready], userController.update)
     .delete([requestMiddleware.check(userSchema.delete), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.check, userMiddleware.checkRoleRank], userController.delete)
 
 

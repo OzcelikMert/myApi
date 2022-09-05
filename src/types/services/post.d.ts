@@ -32,7 +32,8 @@ export interface SelectPostParamDocument {
     url?: string
     statusId?: number,
     getContents?: boolean,
-    maxCount?: number
+    maxCount?: number,
+    ignorePostId?: mongoose.Types.ObjectId[]
 }
 
 export interface PostContentDocument {

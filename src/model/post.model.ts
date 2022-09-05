@@ -7,14 +7,14 @@ import {PostContentDocument, PostDocument} from "../types/services/post";
 
 const schemaContent = new mongoose.Schema<PostContentDocument>(
     {
-            langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
-            image: {type: String, default: ""},
-            title: {type: String, default: ""},
-            content: {type: String, default: ""},
-            shortContent: {type: String, default: ""},
-            url: {type: String, default: ""},
-            seoTitle: {type: String, default: ""},
-            seoContent: {type: String, default: ""}
+        langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
+        image: {type: String, default: ""},
+        title: {type: String, default: ""},
+        content: {type: String, default: ""},
+        shortContent: {type: String, default: ""},
+        url: {type: String, default: ""},
+        seoTitle: {type: String, default: ""},
+        seoContent: {type: String, default: ""}
     },
     {timestamps: true}
 ).index({langId: 1}, {unique: true});

@@ -3,6 +3,7 @@ import {UserRoles} from "../public/static";
 import {ErrorCodes, Result, StatusCodes} from "../utils/service";
 import userService from "../services/user.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
+import V, {ClearTypes} from "../library/variable";
 
 export default {
     check: async (
@@ -100,5 +101,34 @@ export default {
         } else {
             res.status(serviceResult.statusCode).json(serviceResult)
         }
+    },
+    checkAndSetUrlAlready: async (
+        req: Request<any>,
+        res: Response,
+        next: NextFunction
+    ) => {
+        let url = (req.body.url) ?? V.clear(req.body.name, ClearTypes.SEO_URL);
+        let userId = req.body.userId
+            ? MongoDBHelpers.createObjectId(req.body.userId)
+            :  req.body.isProfile
+                ? req.session.data.id
+                : undefined;
+
+        let urlAlreadyCount = 2;
+
+        while((await userService.select({
+            ignoreUserId: userId ? [userId] : undefined,
+            url: url,
+            maxCount: 1
+        })).length > 0) {
+
+            url += `-${urlAlreadyCount}`;
+            urlAlreadyCount++;
+
+        }
+
+        req.body.url = url;
+
+        next();
     }
 };

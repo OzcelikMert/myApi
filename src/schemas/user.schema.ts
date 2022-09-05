@@ -13,23 +13,23 @@ const postBody = object({
 });
 
 export default {
-    get: {
+    get: object({
         params: object({
             userId: string(),
         })
-    },
-    post: {
+    }),
+    post: object({
         body: postBody
-    },
-    put: {
+    }),
+    put: object({
         params: object({
             userId: string().required({userId: ErrorCodes.emptyValue}),
         }),
         body: postBody
-    },
-    delete: {
+    }),
+    delete: object({
         params: object({
             userId: string().required({userId: ErrorCodes.emptyValue}),
         })
-    }
+    })
 };

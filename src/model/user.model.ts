@@ -8,6 +8,7 @@ const schema = new mongoose.Schema<UserDocument>(
         statusId: {type: Number, required: true, enum: StatusId},
         image: {type: String, default: ""},
         name: {type: String, default: ""},
+        url: {type: String, default: ""},
         comment: {type: String, default: ""},
         phone: {type: String, default: ""},
         email: {type: String, required: true},

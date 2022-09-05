@@ -28,5 +28,14 @@ export default {
         } else {
             res.status(serviceResult.statusCode).json(serviceResult)
         }
+    },
+    setIsProfile: async (
+        req: Request<any>,
+        res: Response,
+        next: NextFunction
+    ) => {
+        req.body.isProfile = true;
+
+        next();
     }
 };

@@ -13,7 +13,7 @@ const postBody = object({
 })
 
 export default {
-    get: {
+    get: object({
         params: object({
             navigateId: string(),
         }),
@@ -22,25 +22,25 @@ export default {
             statusId: number(),
             maxCount: number()
         })
-    },
-    post: {
+    }),
+    post: object({
         body: postBody
-    },
-    put: {
+    }),
+    put: object({
         params: object({
             navigateId: string().required({navigateId: ErrorCodes.emptyValue})
         }),
         body: postBody
-    },
-    putStatus: {
+    }),
+    putStatus: object({
         body: object({
             navigateId: array(string().required({navigateId: ErrorCodes.incorrectData})).required({navigateId: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue})
         })
-    },
-    delete: {
+    }),
+    delete: object({
         body: object({
             navigateId: array(string().required({navigateId: ErrorCodes.incorrectData})).required({navigateId: ErrorCodes.emptyValue}),
         })
-    }
+    })
 };

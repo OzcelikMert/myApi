@@ -34,6 +34,8 @@ export interface SelectPostTermParamDocument {
     postTypeId?: number,
     url?: string
     statusId?: number,
+    ignoreTermId?: mongoose.Types.ObjectId[],
+    maxCount?: number
 }
 
 export interface PostTermContentDocument {

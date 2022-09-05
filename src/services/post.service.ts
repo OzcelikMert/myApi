@@ -8,6 +8,8 @@ import {
     SelectPostParamDocument,
     UpdatePostParamDocument
 } from "../types/services/post";
+import postTermModel from "../model/postTerm.model";
+import {PostTermDocument} from "../types/services/postTerm";
 
 export default {
     async select(params: SelectPostParamDocument): Promise<PostDocument[]> {
@@ -31,8 +33,27 @@ export default {
             ...filters,
             statusId: params.statusId
         }
+        if(params.ignorePostId){
+            filters = {
+                ...filters,
+                _id: { $ne: { $in: params.ignorePostId } }
+            }
+        }
 
-        let query = postModel.find(filters);
+        let query = postModel.find(filters).populate({
+            path: "terms",
+            select: "_id contents.title contents.langId",
+            transform: (doc: PostTermDocument) => {
+                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                return doc;
+            }
+        }).populate({
+            path: "authorId",
+            select: "_id name email url"
+        }).populate({
+            path: "lastAuthorId",
+            select: "_id name email url"
+        });
 
         if (params.maxCount) query.limit(params.maxCount);
 

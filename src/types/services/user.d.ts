@@ -4,7 +4,10 @@ export interface SelectUserParamDocument {
     userId?: mongoose.Types.ObjectId
     statusId?: number
     email?: string,
-    password?: string
+    password?: string,
+    url?: string,
+    maxCount?: number,
+    ignoreUserId?: mongoose.Types.ObjectId[]
 }
 
 export interface InsertUserParamDocument {
@@ -40,6 +43,7 @@ export interface UserDocument {
     statusId: number,
     image: string,
     name: string,
+    url: string,
     comment: string,
     phone: string,
     email: string,

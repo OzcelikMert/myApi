@@ -36,30 +36,33 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         }
     },
-    checkUrlAlready: async (
+    checkAndSetUrlAlready: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new Result();
-
         let url = req.body.url;
         let langId = req.body.langId;
         let typeId = req.params.typeId;
+        let postId = req.params.postId ? MongoDBHelpers.createObjectId(req.params.postId) : undefined
 
         let urlAlreadyCount = 2;
 
-        while((await postService.select({langId: MongoDBHelpers.createObjectId(langId), typeId: typeId, url: url})).length > 0) {
+        while((await postService.select({
+            ignorePostId: postId ? [postId] : undefined,
+            langId: MongoDBHelpers.createObjectId(langId),
+            typeId: typeId,
+            url: url,
+            maxCount: 1
+        })).length > 0) {
+
             url += `-${urlAlreadyCount}`;
             urlAlreadyCount++;
+
         }
 
         req.body.url = url;
 
-        if (serviceResult.status) {
-            next();
-        } else {
-            res.status(serviceResult.statusCode).json(serviceResult)
-        }
+        next();
     }
 };

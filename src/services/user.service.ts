@@ -36,9 +36,23 @@ export default {
                 statusId: params.statusId
             }
         }
+        if(params.url){
+            filters = {
+                ...filters,
+                url: params.url
+            }
+        }
+        if(params.ignoreUserId){
+            filters = {
+                ...filters,
+                _id: { $ne: { $in: params.ignoreUserId } }
+            }
+        }
 
-        let query = await userModel.find(filters, {}, {lean: true});
-        return query.map(user => {
+        let query = userModel.find(filters, {});
+        if(params.maxCount) query.limit(params.maxCount);
+
+        return (await query.exec()).map(user => {
             delete user.password;
             return user;
         });

@@ -2,7 +2,6 @@ import { object, string, number, boolean, array } from "yup";
 import {ErrorCodes} from "../utils/service";
 
 const postBody = object({
-    typeId: number().required({typeId: ErrorCodes.emptyValue}),
     langId: string().required({langId: ErrorCodes.emptyValue}),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
     termId: array(string().required({termId: ErrorCodes.incorrectData})),
@@ -21,7 +20,7 @@ const postBody = object({
 })
 
 export default {
-    getGeneral: {
+    getGeneral: object({
         query: object({
             langId: string().required({langId: ErrorCodes.emptyValue}),
             typeId: array(number().required({typeId: ErrorCodes.incorrectData})),
@@ -29,8 +28,8 @@ export default {
             getContents: boolean(),
             maxCount: number()
         }),
-    },
-    get: {
+    }),
+    get: object({
         params: object({
             postId: string().required({postId: ErrorCodes.emptyValue}),
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
@@ -41,8 +40,8 @@ export default {
             statusId: number(),
             maxCount: number()
         })
-    },
-    getWithType: {
+    }),
+    getWithType: object({
         params: object({
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
@@ -52,17 +51,21 @@ export default {
             statusId: number(),
             maxCount: number()
         })
-    },
-    post: {
-        body: postBody
-    },
-    put: {
+    }),
+    post: object({
         params: object({
+            typeId: number().required({typeId: ErrorCodes.emptyValue}),
+        }),
+        body: postBody
+    }),
+    put: object({
+        params: object({
+            typeId: number().required({typeId: ErrorCodes.emptyValue}),
             postId: string().required({postId: ErrorCodes.emptyValue}),
         }),
         body: postBody
-    },
-    putStatus: {
+    }),
+    putStatus: object({
         params: object({
             typeId: number().required({typeId: ErrorCodes.emptyValue})
         }),
@@ -70,10 +73,10 @@ export default {
             postId: array(string().required({postId: ErrorCodes.incorrectData})).required({postId: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue})
         })
-    },
-    delete: {
+    }),
+    delete: object({
         body: object({
             postId: array(string().required({postId: ErrorCodes.incorrectData})).required({postId: ErrorCodes.emptyValue}),
         })
-    }
+    })
 };

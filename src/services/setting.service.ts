@@ -12,17 +12,15 @@ export default {
     async select(params: SelectSettingParamDocument): Promise<SettingDocument[]> {
         let filters: mongoose.FilterQuery<SettingDocument> = {}
 
-        let docs = await settingModel.find(filters, {}, {lean: true});
-        if(docs){
-            docs.map( doc => {
-                if(params.langId){
-                    let langId = params.langId;
-                    doc.seoContents = doc.seoContents.filter(seoContents => seoContents.langId.toString() == langId.toString());
-                }
-                return doc;
-            })
-        }
-        return docs;
+        return (await settingModel.find(filters, {}, {lean: true})).map( doc => {
+            if(params.langId){
+                let langId = params.langId;
+                doc.seoContents = doc.seoContents.filter(seoContents => seoContents.langId.toString() == langId.toString());
+            }else {
+                delete doc.seoContents;
+            }
+            return doc;
+        });
     },
     async insert(params: InsertSettingParamDocument) {
         params = V.clearAllData(params);

@@ -1,5 +1,4 @@
 import * as mongoose from "mongoose";
-import V, {DateMask} from "../library/variable";
 import postTermModel from "../model/postTerm.model";
 import {
     DeletePostTermParamDocument,
@@ -33,15 +32,34 @@ export default {
             ...filters,
             postTypeId: params.postTypeId
         }
+        if(params.ignoreTermId){
+            filters = {
+                ...filters,
+                _id: { $ne: { $in: params.ignoreTermId } }
+            }
+        }
 
-        let docs = await postTermModel.find(filters, {}, {lean: true});
-        if(docs){
-            docs.map( doc => {
+        let query = postTermModel.find(filters, {}).populate({
+            path: "mainId",
+            select: "_id contents.title contents.url contents.langId",
+            transform: (doc: PostTermDocument) => {
                 doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                 return doc;
-            })
-        }
-        return docs;
+            }
+        }).populate({
+            path: "authorId",
+            select: "_id name email url"
+        }).populate({
+            path: "lastAuthorId",
+            select: "_id name email url"
+        });
+
+        if (params.maxCount) query.limit(params.maxCount);
+
+        return (await query.exec()).map( doc => {
+            doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+            return doc;
+        })
     },
     async insert(params: InsertPostTermParamDocument) {
         return await postTermModel.create({

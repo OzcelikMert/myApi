@@ -8,7 +8,6 @@ import postRouter from "./post.router";
 import postTermRouter from "./postTerm.router";
 import navigateRouter from "./navigate.router";
 import galleryRouter from "./gallery.router";
-import seoRouter from "./seo.router";
 import settingRouter from "./setting.router";
 import languageRouter from "./language.router";
 import serverInfoRouter from "./serverInfo.router";
@@ -23,7 +22,6 @@ App.use(Pages.post, postRouter)
 App.use(Pages.postTerm, postTermRouter)
 App.use(Pages.navigate, navigateRouter)
 App.use(Pages.gallery, galleryRouter)
-App.use(Pages.seo, seoRouter)
 App.use(Pages.setting, settingRouter)
 App.use(Pages.language, languageRouter)
 App.use(Pages.serverInfo, serverInfoRouter)
