@@ -1,5 +1,6 @@
 import * as mongoose from "mongoose";
-import {StatusId, UserRoleId} from "../public/static";
+import {StatusId} from "../constants/status.const";
+import {UserRoleId} from "../constants/userRole.const";
 import {UserDocument} from "../types/services/user";
 
 const schema = new mongoose.Schema<UserDocument>(

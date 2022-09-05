@@ -1,9 +1,9 @@
 import {NextFunction, Request, Response} from "express";
-import {UserRoles} from "../public/static";
-import {ErrorCodes, Result, StatusCodes} from "../utils/service";
+import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import userService from "../services/user.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import V, {ClearTypes} from "../library/variable";
+import userRoleConst from "../constants/userRole.const";
 
 export default {
     check: async (
@@ -49,7 +49,7 @@ export default {
         }
 
         if (userRoleId > 0) {
-            if (UserRoles.findSingle("id", req.session.data.roleId).rank < UserRoles.findSingle("id", userRoleId).rank) {
+            if (userRoleConst.findSingle("id", req.session.data.roleId).rank < userRoleConst.findSingle("id", userRoleId).rank) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.noPerm;
                 serviceResult.statusCode = StatusCodes.notFound;

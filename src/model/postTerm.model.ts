@@ -1,5 +1,7 @@
 import * as mongoose from "mongoose";
-import {PostTermTypeId, PostTypeId, StatusId} from "../public/static";
+import {StatusId} from "../constants/status.const";
+import {PostTypeId} from "../constants/postType.const";
+import {PostTermTypeId} from "../constants/postTermType.const";
 import userModel from "./user.model";
 import languageModel from "./language.model";
 import {PostTermContentDocument, PostTermDocument} from "../types/services/postTerm";

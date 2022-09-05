@@ -1,9 +1,9 @@
 import {NextFunction, Request, Response} from "express";
-import {UserRoleId} from "../../public/static";
-import {ErrorCodes, Result, StatusCodes} from "../../utils/service";
+import {ErrorCodes, Result, StatusCodes} from "../../library/api";
 import {Config} from "../../config";
-import PermissionPaths from "../../public/permissions/paths";
-import {PermissionPathDataDocument} from "../../types/public/permissions/paths";
+import PermissionPaths from "../../constants/permissions/path.const";
+import {PermissionPathDataDocument} from "../../types/constants/permissions/paths";
+import {UserRoleId} from "../../constants/userRole.const";
 
 export default {
     check: (
@@ -14,7 +14,7 @@ export default {
         let serviceResult = new Result();
         let session = req.session.data;
 
-        let page = req.originalUrl.replace(`/ajax`, "");
+        let page = req.originalUrl.replace(`/api`, "");
         Object.keys(PermissionPaths).forEach(key => {
             if(page.search(key) > -1){
                 page = key;

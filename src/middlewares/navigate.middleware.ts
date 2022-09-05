@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {ErrorCodes, Result, StatusCodes} from "../utils/service";
+import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import navigateService from "../services/navigate.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
 

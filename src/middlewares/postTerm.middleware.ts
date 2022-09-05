@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {ErrorCodes, Result, StatusCodes} from "../utils/service";
+import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import postTermService from "../services/postTerm.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
 

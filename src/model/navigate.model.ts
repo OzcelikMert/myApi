@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import {StatusId} from "../public/static";
+import {StatusId} from "../constants/status.const";
 import userModel from "./user.model";
 import languageModel from "./language.model";
 import {NavigateContentDocument, NavigateDocument} from "../types/services/navigate";

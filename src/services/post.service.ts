@@ -8,7 +8,6 @@ import {
     SelectPostParamDocument,
     UpdatePostParamDocument
 } from "../types/services/post";
-import postTermModel from "../model/postTerm.model";
 import {PostTermDocument} from "../types/services/postTerm";
 
 export default {

@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ErrorCodes, Result, StatusCodes} from "../utils/service";
+import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import {lookup} from "geoip-lite";
 import {InferType} from "yup";
 import viewSchema from "../schemas/view.schema";

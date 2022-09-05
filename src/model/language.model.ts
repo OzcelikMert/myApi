@@ -1,6 +1,6 @@
 import * as mongoose from "mongoose";
 import {LanguageDocument} from "../types/services/language";
-import {StatusId} from "../public/static";
+import {StatusId} from "../constants/status.const";
 
 const schema = new mongoose.Schema<LanguageDocument>(
     {

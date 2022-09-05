@@ -1,5 +1,5 @@
 import {object, string, number, boolean, array} from "yup";
-import {ErrorCodes} from "../utils/service";
+import {ErrorCodes} from "../library/api";
 
 export default {
     put: object({

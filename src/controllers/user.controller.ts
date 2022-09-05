@@ -1,10 +1,10 @@
 import {Request, Response} from "express";
-import {ErrorCodes, Result} from "../utils/service";
+import {ErrorCodes, Result} from "../library/api";
 import {InferType} from "yup";
 import userSchema from "../schemas/user.schema";
-import {StatusId} from "../public/static";
 import userService from "../services/user.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
+import {StatusId} from "../constants/status.const";
 
 export default {
     get: async (

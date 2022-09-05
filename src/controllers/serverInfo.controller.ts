@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ErrorCodes, Result, StatusCodes} from "../utils/service";
+import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import osu from "node-os-utils";
 import checkDiskSpace from "check-disk-space";
 import os from "os";

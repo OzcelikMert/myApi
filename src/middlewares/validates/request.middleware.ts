@@ -1,6 +1,6 @@
 import {AnySchema} from "yup";
 import {NextFunction, Request, Response} from "express";
-import {ErrorCodes, Result, StatusCodes} from "../../utils/service";
+import {ErrorCodes, Result, StatusCodes} from "../../library/api";
 
 export default {
     check: (schema: AnySchema) => async (

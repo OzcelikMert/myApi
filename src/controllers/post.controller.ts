@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ErrorCodes, Result} from "../utils/service";
+import {ErrorCodes, Result} from "../library/api";
 import {InferType} from "yup";
 import postSchema from "../schemas/post.schema";
 import postService from "../services/post.service";

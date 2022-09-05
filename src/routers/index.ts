@@ -5,6 +5,6 @@ import App from "./app";
 
 const routers = Router();
 
-routers.use("/ajax", App);
+routers.use("/api", App);
 
 export default routers;

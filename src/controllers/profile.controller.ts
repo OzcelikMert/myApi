@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from "express";
-import {Result} from "../utils/service";
+import {Result} from "../library/api";
 import {InferType} from "yup";
 import userService from "../services/user.service";
 import profileSchema from "../schemas/profile.schema";

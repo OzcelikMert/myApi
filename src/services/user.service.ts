@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import {StatusId} from "../public/static";
+import {StatusId} from "../constants";
 import V from "../library/variable";
 import userModel from "../model/user.model";
 import {

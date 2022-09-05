@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import V, {DateMask} from "../library/variable"
-import {ErrorCodes, Result, StatusCodes} from "../utils/service";
+import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import {InferType} from "yup";
 import fs from "fs";
 import {Config} from "../config";
