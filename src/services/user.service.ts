@@ -1,5 +1,4 @@
 import * as mongoose from "mongoose";
-import {StatusId} from "../constants";
 import V from "../library/variable";
 import userModel from "../model/user.model";
 import {
@@ -8,6 +7,7 @@ import {
     UpdateUserParamDocument,
     UserDocument
 } from "../types/services/user";
+import {StatusId} from "../constants/status.const";
 
 export default {
     async select(params: SelectUserParamDocument): Promise<UserDocument[]> {
