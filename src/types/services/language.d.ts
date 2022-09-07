@@ -6,6 +6,8 @@ export interface SelectLanguageParamDocument {
 
 export type InsertLanguageDocument = {} & LanguageDocument
 
+export type SelectLanguageResultDocument = {} & LanguageDocument
+
 export interface LanguageDocument {
     _id: mongoose.Types.ObjectId
     title: string

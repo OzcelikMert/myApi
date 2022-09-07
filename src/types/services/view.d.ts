@@ -25,11 +25,13 @@ export interface InsertViewParamDocument {
     region?: string
 }
 
-export interface ViewTotalDocument {
+export type SelectViewResultDocument = {} & ViewDocument
+
+export interface SelectTotalViewResultDocument {
     total: number
 }
 
-export type ViewTotalWithDocument = {
+export type SelectTotalWithViewResultDocument = {
     total: number
     _id: string
 }

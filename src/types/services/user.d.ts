@@ -37,6 +37,15 @@ export interface UpdateUserParamDocument {
     permissionId?: number[]
 }
 
+export type SelectUserResultDocument = {} & UserDocument
+
+export interface PopulateAuthorIdDocument {
+    _id: mongoose.Types.ObjectId,
+    name: string,
+    email: string,
+    url: string
+}
+
 export interface UserDocument {
     _id: mongoose.Types.ObjectId
     roleId: number,

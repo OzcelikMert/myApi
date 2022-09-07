@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import {PopulateAuthorIdDocument} from "./user";
+import {PopulateTermsDocument} from "./postTerm";
 
 export interface DeletePostParamDocument {
     postId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[]
@@ -36,6 +38,12 @@ export interface SelectPostParamDocument {
     ignorePostId?: mongoose.Types.ObjectId[]
 }
 
+export type SelectPostResultDocument = {
+    authorId: PopulateAuthorIdDocument,
+    lastAuthorId: PopulateAuthorIdDocument,
+    terms: PopulateTermsDocument[]
+} & PostDocument
+
 export interface PostContentDocument {
     langId: mongoose.Types.ObjectId
     image?: string,
@@ -51,12 +59,12 @@ export interface PostDocument {
     _id: mongoose.Types.ObjectId
     typeId: number,
     statusId: number,
-    authorId: mongoose.Types.ObjectId
-    lastAuthorId: mongoose.Types.ObjectId
+    authorId: mongoose.Types.ObjectId | PopulateAuthorIdDocument
+    lastAuthorId: mongoose.Types.ObjectId | PopulateAuthorIdDocument
     dateStart: Date,
     order: number,
     views: number,
     isFixed: boolean,
-    terms: mongoose.Types.ObjectId[]
+    terms: mongoose.Types.ObjectId[] | PopulateTermsDocument[]
     contents: PostContentDocument[]
 }

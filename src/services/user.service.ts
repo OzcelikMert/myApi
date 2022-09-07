@@ -3,14 +3,14 @@ import V from "../library/variable";
 import userModel from "../model/user.model";
 import {
     InsertUserParamDocument,
-    SelectUserParamDocument,
+    SelectUserParamDocument, SelectUserResultDocument,
     UpdateUserParamDocument,
     UserDocument
 } from "../types/services/user";
 import {StatusId} from "../constants/status.const";
 
 export default {
-    async select(params: SelectUserParamDocument): Promise<UserDocument[]> {
+    async select(params: SelectUserParamDocument): Promise<SelectUserResultDocument[]> {
         params = V.clearAllData(params);
 
         let filters: mongoose.FilterQuery<UserDocument> = {
@@ -69,12 +69,22 @@ export default {
         params = V.clearAllData(params);
         if (params.permissionId || params.permissionId === [0]) params.permissionId = [];
 
-        let doc = await userModel.findOne({_id: params.userId})
+        let filters: mongoose.FilterQuery<UserDocument> = {}
 
-        if(doc){
-            delete params.userId;
-            doc = Object.assign(doc, params);
-            await doc.save();
+        if (Array.isArray(params.userId)) {
+            filters = {
+                _id: {$in: params.userId}
+            }
+        } else {
+            filters = {
+                _id: params.userId
+            };
         }
+
+        delete params.userId;
+        return (await userModel.find(filters)).map( async doc => {
+            doc = Object.assign(doc, params);
+            return await doc.save();
+        })
     }
 };

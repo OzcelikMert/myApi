@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {PopulateAuthorIdDocument} from "./user";
 
 export interface DeleteNavigateParamDocument {
     navigateId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[]
@@ -26,6 +27,19 @@ export interface SelectNavigateParamDocument {
     navigateId?: mongoose.Types.ObjectId
     statusId?: number,
 }
+
+export type SelectNavigateResultDocument = {
+    authorId: PopulateAuthorIdDocument,
+    lastAuthorId: PopulateAuthorIdDocument,
+    mainId?: {
+        _id: mongoose.Types.ObjectId
+        contents: {
+            langId: mongoose.Types.ObjectId
+            title: string,
+            url: string,
+        }[]
+    }
+} & NavigateDocument
 
 export interface NavigateContentDocument {
     langId: mongoose.Types.ObjectId

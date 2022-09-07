@@ -4,13 +4,13 @@ import {
     DeleteNavigateParamDocument,
     InsertNavigateParamDocument,
     NavigateDocument,
-    SelectNavigateParamDocument,
+    SelectNavigateParamDocument, SelectNavigateResultDocument,
     UpdateNavigateParamDocument
 } from "../types/services/navigate";
 import {PostTermDocument} from "../types/services/postTerm";
 
 export default {
-    async select(params: SelectNavigateParamDocument): Promise<NavigateDocument[]> {
+    async select(params: SelectNavigateParamDocument): Promise<SelectNavigateResultDocument[]> {
 
         let filters: mongoose.FilterQuery<NavigateDocument> = {}
 
@@ -23,17 +23,17 @@ export default {
             url: params.statusId
         }
 
-        let query = navigateModel.find(filters, {}).populate({
+        let query = navigateModel.find(filters, {}).populate<{mainId: SelectNavigateResultDocument["mainId"]}>({
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: PostTermDocument) => {
                 doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                 return doc;
             }
-        }).populate({
+        }).populate<{authorId: SelectNavigateResultDocument["authorId"]}>({
             path: "authorId",
             select: "_id name email url"
-        }).populate({
+        }).populate<{lastAuthorId: SelectNavigateResultDocument["lastAuthorId"]}>({
             path: "lastAuthorId",
             select: "_id name email url"
         });
@@ -62,26 +62,22 @@ export default {
             };
         }
 
-
-        let docs = await navigateModel.find(filters);
-        if (docs) {
-            delete params.navigateId;
-            docs.map(async doc => {
-                if (params.contents) {
-                    const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
-                    if (findIndex > -1) {
-                        doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
-                    } else {
-                        doc.contents.push(params.contents)
-                    }
-                    delete params.contents;
+        delete params.navigateId;
+        return (await navigateModel.find(filters)).map(async doc => {
+            if (params.contents) {
+                const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
+                if (findIndex > -1) {
+                    doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
+                } else {
+                    doc.contents.push(params.contents)
                 }
+                delete params.contents;
+            }
 
-                doc = Object.assign(doc, params);
+            doc = Object.assign(doc, params);
 
-                await doc.save();
-            })
-        }
+            return await doc.save();
+        });
     },
     async delete(params: DeleteNavigateParamDocument) {
         let filters: mongoose.FilterQuery<NavigateDocument> = {}

@@ -2,15 +2,15 @@ import * as mongoose from "mongoose";
 import viewModel from "../model/view.model";
 import {
     DeleteViewParamDocument,
-    InsertViewParamDocument,
-    SelectViewParamDocument,
-    ViewDocument, ViewTotalDocument,
-    ViewTotalWithDocument
+    InsertViewParamDocument, SelectTotalViewResultDocument,
+    SelectViewParamDocument, SelectViewResultDocument,
+    ViewDocument,
+    SelectTotalWithViewResultDocument
 } from "../types/services/view";
 import postModel from "../model/post.model";
 
 export default {
-    async select(params: SelectViewParamDocument): Promise<ViewDocument[]> {
+    async select(params: SelectViewParamDocument): Promise<SelectViewResultDocument[]> {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
 
         if (params.ip) filters = {
@@ -53,7 +53,7 @@ export default {
 
         return await viewModel.find(filters, {}, {lean: true});
     },
-    async selectTotal(params: SelectViewParamDocument): Promise<ViewTotalDocument> {
+    async selectTotal(params: SelectViewParamDocument): Promise<SelectTotalViewResultDocument> {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
 
         if (params.dateStart) {
@@ -70,7 +70,7 @@ export default {
             total: (await viewModel.countDocuments(filters)) || 0
         };
     },
-    async selectTotalWithDate(params: SelectViewParamDocument): Promise<ViewTotalWithDocument[]> {
+    async selectTotalWithDate(params: SelectViewParamDocument): Promise<SelectTotalWithViewResultDocument[]> {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
 
         if (params.dateStart) {
@@ -96,7 +96,7 @@ export default {
             }
         ]);
     },
-    async selectTotalWithCountry(params: SelectViewParamDocument): Promise<ViewTotalWithDocument[]> {
+    async selectTotalWithCountry(params: SelectViewParamDocument): Promise<SelectTotalWithViewResultDocument[]> {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
 
         if (params.dateStart) {

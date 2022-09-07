@@ -3,13 +3,13 @@ import V, {DateMask} from "../library/variable";
 import settingModel from "../model/setting.model";
 import {
     InsertSettingParamDocument,
-    SelectSettingParamDocument,
+    SelectSettingParamDocument, SelectSettingResultDocument,
     SettingDocument,
     UpdateSettingParamDocument
 } from "../types/services/setting";
 
 export default {
-    async select(params: SelectSettingParamDocument): Promise<SettingDocument[]> {
+    async select(params: SelectSettingParamDocument): Promise<SelectSettingResultDocument[]> {
         let filters: mongoose.FilterQuery<SettingDocument> = {}
 
         return (await settingModel.find(filters, {}, {lean: true})).map( doc => {
@@ -32,8 +32,7 @@ export default {
     async update(params: UpdateSettingParamDocument) {
         params = V.clearAllData(params);
 
-        let doc = await settingModel.findOne({})
-        if(doc) {
+        return (await settingModel.find({})).map( async doc => {
             if (params.seoContents) {
                 const findIndex = doc.seoContents.indexOfKey("langId", params.seoContents.langId);
                 if(findIndex > -1) {
@@ -43,10 +42,8 @@ export default {
                 }
                 delete params.seoContents;
             }
-
             doc = Object.assign(doc, params);
-
-            await doc.save();
-        }
+            return await doc.save();
+        });
     }
 };

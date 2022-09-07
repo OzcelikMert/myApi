@@ -4,12 +4,12 @@ import {
     DeletePostTermParamDocument,
     InsertPostTermParamDocument,
     PostTermDocument,
-    SelectPostTermParamDocument,
+    SelectPostTermParamDocument, SelectPostTermResultDocument,
     UpdatePostTermParamDocument
 } from "../types/services/postTerm";
 
 export default {
-    async select(params: SelectPostTermParamDocument): Promise<PostTermDocument[]> {
+    async select(params: SelectPostTermParamDocument): Promise<SelectPostTermResultDocument[]> {
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
 
         if (params.termId) filters = {
@@ -39,17 +39,17 @@ export default {
             }
         }
 
-        let query = postTermModel.find(filters, {}).populate({
+        let query = postTermModel.find(filters, {}).populate<{mainId: SelectPostTermResultDocument["mainId"]}>({
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: PostTermDocument) => {
                 doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                 return doc;
             }
-        }).populate({
+        }).populate<{authorId: SelectPostTermResultDocument["authorId"]}>({
             path: "authorId",
             select: "_id name email url"
-        }).populate({
+        }).populate<{lastAuthorId: SelectPostTermResultDocument["lastAuthorId"]}>({
             path: "lastAuthorId",
             select: "_id name email url"
         });
@@ -90,28 +90,24 @@ export default {
             postTypeId: params.postTypeId
         }
 
-
-        let docs = await postTermModel.find(filters);
-        if (docs) {
-            delete params.termId;
-            delete params.typeId;
-            delete params.postTypeId;
-            docs.map( async doc => {
-                if(params.contents) {
-                    const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
-                    if(findIndex > -1) {
-                        doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
-                    }else {
-                        doc.contents.push(params.contents)
-                    }
-                    delete params.contents;
+        delete params.termId;
+        delete params.typeId;
+        delete params.postTypeId;
+        return (await postTermModel.find(filters)).map( async doc => {
+            if(params.contents) {
+                const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
+                if(findIndex > -1) {
+                    doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
+                }else {
+                    doc.contents.push(params.contents)
                 }
+                delete params.contents;
+            }
 
-                doc = Object.assign(doc, params);
+            doc = Object.assign(doc, params);
 
-                await doc.save();
-            })
-        }
+            return await doc.save();
+        });
     },
     async delete(params: DeletePostTermParamDocument) {
         let filters: mongoose.FilterQuery<PostTermDocument> = {}

@@ -5,13 +5,13 @@ import {
     DeletePostParamDocument,
     InsertPostParamDocument,
     PostDocument,
-    SelectPostParamDocument,
+    SelectPostParamDocument, SelectPostResultDocument,
     UpdatePostParamDocument
 } from "../types/services/post";
 import {PostTermDocument} from "../types/services/postTerm";
 
 export default {
-    async select(params: SelectPostParamDocument): Promise<PostDocument[]> {
+    async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
         params = V.clearAllData(params);
 
         let filters: mongoose.FilterQuery<PostDocument> = {}
@@ -39,17 +39,17 @@ export default {
             }
         }
 
-        let query = postModel.find(filters).populate({
+        let query = postModel.find(filters).populate<{terms: SelectPostResultDocument["terms"]}>({
             path: "terms",
             select: "_id contents.title contents.langId",
             transform: (doc: PostTermDocument) => {
                 doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                 return doc;
             }
-        }).populate({
+        }).populate<{authorId: SelectPostResultDocument["authorId"]}>({
             path: "authorId",
             select: "_id name email url"
-        }).populate({
+        }).populate<{lastAuthorId: SelectPostResultDocument["lastAuthorId"]}>({
             path: "lastAuthorId",
             select: "_id name email url"
         });
@@ -96,27 +96,23 @@ export default {
             }
         }
 
-
-        let docs = await postModel.find(filters);
-        if (docs) {
-            delete params.postId;
-            delete params.typeId;
-            docs.map( async doc => {
-                if(params.contents) {
-                    const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
-                    if(findIndex > -1) {
-                        doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
-                    }else {
-                        doc.contents.push(params.contents)
-                    }
-                    delete params.contents;
+        delete params.postId;
+        delete params.typeId;
+        return (await postModel.find(filters)).map( async doc => {
+            if(params.contents) {
+                const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
+                if(findIndex > -1) {
+                    doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
+                }else {
+                    doc.contents.push(params.contents)
                 }
+                delete params.contents;
+            }
 
-                doc = Object.assign(doc, params);
+            doc = Object.assign(doc, params);
 
-                await doc.save();
-            })
-        }
+            return await doc.save();
+        });
     },
     async delete(params: DeletePostParamDocument) {
         params = V.clearAllData(params);

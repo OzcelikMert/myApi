@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {PopulateAuthorIdDocument} from "./user";
 
 export type SelectSettingParamDocument = {
     langId?: mongoose.Types.ObjectId
@@ -27,6 +28,8 @@ export type UpdateSettingParamDocument = {
         tags?: string[]
     }
 }
+
+export type SelectSettingResultDocument = {} & SettingDocument
 
 export interface SettingSeoContentDocument {
     langId: mongoose.Types.ObjectId
