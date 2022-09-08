@@ -19,20 +19,9 @@ const postBody = object({
 export default {
     get: object({
         params: object({
-            termId: string().required({termId: ErrorCodes.emptyValue}),
+            termId: string(),
             postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
-            typeId: number().required({typeId: ErrorCodes.emptyValue}),
-        }),
-        query: object({
-            langId: string().required({langId: ErrorCodes.emptyValue}),
-            statusId: number(),
-            maxCount: number()
-        })
-    }),
-    getWithType: object({
-        params: object({
-            postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
-            typeId: number().required({typeId: ErrorCodes.emptyValue}),
+            typeId: number(),
         }),
         query: object({
             langId: string().required({langId: ErrorCodes.emptyValue}),

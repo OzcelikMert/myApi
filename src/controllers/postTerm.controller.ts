@@ -24,22 +24,6 @@ export default {
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    getWithType: async (
-        req: Request<any, any, any, any>,
-        res: Response
-    ) => {
-        let serviceResult = new Result();
-
-        let data: InferType<typeof postTermSchema.getWithType> = req;
-
-        serviceResult.data = await postTermService.select({
-            ...data.params,
-            ...data.query,
-            langId: MongoDBHelpers.createObjectId(data.query.langId)
-        });
-
-        res.status(serviceResult.statusCode).json(serviceResult)
-    },
     add: async (
         req: Request<any>,
         res: Response

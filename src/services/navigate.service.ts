@@ -2,7 +2,7 @@ import * as mongoose from "mongoose";
 import navigateModel from "../model/navigate.model";
 import {
     DeleteNavigateParamDocument,
-    InsertNavigateParamDocument,
+    InsertNavigateParamDocument, NavigateContentDocument,
     NavigateDocument,
     SelectNavigateParamDocument, SelectNavigateResultDocument,
     UpdateNavigateParamDocument
@@ -23,7 +23,7 @@ export default {
             url: params.statusId
         }
 
-        let query = navigateModel.find(filters, {}).populate<{mainId: SelectNavigateResultDocument["mainId"]}>({
+        let query = navigateModel.find(filters).populate<{mainId: SelectNavigateResultDocument["mainId"]}>({
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: PostTermDocument) => {
@@ -36,10 +36,17 @@ export default {
         }).populate<{lastAuthorId: SelectNavigateResultDocument["lastAuthorId"]}>({
             path: "lastAuthorId",
             select: "_id name email url"
-        });
+        }).lean();
 
-        return (await query.exec()).map(doc => {
-            doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+        return (await query.exec()).map((doc: SelectNavigateResultDocument) => {
+            if(Array.isArray(doc.contents)) {
+                if(doc.contents.length > 0){
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                    doc.contents = doc.contents[0];
+                }else {
+                    delete doc.contents;
+                }
+            }
             return doc;
         });
     },

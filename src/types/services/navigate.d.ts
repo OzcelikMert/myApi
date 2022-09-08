@@ -29,6 +29,7 @@ export interface SelectNavigateParamDocument {
 }
 
 export type SelectNavigateResultDocument = {
+    contents?: NavigateContentDocument | NavigateContentDocument[]
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
     mainId?: {
@@ -39,7 +40,7 @@ export type SelectNavigateResultDocument = {
             url: string,
         }[]
     }
-} & NavigateDocument
+} & Omit<NavigateDocument, "contents">
 
 export interface NavigateContentDocument {
     langId: mongoose.Types.ObjectId

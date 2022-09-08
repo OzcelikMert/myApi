@@ -12,12 +12,17 @@ export default {
     async select(params: SelectSettingParamDocument): Promise<SelectSettingResultDocument[]> {
         let filters: mongoose.FilterQuery<SettingDocument> = {}
 
-        return (await settingModel.find(filters, {}, {lean: true})).map( doc => {
-            if(params.langId){
-                let langId = params.langId;
-                doc.seoContents = doc.seoContents.filter(seoContents => seoContents.langId.toString() == langId.toString());
-            }else {
-                delete doc.seoContents;
+        let query = settingModel.find(filters, {}).lean();
+
+        return (await query.exec()).map((doc: SelectSettingResultDocument) => {
+            if(Array.isArray(doc.seoContents)) {
+                if(doc.seoContents.length > 0 && params.langId){
+                    let langId = params.langId;
+                    doc.seoContents = doc.seoContents.filter(content => content.langId.toString() == langId.toString());
+                    doc.seoContents = doc.seoContents[0];
+                }else {
+                    delete doc.seoContents;
+                }
             }
             return doc;
         });

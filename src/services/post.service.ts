@@ -52,17 +52,21 @@ export default {
         }).populate<{lastAuthorId: SelectPostResultDocument["lastAuthorId"]}>({
             path: "lastAuthorId",
             select: "_id name email url"
-        });
+        }).lean();
 
         if (params.maxCount) query.limit(params.maxCount);
 
-        return (await query.exec()).map(doc => {
-            doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
-            if (!params.getContents) {
-                doc.contents.map(content => {
-                    delete content.content;
-                    return content;
-                })
+        return (await query.exec()).map((doc: SelectPostResultDocument) => {
+            if(Array.isArray(doc.contents)) {
+                if(doc.contents.length > 0){
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                    doc.contents = doc.contents[0];
+                    if (!params.getContents) {
+                        delete doc.contents.content;
+                    }
+                }else {
+                    delete doc.contents;
+                }
             }
             return doc;
         });

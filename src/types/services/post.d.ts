@@ -42,7 +42,8 @@ export type SelectPostResultDocument = {
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
     terms: PopulateTermsDocument[]
-} & PostDocument
+    contents?: PostContentDocument | PostContentDocument[]
+} & Omit<PostDocument, "contents">
 
 export interface PostContentDocument {
     langId: mongoose.Types.ObjectId
@@ -59,12 +60,12 @@ export interface PostDocument {
     _id: mongoose.Types.ObjectId
     typeId: number,
     statusId: number,
-    authorId: mongoose.Types.ObjectId | PopulateAuthorIdDocument
-    lastAuthorId: mongoose.Types.ObjectId | PopulateAuthorIdDocument
+    authorId: mongoose.Types.ObjectId
+    lastAuthorId: mongoose.Types.ObjectId
     dateStart: Date,
     order: number,
     views: number,
     isFixed: boolean,
-    terms: mongoose.Types.ObjectId[] | PopulateTermsDocument[]
+    terms: mongoose.Types.ObjectId[]
     contents: PostContentDocument[]
 }

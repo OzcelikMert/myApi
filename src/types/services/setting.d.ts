@@ -29,7 +29,9 @@ export type UpdateSettingParamDocument = {
     }
 }
 
-export type SelectSettingResultDocument = {} & SettingDocument
+export type SelectSettingResultDocument = {
+    seoContents?: SettingSeoContentDocument | SettingSeoContentDocument[]
+} & Omit<SettingDocument, "seoContents">
 
 export interface SettingSeoContentDocument {
     langId: mongoose.Types.ObjectId
