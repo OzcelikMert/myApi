@@ -8,7 +8,7 @@ import {
     SelectPostParamDocument, SelectPostResultDocument,
     UpdatePostParamDocument
 } from "../types/services/post";
-import {PostTermDocument} from "../types/services/postTerm";
+import {PostTermDocument, SelectPostTermResultDocument} from "../types/services/postTerm";
 
 export default {
     async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
@@ -32,24 +32,31 @@ export default {
             ...filters,
             statusId: params.statusId
         }
-        if(params.ignorePostId){
+        if (params.ignorePostId) {
             filters = {
                 ...filters,
-                _id: { $ne: { $in: params.ignorePostId } }
+                _id: {$ne: {$in: params.ignorePostId}}
             }
         }
 
-        let query = postModel.find(filters).populate<{terms: SelectPostResultDocument["terms"]}>({
+        let query = postModel.find(filters).populate<{ terms: SelectPostResultDocument["terms"] }>({
             path: "terms",
             select: "_id typeId contents.title contents.langId",
-            transform: (doc: PostTermDocument) => {
-                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+            transform: (doc: SelectPostTermResultDocument) => {
+                if (Array.isArray(doc.contents)) {
+                    if (doc.contents.length > 0) {
+                        doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                        doc.contents = doc.contents[0];
+                    } else {
+                        delete doc.contents;
+                    }
+                }
                 return doc;
             }
-        }).populate<{authorId: SelectPostResultDocument["authorId"]}>({
+        }).populate<{ authorId: SelectPostResultDocument["authorId"] }>({
             path: "authorId",
             select: "_id name email url"
-        }).populate<{lastAuthorId: SelectPostResultDocument["lastAuthorId"]}>({
+        }).populate<{ lastAuthorId: SelectPostResultDocument["lastAuthorId"] }>({
             path: "lastAuthorId",
             select: "_id name email url"
         }).lean();
@@ -57,14 +64,14 @@ export default {
         if (params.maxCount) query.limit(params.maxCount);
 
         return (await query.exec()).map((doc: SelectPostResultDocument) => {
-            if(Array.isArray(doc.contents)) {
-                if(doc.contents.length > 0){
+            if (Array.isArray(doc.contents)) {
+                if (doc.contents.length > 0) {
                     doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                     doc.contents = doc.contents[0];
                     if (!params.getContents) {
                         delete doc.contents.content;
                     }
-                }else {
+                } else {
                     delete doc.contents;
                 }
             }
@@ -93,7 +100,7 @@ export default {
                 _id: params.postId
             };
         }
-        if(params.typeId){
+        if (params.typeId) {
             filters = {
                 ...filters,
                 typeId: params.typeId
@@ -102,12 +109,12 @@ export default {
 
         delete params.postId;
         delete params.typeId;
-        return (await postModel.find(filters)).map( async doc => {
-            if(params.contents) {
+        return (await postModel.find(filters)).map(async doc => {
+            if (params.contents) {
                 const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
-                if(findIndex > -1) {
+                if (findIndex > -1) {
                     doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
-                }else {
+                } else {
                     doc.contents.push(params.contents)
                 }
                 delete params.contents;

@@ -2,12 +2,11 @@ import * as mongoose from "mongoose";
 import navigateModel from "../model/navigate.model";
 import {
     DeleteNavigateParamDocument,
-    InsertNavigateParamDocument, NavigateContentDocument,
+    InsertNavigateParamDocument,
     NavigateDocument,
     SelectNavigateParamDocument, SelectNavigateResultDocument,
     UpdateNavigateParamDocument
 } from "../types/services/navigate";
-import {PostTermDocument} from "../types/services/postTerm";
 
 export default {
     async select(params: SelectNavigateParamDocument): Promise<SelectNavigateResultDocument[]> {
@@ -26,8 +25,15 @@ export default {
         let query = navigateModel.find(filters).populate<{mainId: SelectNavigateResultDocument["mainId"]}>({
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
-            transform: (doc: PostTermDocument) => {
-                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+            transform: (doc: SelectNavigateResultDocument) => {
+                if (Array.isArray(doc.contents)) {
+                    if (doc.contents.length > 0) {
+                        doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                        doc.contents = doc.contents[0];
+                    } else {
+                        delete doc.contents;
+                    }
+                }
                 return doc;
             }
         }).populate<{authorId: SelectNavigateResultDocument["authorId"]}>({

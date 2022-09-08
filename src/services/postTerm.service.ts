@@ -32,24 +32,31 @@ export default {
             ...filters,
             postTypeId: params.postTypeId
         }
-        if(params.ignoreTermId){
+        if (params.ignoreTermId) {
             filters = {
                 ...filters,
-                _id: { $ne: { $in: params.ignoreTermId } }
+                _id: {$ne: {$in: params.ignoreTermId}}
             }
         }
 
-        let query = postTermModel.find(filters, {}).populate<{mainId: SelectPostTermResultDocument["mainId"]}>({
+        let query = postTermModel.find(filters, {}).populate<{ mainId: SelectPostTermResultDocument["mainId"] }>({
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
-            transform: (doc: PostTermDocument) => {
-                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+            transform: (doc: SelectPostTermResultDocument) => {
+                if (Array.isArray(doc.contents)) {
+                    if (doc.contents.length > 0) {
+                        doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                        doc.contents = doc.contents[0];
+                    } else {
+                        delete doc.contents;
+                    }
+                }
                 return doc;
             }
-        }).populate<{authorId: SelectPostTermResultDocument["authorId"]}>({
+        }).populate<{ authorId: SelectPostTermResultDocument["authorId"] }>({
             path: "authorId",
             select: "_id name email url"
-        }).populate<{lastAuthorId: SelectPostTermResultDocument["lastAuthorId"]}>({
+        }).populate<{ lastAuthorId: SelectPostTermResultDocument["lastAuthorId"] }>({
             path: "lastAuthorId",
             select: "_id name email url"
         }).lean();
@@ -57,11 +64,11 @@ export default {
         if (params.maxCount) query.limit(params.maxCount);
 
         return (await query.exec()).map((doc: SelectPostTermResultDocument) => {
-            if(Array.isArray(doc.contents)) {
-                if(doc.contents.length > 0){
+            if (Array.isArray(doc.contents)) {
+                if (doc.contents.length > 0) {
                     doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                     doc.contents = doc.contents[0];
-                }else {
+                } else {
                     delete doc.contents;
                 }
             }
@@ -86,7 +93,7 @@ export default {
                 _id: params.termId
             };
         }
-        if(params.typeId){
+        if (params.typeId) {
             filters = {
                 ...filters,
                 typeId: params.typeId
@@ -100,12 +107,12 @@ export default {
         delete params.termId;
         delete params.typeId;
         delete params.postTypeId;
-        return (await postTermModel.find(filters)).map( async doc => {
-            if(params.contents) {
+        return (await postTermModel.find(filters)).map(async doc => {
+            if (params.contents) {
                 const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
-                if(findIndex > -1) {
+                if (findIndex > -1) {
                     doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
-                }else {
+                } else {
                     doc.contents.push(params.contents)
                 }
                 delete params.contents;
