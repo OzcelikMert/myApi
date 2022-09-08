@@ -44,8 +44,8 @@ export default {
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
                 if (Array.isArray(doc.contents)) {
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                     if (doc.contents.length > 0) {
-                        doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                         doc.contents = doc.contents[0];
                     } else {
                         delete doc.contents;
@@ -63,10 +63,10 @@ export default {
 
         if (params.maxCount) query.limit(params.maxCount);
 
-        return (await query.exec()).map((doc: SelectPostTermResultDocument) => {
+        return (await query.exec())?.map((doc: SelectPostTermResultDocument) => {
             if (Array.isArray(doc.contents)) {
+                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                 if (doc.contents.length > 0) {
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                     doc.contents = doc.contents[0];
                 } else {
                     delete doc.contents;
@@ -107,7 +107,7 @@ export default {
         delete params.termId;
         delete params.typeId;
         delete params.postTypeId;
-        return (await postTermModel.find(filters)).map(async doc => {
+        return (await postTermModel.find(filters))?.map(async doc => {
             if (params.contents) {
                 const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
                 if (findIndex > -1) {

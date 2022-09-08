@@ -5,14 +5,14 @@ import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     check: async (
-        req: Request<any>,
+        req: Request<any, any, any, any>,
         res: Response,
         next: NextFunction
     ) => {
         let serviceResult = new Result();
 
         let navigateId = req.params.navigateId ?? req.body.navigateId;
-        let langId = req.params.langId ?? req.body.contents.langId;
+        let langId = req.query.langId ?? req.body.contents.langId;
 
         let resData = await navigateService.select({
             navigateId: navigateId,

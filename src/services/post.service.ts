@@ -24,9 +24,18 @@ export default {
             ...filters,
             url: params.url
         }
-        if (params.typeId) filters = {
-            ...filters,
-            typeId: params.typeId
+        if (params.typeId) {
+            if(Array.isArray(params.typeId)) {
+                filters = {
+                    ...filters,
+                    typeId: { $in: params.typeId }
+                }
+            }else {
+                filters = {
+                    ...filters,
+                    typeId: params.typeId
+                }
+            }
         }
         if (params.statusId) filters = {
             ...filters,
@@ -44,8 +53,8 @@ export default {
             select: "_id typeId contents.title contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
                 if (Array.isArray(doc.contents)) {
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                     if (doc.contents.length > 0) {
-                        doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                         doc.contents = doc.contents[0];
                     } else {
                         delete doc.contents;
@@ -63,10 +72,10 @@ export default {
 
         if (params.maxCount) query.limit(params.maxCount);
 
-        return (await query.exec()).map((doc: SelectPostResultDocument) => {
+        return (await query.exec())?.map((doc: SelectPostResultDocument) => {
             if (Array.isArray(doc.contents)) {
+                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                 if (doc.contents.length > 0) {
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                     doc.contents = doc.contents[0];
                     if (!params.getContents) {
                         delete doc.contents.content;
@@ -109,7 +118,7 @@ export default {
 
         delete params.postId;
         delete params.typeId;
-        return (await postModel.find(filters)).map(async doc => {
+        return (await postModel.find(filters))?.map(async doc => {
             if (params.contents) {
                 const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
                 if (findIndex > -1) {

@@ -14,13 +14,17 @@ export default {
 
         let query = settingModel.find(filters, {}).lean();
 
-        return (await query.exec()).map((doc: SelectSettingResultDocument) => {
-            if(Array.isArray(doc.seoContents)) {
-                if(doc.seoContents.length > 0 && params.langId){
+        return (await query.exec())?.map((doc: SelectSettingResultDocument) => {
+            if (Array.isArray(doc.seoContents)) {
+                if (params.langId) {
                     let langId = params.langId;
                     doc.seoContents = doc.seoContents.filter(content => content.langId.toString() == langId.toString());
-                    doc.seoContents = doc.seoContents[0];
-                }else {
+                    if (doc.seoContents.length > 0) {
+                        doc.seoContents = doc.seoContents[0];
+                    } else {
+                        delete doc.seoContents;
+                    }
+                } else {
                     delete doc.seoContents;
                 }
             }
@@ -37,12 +41,12 @@ export default {
     async update(params: UpdateSettingParamDocument) {
         params = V.clearAllData(params);
 
-        return (await settingModel.find({})).map( async doc => {
+        return (await settingModel.find({}))?.map(async doc => {
             if (params.seoContents) {
                 const findIndex = doc.seoContents.indexOfKey("langId", params.seoContents.langId);
-                if(findIndex > -1) {
+                if (findIndex > -1) {
                     doc.seoContents[findIndex] = Object.assign(doc.seoContents[findIndex], params.seoContents);
-                }else {
+                } else {
                     doc.seoContents.push(params.seoContents)
                 }
                 delete params.seoContents;

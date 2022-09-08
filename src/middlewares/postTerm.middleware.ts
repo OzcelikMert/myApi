@@ -5,7 +5,7 @@ import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     check: async (
-        req: Request<any>,
+        req: Request<any, any, any, any>,
         res: Response,
         next: NextFunction
     ) => {
@@ -14,7 +14,7 @@ export default {
         let termId = req.params.termId ?? req.body.termId;
         let typeId = req.params.typeId;
         let postTypeId = req.params.postTypeId;
-        let langId = req.params.langId ?? req.body.contents.langId;
+        let langId = req.query.langId ?? req.body.contents.langId;
 
         let resData = await postTermService.select({
             termId: termId,

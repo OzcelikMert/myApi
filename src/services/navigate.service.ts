@@ -22,13 +22,13 @@ export default {
             url: params.statusId
         }
 
-        let query = navigateModel.find(filters).populate<{mainId: SelectNavigateResultDocument["mainId"]}>({
+        let query = navigateModel.find(filters).populate<{ mainId: SelectNavigateResultDocument["mainId"] }>({
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: SelectNavigateResultDocument) => {
                 if (Array.isArray(doc.contents)) {
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                     if (doc.contents.length > 0) {
-                        doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                         doc.contents = doc.contents[0];
                     } else {
                         delete doc.contents;
@@ -36,20 +36,20 @@ export default {
                 }
                 return doc;
             }
-        }).populate<{authorId: SelectNavigateResultDocument["authorId"]}>({
+        }).populate<{ authorId: SelectNavigateResultDocument["authorId"] }>({
             path: "authorId",
             select: "_id name email url"
-        }).populate<{lastAuthorId: SelectNavigateResultDocument["lastAuthorId"]}>({
+        }).populate<{ lastAuthorId: SelectNavigateResultDocument["lastAuthorId"] }>({
             path: "lastAuthorId",
             select: "_id name email url"
         }).lean();
 
-        return (await query.exec()).map((doc: SelectNavigateResultDocument) => {
-            if(Array.isArray(doc.contents)) {
-                if(doc.contents.length > 0){
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+        return (await query.exec())?.map((doc: SelectNavigateResultDocument) => {
+            if (Array.isArray(doc.contents)) {
+                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                if (doc.contents.length > 0) {
                     doc.contents = doc.contents[0];
-                }else {
+                } else {
                     delete doc.contents;
                 }
             }
@@ -76,7 +76,7 @@ export default {
         }
 
         delete params.navigateId;
-        return (await navigateModel.find(filters)).map(async doc => {
+        return (await navigateModel.find(filters))?.map(async doc => {
             if (params.contents) {
                 const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
                 if (findIndex > -1) {

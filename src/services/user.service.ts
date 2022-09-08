@@ -52,7 +52,7 @@ export default {
         let query = userModel.find(filters, {});
         if(params.maxCount) query.limit(params.maxCount);
 
-        return (await query.exec()).map(user => {
+        return (await query.exec())?.map(user => {
             delete user.password;
             return user;
         });
@@ -82,7 +82,7 @@ export default {
         }
 
         delete params.userId;
-        return (await userModel.find(filters)).map( async doc => {
+        return (await userModel.find(filters))?.map( async doc => {
             doc = Object.assign(doc, params);
             return await doc.save();
         })
