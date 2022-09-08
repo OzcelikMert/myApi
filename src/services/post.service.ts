@@ -41,7 +41,7 @@ export default {
 
         let query = postModel.find(filters).populate<{terms: SelectPostResultDocument["terms"]}>({
             path: "terms",
-            select: "_id contents.title contents.langId",
+            select: "_id typeId contents.title contents.langId",
             transform: (doc: PostTermDocument) => {
                 doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
                 return doc;

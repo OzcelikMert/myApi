@@ -4,6 +4,7 @@ import {InferType} from "yup";
 import settingSchema from "../schemas/setting.schema";
 import settingService from "../services/setting.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
+import languageService from "../services/language.service";
 
 export default {
     get: async (
@@ -32,16 +33,21 @@ export default {
                 defaultLangId: data.body.defaultLangId ? MongoDBHelpers.createObjectId(data.body.defaultLangId) : undefined,
                 seoContents: data.body.seoContents ? {
                     ...data.body.seoContents,
-                    langId: MongoDBHelpers.createObjectId(data.body.langId)
+                    langId: MongoDBHelpers.createObjectId(data.body.seoContents.langId)
                 } : undefined
             })
         }else {
+            if(!data.body.defaultLangId) {
+                let lang = await languageService.select({});
+                data.body.defaultLangId = lang[0]._id.toString();
+            }
+
             serviceResult.data = await settingService.insert({
                 ...data.body,
-                defaultLangId: MongoDBHelpers.createObjectId(data.body.defaultLangId ?? data.body.langId),
+                defaultLangId: MongoDBHelpers.createObjectId(data.body.defaultLangId),
                 seoContents: data.body.seoContents ? {
                     ...data.body.seoContents,
-                    langId: MongoDBHelpers.createObjectId(data.body.langId)
+                    langId: MongoDBHelpers.createObjectId(data.body.seoContents.langId)
                 } : undefined
             })
         }

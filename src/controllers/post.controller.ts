@@ -71,7 +71,7 @@ export default {
             dateStart: new Date(data.body.dateStart),
             contents: {
                 ...data.body.contents,
-                langId: MongoDBHelpers.createObjectId(data.body.langId)
+                langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
             }
         });
 
@@ -94,7 +94,7 @@ export default {
             dateStart: new Date(data.body.dateStart),
             contents: {
                 ...data.body.contents,
-                langId: MongoDBHelpers.createObjectId(data.body.langId)
+                langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
             }
         });
 

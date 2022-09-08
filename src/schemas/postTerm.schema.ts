@@ -2,12 +2,12 @@ import {object, string, number, boolean, array} from "yup";
 import {ErrorCodes} from "../library/api";
 
 const postBody = object({
-    langId: string().required({langId: ErrorCodes.emptyValue}),
     mainId: string(),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
     order: number().required({order: ErrorCodes.emptyValue}),
     isFixed: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}).required({isFixed: ErrorCodes.emptyValue}),
     contents: object({
+        langId: string().required({langId: ErrorCodes.emptyValue}),
         title: string().required({title: ErrorCodes.emptyValue}),
         image: string(),
         url: string(),

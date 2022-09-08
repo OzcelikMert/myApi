@@ -57,7 +57,7 @@ export default {
             mainId: data.body.mainId ? MongoDBHelpers.createObjectId(data.body.mainId) : undefined,
             contents: {
                 ...data.body.contents,
-                langId: MongoDBHelpers.createObjectId(data.body.langId)
+                langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
             }
         });
 
@@ -80,7 +80,7 @@ export default {
             mainId: data.body.mainId ? MongoDBHelpers.createObjectId(data.body.mainId) : undefined,
             contents: {
                 ...data.body.contents,
-                langId: MongoDBHelpers.createObjectId(data.body.langId)
+                langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
             }
         });
 

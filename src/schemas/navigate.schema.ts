@@ -2,11 +2,11 @@ import {object, string, number, boolean, array} from "yup";
 import {ErrorCodes} from "../library/api";
 
 const postBody = object({
-    langId: string().required({langId: ErrorCodes.emptyValue}),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
     mainId: string(),
     order: number().required({order: ErrorCodes.emptyValue}),
     contents: object({
+        langId: string().required({langId: ErrorCodes.emptyValue}),
         title: string().required({title: ErrorCodes.emptyValue}),
         url: string(),
     }).required({contents: ErrorCodes.emptyValue})

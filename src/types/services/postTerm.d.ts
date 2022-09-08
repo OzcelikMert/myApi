@@ -54,6 +54,7 @@ export type SelectPostTermResultDocument = {
 
 export interface PopulateTermsDocument {
     _id: mongoose.Types.ObjectId,
+    typeId: number,
     contents: {
         langId: mongoose.Types.ObjectId,
         title: string,

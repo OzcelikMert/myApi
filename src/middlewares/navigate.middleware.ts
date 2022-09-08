@@ -12,7 +12,7 @@ export default {
         let serviceResult = new Result();
 
         let navigateId = req.params.navigateId ?? req.body.navigateId;
-        let langId = req.params.langId ?? req.body.langId;
+        let langId = req.params.langId ?? req.body.contents.langId;
 
         let resData = await navigateService.select({
             navigateId: navigateId,

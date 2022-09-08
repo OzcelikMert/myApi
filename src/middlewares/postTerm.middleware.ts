@@ -14,7 +14,7 @@ export default {
         let termId = req.params.termId ?? req.body.termId;
         let typeId = req.params.typeId;
         let postTypeId = req.params.postTypeId;
-        let langId = req.params.langId ?? req.body.langId;
+        let langId = req.params.langId ?? req.body.contents.langId;
 
         let resData = await postTermService.select({
             termId: termId,
@@ -46,7 +46,7 @@ export default {
         let url = req.body.url;
         let typeId = req.params.typeId;
         let postTypeId = req.params.postTypeId;
-        let langId = req.body.langId;
+        let langId = req.body.contents.langId;
         let termId = req.params.termId ? MongoDBHelpers.createObjectId(req.params.termId) : undefined
 
         let urlAlreadyCount = 2;

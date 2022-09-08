@@ -13,7 +13,7 @@ export default {
 
         let postId = req.params.postId ?? req.body.postId;
         let typeId = req.params.typeId;
-        let langId = req.params.langId ?? req.body.langId;
+        let langId = req.params.langId ?? req.body.contents.langId;
 
         let resData = await postService.select({
             postId: postId,
@@ -42,7 +42,7 @@ export default {
         next: NextFunction
     ) => {
         let url = req.body.url;
-        let langId = req.body.langId;
+        let langId = req.body.contents.langId;
         let typeId = req.params.typeId;
         let postId = req.params.postId ? MongoDBHelpers.createObjectId(req.params.postId) : undefined
 
