@@ -5,7 +5,7 @@ export default {
     put: object({
         body: object({
             image: string(),
-            name: string().required({name: ErrorCodes.emptyValue}),
+            name: string(),
             comment: string(),
             phone: string().min(10, {phone: ErrorCodes.incorrectData}).max(15, {phone: ErrorCodes.incorrectData}),
             facebook: string().url({facebook: ErrorCodes.incorrectData}),

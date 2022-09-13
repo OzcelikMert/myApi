@@ -32,15 +32,11 @@ export default {
         });
     },
     async insert(params: InsertSettingParamDocument) {
-        params = V.clearAllData(params);
-
         return await settingModel.create({
             ...params
         })
     },
     async update(params: UpdateSettingParamDocument) {
-        params = V.clearAllData(params);
-
         return (await settingModel.find({}))?.map(async doc => {
             if (params.seoContents) {
                 const findIndex = doc.seoContents.indexOfKey("langId", params.seoContents.langId);
@@ -51,7 +47,9 @@ export default {
                 }
                 delete params.seoContents;
             }
+
             doc = Object.assign(doc, params);
+
             return await doc.save();
         });
     }

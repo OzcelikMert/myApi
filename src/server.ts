@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 import cors from "cors";
 import routers from "./routers";
 import config from "config";
+import responseTime from "response-time";
 
 import "./library/variable/array"
 import "./library/variable/string"
@@ -35,6 +36,7 @@ new InitConfig(app).init().then(()=> {
         credentials: true,
     }));
 
+    app.use(responseTime());
     app.use(routers);
     app.use(compression());
 

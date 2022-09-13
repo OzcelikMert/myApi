@@ -22,8 +22,6 @@ export default {
         return await languageModel.find(filters, {}, {lean: true});
     },
     async insert(params: InsertLanguageDocument) {
-        params = V.clearAllData(params);
-
         return await languageModel.create({
             ...params
         })

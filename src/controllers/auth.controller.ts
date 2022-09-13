@@ -29,8 +29,7 @@ export default {
         let data: InferType<typeof authSchema.post> = req;
 
         let resData = await userService.select({
-            ...data.body,
-            password: data.body.password ? userUtil.encodePassword(data.body.password) : undefined
+            ...data.body
         });
 
         if(resData.length > 0){

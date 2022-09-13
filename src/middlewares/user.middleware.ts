@@ -107,7 +107,8 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let url = (req.body.url) ?? V.clear(req.body.name, ClearTypes.SEO_URL);
+        let url: string = req.body.url;
+        let name: string = req.body.name;
         let userId = req.body.userId
             ? MongoDBHelpers.createObjectId(req.body.userId)
             :  req.body.isProfile
@@ -115,14 +116,16 @@ export default {
                 : undefined;
 
         let urlAlreadyCount = 2;
+        url = url && url.length > 0 ? url : name.convertSEOUrl();
 
+        let oldUrl = url;
         while((await userService.select({
             ignoreUserId: userId ? [userId] : undefined,
             url: url,
             maxCount: 1
         })).length > 0) {
 
-            url += `-${urlAlreadyCount}`;
+            url = `${oldUrl}-${urlAlreadyCount}`;
             urlAlreadyCount++;
 
         }

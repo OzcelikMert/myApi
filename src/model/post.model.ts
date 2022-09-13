@@ -18,7 +18,7 @@ const schemaContent = new mongoose.Schema<PostContentDocument>(
         seoContent: {type: String, default: ""}
     },
     {timestamps: true}
-).index({langId: 1}, {unique: true});
+).index({langId: 1});
 
 const schema = new mongoose.Schema<PostDocument>(
     {
@@ -34,6 +34,6 @@ const schema = new mongoose.Schema<PostDocument>(
         contents: {type: [schemaContent], default: []}
     },
     {timestamps: true}
-).index({typeId: 1, statusId: 1, authorId: 1}, {unique: true});
+).index({typeId: 1, statusId: 1, authorId: 1});
 
 export default mongoose.model("posts", schema)

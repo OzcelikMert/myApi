@@ -8,20 +8,24 @@ import {
     UserDocument
 } from "../types/services/user";
 import {StatusId} from "../constants/status.const";
+import userUtil from "../utils/functions/user.util";
 
 export default {
     async select(params: SelectUserParamDocument): Promise<SelectUserResultDocument[]> {
-        params = V.clearAllData(params);
-
         let filters: mongoose.FilterQuery<UserDocument> = {
             statusId: { $ne: StatusId.Deleted},
         }
 
+        if (params.email) {
+            filters = {
+                ...filters,
+                email: params.email
+            }
+        }
         if (params.email && params.password) {
             filters = {
                 ...filters,
-                email: params.email,
-                password: params.password
+                password: userUtil.encodePassword(params.password)
             }
         }
         if (params.userId) {
@@ -36,6 +40,12 @@ export default {
                 statusId: params.statusId
             }
         }
+        if(params.roleId){
+            filters = {
+                ...filters,
+                roleId: params.roleId
+            }
+        }
         if(params.url){
             filters = {
                 ...filters,
@@ -45,7 +55,7 @@ export default {
         if(params.ignoreUserId){
             filters = {
                 ...filters,
-                _id: { $ne: { $in: params.ignoreUserId } }
+                _id: { $nin: params.ignoreUserId }
             }
         }
 
@@ -58,17 +68,12 @@ export default {
         });
     },
     async insert(params: InsertUserParamDocument) {
-        params = V.clearAllData(params);
-        if(params.permissionId === [0]) params.permissionId = [];
-
         return await userModel.create({
-            ...params
+            ...params,
+            password: userUtil.encodePassword(params.password)
         })
     },
     async update(params: UpdateUserParamDocument) {
-        params = V.clearAllData(params);
-        if (params.permissionId || params.permissionId === [0]) params.permissionId = [];
-
         let filters: mongoose.FilterQuery<UserDocument> = {}
 
         if (Array.isArray(params.userId)) {
@@ -84,6 +89,9 @@ export default {
         delete params.userId;
         return (await userModel.find(filters))?.map( async doc => {
             doc = Object.assign(doc, params);
+            if(params.password) {
+                doc.password = userUtil.encodePassword(params.password)
+            }
             return await doc.save();
         })
     }

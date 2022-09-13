@@ -15,7 +15,7 @@ export default {
         let langId = req.query.langId ?? req.body.contents.langId;
 
         let resData = await navigateService.select({
-            navigateId: navigateId,
+            navigateId: MongoDBHelpers.createObjectId(navigateId),
             langId: MongoDBHelpers.createObjectId(langId)
         });
 

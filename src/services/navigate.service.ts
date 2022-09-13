@@ -10,7 +10,6 @@ import {
 
 export default {
     async select(params: SelectNavigateParamDocument): Promise<SelectNavigateResultDocument[]> {
-
         let filters: mongoose.FilterQuery<NavigateDocument> = {}
 
         if (params.navigateId) filters = {
@@ -19,7 +18,7 @@ export default {
         }
         if (params.statusId) filters = {
             ...filters,
-            url: params.statusId
+            statusId: params.statusId
         }
 
         let query = navigateModel.find(filters).populate<{ mainId: SelectNavigateResultDocument["mainId"] }>({

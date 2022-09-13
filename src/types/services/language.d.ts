@@ -4,7 +4,8 @@ export interface SelectLanguageParamDocument {
     id?: mongoose.Types.ObjectId
 }
 
-export type InsertLanguageDocument = {} & LanguageDocument
+export type InsertLanguageDocument = {
+} & Omit<LanguageDocument, "_id">
 
 export type SelectLanguageResultDocument = {} & LanguageDocument
 

@@ -17,7 +17,7 @@ const schemaContent = new mongoose.Schema<PostTermContentDocument>(
         seoContent: {type: String, default: ""}
     },
     {timestamps: true}
-).index({langId: 1}, {unique: true});
+).index({langId: 1});
 
 const schema = new mongoose.Schema<PostTermDocument>(
     {
@@ -33,6 +33,6 @@ const schema = new mongoose.Schema<PostTermDocument>(
         contents: {type: [schemaContent], default: []}
     },
     {timestamps: true}
-).index({typeId: 1, postTypeId: 1, statusId: 1, authorId: 1, mainId: 1}, {unique: true});
+).index({typeId: 1, postTypeId: 1, statusId: 1, authorId: 1});
 
 export default mongoose.model("postTerms", schema)

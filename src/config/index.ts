@@ -6,6 +6,12 @@ import https from "https";
 import Session from "./session";
 import {ConfigDocument} from "../types/config";
 import dbConnect from "./db";
+import userService from "../services/user.service";
+import {UserRoleId} from "../constants/userRole.const";
+import {StatusId} from "../constants/status.const";
+import UserUtil from "../utils/functions/user.util";
+import languageService from "../services/language.service";
+import settingService from "../services/setting.service";
 const chalk = require('chalk');
 
 let Config: ConfigDocument = {
@@ -33,9 +39,12 @@ class InitConfig{
      init() {
          return new Promise<void>(async resolve => {
              this.setPublicFolders();
-             await this.mongodbConnect();
              this.setSession();
              this.security();
+             await this.mongodbConnect();
+             await this.checkAdminUser();
+             await this.checkLanguages();
+             await this.checkSettings();
              resolve()
          });
      }
@@ -72,6 +81,39 @@ class InitConfig{
         }catch (e) {
             console.error("MongoDB Connection Error")
             console.error(e)
+        }
+    }
+
+    private async checkAdminUser() {
+         if((await userService.select({roleId: UserRoleId.Admin})).length === 0){
+             await userService.insert({
+                 name: "Admin",
+                 email: "a@a.com",
+                 statusId: StatusId.Active,
+                 password: "11",
+                 roleId: UserRoleId.Admin,
+                 permissions: []
+             })
+         }
+    }
+
+    private async checkLanguages() {
+        if((await languageService.select({})).length === 0){
+            await languageService.insert({
+                title: "English",
+                image: "gb.webp",
+                shortKey: "en",
+                statusId: StatusId.Active
+            })
+        }
+    }
+
+    private async checkSettings() {
+        if((await settingService.select({})).length === 0){
+            let lang = await languageService.select({});
+            await settingService.insert({
+                defaultLangId: lang[0]._id,
+            })
         }
     }
 }

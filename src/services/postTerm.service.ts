@@ -18,7 +18,8 @@ export default {
         }
         if (params.url) filters = {
             ...filters,
-            url: params.url
+            "contents.langId": params.langId,
+            "contents.url": params.url
         }
         if (params.typeId) filters = {
             ...filters,
@@ -35,7 +36,7 @@ export default {
         if (params.ignoreTermId) {
             filters = {
                 ...filters,
-                _id: {$ne: {$in: params.ignoreTermId}}
+                _id: {$nin: params.ignoreTermId}
             }
         }
 

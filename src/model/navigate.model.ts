@@ -11,7 +11,7 @@ const schemaContent = new mongoose.Schema<NavigateContentDocument>(
         url: {type: String, default: ""},
     },
     {timestamps: true}
-).index({langId: 1}, {unique: true});
+).index({langId: 1});
 
 const schema = new mongoose.Schema<NavigateDocument>(
     {
@@ -23,6 +23,6 @@ const schema = new mongoose.Schema<NavigateDocument>(
         contents: {type: [schemaContent], default: []}
     },
     {timestamps: true}
-).index({statusId: 1, mainId: 1}, {unique: true});
+).index({statusId: 1});
 
 export default mongoose.model("navigates", schema)

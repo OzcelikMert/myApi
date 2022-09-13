@@ -5,6 +5,8 @@ import userSchema from "../schemas/user.schema";
 import userService from "../services/user.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import {StatusId} from "../constants/status.const";
+import Variable from "../library/variable";
+import {UpdateUserParamDocument} from "../types/services/user";
 
 export default {
     get: async (
@@ -39,12 +41,22 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof userSchema.put> = req;
 
-        serviceResult.data = await userService.update({
+        let params: UpdateUserParamDocument = {
             ...data.body,
             ...data.params,
             userId: MongoDBHelpers.createObjectId(data.params.userId),
             banDateEnd: data.body.banDateEnd ? new Date(data.body.banDateEnd) : undefined
-        });
+        }
+
+        if(Variable.isEmpty(params.password)){
+            delete params.password;
+        }
+
+        if(Variable.isEmpty(params.banDateEnd)){
+            delete params.banDateEnd;
+        }
+
+        serviceResult.data = await userService.update(params);
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },

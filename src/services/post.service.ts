@@ -12,8 +12,6 @@ import {PostTermDocument, SelectPostTermResultDocument} from "../types/services/
 
 export default {
     async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
-        params = V.clearAllData(params);
-
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
         if (params.postId) filters = {
@@ -22,7 +20,8 @@ export default {
         }
         if (params.url) filters = {
             ...filters,
-            url: params.url
+            "contents.langId": params.langId,
+            "contents.url": params.url
         }
         if (params.typeId) {
             if(Array.isArray(params.typeId)) {
@@ -44,7 +43,7 @@ export default {
         if (params.ignorePostId) {
             filters = {
                 ...filters,
-                _id: {$ne: {$in: params.ignorePostId}}
+                _id: {$nin: params.ignorePostId}
             }
         }
 
@@ -88,16 +87,12 @@ export default {
         });
     },
     async insert(params: InsertPostParamDocument) {
-        params = V.clearAllData(params);
-
         return await postModel.create({
             ...params,
             lastAuthorId: params.authorId
         })
     },
     async update(params: UpdatePostParamDocument) {
-        params = V.clearAllData(params);
-
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
         if (Array.isArray(params.postId)) {
@@ -135,8 +130,6 @@ export default {
         });
     },
     async delete(params: DeletePostParamDocument) {
-        params = V.clearAllData(params);
-
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
         if (Array.isArray(params.postId)) {

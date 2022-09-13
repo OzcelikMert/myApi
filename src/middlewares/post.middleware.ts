@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import postService from "../services/post.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
+import Variable from "../library/variable";
 
 export default {
     check: async (
@@ -16,7 +17,7 @@ export default {
         let langId = req.query.langId ?? req.body.contents.langId;
 
         let resData = await postService.select({
-            postId: postId,
+            postId: MongoDBHelpers.createObjectId(postId),
             typeId: typeId,
             langId: MongoDBHelpers.createObjectId(langId)
         });
@@ -41,27 +42,31 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let url = req.body.url;
-        let langId = req.body.contents.langId;
-        let typeId = req.params.typeId;
-        let postId = req.params.postId ? MongoDBHelpers.createObjectId(req.params.postId) : undefined
+        let typeId: number = req.params.typeId;
+        let postId: string = req.params.postId ?? req.body.postId;
+
+        let url: string = req.body.contents.url;
+        let title: string = req.body.contents.title;
+        let langId: string = req.body.contents.langId;
 
         let urlAlreadyCount = 2;
+        url = url && url.length > 0 ? url : title.convertSEOUrl();
 
+        let oldUrl = url;
         while((await postService.select({
-            ignorePostId: postId ? [postId] : undefined,
+            ignorePostId: postId ? [MongoDBHelpers.createObjectId(postId)] : undefined,
             langId: MongoDBHelpers.createObjectId(langId),
             typeId: typeId,
             url: url,
             maxCount: 1
         })).length > 0) {
 
-            url += `-${urlAlreadyCount}`;
+            url = `${oldUrl}-${urlAlreadyCount}`;
             urlAlreadyCount++;
 
         }
 
-        req.body.url = url;
+        req.body.contents.url = url;
 
         next();
     }

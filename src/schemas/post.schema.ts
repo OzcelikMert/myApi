@@ -25,29 +25,18 @@ export default {
             langId: string().required({langId: ErrorCodes.emptyValue}),
             typeId: array(number().required({typeId: ErrorCodes.incorrectData})),
             statusId: number(),
-            getContents: boolean(),
+            getContents: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
             maxCount: number()
         }),
     }),
     get: object({
         params: object({
-            postId: string().required({postId: ErrorCodes.emptyValue}),
+            postId: string(),
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         query: object({
             langId: string().required({langId: ErrorCodes.emptyValue}),
-            getContents: boolean(),
-            statusId: number(),
-            maxCount: number()
-        })
-    }),
-    getWithType: object({
-        params: object({
-            typeId: number().required({typeId: ErrorCodes.emptyValue}),
-        }),
-        query: object({
-            langId: string().required({langId: ErrorCodes.emptyValue}),
-            getContents: boolean(),
+            getContents: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
             statusId: number(),
             maxCount: number()
         })

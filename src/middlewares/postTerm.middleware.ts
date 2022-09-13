@@ -17,7 +17,7 @@ export default {
         let langId = req.query.langId ?? req.body.contents.langId;
 
         let resData = await postTermService.select({
-            termId: termId,
+            termId: MongoDBHelpers.createObjectId(termId),
             postTypeId: postTypeId,
             typeId: typeId,
             langId: MongoDBHelpers.createObjectId(langId)
@@ -43,16 +43,20 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let url = req.body.url;
         let typeId = req.params.typeId;
         let postTypeId = req.params.postTypeId;
-        let langId = req.body.contents.langId;
-        let termId = req.params.termId ? MongoDBHelpers.createObjectId(req.params.termId) : undefined
+        let termId = req.params.termId ?? req.body.termId
+
+        let url: string = req.body.contents.url;
+        let title: string = req.body.contents.title;
+        let langId: string = req.body.contents.langId;
 
         let urlAlreadyCount = 2;
+        url = url && url.length > 0 ? url : title.convertSEOUrl();
 
+        let oldUrl = url;
         while((await postTermService.select({
-            ignoreTermId: termId ? [termId] : undefined,
+            ignoreTermId: termId ? [MongoDBHelpers.createObjectId(termId)] : undefined,
             postTypeId: postTypeId,
             typeId: typeId,
             langId: MongoDBHelpers.createObjectId(langId),
@@ -60,12 +64,12 @@ export default {
             maxCount: 1
         })).length > 0) {
 
-            url += `-${urlAlreadyCount}`;
+            url = `${oldUrl}-${urlAlreadyCount}`;
             urlAlreadyCount++;
 
         }
 
-        req.body.url = url;
+        req.body.contents.url = url;
 
         next();
     }

@@ -12,6 +12,6 @@ const schema = new mongoose.Schema<ViewDocument>(
         region: {type: String, default: ""}
     },
     {timestamps: true}
-).index({languageId: 1}, {unique: true})
+).index({languageId: 1})
 
 export default mongoose.model("views", schema)

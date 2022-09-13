@@ -7,6 +7,7 @@ export interface SelectUserParamDocument {
     password?: string,
     url?: string,
     maxCount?: number,
+    roleId?: number
     ignoreUserId?: mongoose.Types.ObjectId[]
 }
 
@@ -16,7 +17,7 @@ export interface InsertUserParamDocument {
     name: string
     email: string
     password: string
-    permissionId: number[]
+    permissions?: number[]
 }
 
 export interface UpdateUserParamDocument {
@@ -34,7 +35,7 @@ export interface UpdateUserParamDocument {
     facebook?: string
     instagram?: string
     twitter?: string
-    permissionId?: number[]
+    permissions?: number[]
 }
 
 export type SelectUserResultDocument = {} & UserDocument

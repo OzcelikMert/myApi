@@ -23,6 +23,6 @@ const schema = new mongoose.Schema<UserDocument>(
         views: {type: Number, default: 0},
     },
     {timestamps: true}
-).index({roleId: 1, statusId: 1}, {unique: true});
+).index({roleId: 1, statusId: 1});
 
 export default mongoose.model("users", schema)

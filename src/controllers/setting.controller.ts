@@ -4,7 +4,8 @@ import {InferType} from "yup";
 import settingSchema from "../schemas/setting.schema";
 import settingService from "../services/setting.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
-import languageService from "../services/language.service";
+import {UpdateSettingParamDocument} from "../types/services/setting";
+import Variable from "../library/variable";
 
 export default {
     get: async (
@@ -27,30 +28,24 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof settingSchema.put> = req;
 
-        if((await settingService.select({})).length > 0) {
-            await settingService.update({
-                ...data.body,
-                defaultLangId: data.body.defaultLangId ? MongoDBHelpers.createObjectId(data.body.defaultLangId) : undefined,
-                seoContents: data.body.seoContents ? {
-                    ...data.body.seoContents,
-                    langId: MongoDBHelpers.createObjectId(data.body.seoContents.langId)
-                } : undefined
-            })
-        }else {
-            if(!data.body.defaultLangId) {
-                let lang = await languageService.select({});
-                data.body.defaultLangId = lang[0]._id.toString();
-            }
-
-            serviceResult.data = await settingService.insert({
-                ...data.body,
-                defaultLangId: MongoDBHelpers.createObjectId(data.body.defaultLangId),
-                seoContents: data.body.seoContents ? {
-                    ...data.body.seoContents,
-                    langId: MongoDBHelpers.createObjectId(data.body.seoContents.langId)
-                } : undefined
-            })
+        let params: UpdateSettingParamDocument = {
+            ...data.body,
+            defaultLangId: data.body.defaultLangId ? MongoDBHelpers.createObjectId(data.body.defaultLangId) : undefined,
+            seoContents: data.body.seoContents ? {
+                ...data.body.seoContents,
+                langId: MongoDBHelpers.createObjectId(data.body.seoContents.langId)
+            } : undefined
         }
+
+        if(Variable.isEmpty(params.defaultLangId)) {
+            delete params.defaultLangId;
+        }
+
+        if(Variable.isEmpty(params.seoContents)) {
+            delete params.seoContents;
+        }
+
+        serviceResult.data = await settingService.update(params)
 
         res.status(serviceResult.statusCode).json(serviceResult)
     }

@@ -17,7 +17,7 @@ export default {
                 title: string(),
                 content: string(),
                 tags: array(string().required({tags: ErrorCodes.incorrectData}))
-            })
+            }).default(undefined)
         })
     })
 };
