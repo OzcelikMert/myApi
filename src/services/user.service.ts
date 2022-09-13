@@ -1,6 +1,6 @@
 import * as mongoose from "mongoose";
 import V from "../library/variable";
-import userModel from "../model/user.model";
+import userModel from "../models/user.model";
 import {
     InsertUserParamDocument,
     SelectUserParamDocument, SelectUserResultDocument,

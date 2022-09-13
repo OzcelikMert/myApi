@@ -1,8 +1,8 @@
 import { Router } from "express";
-import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../../middlewares/validates";
-import userController from "../../../controllers/user.controller";
-import userSchema from "../../../schemas/user.schema";
-import userMiddleware from "../../../middlewares/user.middleware";
+import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../middlewares/validates";
+import userController from "../../controllers/user.controller";
+import userSchema from "../../schemas/user.schema";
+import userMiddleware from "../../middlewares/user.middleware";
 
 const userRouter = Router();
 

@@ -1,6 +1,6 @@
-import {permissionMiddleware, sessionMiddleware} from "../../../middlewares/validates";
+import {permissionMiddleware, sessionMiddleware} from "../../middlewares/validates";
 import {Router} from "express";
-import serverInfoController from "../../../controllers/serverInfo.controller";
+import serverInfoController from "../../controllers/serverInfo.controller";
 
 const serverInfoRouter = Router();
 

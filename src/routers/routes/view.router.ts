@@ -1,8 +1,8 @@
 import {Router} from "express";
-import viewController from "../../../controllers/view.controller";
-import {requestMiddleware, sessionMiddleware} from "../../../middlewares/validates";
-import viewSchema from "../../../schemas/view.schema";
-import viewMiddleware from "../../../middlewares/view.middleware";
+import viewController from "../../controllers/view.controller";
+import {requestMiddleware, sessionMiddleware} from "../../middlewares/validates";
+import viewSchema from "../../schemas/view.schema";
+import viewMiddleware from "../../middlewares/view.middleware";
 
 const viewRouter = Router();
 

@@ -1,6 +1,6 @@
 import * as mongoose from "mongoose";
 import V, {DateMask} from "../library/variable";
-import postModel from "../model/post.model";
+import postModel from "../models/post.model";
 import {
     DeletePostParamDocument,
     InsertPostParamDocument,

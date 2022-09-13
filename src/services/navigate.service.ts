@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import navigateModel from "../model/navigate.model";
+import navigateModel from "../models/navigate.model";
 import {
     DeleteNavigateParamDocument,
     InsertNavigateParamDocument,

@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import postTermModel from "../model/postTerm.model";
+import postTermModel from "../models/postTerm.model";
 import {
     DeletePostTermParamDocument,
     InsertPostTermParamDocument,

@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import viewModel from "../model/view.model";
+import viewModel from "../models/view.model";
 import {
     DeleteViewParamDocument,
     InsertViewParamDocument, SelectTotalViewResultDocument,
@@ -7,7 +7,7 @@ import {
     ViewDocument,
     SelectTotalWithViewResultDocument
 } from "../types/services/view";
-import postModel from "../model/post.model";
+import postModel from "../models/post.model";
 
 export default {
     async select(params: SelectViewParamDocument): Promise<SelectViewResultDocument[]> {

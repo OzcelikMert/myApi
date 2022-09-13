@@ -1,9 +1,9 @@
 import { Router } from "express";
-import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../../middlewares/validates";
-import profileSchema from "../../../schemas/profile.schema";
-import profileController from "../../../controllers/profile.controller";
-import profileMiddleware from "../../../middlewares/profile.middleware";
-import userMiddleware from "../../../middlewares/user.middleware";
+import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../middlewares/validates";
+import profileSchema from "../../schemas/profile.schema";
+import profileController from "../../controllers/profile.controller";
+import profileMiddleware from "../../middlewares/profile.middleware";
+import userMiddleware from "../../middlewares/user.middleware";
 
 const profileRouter = Router();
 

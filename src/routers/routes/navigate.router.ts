@@ -1,8 +1,8 @@
 import { Router } from "express";
-import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../../middlewares/validates";
-import navigateSchema from "../../../schemas/navigate.schema";
-import navigateController from "../../../controllers/navigate.controller";
-import navigateMiddleware from "../../../middlewares/navigate.middleware";
+import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../middlewares/validates";
+import navigateSchema from "../../schemas/navigate.schema";
+import navigateController from "../../controllers/navigate.controller";
+import navigateMiddleware from "../../middlewares/navigate.middleware";
 
 const navigateRouter = Router();
 

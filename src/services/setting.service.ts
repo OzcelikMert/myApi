@@ -1,6 +1,6 @@
 import * as mongoose from "mongoose";
 import V, {DateMask} from "../library/variable";
-import settingModel from "../model/setting.model";
+import settingModel from "../models/setting.model";
 import {
     InsertSettingParamDocument,
     SelectSettingParamDocument, SelectSettingResultDocument,

@@ -1,8 +1,8 @@
-import {permissionMiddleware, requestMiddleware, sessionMiddleware} from "../../../middlewares/validates";
+import {permissionMiddleware, requestMiddleware, sessionMiddleware} from "../../middlewares/validates";
 import {Router} from "express";
-import settingSchema from "../../../schemas/setting.schema";
-import settingController from "../../../controllers/setting.controller";
-import settingMiddleware from "../../../middlewares/setting.middleware";
+import settingSchema from "../../schemas/setting.schema";
+import settingController from "../../controllers/setting.controller";
+import settingMiddleware from "../../middlewares/setting.middleware";
 
 const settingRouter = Router();
 

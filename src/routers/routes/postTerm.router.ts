@@ -1,8 +1,8 @@
 import { Router } from "express";
-import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../../middlewares/validates";
-import postTermSchema from "../../../schemas/postTerm.schema";
-import postTermMiddleware from "../../../middlewares/postTerm.middleware";
-import postTermController from "../../../controllers/postTerm.controller";
+import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../middlewares/validates";
+import postTermSchema from "../../schemas/postTerm.schema";
+import postTermMiddleware from "../../middlewares/postTerm.middleware";
+import postTermController from "../../controllers/postTerm.controller";
 
 const postTermRouter = Router();
 
