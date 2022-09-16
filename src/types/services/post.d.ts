@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import {PopulateAuthorIdDocument} from "./user";
 import {PopulateTermsDocument} from "./postTerm";
+import {ThemeGroupTypeId} from "../../constants/themeGroupType.const";
 
 export interface DeletePostParamDocument {
     postId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[]
@@ -15,6 +16,11 @@ export interface UpdatePostParamDocument {
     dateStart?: Date,
     isFixed?: boolean,
     contents?: InsertPostParamDocument["contents"]
+    themeGroups?: (Omit<PostThemeGroupDocument, "types"> & {
+        types: (Omit<PostThemeGroupTypeDocument, "contents"> & {
+            contents: PostThemeGroupTypeContentDocument
+        })[]
+    })[]
 }
 
 export interface InsertPostParamDocument {
@@ -25,6 +31,11 @@ export interface InsertPostParamDocument {
     dateStart: Date,
     isFixed: boolean,
     contents: PostContentDocument
+    themeGroups?: (Omit<PostThemeGroupDocument, "types"> & {
+        types: (Omit<PostThemeGroupTypeDocument, "contents"> & {
+            contents: PostThemeGroupTypeContentDocument
+        })[]
+    })[]
 }
 
 export interface SelectPostParamDocument {
@@ -43,7 +54,33 @@ export type SelectPostResultDocument = {
     lastAuthorId: PopulateAuthorIdDocument,
     terms: PopulateTermsDocument[]
     contents?: PostContentDocument | PostContentDocument[]
+    themeGroups?: (Omit<PostThemeGroupDocument, "types"> & {
+        types: (Omit<PostThemeGroupTypeDocument, "contents"> & {
+            contents?: PostThemeGroupTypeContentDocument | PostThemeGroupTypeContentDocument[]
+        })[]
+    })[]
 } & Omit<PostDocument, "contents">
+
+export interface PostThemeGroupTypeContentDocument {
+    _id?: mongoose.Types.ObjectId
+    langId: mongoose.Types.ObjectId
+    content: string
+}
+
+export interface PostThemeGroupTypeDocument {
+    _id?: mongoose.Types.ObjectId
+    elementId: string
+    typeId: number,
+    langKey: string,
+    contents: PostThemeGroupTypeContentDocument[]
+}
+
+export interface PostThemeGroupDocument {
+    _id?: mongoose.Types.ObjectId
+    elementId: string
+    langKey: string,
+    types: PostThemeGroupTypeDocument[]
+}
 
 export interface PostContentDocument {
     langId: mongoose.Types.ObjectId
@@ -68,4 +105,5 @@ export interface PostDocument {
     isFixed: boolean,
     terms: mongoose.Types.ObjectId[]
     contents: PostContentDocument[]
+    themeGroups?: PostThemeGroupDocument[]
 }

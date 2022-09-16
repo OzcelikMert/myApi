@@ -9,9 +9,9 @@ import dbConnect from "./db";
 import userService from "../services/user.service";
 import {UserRoleId} from "../constants/userRole.const";
 import {StatusId} from "../constants/status.const";
-import UserUtil from "../utils/functions/user.util";
 import languageService from "../services/language.service";
 import settingService from "../services/setting.service";
+
 const chalk = require('chalk');
 
 let Config: ConfigDocument = {

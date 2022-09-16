@@ -16,7 +16,20 @@ const postBody = object({
         url: string(),
         content: string(),
         shortContent: string(),
-    }).required({contents: ErrorCodes.emptyValue})
+    }).required({contents: ErrorCodes.emptyValue}),
+    themeGroups: (array(object({
+        elementId: string().required({elementId: ErrorCodes.emptyValue}),
+        langKey: string().required({langKey: ErrorCodes.emptyValue}),
+        types: (array(object({
+            elementId: string().required({elementId: ErrorCodes.emptyValue}),
+            typeId: number().required({typeId: ErrorCodes.emptyValue}),
+            langKey: string().required({langKey: ErrorCodes.emptyValue}),
+            contents: object({
+                langId: string().required({langId: ErrorCodes.emptyValue}),
+                content: string().required({content: ErrorCodes.emptyValue})
+            }).required({contents: ErrorCodes.emptyValue})
+        }))).required({types: ErrorCodes.emptyValue})
+    }))).default(undefined)
 })
 
 export default {

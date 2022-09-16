@@ -5,6 +5,8 @@ import postSchema from "../schemas/post.schema";
 import postService from "../services/post.service";
 import V, {ClearTypes} from "../library/variable";
 import MongoDBHelpers from "../library/mongodb/helpers";
+import {InsertPostParamDocument, UpdatePostParamDocument} from "../types/services/post";
+import Variable from "../library/variable";
 
 export default {
     getGeneral: async (
@@ -48,7 +50,7 @@ export default {
 
         data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
 
-        serviceResult.data = await postService.insert({
+        let params: InsertPostParamDocument = {
             ...data.params,
             ...data.body,
             authorId: req.session.data.id,
@@ -56,8 +58,26 @@ export default {
             contents: {
                 ...data.body.contents,
                 langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
-            }
-        });
+            },
+            themeGroups: data.body.themeGroups
+                ? data.body.themeGroups.map(group => ({
+                    ...group,
+                    types: group.types.map(type => ({
+                        ...type,
+                        contents: {
+                            ...type.contents,
+                            langId: MongoDBHelpers.createObjectId(type.contents.langId)
+                        }
+                    }))
+                }))
+                : undefined
+        }
+
+        if(Variable.isEmpty(params.themeGroups)){
+            delete params.themeGroups;
+        }
+
+        serviceResult.data = await postService.insert(params);
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
@@ -70,17 +90,35 @@ export default {
 
         data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
 
-        serviceResult.data = await postService.update({
-            ...data.body,
+        let params: UpdatePostParamDocument = {
             ...data.params,
+            ...data.body,
             postId: MongoDBHelpers.createObjectId(data.params.postId),
             lastAuthorId: req.session.data.id,
             dateStart: new Date(data.body.dateStart),
             contents: {
                 ...data.body.contents,
                 langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
-            }
-        });
+            },
+            themeGroups: data.body.themeGroups
+                ? data.body.themeGroups.map(group => ({
+                    ...group,
+                    types: group.types.map(type => ({
+                        ...type,
+                        contents: {
+                            ...type.contents,
+                            langId: MongoDBHelpers.createObjectId(type.contents.langId)
+                        }
+                    }))
+                }))
+                : undefined
+        }
+
+        if(Variable.isEmpty(params.themeGroups)){
+            delete params.themeGroups;
+        }
+
+        serviceResult.data = await postService.update(params);
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },

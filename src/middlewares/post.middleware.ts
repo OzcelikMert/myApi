@@ -2,7 +2,6 @@ import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import postService from "../services/post.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
-import Variable from "../library/variable";
 
 export default {
     check: async (

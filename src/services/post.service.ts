@@ -83,6 +83,20 @@ export default {
                     delete doc.contents;
                 }
             }
+
+            doc.themeGroups?.map(docThemeGroup => {
+                docThemeGroup.types.map(docThemeGroupType => {
+                    if (Array.isArray(docThemeGroupType.contents)) {
+                        docThemeGroupType.contents = docThemeGroupType.contents.filter(content => content.langId.toString() == params.langId.toString());
+                        if (docThemeGroupType.contents.length > 0) {
+                            docThemeGroupType.contents = docThemeGroupType.contents[0];
+                        } else {
+                            delete docThemeGroupType.contents;
+                        }
+                    }
+                })
+            })
+
             return doc;
         });
     },
@@ -122,6 +136,26 @@ export default {
                     doc.contents.push(params.contents)
                 }
                 delete params.contents;
+            }
+
+            if(params.themeGroups && doc.themeGroups){
+                doc.themeGroups.map(docGroup => {
+                    let findParamGroup = params.themeGroups?.findSingle("_id", docGroup._id);
+                    if (findParamGroup) {
+                        docGroup.types.map(docGroupType => {
+                            let findParamGroupType = findParamGroup?.types.findSingle("_id", docGroupType._id);
+                            if (findParamGroupType) {
+                                const findIndex = docGroupType.contents.indexOfKey("langId", findParamGroupType.contents.langId);
+                                if (findIndex > -1) {
+                                    docGroupType.contents[findIndex] = Object.assign(docGroupType.contents[findIndex], findParamGroupType.contents);
+                                } else {
+                                    docGroupType.contents.push(findParamGroupType.contents)
+                                }
+                            }
+                        })
+                    }
+                })
+                delete params.themeGroups;
             }
 
             doc = Object.assign(doc, params);
