@@ -11,7 +11,7 @@ declare global {
 }
 
 Array.prototype.indexOfKey = function (key, value) {
-    return this.map(data => {
+    return typeof value === "undefined" ? -1 : this.map(data => {
         return (key === "")
             ? data.toString()
             : (typeof data[key] !== undefined)
@@ -23,7 +23,7 @@ Array.prototype.indexOfKey = function (key, value) {
 Array.prototype.findSingle = function (key, value) {
     return this.find(function(data, index){
         data._index = index;
-        return ((key === "") ? data.toString() : data[key].toString()) == value.toString()
+        return typeof value === "undefined" ? undefined : ((key === "") ? data.toString() : data[key].toString()) == value.toString()
     });
 }
 Array.prototype.findMulti = function (key, value) {

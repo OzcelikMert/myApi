@@ -1,9 +1,12 @@
 import { object, string, number, boolean, array } from "yup";
 import {ErrorCodes} from "../library/api";
 
+
+
+
 const postBody = object({
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
-    termId: array(string().required({termId: ErrorCodes.incorrectData})),
+    terms: array(string().required({termId: ErrorCodes.incorrectData})).default([]),
     dateStart: string().required({dateStart: ErrorCodes.emptyValue}),
     order: number().required({order: ErrorCodes.emptyValue}),
     isFixed: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}).required({isFixed: ErrorCodes.emptyValue}),
@@ -18,13 +21,16 @@ const postBody = object({
         shortContent: string(),
     }).required({contents: ErrorCodes.emptyValue}),
     themeGroups: (array(object({
+        _id: string(),
         elementId: string().required({elementId: ErrorCodes.emptyValue}),
         langKey: string().required({langKey: ErrorCodes.emptyValue}),
         types: (array(object({
+            _id: string(),
             elementId: string().required({elementId: ErrorCodes.emptyValue}),
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
             langKey: string().required({langKey: ErrorCodes.emptyValue}),
             contents: object({
+                _id: string(),
                 langId: string().required({langId: ErrorCodes.emptyValue}),
                 content: string().required({content: ErrorCodes.emptyValue})
             }).required({contents: ErrorCodes.emptyValue})

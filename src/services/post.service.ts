@@ -4,11 +4,12 @@ import postModel from "../models/post.model";
 import {
     DeletePostParamDocument,
     InsertPostParamDocument,
-    PostDocument,
+    PostDocument, PostThemeGroupDocument,
     SelectPostParamDocument, SelectPostResultDocument,
-    UpdatePostParamDocument
+    UpdatePostParamDocument, UpdatePostStatusIdParamDocument
 } from "../types/services/post";
 import {PostTermDocument, SelectPostTermResultDocument} from "../types/services/postTerm";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
@@ -16,20 +17,20 @@ export default {
 
         if (params.postId) filters = {
             ...filters,
-            _id: params.postId
+            _id: MongoDBHelpers.createObjectId(params.postId)
         }
         if (params.url) filters = {
             ...filters,
-            "contents.langId": params.langId,
+            "contents.langId": MongoDBHelpers.createObjectId(params.langId),
             "contents.url": params.url
         }
         if (params.typeId) {
-            if(Array.isArray(params.typeId)) {
+            if (Array.isArray(params.typeId)) {
                 filters = {
                     ...filters,
-                    typeId: { $in: params.typeId }
+                    typeId: {$in: params.typeId}
                 }
-            }else {
+            } else {
                 filters = {
                     ...filters,
                     typeId: params.typeId
@@ -43,7 +44,7 @@ export default {
         if (params.ignorePostId) {
             filters = {
                 ...filters,
-                _id: {$nin: params.ignorePostId}
+                _id: {$nin: MongoDBHelpers.createObjectIdArray(params.ignorePostId)}
             }
         }
 
@@ -103,7 +104,27 @@ export default {
     async insert(params: InsertPostParamDocument) {
         return await postModel.create({
             ...params,
-            lastAuthorId: params.authorId
+            terms: MongoDBHelpers.createObjectIdArray(params.terms),
+            authorId: MongoDBHelpers.createObjectId(params.authorId),
+            lastAuthorId: MongoDBHelpers.createObjectId(params.authorId),
+            contents: [
+                {
+                    ...params.contents,
+                    langId: MongoDBHelpers.createObjectId(params.contents.langId)
+                }
+            ],
+            ...(params.themeGroups ? {
+                themeGroups: params.themeGroups.map(group => ({
+                    ...group,
+                    types: group.types.map(type => ({
+                        ...type,
+                        contents: {
+                            ...type.contents,
+                            langId: MongoDBHelpers.createObjectId(type.contents.langId)
+                        }
+                    }))
+                }))
+            } : {})
         })
     },
     async update(params: UpdatePostParamDocument) {
@@ -111,11 +132,11 @@ export default {
 
         if (Array.isArray(params.postId)) {
             filters = {
-                _id: {$in: params.postId}
+                _id: {$in: MongoDBHelpers.createObjectIdArray(params.postId)}
             }
         } else {
             filters = {
-                _id: params.postId
+                _id: MongoDBHelpers.createObjectId(params.postId)
             };
         }
         if (params.typeId) {
@@ -129,36 +150,119 @@ export default {
         delete params.typeId;
         return (await postModel.find(filters))?.map(async doc => {
             if (params.contents) {
-                const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
-                if (findIndex > -1) {
-                    doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
+                let docContent = doc.contents.findSingle("langId", params.contents.langId);
+                if (docContent) {
+                    docContent = {
+                        ...docContent,
+                        ...params.contents,
+                        langId: MongoDBHelpers.createObjectId(params.contents.langId)
+                    };
                 } else {
-                    doc.contents.push(params.contents)
+                    doc.contents.push({
+                        ...params.contents,
+                        langId: MongoDBHelpers.createObjectId(params.contents.langId),
+                    })
                 }
                 delete params.contents;
             }
 
-            if(params.themeGroups && doc.themeGroups){
-                doc.themeGroups.map(docGroup => {
-                    let findParamGroup = params.themeGroups?.findSingle("_id", docGroup._id);
-                    if (findParamGroup) {
-                        docGroup.types.map(docGroupType => {
-                            let findParamGroupType = findParamGroup?.types.findSingle("_id", docGroupType._id);
-                            if (findParamGroupType) {
-                                const findIndex = docGroupType.contents.indexOfKey("langId", findParamGroupType.contents.langId);
-                                if (findIndex > -1) {
-                                    docGroupType.contents[findIndex] = Object.assign(docGroupType.contents[findIndex], findParamGroupType.contents);
-                                } else {
-                                    docGroupType.contents.push(findParamGroupType.contents)
+            if (params.themeGroups) {
+                if (typeof doc.themeGroups === "undefined") {
+                    doc.themeGroups = [];
+                }
+
+                for(let paramThemeGroup of params.themeGroups) {
+                    let docThemeGroup = doc.themeGroups.findSingle("_id", paramThemeGroup._id);
+                    if (docThemeGroup) {
+                        for(let paramThemeGroupType of paramThemeGroup.types) {
+                            let docThemeGroupType = docThemeGroup.types.findSingle("_id", paramThemeGroupType._id);
+                            if(docThemeGroupType){
+                                let docGroupTypeContent = docThemeGroupType.contents.findSingle("langId", paramThemeGroupType.contents.langId);
+                                if(docGroupTypeContent) {
+                                    docGroupTypeContent = {
+                                        ...docGroupTypeContent,
+                                        ...paramThemeGroupType.contents,
+                                        langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
+                                    }
+                                }else {
+                                    docThemeGroupType.contents.push({
+                                        ...paramThemeGroupType.contents,
+                                        langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
+                                    })
                                 }
+                                docThemeGroupType = {
+                                    ...docThemeGroupType,
+                                    ...paramThemeGroupType,
+                                    contents: docThemeGroupType.contents,
+                                    _id: docThemeGroupType._id
+                                }
+                            }else {
+                                docThemeGroup.types.push({
+                                    ...paramThemeGroupType,
+                                    _id: undefined,
+                                    contents: [{
+                                        ...paramThemeGroupType.contents,
+                                        langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
+                                    }]
+                                })
                             }
+                        }
+                        docThemeGroup = {
+                            ...docThemeGroup,
+                            ...paramThemeGroup,
+                            _id: docThemeGroup._id,
+                            types: docThemeGroup.types
+                        }
+                    } else {
+                        doc.themeGroups.push({
+                            ...paramThemeGroup,
+                            _id: undefined,
+                            types: paramThemeGroup.types.map(paramThemeGroupType => ({
+                                ...paramThemeGroupType,
+                                _id: undefined,
+                                contents: [{
+                                    ...paramThemeGroupType.contents,
+                                    langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
+                                }]
+                            }))
                         })
                     }
-                })
+                }
                 delete params.themeGroups;
             }
 
             doc = Object.assign(doc, params);
+
+            return await doc.save();
+        });
+    },
+    async updateStatus(params: UpdatePostStatusIdParamDocument) {
+        let filters: mongoose.FilterQuery<PostDocument> = {}
+
+        if (Array.isArray(params.postId)) {
+            filters = {
+                _id: {$in: MongoDBHelpers.createObjectIdArray(params.postId)}
+            }
+        } else {
+            filters = {
+                _id: MongoDBHelpers.createObjectId(params.postId)
+            };
+        }
+        if (params.typeId) {
+            filters = {
+                ...filters,
+                typeId: params.typeId
+            }
+        }
+
+        delete params.postId;
+        delete params.typeId;
+        return (await postModel.find(filters))?.map(async doc => {
+            doc = Object.assign(doc, {
+                ...params,
+                statusId: params.statusId,
+                lastAuthorId: MongoDBHelpers.createObjectId(params.lastAuthorId)
+            });
 
             return await doc.save();
         });
@@ -168,11 +272,11 @@ export default {
 
         if (Array.isArray(params.postId)) {
             filters = {
-                _id: {$in: params.postId}
+                _id: {$in: MongoDBHelpers.createObjectIdArray(params.postId)}
             }
         } else {
             filters = {
-                _id: params.postId
+                _id: MongoDBHelpers.createObjectId(params.postId)
             };
         }
 

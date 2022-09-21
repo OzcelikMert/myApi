@@ -1,52 +1,55 @@
 import mongoose from "mongoose";
 import {PopulateAuthorIdDocument} from "./user";
 import {PopulateTermsDocument} from "./postTerm";
-import {ThemeGroupTypeId} from "../../constants/themeGroupType.const";
 
 export interface DeletePostParamDocument {
-    postId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[]
+    postId: string | string[]
 }
 
-export interface UpdatePostParamDocument {
-    postId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[],
-    typeId?: number,
-    statusId?: number,
-    order?: number,
-    lastAuthorId: mongoose.Types.ObjectId
-    dateStart?: Date,
-    isFixed?: boolean,
-    contents?: InsertPostParamDocument["contents"]
-    themeGroups?: (Omit<PostThemeGroupDocument, "types"> & {
-        types: (Omit<PostThemeGroupTypeDocument, "contents"> & {
-            contents: PostThemeGroupTypeContentDocument
+export type UpdatePostStatusIdParamDocument = {
+    postId: string | string[],
+    typeId: number
+    statusId: number,
+    lastAuthorId: string
+}
+
+export type UpdatePostParamDocument = {
+    postId: string,
+    lastAuthorId: string,
+    themeGroups?: (Omit<PostThemeGroupDocument, "types"|"_id"> & {
+        _id?: string,
+        types: (Omit<PostThemeGroupTypeDocument, "contents"|"_id"> & {
+            _id?: string,
+            contents: Omit<PostThemeGroupTypeContentDocument, "_id"|"langId"> & {langId: string}
         })[]
     })[]
-}
+} & Omit<InsertPostParamDocument, "themeGroups"|"authorId">
 
-export interface InsertPostParamDocument {
+export type InsertPostParamDocument = {
     typeId: number,
     statusId: number,
-    order: number,
-    authorId: mongoose.Types.ObjectId
+    authorId: string
     dateStart: Date,
+    order: number,
     isFixed: boolean,
-    contents: PostContentDocument
-    themeGroups?: (Omit<PostThemeGroupDocument, "types"> & {
-        types: (Omit<PostThemeGroupTypeDocument, "contents"> & {
-            contents: PostThemeGroupTypeContentDocument
+    terms: string[]
+    contents: Omit<PostContentDocument, "_id"|"langId"> & {langId: string}
+    themeGroups?: (Omit<PostThemeGroupDocument, "types"|"_id"> & {
+        types: (Omit<PostThemeGroupTypeDocument, "contents"|"_id"> & {
+            contents: Omit<PostThemeGroupTypeContentDocument, "_id"|"langId"> & {langId: string}
         })[]
     })[]
 }
 
 export interface SelectPostParamDocument {
-    postId?: mongoose.Types.ObjectId
+    postId?: string
     typeId?: number | number[],
-    langId: mongoose.Types.ObjectId
+    langId: string
     url?: string
     statusId?: number,
     getContents?: boolean,
     maxCount?: number,
-    ignorePostId?: mongoose.Types.ObjectId[]
+    ignorePostId?: string[]
 }
 
 export type SelectPostResultDocument = {
@@ -59,16 +62,16 @@ export type SelectPostResultDocument = {
             contents?: PostThemeGroupTypeContentDocument | PostThemeGroupTypeContentDocument[]
         })[]
     })[]
-} & Omit<PostDocument, "contents">
+} & Omit<PostDocument, "contents"|"themeGroups">
 
 export interface PostThemeGroupTypeContentDocument {
-    _id?: mongoose.Types.ObjectId
-    langId: mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId,
+    langId:  mongoose.Types.ObjectId
     content: string
 }
 
 export interface PostThemeGroupTypeDocument {
-    _id?: mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId,
     elementId: string
     typeId: number,
     langKey: string,
@@ -83,6 +86,7 @@ export interface PostThemeGroupDocument {
 }
 
 export interface PostContentDocument {
+    _id?: mongoose.Types.ObjectId
     langId: mongoose.Types.ObjectId
     image?: string,
     title?: string,
@@ -94,7 +98,7 @@ export interface PostContentDocument {
 }
 
 export interface PostDocument {
-    _id: mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId
     typeId: number,
     statusId: number,
     authorId: mongoose.Types.ObjectId

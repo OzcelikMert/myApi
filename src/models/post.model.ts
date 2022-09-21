@@ -16,8 +16,7 @@ const schemaThemeGroupTypeContent = new mongoose.Schema<PostThemeGroupTypeConten
     {
         langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
         content: {type: String, default: ""}
-    },
-    {timestamps: true}
+    }
 ).index({langId: 1});
 
 const schemaThemeGroupType = new mongoose.Schema<PostThemeGroupTypeDocument>(
@@ -26,8 +25,7 @@ const schemaThemeGroupType = new mongoose.Schema<PostThemeGroupTypeDocument>(
         langKey: {type: String, required: true},
         elementId: {type: String, required: true},
         contents: {type: [schemaThemeGroupTypeContent], default: []}
-    },
-    {timestamps: true}
+    }
 );
 
 const schemaThemeGroup = new mongoose.Schema<PostThemeGroupDocument>(
@@ -35,8 +33,7 @@ const schemaThemeGroup = new mongoose.Schema<PostThemeGroupDocument>(
         langKey: {type: String, required: true},
         elementId: {type: String, required: true},
         types: {type: [schemaThemeGroupType], default: []}
-    },
-    {timestamps: true}
+    }
 );
 
 const schemaContent = new mongoose.Schema<PostContentDocument>(
@@ -49,13 +46,12 @@ const schemaContent = new mongoose.Schema<PostContentDocument>(
         url: {type: String, default: ""},
         seoTitle: {type: String, default: ""},
         seoContent: {type: String, default: ""}
-    },
-    {timestamps: true}
+    }
 ).index({langId: 1});
 
 const schema = new mongoose.Schema<PostDocument>(
     {
-        typeId: {type: Number, required: true, enum: PostTypeId},
+        typeId: {type: Number, enum: PostTypeId, default: PostTypeId.Blog},
         statusId: {type: Number, required: true, enum: StatusId},
         authorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         lastAuthorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
@@ -70,4 +66,4 @@ const schema = new mongoose.Schema<PostDocument>(
     {timestamps: true}
 ).index({typeId: 1, statusId: 1, authorId: 1});
 
-export default mongoose.model("posts", schema)
+export default mongoose.model<PostDocument>("posts", schema)

@@ -4,9 +4,6 @@ import {InferType} from "yup";
 import postSchema from "../schemas/post.schema";
 import postService from "../services/post.service";
 import V, {ClearTypes} from "../library/variable";
-import MongoDBHelpers from "../library/mongodb/helpers";
-import {InsertPostParamDocument, UpdatePostParamDocument} from "../types/services/post";
-import Variable from "../library/variable";
 
 export default {
     getGeneral: async (
@@ -17,8 +14,7 @@ export default {
         let data: InferType<typeof postSchema.getGeneral> = req;
 
         serviceResult.data = await postService.select({
-            ...data.query,
-            langId: MongoDBHelpers.createObjectId(data.query.langId)
+            ...data.query
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -33,9 +29,7 @@ export default {
 
         serviceResult.data = await postService.select({
             ...data.params,
-            ...data.query,
-            langId: MongoDBHelpers.createObjectId(data.query.langId),
-            postId: data.params.postId ? MongoDBHelpers.createObjectId(data.params.postId) : undefined
+            ...data.query
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -50,34 +44,13 @@ export default {
 
         data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
 
-        let params: InsertPostParamDocument = {
+        serviceResult.data = await postService.insert({
             ...data.params,
             ...data.body,
-            authorId: req.session.data.id,
+            authorId: req.session.data.id.toString(),
             dateStart: new Date(data.body.dateStart),
-            contents: {
-                ...data.body.contents,
-                langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
-            },
-            themeGroups: data.body.themeGroups
-                ? data.body.themeGroups.map(group => ({
-                    ...group,
-                    types: group.types.map(type => ({
-                        ...type,
-                        contents: {
-                            ...type.contents,
-                            langId: MongoDBHelpers.createObjectId(type.contents.langId)
-                        }
-                    }))
-                }))
-                : undefined
-        }
-
-        if(Variable.isEmpty(params.themeGroups)){
-            delete params.themeGroups;
-        }
-
-        serviceResult.data = await postService.insert(params);
+            isFixed: data.body.isFixed == 1
+        });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
@@ -90,35 +63,13 @@ export default {
 
         data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
 
-        let params: UpdatePostParamDocument = {
+        serviceResult.data = await postService.update({
             ...data.params,
             ...data.body,
-            postId: MongoDBHelpers.createObjectId(data.params.postId),
-            lastAuthorId: req.session.data.id,
-            dateStart: new Date(data.body.dateStart),
-            contents: {
-                ...data.body.contents,
-                langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
-            },
-            themeGroups: data.body.themeGroups
-                ? data.body.themeGroups.map(group => ({
-                    ...group,
-                    types: group.types.map(type => ({
-                        ...type,
-                        contents: {
-                            ...type.contents,
-                            langId: MongoDBHelpers.createObjectId(type.contents.langId)
-                        }
-                    }))
-                }))
-                : undefined
-        }
-
-        if(Variable.isEmpty(params.themeGroups)){
-            delete params.themeGroups;
-        }
-
-        serviceResult.data = await postService.update(params);
+            lastAuthorId: req.session.data.id.toString(),
+            isFixed: data.body.isFixed == 1,
+            dateStart: new Date(data.body.dateStart)
+        });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
@@ -129,11 +80,10 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof postSchema.putStatus> = req;
 
-        serviceResult.data = await postService.update({
+        serviceResult.data = await postService.updateStatus({
             ...data.body,
             ...data.params,
-            lastAuthorId: req.session.data.id,
-            postId: data.body.postId.map(postId => MongoDBHelpers.createObjectId(postId))
+            lastAuthorId: req.session.data.id.toString()
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -146,7 +96,7 @@ export default {
         let data: InferType<typeof postSchema.delete> = req;
 
         serviceResult.data = await postService.delete({
-            postId: data.body.postId.map(postId => MongoDBHelpers.createObjectId(postId))
+            ...data.body
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
