@@ -171,6 +171,25 @@ export default {
                     doc.themeGroups = [];
                 }
 
+                // Check delete
+                doc.themeGroups = doc.themeGroups.filter(docThemeGroup => {
+                    if(params.themeGroups) {
+                        return params.themeGroups.indexOfKey("_id", docThemeGroup._id) > -1;
+                    }
+                    return true;
+                })
+                doc.themeGroups = doc.themeGroups.map(docThemeGroup => ({
+                    ...docThemeGroup,
+                    types: docThemeGroup.types.filter(docThemeGroupType => {
+                        if(params.themeGroups) {
+                            const paramThemeGroup = params.themeGroups.findSingle("_id", docThemeGroup?._id?.toString());
+                            return paramThemeGroup.types.indexOfKey("_id", docThemeGroupType._id) > -1;
+                        }
+                        return true;
+                    })
+                }))
+
+                // Check Update
                 for(let paramThemeGroup of params.themeGroups) {
                     let docThemeGroup = doc.themeGroups.findSingle("_id", paramThemeGroup._id);
                     if (docThemeGroup) {

@@ -75,6 +75,7 @@ export interface PostThemeGroupTypeDocument {
     elementId: string
     typeId: number,
     langKey: string,
+    order: number,
     contents: PostThemeGroupTypeContentDocument[]
 }
 
@@ -82,6 +83,7 @@ export interface PostThemeGroupDocument {
     _id?: mongoose.Types.ObjectId
     elementId: string
     langKey: string,
+    order: number,
     types: PostThemeGroupTypeDocument[]
 }
 

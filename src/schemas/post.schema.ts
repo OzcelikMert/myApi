@@ -24,11 +24,13 @@ const postBody = object({
         _id: string(),
         elementId: string().required({elementId: ErrorCodes.emptyValue}),
         langKey: string().required({langKey: ErrorCodes.emptyValue}),
+        order: number().required({order: ErrorCodes.emptyValue}),
         types: (array(object({
             _id: string(),
             elementId: string().required({elementId: ErrorCodes.emptyValue}),
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
             langKey: string().required({langKey: ErrorCodes.emptyValue}),
+            order: number().required({order: ErrorCodes.emptyValue}),
             contents: object({
                 _id: string(),
                 langId: string().required({langId: ErrorCodes.emptyValue}),

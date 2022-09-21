@@ -5,10 +5,10 @@ import {PostTypeId} from "../constants/postType.const";
 import languageModel from "./language.model";
 import PostTermModel from "./postTerm.model";
 import {
-        PostContentDocument,
-        PostDocument, PostThemeGroupDocument,
-        PostThemeGroupTypeContentDocument,
-        PostThemeGroupTypeDocument
+    PostContentDocument,
+    PostDocument, PostThemeGroupDocument,
+    PostThemeGroupTypeContentDocument,
+    PostThemeGroupTypeDocument
 } from "../types/services/post";
 import {ThemeGroupTypeId} from "../constants/themeGroupType.const";
 
@@ -24,6 +24,7 @@ const schemaThemeGroupType = new mongoose.Schema<PostThemeGroupTypeDocument>(
         typeId: {type: Number, required: true, enum: ThemeGroupTypeId},
         langKey: {type: String, required: true},
         elementId: {type: String, required: true},
+        order: {type: Number, default: 0},
         contents: {type: [schemaThemeGroupTypeContent], default: []}
     }
 );
@@ -32,6 +33,7 @@ const schemaThemeGroup = new mongoose.Schema<PostThemeGroupDocument>(
     {
         langKey: {type: String, required: true},
         elementId: {type: String, required: true},
+        order: {type: Number, default: 0},
         types: {type: [schemaThemeGroupType], default: []}
     }
 );

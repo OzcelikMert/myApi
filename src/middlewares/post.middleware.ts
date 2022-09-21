@@ -1,7 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import postService from "../services/post.service";
-import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     check: async (
@@ -16,9 +15,9 @@ export default {
         let langId = req.query.langId ?? req.body.contents.langId;
 
         let resData = await postService.select({
-            postId: MongoDBHelpers.createObjectId(postId),
+            postId: postId,
             typeId: typeId,
-            langId: MongoDBHelpers.createObjectId(langId)
+            langId: langId
         });
 
         if (
@@ -53,8 +52,8 @@ export default {
 
         let oldUrl = url;
         while((await postService.select({
-            ignorePostId: postId ? [MongoDBHelpers.createObjectId(postId)] : undefined,
-            langId: MongoDBHelpers.createObjectId(langId),
+            ignorePostId: postId ? [postId] : undefined,
+            langId: langId,
             typeId: typeId,
             url: url,
             maxCount: 1
