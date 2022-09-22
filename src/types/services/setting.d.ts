@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import {PopulateAuthorIdDocument} from "./user";
 
 export type SelectSettingParamDocument = {
     langId?: mongoose.Types.ObjectId
@@ -13,7 +12,18 @@ export type InsertSettingParamDocument = {
         langId: mongoose.Types.ObjectId
         title?: string,
         content?: string,
-        tags?: string[]
+        tags?: string[],
+    },
+    contact?: {
+        email?: string,
+        phone?: string,
+        address?: string,
+        addressMap?: string
+        facebook?: string,
+        instagram?: string,
+        twitter?: string,
+        linkedin?: string,
+        google?: string,
     }
 }
 
@@ -26,6 +36,17 @@ export type UpdateSettingParamDocument = {
         title?: string,
         content?: string,
         tags?: string[]
+    },
+    contact?: {
+        email?: string,
+        phone?: string,
+        address?: string,
+        addressMap?: string
+        facebook?: string,
+        instagram?: string,
+        twitter?: string,
+        linkedin?: string,
+        google?: string,
     }
 }
 
@@ -40,10 +61,23 @@ export interface SettingSeoContentDocument {
     tags?: string[]
 }
 
+export interface SettingContactDocument {
+    email?: string,
+    phone?: string,
+    address?: string,
+    addressMap?: string
+    facebook?: string,
+    instagram?: string,
+    twitter?: string,
+    linkedin?: string,
+    google?: string,
+}
+
 export interface SettingDocument {
     _id: mongoose.Types.ObjectId
     defaultLangId: mongoose.Types.ObjectId
     icon?: string,
     logo?: string,
-    seoContents: SettingSeoContentDocument[]
+    seoContents: SettingSeoContentDocument[],
+    contact?: SettingContactDocument
 }

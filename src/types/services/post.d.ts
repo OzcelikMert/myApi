@@ -68,6 +68,7 @@ export interface PostThemeGroupTypeContentDocument {
     _id?: mongoose.Types.ObjectId,
     langId:  mongoose.Types.ObjectId
     content: string
+    url?: string
 }
 
 export interface PostThemeGroupTypeDocument {
@@ -106,6 +107,7 @@ export interface PostDocument {
     authorId: mongoose.Types.ObjectId
     lastAuthorId: mongoose.Types.ObjectId
     dateStart: Date,
+    isPrimary?: boolean,
     order: number,
     views: number,
     isFixed: boolean,

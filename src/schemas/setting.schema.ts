@@ -17,6 +17,17 @@ export default {
                 title: string(),
                 content: string(),
                 tags: array(string().required({tags: ErrorCodes.incorrectData}))
+            }).default(undefined),
+            contact: object({
+                email: string(),
+                phone: string(),
+                address: string(),
+                addressMap: string(),
+                facebook: string(),
+                instagram: string(),
+                twitter: string(),
+                linkedin: string(),
+                google: string(),
             }).default(undefined)
         })
     })

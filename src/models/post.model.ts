@@ -15,7 +15,8 @@ import {ThemeGroupTypeId} from "../constants/themeGroupType.const";
 const schemaThemeGroupTypeContent = new mongoose.Schema<PostThemeGroupTypeContentDocument>(
     {
         langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
-        content: {type: String, default: ""}
+        content: {type: String, default: ""},
+        url: {type: String}
     }
 ).index({langId: 1});
 
@@ -61,6 +62,7 @@ const schema = new mongoose.Schema<PostDocument>(
         order: {type: Number, default: 0},
         views: {type: Number, default: 0},
         isFixed: {type: Boolean, default: false},
+        isPrimary: {type: Boolean},
         terms: {type: [mongoose.Schema.Types.ObjectId], ref: PostTermModel, default: []},
         contents: {type: [schemaContent], default: []},
         themeGroups: {type: [schemaThemeGroup]}

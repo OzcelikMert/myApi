@@ -4,11 +4,11 @@ import postModel from "../models/post.model";
 import {
     DeletePostParamDocument,
     InsertPostParamDocument,
-    PostDocument, PostThemeGroupDocument,
+    PostDocument,
     SelectPostParamDocument, SelectPostResultDocument,
     UpdatePostParamDocument, UpdatePostStatusIdParamDocument
 } from "../types/services/post";
-import {PostTermDocument, SelectPostTermResultDocument} from "../types/services/postTerm";
+import {SelectPostTermResultDocument} from "../types/services/postTerm";
 import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {

@@ -49,7 +49,8 @@ export default {
             ...data.body,
             authorId: req.session.data.id.toString(),
             dateStart: new Date(data.body.dateStart),
-            isFixed: data.body.isFixed == 1
+            isFixed: data.body.isFixed == 1,
+            ...(data.body.isPrimary ? {isPrimary: data.body.isPrimary == 1} : {})
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -68,7 +69,8 @@ export default {
             ...data.body,
             lastAuthorId: req.session.data.id.toString(),
             isFixed: data.body.isFixed == 1,
-            dateStart: new Date(data.body.dateStart)
+            dateStart: new Date(data.body.dateStart),
+            ...(data.body.isPrimary ? {isPrimary: data.body.isPrimary == 1} : {})
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
