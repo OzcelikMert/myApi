@@ -2,40 +2,38 @@ import mongoose from "mongoose";
 import {PopulateAuthorIdDocument} from "./user";
 
 export interface DeletePostTermParamDocument {
-    termId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[]
+    termId: string | string[]
 }
 
 export interface UpdatePostTermParamDocument {
-    termId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[],
-    lastAuthorId: mongoose.Types.ObjectId,
+    termId: string | string[],
+    lastAuthorId: string,
     postTypeId?: number,
     typeId?: number
-    mainId?: mongoose.Types.ObjectId
+    mainId?: string
     statusId?: number
     order?: number
-    isFixed?: boolean
     contents?: InsertPostTermParamDocument["contents"]
 }
 
 export interface InsertPostTermParamDocument {
-    mainId?: mongoose.Types.ObjectId
-    authorId: mongoose.Types.ObjectId,
+    mainId?:string
+    authorId: string,
     postTypeId: number,
     typeId: number,
     statusId: number,
     order: number,
-    isFixed: boolean,
-    contents: PostTermContentDocument
+    contents: Omit<PostTermContentDocument, "langId"> & {langId: string}
 }
 
 export interface SelectPostTermParamDocument {
-    langId: mongoose.Types.ObjectId
-    termId?: mongoose.Types.ObjectId
+    langId: string
+    termId?: string
     typeId?: number | number[],
     postTypeId?: number,
     url?: string
     statusId?: number,
-    ignoreTermId?: mongoose.Types.ObjectId[],
+    ignoreTermId?: string[],
     maxCount?: number
 }
 
@@ -82,6 +80,5 @@ export interface PostTermDocument {
     lastAuthorId: mongoose.Types.ObjectId
     order: number,
     views: number,
-    isFixed: boolean,
     contents: PostTermContentDocument[]
 }

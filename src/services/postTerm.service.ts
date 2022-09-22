@@ -7,6 +7,7 @@ import {
     SelectPostTermParamDocument, SelectPostTermResultDocument,
     UpdatePostTermParamDocument
 } from "../types/services/postTerm";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     async select(params: SelectPostTermParamDocument): Promise<SelectPostTermResultDocument[]> {
@@ -14,11 +15,11 @@ export default {
 
         if (params.termId) filters = {
             ...filters,
-            _id: params.termId
+            _id: MongoDBHelpers.createObjectId(params.termId)
         }
         if (params.url) filters = {
             ...filters,
-            "contents.langId": params.langId,
+            "contents.langId": MongoDBHelpers.createObjectId(params.langId),
             "contents.url": params.url
         }
         if (params.typeId) filters = {
@@ -36,7 +37,7 @@ export default {
         if (params.ignoreTermId) {
             filters = {
                 ...filters,
-                _id: {$nin: params.ignoreTermId}
+                _id: {$nin: MongoDBHelpers.createObjectIdArray(params.ignoreTermId)}
             }
         }
 
@@ -45,7 +46,7 @@ export default {
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
                 if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
                     if (doc.contents.length > 0) {
                         doc.contents = doc.contents[0];
                     } else {
@@ -66,7 +67,7 @@ export default {
 
         return (await query.exec())?.map((doc: SelectPostTermResultDocument) => {
             if (Array.isArray(doc.contents)) {
-                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
                 if (doc.contents.length > 0) {
                     doc.contents = doc.contents[0];
                 } else {
@@ -79,7 +80,15 @@ export default {
     async insert(params: InsertPostTermParamDocument) {
         return await postTermModel.create({
             ...params,
-            lastAuthorId: params.authorId
+            authorId: MongoDBHelpers.createObjectId(params.authorId),
+            lastAuthorId: params.authorId,
+            ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
+            contents: [
+                {
+                    ...params.contents,
+                    langId: MongoDBHelpers.createObjectId(params.contents.langId)
+                }
+            ],
         })
     },
     async update(params: UpdatePostTermParamDocument) {
@@ -87,11 +96,11 @@ export default {
 
         if (Array.isArray(params.termId)) {
             filters = {
-                _id: {$in: params.termId}
+                _id: {$in: MongoDBHelpers.createObjectIdArray(params.termId)}
             }
         } else {
             filters = {
-                _id: params.termId
+                _id: MongoDBHelpers.createObjectId(params.termId)
             };
         }
         if (params.typeId) {
@@ -110,11 +119,18 @@ export default {
         delete params.postTypeId;
         return (await postTermModel.find(filters))?.map(async doc => {
             if (params.contents) {
-                const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
-                if (findIndex > -1) {
-                    doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
+                let docContent = doc.contents.findSingle("langId", params.contents.langId);
+                if (docContent) {
+                    docContent = {
+                        ...docContent,
+                        ...params.contents,
+                        langId: MongoDBHelpers.createObjectId(params.contents.langId)
+                    };
                 } else {
-                    doc.contents.push(params.contents)
+                    doc.contents.push({
+                        ...params.contents,
+                        langId: MongoDBHelpers.createObjectId(params.contents.langId),
+                    })
                 }
                 delete params.contents;
             }
@@ -129,11 +145,11 @@ export default {
 
         if (Array.isArray(params.termId)) {
             filters = {
-                _id: {$in: params.termId}
+                _id: {$in: MongoDBHelpers.createObjectIdArray(params.termId)}
             }
         } else {
             filters = {
-                _id: params.termId
+                _id: MongoDBHelpers.createObjectId(params.termId)
             };
         }
 

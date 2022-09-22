@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 export interface SelectUserParamDocument {
-    userId?: mongoose.Types.ObjectId
+    userId?: string
     statusId?: number
     email?: string,
     password?: string,
     url?: string,
     maxCount?: number,
     roleId?: number
-    ignoreUserId?: mongoose.Types.ObjectId[]
+    ignoreUserId?: string[]
 }
 
 export interface InsertUserParamDocument {
@@ -21,7 +21,7 @@ export interface InsertUserParamDocument {
 }
 
 export interface UpdateUserParamDocument {
-    userId: mongoose.Types.ObjectId
+    userId: string
     roleId?: number
     statusId?: number
     image?: string

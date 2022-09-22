@@ -5,7 +5,6 @@ const postBody = object({
     mainId: string(),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
     order: number().required({order: ErrorCodes.emptyValue}),
-    isFixed: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}).required({isFixed: ErrorCodes.emptyValue}),
     contents: object({
         langId: string().required({langId: ErrorCodes.emptyValue}),
         title: string().required({title: ErrorCodes.emptyValue}),

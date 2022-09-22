@@ -7,6 +7,7 @@ import {
     SelectLanguageResultDocument,
     SelectLanguageParamDocument
 } from "../types/services/language";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     async select(params: SelectLanguageParamDocument): Promise<SelectLanguageResultDocument[]> {
@@ -15,7 +16,7 @@ export default {
         if (params.id) {
             filters = {
                 ...filters,
-                _id: params.id
+                _id: MongoDBHelpers.createObjectId(params.id)
             }
         }
 

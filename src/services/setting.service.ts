@@ -1,5 +1,4 @@
 import * as mongoose from "mongoose";
-import V, {DateMask} from "../library/variable";
 import settingModel from "../models/setting.model";
 import {
     InsertSettingParamDocument,
@@ -7,6 +6,7 @@ import {
     SettingDocument,
     UpdateSettingParamDocument
 } from "../types/services/setting";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     async select(params: SelectSettingParamDocument): Promise<SelectSettingResultDocument[]> {
@@ -18,7 +18,7 @@ export default {
             if (Array.isArray(doc.seoContents)) {
                 if (params.langId) {
                     let langId = params.langId;
-                    doc.seoContents = doc.seoContents.filter(content => content.langId.toString() == langId.toString());
+                    doc.seoContents = doc.seoContents.filter(content => content.langId.toString() == langId);
                     if (doc.seoContents.length > 0) {
                         doc.seoContents = doc.seoContents[0];
                     } else {
@@ -33,17 +33,31 @@ export default {
     },
     async insert(params: InsertSettingParamDocument) {
         return await settingModel.create({
-            ...params
+            ...params,
+            defaultLangId: MongoDBHelpers.createObjectId(params.defaultLangId),
+            seoContents: [
+                {
+                    ...params.seoContents,
+                    langId: MongoDBHelpers.createObjectId(params.seoContents?.langId)
+                }
+            ],
         })
     },
     async update(params: UpdateSettingParamDocument) {
         return (await settingModel.find({}))?.map(async doc => {
             if (params.seoContents) {
-                const findIndex = doc.seoContents.indexOfKey("langId", params.seoContents.langId);
-                if (findIndex > -1) {
-                    doc.seoContents[findIndex] = Object.assign(doc.seoContents[findIndex], params.seoContents);
+                let docSeoContent = doc.seoContents.findSingle("langId", params.seoContents.langId);
+                if (docSeoContent) {
+                    docSeoContent = {
+                        ...docSeoContent,
+                        ...params.seoContents,
+                        langId: MongoDBHelpers.createObjectId(params.seoContents.langId)
+                    };
                 } else {
-                    doc.seoContents.push(params.seoContents)
+                    doc.seoContents.push({
+                        ...params.seoContents,
+                        langId: MongoDBHelpers.createObjectId(params.seoContents.langId),
+                    })
                 }
                 delete params.seoContents;
             }

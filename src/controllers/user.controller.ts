@@ -17,8 +17,7 @@ export default {
         let data: InferType<typeof userSchema.get> = req;
 
         serviceResult.data = await userService.select({
-            ...data.params,
-            userId: data.params.userId ?  MongoDBHelpers.createObjectId(data.params.userId) : undefined
+            ...data.params
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -44,16 +43,12 @@ export default {
         let params: UpdateUserParamDocument = {
             ...data.body,
             ...data.params,
-            userId: MongoDBHelpers.createObjectId(data.params.userId),
-            banDateEnd: data.body.banDateEnd ? new Date(data.body.banDateEnd) : undefined
+            banDateEnd: undefined,
+            ...(data.body.banDateEnd ? {banDateEnd: new Date(data.body.banDateEnd)} : {})
         }
 
         if(Variable.isEmpty(params.password)){
             delete params.password;
-        }
-
-        if(Variable.isEmpty(params.banDateEnd)){
-            delete params.banDateEnd;
         }
 
         serviceResult.data = await userService.update(params);
@@ -68,7 +63,7 @@ export default {
         let data: InferType<typeof userSchema.delete> = req;
 
         serviceResult.data = await userService.update({
-            userId:  MongoDBHelpers.createObjectId(data.params.userId),
+            ...data.params,
             statusId: StatusId.Deleted
         });
 

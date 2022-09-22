@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export interface SelectLanguageParamDocument {
-    id?: mongoose.Types.ObjectId
+    id?: string
 }
 
 export type InsertLanguageDocument = {

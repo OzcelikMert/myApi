@@ -7,6 +7,7 @@ import {
     SelectNavigateParamDocument, SelectNavigateResultDocument,
     UpdateNavigateParamDocument
 } from "../types/services/navigate";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     async select(params: SelectNavigateParamDocument): Promise<SelectNavigateResultDocument[]> {
@@ -14,7 +15,7 @@ export default {
 
         if (params.navigateId) filters = {
             ...filters,
-            _id: params.navigateId
+            _id: MongoDBHelpers.createObjectId(params.navigateId)
         }
         if (params.statusId) filters = {
             ...filters,
@@ -26,7 +27,7 @@ export default {
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: SelectNavigateResultDocument) => {
                 if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
                     if (doc.contents.length > 0) {
                         doc.contents = doc.contents[0];
                     } else {
@@ -45,7 +46,7 @@ export default {
 
         return (await query.exec())?.map((doc: SelectNavigateResultDocument) => {
             if (Array.isArray(doc.contents)) {
-                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
                 if (doc.contents.length > 0) {
                     doc.contents = doc.contents[0];
                 } else {
@@ -58,7 +59,15 @@ export default {
     async insert(params: InsertNavigateParamDocument) {
         return await navigateModel.create({
             ...params,
-            lastAuthorId: params.authorId
+            authorId: MongoDBHelpers.createObjectId(params.authorId),
+            lastAuthorId: params.authorId,
+            ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
+            contents: [
+                {
+                    ...params.contents,
+                    langId: MongoDBHelpers.createObjectId(params.contents.langId)
+                }
+            ],
         })
     },
     async update(params: UpdateNavigateParamDocument) {
@@ -66,22 +75,29 @@ export default {
 
         if (Array.isArray(params.navigateId)) {
             filters = {
-                _id: {$in: params.navigateId}
+                _id: {$in: MongoDBHelpers.createObjectIdArray(params.navigateId)}
             }
         } else {
             filters = {
-                _id: params.navigateId
+                _id: MongoDBHelpers.createObjectId(params.navigateId)
             };
         }
 
         delete params.navigateId;
         return (await navigateModel.find(filters))?.map(async doc => {
             if (params.contents) {
-                const findIndex = doc.contents.indexOfKey("langId", params.contents.langId);
-                if (findIndex > -1) {
-                    doc.contents[findIndex] = Object.assign(doc.contents[findIndex], params.contents);
+                let docContent = doc.contents.findSingle("langId", params.contents.langId);
+                if (docContent) {
+                    docContent = {
+                        ...docContent,
+                        ...params.contents,
+                        langId: MongoDBHelpers.createObjectId(params.contents.langId)
+                    };
                 } else {
-                    doc.contents.push(params.contents)
+                    doc.contents.push({
+                        ...params.contents,
+                        langId: MongoDBHelpers.createObjectId(params.contents.langId),
+                    })
                 }
                 delete params.contents;
             }
@@ -96,11 +112,11 @@ export default {
 
         if (Array.isArray(params.navigateId)) {
             filters = {
-                _id: {$in: params.navigateId}
+                _id: {$in: MongoDBHelpers.createObjectIdArray(params.navigateId)}
             }
         } else {
             filters = {
-                _id: params.navigateId
+                _id: MongoDBHelpers.createObjectId(params.navigateId)
             };
         }
 

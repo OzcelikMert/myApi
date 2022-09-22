@@ -13,7 +13,7 @@ export default {
         let serviceResult = new Result();
         if (
             (!req.session || !req.session.data) ||
-            (await userService.select({userId: req.session.data.id, statusId: StatusId.Active})).length === 0
+            (await userService.select({userId: req.session.data.id.toString(), statusId: StatusId.Active})).length === 0
         ) {
             serviceResult.status = false;
             serviceResult.errorCode = ErrorCodes.notLoggedIn;

@@ -8,6 +8,7 @@ import {
     SelectTotalWithViewResultDocument
 } from "../types/services/view";
 import postModel from "../models/post.model";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     async select(params: SelectViewParamDocument): Promise<SelectViewResultDocument[]> {
@@ -23,7 +24,7 @@ export default {
         }
         if (params.langId) filters = {
             ...filters,
-            languageId: params.langId
+            languageId: MongoDBHelpers.createObjectId(params.langId)
         }
         if (params.city) filters = {
             ...filters,
@@ -120,7 +121,8 @@ export default {
     },
     async insert(params: InsertViewParamDocument) {
         return await viewModel.create({
-            ...params
+            ...params,
+            languageId: MongoDBHelpers.createObjectId(params.languageId)
         })
     },
     async delete(params: DeleteViewParamDocument) {

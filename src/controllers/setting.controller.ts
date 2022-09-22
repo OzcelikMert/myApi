@@ -16,7 +16,7 @@ export default {
         let data: InferType<typeof settingSchema.get> = req;
 
         serviceResult.data = await settingService.select({
-            langId: data.query.langId ? MongoDBHelpers.createObjectId(data.query.langId) : undefined,
+            ...data.query
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -30,19 +30,6 @@ export default {
 
         let params: UpdateSettingParamDocument = {
             ...data.body,
-            defaultLangId: data.body.defaultLangId ? MongoDBHelpers.createObjectId(data.body.defaultLangId) : undefined,
-            seoContents: data.body.seoContents ? {
-                ...data.body.seoContents,
-                langId: MongoDBHelpers.createObjectId(data.body.seoContents.langId)
-            } : undefined
-        }
-
-        if(Variable.isEmpty(params.defaultLangId)) {
-            delete params.defaultLangId;
-        }
-
-        if(Variable.isEmpty(params.seoContents)) {
-            delete params.seoContents;
         }
 
         serviceResult.data = await settingService.update(params)

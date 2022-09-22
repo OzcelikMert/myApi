@@ -29,7 +29,6 @@ const schema = new mongoose.Schema<PostTermDocument>(
         lastAuthorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         order: {type: Number, default: 0},
         views: {type: Number, default: 0},
-        isFixed: {type: Boolean, default: false},
         contents: {type: [schemaContent], default: []}
     },
     {timestamps: true}

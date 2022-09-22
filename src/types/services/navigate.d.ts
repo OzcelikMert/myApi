@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 import {PopulateAuthorIdDocument} from "./user";
 
 export interface DeleteNavigateParamDocument {
-    navigateId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[]
+    navigateId: string | string[]
 }
 
 export interface UpdateNavigateParamDocument {
-    navigateId: mongoose.Types.ObjectId | mongoose.Types.ObjectId[],
-    lastAuthorId: mongoose.Types.ObjectId
-    mainId?: mongoose.Types.ObjectId
+    navigateId: string | string[],
+    lastAuthorId: string
+    mainId?: string
     statusId?: number
     order?: number
     contents?: InsertNavigateParamDocument["contents"]
@@ -16,15 +16,15 @@ export interface UpdateNavigateParamDocument {
 
 export interface InsertNavigateParamDocument {
     statusId: number,
-    mainId?: mongoose.Types.ObjectId
-    authorId: mongoose.Types.ObjectId
+    mainId?: string
+    authorId: string
     order: number,
-    contents: NavigateContentDocument
+    contents: Omit<NavigateContentDocument, "langId"> & {langId: string}
 }
 
 export interface SelectNavigateParamDocument {
-    langId: mongoose.Types.ObjectId
-    navigateId?: mongoose.Types.ObjectId
+    langId: string
+    navigateId?: string
     statusId?: number,
 }
 

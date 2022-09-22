@@ -15,7 +15,9 @@ export default {
 
         let userId = req.params.userId;
 
-        let resData = await userService.select({userId: MongoDBHelpers.createObjectId(userId)});
+        let resData = await userService.select({
+            userId: userId
+        });
         if (resData.length === 0) {
             serviceResult.status = false;
             serviceResult.errorCode = ErrorCodes.notFound;
@@ -42,7 +44,9 @@ export default {
         if (roleId) {
             userRoleId = roleId;
         } else if (userId) {
-            let resData = await userService.select({userId: MongoDBHelpers.createObjectId(userId)});
+            let resData = await userService.select({
+                userId: userId
+            });
             if (resData.length > 0) {
                 userRoleId = resData[0].roleId;
             }
@@ -72,11 +76,13 @@ export default {
         let userId = req.params.userId;
         let email = req.body.email;
 
-        if(userId){
-            let resData = await userService.select({userId: MongoDBHelpers.createObjectId(userId)});
+        if (userId) {
+            let resData = await userService.select({
+                userId: userId
+            });
             if (resData.length > 0) {
                 if (email) {
-                    if(resData[0].email == email) {
+                    if (resData[0].email == email) {
                         next();
                         return;
                     }
@@ -109,17 +115,13 @@ export default {
     ) => {
         let url: string = req.body.url;
         let name: string = req.body.name;
-        let userId = req.body.userId
-            ? MongoDBHelpers.createObjectId(req.body.userId)
-            :  req.body.isProfile
-                ? req.session.data.id
-                : undefined;
+        let userId = req.body.userId ? req.body.userId : req.body.isProfile ? req.session.data.id : undefined;
 
         let urlAlreadyCount = 2;
         url = url && url.length > 0 ? url : name.convertSEOUrl();
 
         let oldUrl = url;
-        while((await userService.select({
+        while ((await userService.select({
             ignoreUserId: userId ? [userId] : undefined,
             url: url,
             maxCount: 1

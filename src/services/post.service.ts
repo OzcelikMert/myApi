@@ -53,7 +53,7 @@ export default {
             select: "_id typeId contents.title contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
                 if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
                     if (doc.contents.length > 0) {
                         doc.contents = doc.contents[0];
                     } else {
@@ -74,7 +74,7 @@ export default {
 
         return (await query.exec())?.map((doc: SelectPostResultDocument) => {
             if (Array.isArray(doc.contents)) {
-                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId.toString());
+                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
                 if (doc.contents.length > 0) {
                     doc.contents = doc.contents[0];
                     if (!params.getContents) {
@@ -88,7 +88,7 @@ export default {
             doc.themeGroups?.map(docThemeGroup => {
                 docThemeGroup.types.map(docThemeGroupType => {
                     if (Array.isArray(docThemeGroupType.contents)) {
-                        docThemeGroupType.contents = docThemeGroupType.contents.filter(content => content.langId.toString() == params.langId.toString());
+                        docThemeGroupType.contents = docThemeGroupType.contents.filter(content => content.langId.toString() == params.langId);
                         if (docThemeGroupType.contents.length > 0) {
                             docThemeGroupType.contents = docThemeGroupType.contents[0];
                         } else {

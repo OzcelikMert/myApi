@@ -112,7 +112,7 @@ class InitConfig{
         if((await settingService.select({})).length === 0){
             let lang = await languageService.select({});
             await settingService.insert({
-                defaultLangId: lang[0]._id,
+                defaultLangId: lang[0]._id.toString(),
             })
         }
     }

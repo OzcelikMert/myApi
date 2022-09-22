@@ -5,7 +5,6 @@ import {InferType} from "yup";
 import viewSchema from "../schemas/view.schema";
 import viewService from "../services/view.service";
 import {Config} from "../config";
-import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     getNumber: async (
@@ -61,7 +60,7 @@ export default {
         serviceResult.data = await viewService.insert({
             ...data.body,
             ip: ip,
-            languageId: MongoDBHelpers.createObjectId(data.body.lang),
+            languageId: data.body.lang,
             ...ipDetail
         })
 

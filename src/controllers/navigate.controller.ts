@@ -17,9 +17,7 @@ export default {
 
         serviceResult.data = await navigateService.select({
             ...data.params,
-            ...data.query,
-            langId: MongoDBHelpers.createObjectId(data.query.langId),
-            navigateId: data.params.navigateId ? MongoDBHelpers.createObjectId(data.params.navigateId) : undefined
+            ...data.query
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -36,12 +34,7 @@ export default {
 
         serviceResult.data = await navigateService.insert({
             ...data.body,
-            authorId: req.session.data.id,
-            mainId: data.body.mainId ? MongoDBHelpers.createObjectId(data.body.mainId) : undefined,
-            contents: {
-                ...data.body.contents,
-                langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
-            }
+            authorId: req.session.data.id.toString(),
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -58,13 +51,7 @@ export default {
         serviceResult.data = await navigateService.update({
             ...data.body,
             ...data.params,
-            navigateId: MongoDBHelpers.createObjectId(data.params.navigateId),
-            lastAuthorId: req.session.data.id,
-            mainId: data.body.mainId ? MongoDBHelpers.createObjectId(data.body.mainId) : undefined,
-            contents: {
-                ...data.body.contents,
-                langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
-            }
+            lastAuthorId: req.session.data.id.toString()
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -78,8 +65,7 @@ export default {
 
         serviceResult.data = await navigateService.update({
             ...data.body,
-            lastAuthorId: req.session.data.id,
-            navigateId: data.body.navigateId.map(navigateId => MongoDBHelpers.createObjectId(navigateId))
+            lastAuthorId: req.session.data.id.toString(),
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -92,7 +78,7 @@ export default {
         let data: InferType<typeof navigateSchema.delete> = req;
 
         serviceResult.data = await navigateService.delete({
-            navigateId: data.body.navigateId.map(navigateId => MongoDBHelpers.createObjectId(navigateId))
+            ...data.body
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)

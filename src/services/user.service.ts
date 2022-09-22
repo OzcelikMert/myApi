@@ -9,6 +9,7 @@ import {
 } from "../types/services/user";
 import {StatusId} from "../constants/status.const";
 import userUtil from "../utils/functions/user.util";
+import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     async select(params: SelectUserParamDocument): Promise<SelectUserResultDocument[]> {
@@ -31,7 +32,7 @@ export default {
         if (params.userId) {
             filters = {
                 ...filters,
-                _id: params.userId
+                _id: MongoDBHelpers.createObjectId(params.userId)
             }
         }
         if(params.statusId){
@@ -55,7 +56,7 @@ export default {
         if(params.ignoreUserId){
             filters = {
                 ...filters,
-                _id: { $nin: params.ignoreUserId }
+                _id: { $nin: MongoDBHelpers.createObjectIdArray(params.ignoreUserId) }
             }
         }
 
@@ -78,20 +79,21 @@ export default {
 
         if (Array.isArray(params.userId)) {
             filters = {
-                _id: {$in: params.userId}
+                _id: {$in: MongoDBHelpers.createObjectIdArray(params.userId)}
             }
         } else {
             filters = {
-                _id: params.userId
+                _id: MongoDBHelpers.createObjectId(params.userId)
             };
         }
 
         delete params.userId;
         return (await userModel.find(filters))?.map( async doc => {
-            doc = Object.assign(doc, params);
             if(params.password) {
-                doc.password = userUtil.encodePassword(params.password)
+                params.password = userUtil.encodePassword(params.password)
             }
+
+            doc = Object.assign(doc, params);
             return await doc.save();
         })
     }

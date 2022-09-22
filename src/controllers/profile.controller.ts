@@ -14,7 +14,7 @@ export default {
 
         serviceResult.data = await userService.update({
             ...data.body,
-            userId: req.session.data.id,
+            userId: req.session.data.id.toString(),
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -27,7 +27,7 @@ export default {
         let data: InferType<typeof profileSchema.putPassword> = req;
 
         serviceResult.data = await userService.update({
-            userId: req.session.data.id,
+            userId: req.session.data.id.toString(),
             password: data.body.newPassword
         });
 

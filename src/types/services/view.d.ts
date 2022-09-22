@@ -6,7 +6,7 @@ export interface DeleteViewParamDocument {
 
 export interface SelectViewParamDocument {
     ip?: string
-    langId?: mongoose.Types.ObjectId
+    langId?: string
     url?: string
     country?: string
     city?: string
@@ -18,7 +18,7 @@ export interface SelectViewParamDocument {
 
 export interface InsertViewParamDocument {
     url: string,
-    languageId: mongoose.Types.ObjectId
+    languageId: string
     ip: string,
     country?: string,
     city?: string,

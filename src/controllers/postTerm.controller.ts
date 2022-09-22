@@ -4,7 +4,6 @@ import {InferType} from "yup";
 import V, {ClearTypes} from "../library/variable";
 import postTermSchema from "../schemas/postTerm.schema";
 import postTermService from "../services/postTerm.service";
-import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
     get: async (
@@ -17,9 +16,7 @@ export default {
 
         serviceResult.data = await postTermService.select({
             ...data.params,
-            ...data.query,
-            langId: MongoDBHelpers.createObjectId(data.query.langId),
-            termId: data.params.termId ? MongoDBHelpers.createObjectId(data.params.termId) : undefined
+            ...data.query
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -37,12 +34,7 @@ export default {
         serviceResult.data = await postTermService.insert({
             ...data.body,
             ...data.params,
-            authorId: req.session.data.id,
-            mainId: data.body.mainId ? MongoDBHelpers.createObjectId(data.body.mainId) : undefined,
-            contents: {
-                ...data.body.contents,
-                langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
-            }
+            authorId: req.session.data.id.toString(),
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -59,13 +51,7 @@ export default {
         serviceResult.data = await postTermService.update({
             ...data.body,
             ...data.params,
-            termId: MongoDBHelpers.createObjectId(data.params.termId),
-            lastAuthorId: req.session.data.id,
-            mainId: data.body.mainId ? MongoDBHelpers.createObjectId(data.body.mainId) : undefined,
-            contents: {
-                ...data.body.contents,
-                langId: MongoDBHelpers.createObjectId(data.body.contents.langId)
-            }
+            lastAuthorId: req.session.data.id.toString()
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -80,8 +66,7 @@ export default {
         serviceResult.data = await postTermService.update({
             ...data.body,
             ...data.params,
-            lastAuthorId: req.session.data.id,
-            termId: data.body.termId.map(termId => MongoDBHelpers.createObjectId(termId))
+            lastAuthorId: req.session.data.id.toString()
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
@@ -94,7 +79,7 @@ export default {
         let data: InferType<typeof postTermSchema.delete> = req;
 
         serviceResult.data = await postTermService.delete({
-            termId: data.body.termId.map(termId => MongoDBHelpers.createObjectId(termId))
+            ...data.body
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)
