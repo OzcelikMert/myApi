@@ -116,8 +116,10 @@ export default {
             ...(params.themeGroups ? {
                 themeGroups: params.themeGroups.map(group => ({
                     ...group,
+                    _id: undefined,
                     types: group.types.map(type => ({
                         ...type,
+                        _id: undefined,
                         contents: {
                             ...type.contents,
                             langId: MongoDBHelpers.createObjectId(type.contents.langId)
