@@ -121,11 +121,10 @@ export default {
             if (params.contents) {
                 let docContent = doc.contents.findSingle("langId", params.contents.langId);
                 if (docContent) {
-                    docContent = {
-                        ...docContent,
+                    docContent = Object.assign(docContent, {
                         ...params.contents,
                         langId: MongoDBHelpers.createObjectId(params.contents.langId)
-                    };
+                    });
                 } else {
                     doc.contents.push({
                         ...params.contents,

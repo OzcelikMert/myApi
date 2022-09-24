@@ -48,11 +48,10 @@ export default {
             if (params.seoContents) {
                 let docSeoContent = doc.seoContents.findSingle("langId", params.seoContents.langId);
                 if (docSeoContent) {
-                    docSeoContent = {
-                        ...docSeoContent,
+                    docSeoContent = Object.assign(docSeoContent, {
                         ...params.seoContents,
                         langId: MongoDBHelpers.createObjectId(params.seoContents.langId)
-                    };
+                    });
                 } else {
                     doc.seoContents.push({
                         ...params.seoContents,
