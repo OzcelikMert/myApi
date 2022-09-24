@@ -8,6 +8,7 @@ import {
     UpdateNavigateParamDocument
 } from "../types/services/navigate";
 import MongoDBHelpers from "../library/mongodb/helpers";
+import Variable from "../library/variable";
 
 export default {
     async select(params: SelectNavigateParamDocument): Promise<SelectNavigateResultDocument[]> {
@@ -57,6 +58,10 @@ export default {
         });
     },
     async insert(params: InsertNavigateParamDocument) {
+        if(Variable.isEmpty(params.mainId)){
+            delete params.mainId;
+        }
+
         return await navigateModel.create({
             ...params,
             authorId: MongoDBHelpers.createObjectId(params.authorId),
@@ -72,6 +77,10 @@ export default {
     },
     async update(params: UpdateNavigateParamDocument) {
         let filters: mongoose.FilterQuery<NavigateDocument> = {}
+
+        if(Variable.isEmpty(params.mainId)){
+            delete params.mainId;
+        }
 
         if (Array.isArray(params.navigateId)) {
             filters = {
@@ -102,7 +111,10 @@ export default {
                 delete params.contents;
             }
 
-            doc = Object.assign(doc, params);
+            doc = Object.assign(doc, {
+                ...params,
+                ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
+            });
 
             return await doc.save();
         });
