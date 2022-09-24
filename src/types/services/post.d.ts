@@ -49,6 +49,7 @@ export interface SelectPostParamDocument {
     statusId?: number,
     getContents?: boolean,
     maxCount?: number,
+    isPrimary?: boolean
     ignorePostId?: string[]
 }
 

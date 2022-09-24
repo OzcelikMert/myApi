@@ -19,6 +19,10 @@ export default {
             ...filters,
             _id: MongoDBHelpers.createObjectId(params.postId)
         }
+        if (params.isPrimary) filters = {
+            ...filters,
+            isPrimary: Boolean(params.isPrimary)
+        }
         if (params.url) filters = {
             ...filters,
             "contents.langId": MongoDBHelpers.createObjectId(params.langId),

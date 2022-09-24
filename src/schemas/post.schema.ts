@@ -58,7 +58,8 @@ export default {
             langId: string().required({langId: ErrorCodes.emptyValue}),
             getContents: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
             statusId: number(),
-            maxCount: number()
+            maxCount: number(),
+            isPrimary: boolean()
         })
     }),
     post: object({

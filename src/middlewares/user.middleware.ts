@@ -115,24 +115,27 @@ export default {
     ) => {
         let url: string = req.body.url;
         let name: string = req.body.name;
-        let userId = req.body.userId ? req.body.userId : req.body.isProfile ? req.session.data.id : undefined;
 
-        let urlAlreadyCount = 2;
-        url = url && url.length > 0 ? url : name.convertSEOUrl();
+        if(name) {
+            let userId = req.body.userId ? req.body.userId : req.body.isProfile ? req.session.data.id : undefined;
 
-        let oldUrl = url;
-        while ((await userService.select({
-            ignoreUserId: userId ? [userId] : undefined,
-            url: url,
-            maxCount: 1
-        })).length > 0) {
+            let urlAlreadyCount = 2;
+            url = url && url.length > 0 ? url : name.convertSEOUrl();
 
-            url = `${oldUrl}-${urlAlreadyCount}`;
-            urlAlreadyCount++;
+            let oldUrl = url;
+            while ((await userService.select({
+                ignoreUserId: userId ? [userId] : undefined,
+                url: url,
+                maxCount: 1
+            })).length > 0) {
 
+                url = `${oldUrl}-${urlAlreadyCount}`;
+                urlAlreadyCount++;
+
+            }
+
+            req.body.url = url;
         }
-
-        req.body.url = url;
 
         next();
     }
