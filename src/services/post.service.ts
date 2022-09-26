@@ -203,23 +203,21 @@ export default {
                             if(docThemeGroupType){
                                 let docGroupTypeContent = docThemeGroupType.contents.findSingle("langId", paramThemeGroupType.contents.langId);
                                 if(docGroupTypeContent) {
-                                    docGroupTypeContent = {
-                                        ...docGroupTypeContent,
+                                    docGroupTypeContent = Object.assign(docGroupTypeContent, {
                                         ...paramThemeGroupType.contents,
                                         langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
-                                    }
+                                    });
                                 }else {
                                     docThemeGroupType.contents.push({
                                         ...paramThemeGroupType.contents,
                                         langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
                                     })
                                 }
-                                docThemeGroupType = {
-                                    ...docThemeGroupType,
+                                docThemeGroupType = Object.assign(docThemeGroupType, {
                                     ...paramThemeGroupType,
                                     contents: docThemeGroupType.contents,
                                     _id: docThemeGroupType._id
-                                }
+                                })
                             }else {
                                 docThemeGroup.types.push({
                                     ...paramThemeGroupType,
@@ -231,12 +229,11 @@ export default {
                                 })
                             }
                         }
-                        docThemeGroup = {
-                            ...docThemeGroup,
+                        docThemeGroup = Object.assign(docThemeGroup, {
                             ...paramThemeGroup,
                             _id: docThemeGroup._id,
                             types: docThemeGroup.types
-                        }
+                        });
                     } else {
                         doc.themeGroups.push({
                             ...paramThemeGroup,
