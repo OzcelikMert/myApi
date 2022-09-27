@@ -3,5 +3,7 @@ export enum PostTypeId {
     Portfolio,
     Page,
     Slider,
-    Reference
+    Reference,
+    Service,
+    Testimonial
 }
