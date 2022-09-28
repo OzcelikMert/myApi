@@ -44,6 +44,7 @@ export default {
         query: object({
             langId: string().required({langId: ErrorCodes.emptyValue}),
             typeId: array(number().required({typeId: ErrorCodes.incorrectData})),
+            url: string(),
             statusId: number(),
             getContents: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
             maxCount: number()
@@ -57,6 +58,7 @@ export default {
         query: object({
             langId: string().required({langId: ErrorCodes.emptyValue}),
             getContents: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
+            url: string(),
             statusId: number(),
             maxCount: number(),
             isPrimary: boolean()
