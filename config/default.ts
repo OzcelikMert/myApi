@@ -1,10 +1,11 @@
 export default {
     serverHost: "localhost",
     serverPort: 5001,
-    dbName: "myadminpanel",
+    dbProtocol: "mongodb+srv",
     dbHost: "cluster0.2tvkcla.mongodb.net",
     dbHostParams: "",
     dbPort: "",
+    dbName: "myadminpanel",
     dbUser: "test",
     dbPassword: "_@QffsDh14Q",
     whiteList: [
