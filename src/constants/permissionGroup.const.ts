@@ -6,5 +6,6 @@ export enum PermissionGroupId {
     Gallery,
     User,
     Page,
-    Navigate
+    Navigate,
+    Footer
 }

@@ -5,5 +5,6 @@ export enum PostTypeId {
     Slider,
     Reference,
     Service,
-    Testimonial
+    Testimonial,
+    Footer
 }

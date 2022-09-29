@@ -10,7 +10,7 @@ const postBody = object({
     isFixed: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}).required({isFixed: ErrorCodes.emptyValue}),
     contents: object({
         langId: string().required({langId: ErrorCodes.emptyValue}),
-        title: string().required({title: ErrorCodes.emptyValue}),
+        title: string().default(""),
         seoContent: string(),
         image: string(),
         seoTitle: string(),
