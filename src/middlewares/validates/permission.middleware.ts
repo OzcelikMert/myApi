@@ -24,7 +24,7 @@ export default {
         let method: keyof PermissionPathDataDocument = req.method.toLowerCase() as any;
 
         if (
-            session.roleId != UserRoleId.Admin &&
+            session.roleId != UserRoleId.SuperAdmin &&
             PermissionPaths[page] &&
             PermissionPaths[page][method] &&
             session.permission.indexOfKey("", PermissionPaths[page][method]) === -1

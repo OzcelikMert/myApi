@@ -42,7 +42,7 @@ class InitConfig{
              this.setSession();
              this.security();
              await this.mongodbConnect();
-             await this.checkAdminUser();
+             await this.checkSuperAdminUser();
              await this.checkLanguages();
              await this.checkSettings();
              resolve()
@@ -84,14 +84,14 @@ class InitConfig{
         }
     }
 
-    private async checkAdminUser() {
-         if((await userService.select({roleId: UserRoleId.Admin})).length === 0){
+    private async checkSuperAdminUser() {
+         if((await userService.select({roleId: UserRoleId.SuperAdmin})).length === 0){
              await userService.insert({
-                 name: "Admin",
-                 email: "a@a.com",
+                 name: "Super Admin",
+                 email: "admin@admin.com",
                  statusId: StatusId.Active,
                  password: "11",
-                 roleId: UserRoleId.Admin,
+                 roleId: UserRoleId.SuperAdmin,
                  permissions: []
              })
          }

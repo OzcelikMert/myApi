@@ -53,7 +53,7 @@ export default {
         }
 
         if (userRoleId > 0) {
-            if (userRoleConst.findSingle("id", req.session.data.roleId).rank < userRoleConst.findSingle("id", userRoleId).rank) {
+            if (userRoleConst.findSingle("id", req.session.data.roleId).rank <= userRoleConst.findSingle("id", userRoleId).rank) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.noPerm;
                 serviceResult.statusCode = StatusCodes.notFound;
