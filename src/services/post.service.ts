@@ -1,5 +1,4 @@
 import * as mongoose from "mongoose";
-import V, {DateMask} from "../library/variable";
 import postModel from "../models/post.model";
 import {
     DeletePostParamDocument,
@@ -8,8 +7,9 @@ import {
     SelectPostParamDocument, SelectPostResultDocument,
     UpdatePostParamDocument, UpdatePostStatusIdParamDocument
 } from "../types/services/post";
-import {SelectPostTermResultDocument} from "../types/services/postTerm";
 import MongoDBHelpers from "../library/mongodb/helpers";
+import {SelectPostTermResultDocument} from "../types/services/postTerm";
+import Variable from "../library/variable";
 
 export default {
     async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
@@ -52,7 +52,21 @@ export default {
             }
         }
 
-        let query = postModel.find(filters).populate<{ terms: SelectPostResultDocument["terms"] }>({
+        let query = postModel.find(filters).populate<{ mainId: SelectPostResultDocument["mainId"] }>({
+            path: "mainId",
+            select: "_id contents.title contents.url contents.langId",
+            transform: (doc: SelectPostResultDocument) => {
+                if (Array.isArray(doc.contents)) {
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
+                    if (doc.contents.length > 0) {
+                        doc.contents = doc.contents[0];
+                    } else {
+                        delete doc.contents;
+                    }
+                }
+                return doc;
+            }
+        }).populate<{ terms: SelectPostResultDocument["terms"] }>({
             path: "terms",
             select: "_id typeId contents.title contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
@@ -106,11 +120,16 @@ export default {
         });
     },
     async insert(params: InsertPostParamDocument) {
+        if(Variable.isEmpty(params.mainId)){
+            delete params.mainId;
+        }
+
         return await postModel.create({
             ...params,
             terms: MongoDBHelpers.createObjectIdArray(params.terms),
             authorId: MongoDBHelpers.createObjectId(params.authorId),
             lastAuthorId: MongoDBHelpers.createObjectId(params.authorId),
+            ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
             contents: [
                 {
                     ...params.contents,
@@ -135,6 +154,10 @@ export default {
     },
     async update(params: UpdatePostParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {}
+
+        if(Variable.isEmpty(params.mainId)){
+            delete params.mainId;
+        }
 
         if (Array.isArray(params.postId)) {
             filters = {
@@ -252,7 +275,10 @@ export default {
                 delete params.themeGroups;
             }
 
-            doc = Object.assign(doc, params);
+            doc = Object.assign(doc, {
+                ...params,
+                ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
+            });
 
             return await doc.save();
         });

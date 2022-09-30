@@ -26,6 +26,7 @@ export type UpdatePostParamDocument = {
 } & Omit<InsertPostParamDocument, "themeGroups"|"authorId">
 
 export type InsertPostParamDocument = {
+    mainId?:string
     typeId: number,
     statusId: number,
     authorId: string
@@ -56,6 +57,14 @@ export interface SelectPostParamDocument {
 export type SelectPostResultDocument = {
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
+    mainId?: {
+        _id: mongoose.Types.ObjectId
+        contents: {
+            langId: mongoose.Types.ObjectId
+            title: string,
+            url: string,
+        }
+    },
     terms: PopulateTermsDocument[]
     contents?: PostContentDocument | PostContentDocument[]
     themeGroups?: (Omit<PostThemeGroupDocument, "types"> & {
@@ -105,6 +114,7 @@ export interface PostDocument {
     _id?: mongoose.Types.ObjectId
     typeId: number,
     statusId: number,
+    mainId?: mongoose.Types.ObjectId
     authorId: mongoose.Types.ObjectId
     lastAuthorId: mongoose.Types.ObjectId
     dateStart: Date,

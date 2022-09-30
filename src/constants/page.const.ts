@@ -7,7 +7,6 @@ export default {
     Post: "/post",
     Setting: "/setting",
     Language: "/language",
-    Navigate: "/navigate",
     ServerInfo: "/serverInfo",
     View: "/view"
 };

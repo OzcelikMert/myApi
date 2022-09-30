@@ -56,6 +56,7 @@ const schema = new mongoose.Schema<PostDocument>(
     {
         typeId: {type: Number, enum: PostTypeId, default: PostTypeId.Blog},
         statusId: {type: Number, required: true, enum: StatusId},
+        mainId: {type: mongoose.Schema.Types.ObjectId, ref: "posts"},
         authorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         lastAuthorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         dateStart: {type: Date, default: new Date()},

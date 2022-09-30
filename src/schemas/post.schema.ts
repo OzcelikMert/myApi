@@ -2,6 +2,7 @@ import { object, string, number, boolean, array } from "yup";
 import {ErrorCodes} from "../library/api";
 
 const postBody = object({
+    mainId: string(),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
     terms: array(string().required({termId: ErrorCodes.incorrectData})).default([]),
     dateStart: string().required({dateStart: ErrorCodes.emptyValue}),

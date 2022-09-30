@@ -6,7 +6,6 @@ import authRouter from "./routes/auth.router";
 import profileRouter from "./routes/profile.router";
 import postRouter from "./routes/post.router";
 import postTermRouter from "./routes/postTerm.router";
-import navigateRouter from "./routes/navigate.router";
 import galleryRouter from "./routes/gallery.router";
 import settingRouter from "./routes/setting.router";
 import languageRouter from "./routes/language.router";
@@ -20,7 +19,6 @@ routers.use(pageConst.User, userRouter)
 routers.use(pageConst.Profile, profileRouter)
 routers.use(pageConst.Post, postRouter)
 routers.use(pageConst.PostTerm, postTermRouter)
-routers.use(pageConst.Navigate, navigateRouter)
 routers.use(pageConst.Gallery, galleryRouter)
 routers.use(pageConst.Setting, settingRouter)
 routers.use(pageConst.Language, languageRouter)

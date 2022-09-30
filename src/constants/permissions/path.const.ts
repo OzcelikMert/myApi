@@ -11,12 +11,6 @@ PermissionPaths[pageConst.User] = {
     delete: PermissionId.UserDelete
 }
 
-PermissionPaths[pageConst.Navigate] = {
-    post: PermissionId.NavigateAdd,
-    put: PermissionId.NavigateEdit,
-    delete: PermissionId.NavigateDelete
-}
-
 PermissionPaths[pageConst.Gallery] = {
     post: PermissionId.GalleryEdit,
     delete: PermissionId.GalleryEdit

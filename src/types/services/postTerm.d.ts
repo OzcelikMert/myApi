@@ -46,7 +46,7 @@ export type SelectPostTermResultDocument = {
             langId: mongoose.Types.ObjectId
             title: string,
             url: string,
-        }[]
+        }
     },
     contents?: PostTermContentDocument | PostTermContentDocument[]
 } & Omit<PostTermDocument, "contents">

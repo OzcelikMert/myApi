@@ -8,6 +8,7 @@ import {
     UpdatePostTermParamDocument
 } from "../types/services/postTerm";
 import MongoDBHelpers from "../library/mongodb/helpers";
+import Variable from "../library/variable";
 
 export default {
     async select(params: SelectPostTermParamDocument): Promise<SelectPostTermResultDocument[]> {
@@ -78,6 +79,10 @@ export default {
         })
     },
     async insert(params: InsertPostTermParamDocument) {
+        if(Variable.isEmpty(params.mainId)){
+            delete params.mainId;
+        }
+
         return await postTermModel.create({
             ...params,
             authorId: MongoDBHelpers.createObjectId(params.authorId),
@@ -93,6 +98,10 @@ export default {
     },
     async update(params: UpdatePostTermParamDocument) {
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
+
+        if(Variable.isEmpty(params.mainId)){
+            delete params.mainId;
+        }
 
         if (Array.isArray(params.termId)) {
             filters = {
@@ -134,7 +143,10 @@ export default {
                 delete params.contents;
             }
 
-            doc = Object.assign(doc, params);
+            doc = Object.assign(doc, {
+                ...params,
+                ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
+            });
 
             return await doc.save();
         });
