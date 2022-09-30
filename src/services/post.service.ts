@@ -159,11 +159,7 @@ export default {
             delete params.mainId;
         }
 
-        if (Array.isArray(params.postId)) {
-            filters = {
-                _id: {$in: MongoDBHelpers.createObjectIdArray(params.postId)}
-            }
-        } else {
+        if (params.postId) {
             filters = {
                 _id: MongoDBHelpers.createObjectId(params.postId)
             };

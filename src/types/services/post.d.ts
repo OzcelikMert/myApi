@@ -32,7 +32,7 @@ export type InsertPostParamDocument = {
     authorId: string
     dateStart: Date,
     order: number,
-    isFixed: boolean,
+    isFixed?: boolean,
     terms: string[]
     contents: Omit<PostContentDocument, "_id"|"langId"> & {langId: string}
     themeGroups?: (Omit<PostThemeGroupDocument, "types"|"_id"> & {

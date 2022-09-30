@@ -63,7 +63,7 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof postTermSchema.putStatus> = req;
 
-        serviceResult.data = await postTermService.update({
+        serviceResult.data = await postTermService.updateStatus({
             ...data.body,
             ...data.params,
             lastAuthorId: req.session.data.id.toString()

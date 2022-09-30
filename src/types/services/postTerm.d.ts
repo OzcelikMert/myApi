@@ -5,16 +5,18 @@ export interface DeletePostTermParamDocument {
     termId: string | string[]
 }
 
-export interface UpdatePostTermParamDocument {
+export type UpdatePostTermStatusIdParamDocument = {
     termId: string | string[],
-    lastAuthorId: string,
     postTypeId?: number,
-    typeId?: number
-    mainId?: string
-    statusId?: number
-    order?: number
-    contents?: InsertPostTermParamDocument["contents"]
+    typeId: number
+    statusId: number,
+    lastAuthorId: string
 }
+
+export type UpdatePostTermParamDocument = {
+    termId: string,
+    lastAuthorId: string,
+} & Omit<InsertPostTermParamDocument, "authorId">
 
 export interface InsertPostTermParamDocument {
     mainId?:string

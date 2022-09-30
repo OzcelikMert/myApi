@@ -43,28 +43,30 @@ export default {
         let typeId: number = req.params.typeId;
         let postId: string = req.params.postId ?? req.body.postId;
 
-        let url: string = req.body.contents.url;
-        let title: string = req.body.contents.title;
-        let langId: string = req.body.contents.langId;
+        if(req.body.contents){
+            let url: string = req.body.contents.url;
+            let title: string = req.body.contents.title || "";
+            let langId: string = req.body.contents.langId;
 
-        let urlAlreadyCount = 2;
-        url = url && url.length > 0 ? url : title.convertSEOUrl();
+            let urlAlreadyCount = 2;
+            url = url && url.length > 0 ? url : title.convertSEOUrl();
 
-        let oldUrl = url;
-        while((await postService.select({
-            ignorePostId: postId ? [postId] : undefined,
-            langId: langId,
-            typeId: typeId,
-            url: url,
-            maxCount: 1
-        })).length > 0) {
+            let oldUrl = url;
+            while((await postService.select({
+                ignorePostId: postId ? [postId] : undefined,
+                langId: langId,
+                typeId: typeId,
+                url: url,
+                maxCount: 1
+            })).length > 0) {
 
-            url = `${oldUrl}-${urlAlreadyCount}`;
-            urlAlreadyCount++;
+                url = `${oldUrl}-${urlAlreadyCount}`;
+                urlAlreadyCount++;
 
+            }
+
+            req.body.contents.url = url;
         }
-
-        req.body.contents.url = url;
 
         next();
     }

@@ -16,7 +16,7 @@ export default {
                 langId: string().required({langId: ErrorCodes.emptyValue}),
                 title: string(),
                 content: string(),
-                tags: array(string().required({tags: ErrorCodes.incorrectData}))
+                tags: array(string().required({tags: ErrorCodes.incorrectData})).default([])
             }).default(undefined),
             contact: object({
                 email: string(),

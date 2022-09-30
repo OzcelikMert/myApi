@@ -7,7 +7,7 @@ export default {
             image: string(),
             name: string(),
             comment: string(),
-            phone: string().min(10, {phone: ErrorCodes.incorrectData}).max(15, {phone: ErrorCodes.incorrectData}),
+            phone: string(),
             facebook: string().url({facebook: ErrorCodes.incorrectData}),
             instagram: string().url({instagram: ErrorCodes.incorrectData}),
             twitter: string().url({twitter: ErrorCodes.incorrectData})

@@ -42,14 +42,16 @@ export default {
 
         let data: InferType<typeof postSchema.post> = req;
 
-        data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
+        if(data.body.contents){
+            data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
+        }
 
         serviceResult.data = await postService.insert({
             ...data.params,
             ...data.body,
             authorId: req.session.data.id.toString(),
             dateStart: new Date(data.body.dateStart),
-            isFixed: data.body.isFixed == 1,
+            ...(data.body.isFixed ? {isFixed: data.body.isFixed == 1} : {}),
             ...(data.body.isPrimary ? {isPrimary: data.body.isPrimary == 1} : {})
         });
 
@@ -68,8 +70,8 @@ export default {
             ...data.params,
             ...data.body,
             lastAuthorId: req.session.data.id.toString(),
-            isFixed: data.body.isFixed == 1,
             dateStart: new Date(data.body.dateStart),
+            ...(data.body.isFixed ? {isFixed: data.body.isFixed == 1} : {}),
             ...(data.body.isPrimary ? {isPrimary: data.body.isPrimary == 1} : {})
         });
 

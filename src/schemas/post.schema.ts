@@ -8,7 +8,7 @@ const postBody = object({
     dateStart: string().required({dateStart: ErrorCodes.emptyValue}),
     order: number().required({order: ErrorCodes.emptyValue}),
     isPrimary: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
-    isFixed: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}).required({isFixed: ErrorCodes.emptyValue}),
+    isFixed: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
     contents: object({
         langId: string().required({langId: ErrorCodes.emptyValue}),
         title: string().default(""),

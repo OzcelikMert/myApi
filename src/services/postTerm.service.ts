@@ -5,7 +5,7 @@ import {
     InsertPostTermParamDocument,
     PostTermDocument,
     SelectPostTermParamDocument, SelectPostTermResultDocument,
-    UpdatePostTermParamDocument
+    UpdatePostTermParamDocument, UpdatePostTermStatusIdParamDocument
 } from "../types/services/postTerm";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
@@ -103,11 +103,7 @@ export default {
             delete params.mainId;
         }
 
-        if (Array.isArray(params.termId)) {
-            filters = {
-                _id: {$in: MongoDBHelpers.createObjectIdArray(params.termId)}
-            }
-        } else {
+        if (params.termId) {
             filters = {
                 _id: MongoDBHelpers.createObjectId(params.termId)
             };
@@ -146,6 +142,42 @@ export default {
             doc = Object.assign(doc, {
                 ...params,
                 ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
+            });
+
+            return await doc.save();
+        });
+    },
+    async updateStatus(params: UpdatePostTermStatusIdParamDocument) {
+        let filters: mongoose.FilterQuery<PostTermDocument> = {}
+
+        if (Array.isArray(params.termId)) {
+            filters = {
+                _id: {$in: MongoDBHelpers.createObjectIdArray(params.termId)}
+            }
+        } else {
+            filters = {
+                _id: MongoDBHelpers.createObjectId(params.termId)
+            };
+        }
+        if (params.typeId) {
+            filters = {
+                ...filters,
+                typeId: params.typeId
+            }
+        }
+        if (params.postTypeId) filters = {
+            ...filters,
+            postTypeId: params.postTypeId
+        }
+
+        delete params.termId;
+        delete params.typeId;
+        delete params.postTypeId;
+        return (await postTermModel.find(filters))?.map(async doc => {
+            doc = Object.assign(doc, {
+                ...params,
+                statusId: params.statusId,
+                lastAuthorId: MongoDBHelpers.createObjectId(params.lastAuthorId)
             });
 
             return await doc.save();
