@@ -31,6 +31,7 @@ const schema = new mongoose.Schema<SettingDocument>(
         defaultLangId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
         icon: {type: String, default: ""},
         logo: {type: String, default: ""},
+        logoTwo: {type: String, default: ""},
         seoContents: {type: [schemaSEOContent], default: []},
         contact: {type: schemaContact}
     },

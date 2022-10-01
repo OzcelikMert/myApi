@@ -12,6 +12,7 @@ export default {
             defaultLangId: string(),
             icon: string(),
             logo: string(),
+            logoTwo: string(),
             seoContents: object({
                 langId: string().required({langId: ErrorCodes.emptyValue}),
                 title: string(),

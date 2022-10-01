@@ -59,6 +59,7 @@ export interface SettingDocument {
     defaultLangId: mongoose.Types.ObjectId
     icon?: string,
     logo?: string,
+    logoTwo?: string,
     seoContents: SettingSeoContentDocument[],
     contact?: SettingContactDocument
 }

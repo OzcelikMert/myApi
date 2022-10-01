@@ -3,9 +3,7 @@ import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import {InferType} from "yup";
 import settingSchema from "../schemas/setting.schema";
 import settingService from "../services/setting.service";
-import MongoDBHelpers from "../library/mongodb/helpers";
 import {UpdateSettingParamDocument} from "../types/services/setting";
-import Variable from "../library/variable";
 
 export default {
     get: async (
