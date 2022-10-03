@@ -124,6 +124,8 @@ export default {
             delete params.mainId;
         }
 
+        if(params.contents.content) params.contents.content = params.contents.content.encode();
+
         return await postModel.create({
             ...params,
             terms: MongoDBHelpers.createObjectIdArray(params.terms),
@@ -175,6 +177,8 @@ export default {
         delete params.typeId;
         return (await postModel.find(filters))?.map(async doc => {
             if (params.contents) {
+                if(params.contents.content) params.contents.content = params.contents.content.encode();
+
                 let docContent = doc.contents.findSingle("langId", params.contents.langId);
                 if (docContent) {
                     docContent = Object.assign(docContent, {
