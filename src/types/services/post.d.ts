@@ -77,7 +77,7 @@ export type SelectPostResultDocument = {
 export interface PostThemeGroupTypeContentDocument {
     _id?: mongoose.Types.ObjectId,
     langId:  mongoose.Types.ObjectId
-    content: string
+    content?: string
     url?: string
 }
 
