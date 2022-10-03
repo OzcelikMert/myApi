@@ -24,6 +24,7 @@ export default {
                     delete doc.seoContents;
                 }
             }
+
             return doc;
         });
     },
