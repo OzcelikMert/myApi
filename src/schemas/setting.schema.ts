@@ -13,6 +13,8 @@ export default {
             icon: string(),
             logo: string(),
             logoTwo: string(),
+            head: string(),
+            script: string(),
             seoContents: object({
                 langId: string().required({langId: ErrorCodes.emptyValue}),
                 title: string(),

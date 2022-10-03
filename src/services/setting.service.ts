@@ -16,14 +16,10 @@ export default {
 
         return (await query.exec())?.map((doc: SelectSettingResultDocument) => {
             if (Array.isArray(doc.seoContents)) {
-                if (params.langId) {
-                    let langId = params.langId;
-                    doc.seoContents = doc.seoContents.filter(content => content.langId.toString() == langId);
-                    if (doc.seoContents.length > 0) {
-                        doc.seoContents = doc.seoContents[0];
-                    } else {
-                        delete doc.seoContents;
-                    }
+                const langId = params.langId ?? doc.defaultLangId.toString();
+                doc.seoContents = doc.seoContents.filter(content => content.langId.toString() == langId);
+                if (doc.seoContents.length > 0) {
+                    doc.seoContents = doc.seoContents[0];
                 } else {
                     delete doc.seoContents;
                 }
@@ -35,6 +31,8 @@ export default {
         return await settingModel.create({
             ...params,
             defaultLangId: MongoDBHelpers.createObjectId(params.defaultLangId),
+            ...(params.head ? {head: params.head.encode()} : {}),
+            ...(params.script ? {head: params.script.encode()} : {}),
             seoContents: [
                 {
                     ...params.seoContents,
@@ -61,7 +59,11 @@ export default {
                 delete params.seoContents;
             }
 
-            doc = Object.assign(doc, params);
+            doc = Object.assign(doc, {
+                ...params,
+                ...(params.head ? {head: params.head.encode()} : {}),
+                ...(params.script ? {head: params.script.encode()} : {})
+            });
 
             return await doc.save();
         });

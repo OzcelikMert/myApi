@@ -14,5 +14,6 @@ export interface LanguageDocument {
     title: string
     image: string
     shortKey: string
+    locale: string
     statusId: number
 }

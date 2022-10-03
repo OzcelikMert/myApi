@@ -32,6 +32,8 @@ const schema = new mongoose.Schema<SettingDocument>(
         icon: {type: String, default: ""},
         logo: {type: String, default: ""},
         logoTwo: {type: String, default: ""},
+        head: {type: String, default: ""},
+        script: {type: String, default: ""},
         seoContents: {type: [schemaSEOContent], default: []},
         contact: {type: schemaContact}
     },

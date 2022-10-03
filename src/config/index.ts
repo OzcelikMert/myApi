@@ -103,6 +103,7 @@ class InitConfig{
                 title: "English",
                 image: "gb.webp",
                 shortKey: "en",
+                locale: "en_US",
                 statusId: StatusId.Active
             })
         }

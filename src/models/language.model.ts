@@ -7,9 +7,10 @@ const schema = new mongoose.Schema<LanguageDocument>(
         title: {type: String, required: true},
         image: {type: String, required: true},
         shortKey: {type: String, required: true},
+        locale: {type: String, required: true},
         statusId: {type: Number, required: true, enum: StatusId}
     },
     {timestamps: true}
 )
 
-export default mongoose.model("languages", schema)
+export default mongoose.model<LanguageDocument>("languages", schema)

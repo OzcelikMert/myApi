@@ -6,26 +6,8 @@ export type SelectSettingParamDocument = {
 
 export type InsertSettingParamDocument = {
     defaultLangId: string
-    icon?: string,
-    logo?: string,
-    seoContents?: {
-        langId: string
-        title?: string,
-        content?: string,
-        tags?: string[],
-    },
-    contact?: {
-        email?: string,
-        phone?: string,
-        address?: string,
-        addressMap?: string
-        facebook?: string,
-        instagram?: string,
-        twitter?: string,
-        linkedin?: string,
-        google?: string,
-    }
-}
+    seoContents?: Omit<SettingSeoContentDocument, "langId"> & {langId: string}
+} & Omit<SettingDocument,  "_id"|"defaultLangId"|"seoContents">
 
 export type UpdateSettingParamDocument = {
     defaultLangId?: string
@@ -57,9 +39,11 @@ export interface SettingContactDocument {
 export interface SettingDocument {
     _id: mongoose.Types.ObjectId
     defaultLangId: mongoose.Types.ObjectId
-    icon?: string,
-    logo?: string,
-    logoTwo?: string,
+    icon?: string
+    logo?: string
+    logoTwo?: string
+    head?: string
+    script?: string
     seoContents: SettingSeoContentDocument[],
     contact?: SettingContactDocument
 }
