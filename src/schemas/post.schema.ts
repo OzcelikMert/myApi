@@ -34,7 +34,7 @@ const postBody = object({
                 _id: string(),
                 url: string(),
                 langId: string().required({langId: ErrorCodes.emptyValue}),
-                content: string().required({content: ErrorCodes.emptyValue})
+                content: string()
             }).required({contents: ErrorCodes.emptyValue})
         }))).required({types: ErrorCodes.emptyValue})
     }))).default(undefined)
