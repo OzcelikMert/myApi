@@ -33,6 +33,7 @@ const postBody = object({
             contents: object({
                 _id: string(),
                 url: string(),
+                comment: string(),
                 langId: string().required({langId: ErrorCodes.emptyValue}),
                 content: string()
             }).required({contents: ErrorCodes.emptyValue})

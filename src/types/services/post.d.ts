@@ -79,6 +79,7 @@ export interface PostThemeGroupTypeContentDocument {
     langId:  mongoose.Types.ObjectId
     content?: string
     url?: string
+    comment?: string
 }
 
 export interface PostThemeGroupTypeDocument {

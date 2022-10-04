@@ -14,4 +14,4 @@ const schema = new mongoose.Schema<ViewDocument>(
     {timestamps: true}
 ).index({languageId: 1})
 
-export default mongoose.model("views", schema)
+export default mongoose.model<ViewDocument>("views", schema)

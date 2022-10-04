@@ -34,6 +34,7 @@ export default {
             defaultLangId: MongoDBHelpers.createObjectId(params.defaultLangId),
             ...(params.head ? {head: params.head.encode()} : {}),
             ...(params.script ? {head: params.script.encode()} : {}),
+            ...(params.contactForms ? {contactForms: params.contactForms} : {}),
             seoContents: [
                 {
                     ...params.seoContents,
@@ -58,6 +59,38 @@ export default {
                     })
                 }
                 delete params.seoContents;
+            }
+
+            if (params.contactForms) {
+                if (typeof doc.contactForms === "undefined") {
+                    doc.contactForms = [];
+                }
+
+                // Check delete
+                doc.contactForms = doc.contactForms.filter(docContactForm => {
+                    if(params.contactForms) {
+                        return params.contactForms.indexOfKey("_id", docContactForm._id) > -1;
+                    }
+                    return true;
+                })
+
+                // Check Update
+                for(let paramContactForm of params.contactForms) {
+                    let docContactForm = doc.contactForms.findSingle("_id", paramContactForm._id);
+                    if (docContactForm) {
+                        docContactForm = Object.assign(docContactForm, {
+                            ...paramContactForm,
+                            _id: docContactForm._id,
+                        });
+                    } else {
+                        doc.contactForms.push({
+                            ...paramContactForm,
+                            _id: undefined,
+                        })
+                    }
+                }
+
+                delete params.contactForms;
             }
 
             doc = Object.assign(doc, {

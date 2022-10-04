@@ -1,6 +1,24 @@
 import * as mongoose from "mongoose";
 import languageModel from "./language.model";
-import {SettingContactDocument, SettingDocument, SettingSeoContentDocument} from "../types/services/setting";
+import {
+    SettingContactDocument,
+    SettingContactFormDocument,
+    SettingDocument,
+    SettingSeoContentDocument
+} from "../types/services/setting";
+
+const schemaContactForm = new mongoose.Schema<SettingContactFormDocument>(
+    {
+        name: {type: String, default: ""},
+        email: {type: String, default: ""},
+        key: {type: String, default: ""},
+        password: {type: String, default: ""},
+        inComingServer: {type: String, default: ""},
+        outGoingServer: {type: String, default: ""},
+        port: {type: Number, default: 465}
+    },
+    {timestamps: true}
+);
 
 const schemaContact = new mongoose.Schema<SettingContactDocument>(
     {
@@ -35,7 +53,8 @@ const schema = new mongoose.Schema<SettingDocument>(
         head: {type: String, default: ""},
         script: {type: String, default: ""},
         seoContents: {type: [schemaSEOContent], default: []},
-        contact: {type: schemaContact}
+        contact: {type: schemaContact},
+        contactForms: {type: [schemaContactForm], default: []},
     },
     {timestamps: true}
 );

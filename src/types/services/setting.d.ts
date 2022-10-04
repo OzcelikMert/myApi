@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {StatusId} from "../../constants/status.const";
 
 export type SelectSettingParamDocument = {
     langId?: string
@@ -7,7 +8,8 @@ export type SelectSettingParamDocument = {
 export type InsertSettingParamDocument = {
     defaultLangId: string
     seoContents?: Omit<SettingSeoContentDocument, "langId"> & {langId: string}
-} & Omit<SettingDocument,  "_id"|"defaultLangId"|"seoContents">
+    contactForms?: (Omit<SettingContactFormDocument, "_id"> & {_id?: string})[]
+} & Omit<SettingDocument,  "_id"|"defaultLangId"|"seoContents"|"contactForms">
 
 export type UpdateSettingParamDocument = {
     defaultLangId?: string
@@ -22,6 +24,17 @@ export interface SettingSeoContentDocument {
     title?: string,
     content?: string,
     tags?: string[]
+}
+
+export interface SettingContactFormDocument {
+    _id?: mongoose.Types.ObjectId
+    name: string
+    key: string
+    email: string
+    password: string
+    outGoingServer: string
+    inComingServer: string
+    port: number
 }
 
 export interface SettingContactDocument {
@@ -46,4 +59,5 @@ export interface SettingDocument {
     script?: string
     seoContents: SettingSeoContentDocument[],
     contact?: SettingContactDocument
+    contactForms?: SettingContactFormDocument[]
 }

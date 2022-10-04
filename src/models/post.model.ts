@@ -16,7 +16,8 @@ const schemaThemeGroupTypeContent = new mongoose.Schema<PostThemeGroupTypeConten
     {
         langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
         content: {type: String, default: ""},
-        url: {type: String}
+        url: {type: String},
+        comment: {type: String}
     }
 ).index({langId: 1});
 
