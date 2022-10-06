@@ -3,6 +3,7 @@ import {StatusId} from "../../constants/status.const";
 
 export type SelectSettingParamDocument = {
     langId?: string
+    getContactFormPasswords?: boolean
 }
 
 export type InsertSettingParamDocument = {
@@ -31,7 +32,7 @@ export interface SettingContactFormDocument {
     name: string
     key: string
     email: string
-    password: string
+    password?: string
     outGoingServer: string
     inComingServer: string
     port: number

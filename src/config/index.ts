@@ -11,6 +11,7 @@ import {UserRoleId} from "../constants/userRole.const";
 import {StatusId} from "../constants/status.const";
 import languageService from "../services/language.service";
 import settingService from "../services/setting.service";
+import config from "config";
 
 const chalk = require('chalk');
 
@@ -27,7 +28,7 @@ let Config: ConfigDocument = {
         uploads: {
             get images() { return Config.paths.root + "uploads/images/" }
         }
-    }
+    },
 }
 
 class InitConfig{

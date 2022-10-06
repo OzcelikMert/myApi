@@ -7,6 +7,7 @@ import {
     UpdateSettingParamDocument
 } from "../types/services/setting";
 import MongoDBHelpers from "../library/mongodb/helpers";
+import Variable from "../library/variable";
 
 export default {
     async select(params: SelectSettingParamDocument): Promise<SelectSettingResultDocument[]> {
@@ -23,6 +24,13 @@ export default {
                 } else {
                     delete doc.seoContents;
                 }
+            }
+
+            if(Variable.isEmpty(params.getContactFormPasswords)){
+                doc.contactForms?.map(contactForm => {
+                    delete contactForm.password;
+                    return contactForm;
+                })
             }
 
             return doc;
@@ -44,6 +52,15 @@ export default {
         })
     },
     async update(params: UpdateSettingParamDocument) {
+        if(params.contactForms){
+            params.contactForms.map(contactForm => {
+                if(Variable.isEmpty(contactForm.password)){
+                    delete contactForm.password;
+                }
+                return contactForm;
+            })
+        }
+
         return (await settingModel.find({}))?.map(async doc => {
             if (params.seoContents) {
                 let docSeoContent = doc.seoContents.findSingle("langId", params.seoContents.langId);

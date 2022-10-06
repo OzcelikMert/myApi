@@ -37,7 +37,7 @@ export default {
                 name: string().required({name: ErrorCodes.emptyValue}),
                 key: string().required({key: ErrorCodes.emptyValue}),
                 email: string().required({email: ErrorCodes.emptyValue}),
-                password: string().required({password: ErrorCodes.emptyValue}),
+                password: string(),
                 outGoingServer: string().required({outGoingServer: ErrorCodes.emptyValue}),
                 inComingServer: string().required({inComingServer: ErrorCodes.emptyValue}),
                 port: number().required({port: ErrorCodes.emptyValue})

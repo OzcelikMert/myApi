@@ -4,7 +4,7 @@ interface ConfigDocument {
     app: any
     passwordSalt: string
     publicFolders: string[][]
-    activeUsers: any[]
+    activeUsers: {_id: string, startDate: Date, lastDate: Date}[]
     paths: {
         root: string
         services: string

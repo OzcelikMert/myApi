@@ -8,5 +8,6 @@ export default {
     Setting: "/setting",
     Language: "/language",
     ServerInfo: "/serverInfo",
-    View: "/view"
+    View: "/view",
+    Mailer: "/mailer"
 };
