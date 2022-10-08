@@ -30,9 +30,10 @@ export default {
             if(await transporter.verify()){
                 let sendMail = await transporter.sendMail({
                     from: contactForm?.email,
-                    to: data.body.email,
+                    to: contactForm?.email,
                     subject: contactForm?.name,
-                    html: data.body.message
+                    html: data.body.message,
+                    replyTo: data.body.email
                 });
 
                 serviceResult.data = {

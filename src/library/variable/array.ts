@@ -19,7 +19,6 @@ Array.prototype.indexOfKey = function (key, value) {
                 : -1;
     }).indexOf(value.toString());
 }
-
 Array.prototype.findSingle = function (key, value) {
     return this.find(function(data, index){
         data._index = index;
