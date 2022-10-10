@@ -28,6 +28,8 @@ export default {
             });
 
             if(await transporter.verify()){
+                serviceResult.data = [];
+
                 let sendMail = await transporter.sendMail({
                     from: contactForm?.email,
                     to: contactForm?.email,
@@ -36,10 +38,26 @@ export default {
                     replyTo: data.body.email
                 });
 
-                serviceResult.data = {
+                serviceResult.data.push({
                     "_id": sendMail.messageId,
                     "response": sendMail.response
-                };
+                });
+
+                if(data.body.replyMessage) {
+                    let sendMailReply = await transporter.sendMail({
+                        from: contactForm?.email,
+                        to: data.body.email,
+                        subject: contactForm?.name,
+                        html: data.body.replyMessage,
+                        replyTo: data.body.email
+                    });
+                    serviceResult.data.push({
+                        "_id": sendMailReply.messageId,
+                        "response": sendMailReply.response
+                    });
+                }
+
+
             }else {
                 serviceResult.status = false;
                 serviceResult.statusCode = StatusCodes.conflict;
