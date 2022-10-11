@@ -7,5 +7,6 @@ export enum PermissionGroupId {
     User,
     Page,
     Navigate,
-    Footer
+    Footer,
+    Subscriber
 }

@@ -31,5 +31,6 @@ export enum PermissionId {
     TestimonialDelete,
     FooterAdd,
     FooterEdit,
-    FooterDelete
+    FooterDelete,
+    SubscriberEdit
 }

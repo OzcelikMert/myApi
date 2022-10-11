@@ -11,6 +11,11 @@ PermissionPaths[pageConst.User] = {
     delete: PermissionId.UserDelete
 }
 
+PermissionPaths[pageConst.Subscriber] = {
+    get: PermissionId.SubscriberEdit,
+    delete: PermissionId.SubscriberEdit
+}
+
 PermissionPaths[pageConst.Gallery] = {
     post: PermissionId.GalleryEdit,
     delete: PermissionId.GalleryEdit

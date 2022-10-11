@@ -9,5 +9,6 @@ export default {
     Language: "/language",
     ServerInfo: "/serverInfo",
     View: "/view",
-    Mailer: "/mailer"
+    Mailer: "/mailer",
+    Subscriber: "/subscriber"
 };

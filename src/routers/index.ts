@@ -12,6 +12,7 @@ import languageRouter from "./routes/language.router";
 import serverInfoRouter from "./routes/serverInfo.router";
 import viewRouter from "./routes/view.router";
 import mailerRouter from "./routes/mailer.router";
+import subscriberRouter from "./routes/subscriber.router";
 
 const routers = Router();
 
@@ -26,5 +27,6 @@ routers.use(pageConst.Language, languageRouter)
 routers.use(pageConst.ServerInfo, serverInfoRouter)
 routers.use(pageConst.View, viewRouter)
 routers.use(pageConst.Mailer, mailerRouter)
+routers.use(pageConst.Subscriber, subscriberRouter)
 
 export default routers.use("/api", routers);
