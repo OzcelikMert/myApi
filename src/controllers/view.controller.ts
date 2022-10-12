@@ -24,7 +24,7 @@ export default {
         let weeklyTotal = resData.total;
 
         serviceResult.data = {
-            liveTotal: Config.activeUsers.length,
+            liveTotal: Config.onlineUsers.length,
             averageTotal: averageTotal,
             weeklyTotal: weeklyTotal
         };

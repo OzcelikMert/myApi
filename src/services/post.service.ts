@@ -90,7 +90,7 @@ export default {
 
         if (params.maxCount) query.limit(params.maxCount);
 
-        return (await query.exec())?.map((doc: SelectPostResultDocument) => {
+        return (await query.lean().exec())?.map((doc: SelectPostResultDocument) => {
             if (Array.isArray(doc.contents)) {
                 doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
                 if (doc.contents.length > 0) {

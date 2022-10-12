@@ -13,6 +13,7 @@ import "./library/variable/string"
 import "./library/variable/number"
 import "./library/variable/date"
 import "./library/variable/math"
+import viewInitMiddleware from "./middlewares/init/view.init.middleware";
 
 const host = config.get("serverHost") as string;
 const port = config.get("serverPort") as number;
@@ -37,7 +38,7 @@ new InitConfig(app).init().then(()=> {
     }));
 
     app.use(responseTime());
-    app.use(routers);
+    app.use([viewInitMiddleware.set], routers);
     app.use(compression());
 
     app.listen(port, host, () => {

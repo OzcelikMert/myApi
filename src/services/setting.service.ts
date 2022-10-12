@@ -15,7 +15,7 @@ export default {
 
         let query = settingModel.find(filters, {}).lean();
 
-        return (await query.exec())?.map((doc: SelectSettingResultDocument) => {
+        return (await query.lean().exec())?.map((doc: SelectSettingResultDocument) => {
             if (Array.isArray(doc.seoContents)) {
                 const langId = params.langId ?? doc.defaultLangId.toString();
                 doc.seoContents = doc.seoContents.filter(content => content.langId.toString() == langId);

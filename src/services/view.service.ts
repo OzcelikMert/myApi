@@ -37,10 +37,6 @@ export default {
             ...filters,
             region: params.region
         }
-        if (params.date) filters = {
-            ...filters,
-            createdAt: params.date
-        }
         if (params.dateStart) {
             filters = {
                 ...filters,
@@ -51,7 +47,7 @@ export default {
             }
         }
 
-        return await viewModel.find(filters, {}, {lean: true});
+        return await viewModel.find(filters, {}).lean().exec();
     },
     async selectTotal(params: SelectViewParamDocument): Promise<SelectTotalViewResultDocument> {
         let filters: mongoose.FilterQuery<ViewDocument> = {}

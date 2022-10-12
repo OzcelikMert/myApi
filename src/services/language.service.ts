@@ -20,7 +20,7 @@ export default {
             }
         }
 
-        return await languageModel.find(filters, {}, {lean: true});
+        return await languageModel.find(filters, {}).lean().exec();
     },
     async insert(params: InsertLanguageDocument) {
         return await languageModel.create({

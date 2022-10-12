@@ -11,7 +11,6 @@ export interface SelectViewParamDocument {
     country?: string
     city?: string
     region?: string
-    date?: Date
     dateStart?: Date
     dateEnd?: Date
 }

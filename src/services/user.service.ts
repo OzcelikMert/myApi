@@ -10,6 +10,7 @@ import {
 import {StatusId} from "../constants/status.const";
 import userUtil from "../utils/functions/user.util";
 import MongoDBHelpers from "../library/mongodb/helpers";
+import {Config} from "../config";
 
 export default {
     async select(params: SelectUserParamDocument): Promise<SelectUserResultDocument[]> {
@@ -63,8 +64,9 @@ export default {
         let query = userModel.find(filters, {});
         if(params.maxCount) query.limit(params.maxCount);
 
-        return (await query.exec())?.map(user => {
+        return (await query.lean().exec())?.map((user: SelectUserResultDocument) => {
             delete user.password;
+            user.isOnline = Config.onlineUsers.indexOfKey("_id", user._id.toString()) > -1;
             return user;
         });
     },

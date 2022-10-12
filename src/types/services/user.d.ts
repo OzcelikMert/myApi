@@ -38,7 +38,9 @@ export interface UpdateUserParamDocument {
     permissions?: number[]
 }
 
-export type SelectUserResultDocument = {} & UserDocument
+export type SelectUserResultDocument = {
+    isOnline?: boolean
+} & UserDocument
 
 export interface PopulateAuthorIdDocument {
     _id: mongoose.Types.ObjectId,

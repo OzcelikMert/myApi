@@ -29,7 +29,7 @@ export default {
 
         let query = subscriberModel.find(filters, {}).lean();
 
-        return (await query.exec());
+        return (await query.lean().exec());
     },
     async insert(params: InsertSubscriberDocument) {
         return await subscriberModel.create({

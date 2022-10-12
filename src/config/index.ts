@@ -21,7 +21,7 @@ let Config: ConfigDocument = {
     publicFolders: [
         ["uploads"]
     ],
-    activeUsers: [],
+    onlineUsers: [],
     paths: {
         root: "",
         get services() { return Config.paths.root + "services/" },

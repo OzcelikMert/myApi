@@ -6,7 +6,8 @@ import userService from "../services/user.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import {StatusId} from "../constants/status.const";
 import Variable from "../library/variable";
-import {UpdateUserParamDocument} from "../types/services/user";
+import {SelectUserResultDocument, UpdateUserParamDocument} from "../types/services/user";
+import {Config} from "../config";
 
 export default {
     get: async (
@@ -19,6 +20,11 @@ export default {
         serviceResult.data = await userService.select({
             ...data.params
         });
+
+        /*serviceResult.data.map((user: SelectUserResultDocument & {isOnline: boolean}) => {
+            user["isOnline"] = Config.onlineUsers.indexOfKey("_id", user._id.toString()) > -1;
+            return user;
+        })*/
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
