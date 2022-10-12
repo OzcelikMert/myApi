@@ -7,7 +7,6 @@ import {
     ViewDocument,
     SelectTotalWithViewResultDocument
 } from "../types/services/view";
-import postModel from "../models/post.model";
 import MongoDBHelpers from "../library/mongodb/helpers";
 
 export default {
@@ -126,7 +125,7 @@ export default {
         })
     },
     async delete(params: DeleteViewParamDocument) {
-        return await postModel.deleteMany({
+        return await viewModel.deleteMany({
             createdAt: {$lt: params.dateEnd}
         });
     }
