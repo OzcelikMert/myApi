@@ -47,6 +47,7 @@ export default {
             langId: string().required({langId: ErrorCodes.emptyValue}),
             typeId: array(number().required({typeId: ErrorCodes.incorrectData})),
             url: string(),
+            pageTypeId: number(),
             statusId: number(),
             getContents: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
             maxCount: number()
@@ -61,6 +62,7 @@ export default {
             langId: string().required({langId: ErrorCodes.emptyValue}),
             getContents: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
             url: string(),
+            pageTypeId: number(),
             statusId: number(),
             maxCount: number(),
             isPrimary: boolean()

@@ -90,7 +90,7 @@ export default {
                     total: { $sum: 1 }
                 },
             }
-        ]);
+        ]).sort({_id: 1}).exec();
     },
     async selectTotalWithCountry(params: SelectViewParamDocument): Promise<SelectTotalWithViewResultDocument[]> {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
@@ -112,7 +112,7 @@ export default {
                     total: { $sum: 1 }
                 },
             }
-        ]);
+        ]).exec();
     },
     async insert(params: InsertViewParamDocument) {
         return await viewModel.create({
@@ -123,6 +123,6 @@ export default {
     async delete(params: DeleteViewParamDocument) {
         return await viewModel.deleteMany({
             createdAt: {$lt: params.dateEnd}
-        });
+        }).exec();
     }
 };

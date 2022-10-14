@@ -38,6 +38,10 @@ export default {
                 }
             }
         }
+        if (params.pageTypeId) filters = {
+            ...filters,
+            pageTypeId: params.pageTypeId
+        }
         if (params.statusId) filters = {
             ...filters,
             statusId: params.statusId

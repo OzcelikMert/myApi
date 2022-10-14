@@ -40,6 +40,7 @@ export type InsertPostParamDocument = {
 export interface SelectPostParamDocument {
     postId?: string
     typeId?: number | number[],
+    pageTypeId?: number
     langId: string
     url?: string
     statusId?: number,
