@@ -63,8 +63,8 @@ const schema = new mongoose.Schema<PostDocument>(
         dateStart: {type: Date, default: new Date()},
         order: {type: Number, default: 0},
         views: {type: Number, default: 0},
-        isFixed: {type: Boolean, default: false},
-        isPrimary: {type: Boolean},
+        isFixed: {type: Boolean},
+        pageTypeId: {type: Number},
         terms: {type: [mongoose.Schema.Types.ObjectId], ref: PostTermModel, default: []},
         contents: {type: [schemaContent], default: []},
         themeGroups: {type: [schemaThemeGroup]}

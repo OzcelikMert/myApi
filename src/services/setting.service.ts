@@ -8,6 +8,7 @@ import {
 } from "../types/services/setting";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
+import {Config} from "../config";
 
 export default {
     async select(params: SelectSettingParamDocument): Promise<SelectSettingResultDocument[]> {
@@ -18,7 +19,7 @@ export default {
         return (await query.lean().exec())?.map((doc: SelectSettingResultDocument) => {
             if (Array.isArray(doc.seoContents)) {
                 const langId = params.langId ?? doc.defaultLangId.toString();
-                doc.seoContents = doc.seoContents.filter(content => content.langId.toString() == langId);
+                doc.seoContents = doc.seoContents.filter(content => content.langId.toString() == langId) ?? doc.seoContents.filter(content => content.langId.toString() == Config.defaultLangId);
                 if (doc.seoContents.length > 0) {
                     doc.seoContents = doc.seoContents[0];
                 } else {
@@ -59,6 +60,10 @@ export default {
                 }
                 return contactForm;
             })
+        }
+
+        if(params.defaultLangId){
+            Config.defaultLangId = params.defaultLangId;
         }
 
         return (await settingModel.find({}))?.map(async doc => {

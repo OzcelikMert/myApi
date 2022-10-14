@@ -27,12 +27,7 @@ export type UpdatePostParamDocument = {
 
 export type InsertPostParamDocument = {
     mainId?:string
-    typeId: number,
-    statusId: number,
     authorId: string
-    dateStart: Date,
-    order: number,
-    isFixed?: boolean,
     terms: string[]
     contents: Omit<PostContentDocument, "_id"|"langId"> & {langId: string}
     themeGroups?: (Omit<PostThemeGroupDocument, "types"|"_id"> & {
@@ -40,7 +35,7 @@ export type InsertPostParamDocument = {
             contents: Omit<PostThemeGroupTypeContentDocument, "_id"|"langId"> & {langId: string}
         })[]
     })[]
-}
+} & Omit<PostDocument, "_id"|"themeGroups"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms">
 
 export interface SelectPostParamDocument {
     postId?: string
@@ -50,7 +45,6 @@ export interface SelectPostParamDocument {
     statusId?: number,
     getContents?: boolean,
     maxCount?: number,
-    isPrimary?: boolean
     ignorePostId?: string[]
 }
 
@@ -115,14 +109,14 @@ export interface PostDocument {
     _id?: mongoose.Types.ObjectId
     typeId: number,
     statusId: number,
+    pageTypeId?: number,
     mainId?: mongoose.Types.ObjectId
     authorId: mongoose.Types.ObjectId
     lastAuthorId: mongoose.Types.ObjectId
     dateStart: Date,
-    isPrimary?: boolean,
     order: number,
     views: number,
-    isFixed: boolean,
+    isFixed?: boolean,
     terms: mongoose.Types.ObjectId[]
     contents: PostContentDocument[]
     themeGroups?: PostThemeGroupDocument[]

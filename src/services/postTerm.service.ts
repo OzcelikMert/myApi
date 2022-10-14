@@ -9,6 +9,7 @@ import {
 } from "../types/services/postTerm";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
+import {Config} from "../config";
 
 export default {
     async select(params: SelectPostTermParamDocument): Promise<SelectPostTermResultDocument[]> {
@@ -47,7 +48,7 @@ export default {
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
                 if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId) ?? doc.contents.filter(content => content.langId.toString() == Config.defaultLangId);
                     if (doc.contents.length > 0) {
                         doc.contents = doc.contents[0];
                     } else {
@@ -68,7 +69,7 @@ export default {
 
         return (await query.lean().exec())?.map((doc: SelectPostTermResultDocument) => {
             if (Array.isArray(doc.contents)) {
-                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
+                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId) ?? doc.contents.filter(content => content.langId.toString() == Config.defaultLangId);
                 if (doc.contents.length > 0) {
                     doc.contents = doc.contents[0];
                 } else {

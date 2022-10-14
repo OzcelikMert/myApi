@@ -4,10 +4,10 @@ import {ErrorCodes} from "../library/api";
 const postBody = object({
     mainId: string(),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
+    pageTypeId: number(),
     terms: array(string().required({termId: ErrorCodes.incorrectData})).default([]),
     dateStart: string().required({dateStart: ErrorCodes.emptyValue}),
     order: number().required({order: ErrorCodes.emptyValue}),
-    isPrimary: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
     isFixed: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
     contents: object({
         langId: string().required({langId: ErrorCodes.emptyValue}),

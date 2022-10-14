@@ -10,6 +10,7 @@ import {
 import MongoDBHelpers from "../library/mongodb/helpers";
 import {SelectPostTermResultDocument} from "../types/services/postTerm";
 import Variable from "../library/variable";
+import {Config} from "../config";
 
 export default {
     async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
@@ -18,10 +19,6 @@ export default {
         if (params.postId) filters = {
             ...filters,
             _id: MongoDBHelpers.createObjectId(params.postId)
-        }
-        if (params.isPrimary) filters = {
-            ...filters,
-            isPrimary: Boolean(params.isPrimary)
         }
         if (params.url) filters = {
             ...filters,
@@ -57,7 +54,7 @@ export default {
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: SelectPostResultDocument) => {
                 if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId) ?? doc.contents.filter(content => content.langId.toString() == Config.defaultLangId);
                     if (doc.contents.length > 0) {
                         doc.contents = doc.contents[0];
                     } else {
@@ -71,7 +68,7 @@ export default {
             select: "_id typeId contents.title contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
                 if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
+                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId) ?? doc.contents.filter(content => content.langId.toString() == Config.defaultLangId);
                     if (doc.contents.length > 0) {
                         doc.contents = doc.contents[0];
                     } else {
@@ -92,7 +89,7 @@ export default {
 
         return (await query.lean().exec())?.map((doc: SelectPostResultDocument) => {
             if (Array.isArray(doc.contents)) {
-                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId);
+                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId) ?? doc.contents.filter(content => content.langId.toString() == Config.defaultLangId);
                 if (doc.contents.length > 0) {
                     doc.contents = doc.contents[0];
                     if (!params.getContents) {
@@ -106,7 +103,7 @@ export default {
             doc.themeGroups?.map(docThemeGroup => {
                 docThemeGroup.types.map(docThemeGroupType => {
                     if (Array.isArray(docThemeGroupType.contents)) {
-                        docThemeGroupType.contents = docThemeGroupType.contents.filter(content => content.langId.toString() == params.langId);
+                        docThemeGroupType.contents = docThemeGroupType.contents.filter(content => content.langId.toString() == params.langId) ?? docThemeGroupType.contents.filter(content => content.langId.toString() == Config.defaultLangId);
                         if (docThemeGroupType.contents.length > 0) {
                             docThemeGroupType.contents = docThemeGroupType.contents[0];
                         } else {

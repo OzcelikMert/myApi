@@ -11,7 +11,8 @@ interface ConfigDocument {
         uploads: {
             images: string
         }
-    }
+    },
+    defaultLangId: string
 }
 
 export {
