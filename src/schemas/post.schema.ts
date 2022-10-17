@@ -19,26 +19,7 @@ const postBody = object({
         content: string(),
         shortContent: string(),
     }).required({contents: ErrorCodes.emptyValue}),
-    themeGroups: (array(object({
-        _id: string(),
-        elementId: string().required({elementId: ErrorCodes.emptyValue}),
-        langKey: string().required({langKey: ErrorCodes.emptyValue}),
-        order: number().required({order: ErrorCodes.emptyValue}),
-        types: (array(object({
-            _id: string(),
-            elementId: string().required({elementId: ErrorCodes.emptyValue}),
-            typeId: number().required({typeId: ErrorCodes.emptyValue}),
-            langKey: string().required({langKey: ErrorCodes.emptyValue}),
-            order: number().required({order: ErrorCodes.emptyValue}),
-            contents: object({
-                _id: string(),
-                url: string(),
-                comment: string(),
-                langId: string().required({langId: ErrorCodes.emptyValue}),
-                content: string()
-            }).required({contents: ErrorCodes.emptyValue})
-        }))).required({types: ErrorCodes.emptyValue})
-    }))).default(undefined)
+    components: array(string().required({components: ErrorCodes.incorrectData})).default(undefined),
 })
 
 export default {

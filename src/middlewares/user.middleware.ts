@@ -3,7 +3,7 @@ import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import userService from "../services/user.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import V, {ClearTypes} from "../library/variable";
-import userRoleConst from "../constants/userRole.const";
+import userRoles from "../constants/userRoles";
 
 export default {
     check: async (
@@ -53,7 +53,7 @@ export default {
         }
 
         if (userRoleId > 0) {
-            if (userRoleConst.findSingle("id", req.session.data.roleId).rank <= userRoleConst.findSingle("id", userRoleId).rank) {
+            if (userRoles.findSingle("id", req.session.data.roleId).rank <= userRoles.findSingle("id", userRoleId).rank) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.noPerm;
                 serviceResult.statusCode = StatusCodes.notFound;

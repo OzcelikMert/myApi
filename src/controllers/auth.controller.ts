@@ -5,7 +5,7 @@ import {InferType} from "yup";
 import authSchema from "../schemas/auth.schema";
 import userService from "../services/user.service";
 import userUtil from "../utils/functions/user.util";
-import {StatusId} from "../constants/status.const";
+import {StatusId} from "../constants/status";
 
 export default {
     getSession: async (

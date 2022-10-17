@@ -1,9 +1,9 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../../library/api";
 import {Config} from "../../config";
-import PermissionPaths from "../../constants/permissions/path.const";
+import PermissionPaths from "../../constants/permissions/paths";
 import {PermissionPathDataDocument} from "../../types/constants/permissions/paths";
-import {UserRoleId} from "../../constants/userRole.const";
+import {UserRoleId} from "../../constants/userRoles";
 
 export default {
     check: (

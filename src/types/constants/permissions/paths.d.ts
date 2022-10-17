@@ -1,4 +1,4 @@
-import {PermissionId} from "../../../constants/permission.const";
+import {PermissionId} from "../../../constants/permissions";
 
 interface PermissionPathDocument {
     [key: string]: PermissionPathDataDocument

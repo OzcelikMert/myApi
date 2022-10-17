@@ -1,44 +1,14 @@
 import * as mongoose from "mongoose";
 import userModel from "./user.model";
-import {StatusId} from "../constants/status.const";
-import {PostTypeId} from "../constants/postType.const";
+import {StatusId} from "../constants/status";
+import {PostTypeId} from "../constants/postTypes";
 import languageModel from "./language.model";
-import PostTermModel from "./postTerm.model";
+import postTermModel from "./postTerm.model";
 import {
     PostContentDocument,
-    PostDocument, PostThemeGroupDocument,
-    PostThemeGroupTypeContentDocument,
-    PostThemeGroupTypeDocument
+    PostDocument
 } from "../types/services/post";
-import {ThemeGroupTypeId} from "../constants/themeGroupType.const";
-
-const schemaThemeGroupTypeContent = new mongoose.Schema<PostThemeGroupTypeContentDocument>(
-    {
-        langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
-        content: {type: String, default: ""},
-        url: {type: String},
-        comment: {type: String}
-    }
-).index({langId: 1});
-
-const schemaThemeGroupType = new mongoose.Schema<PostThemeGroupTypeDocument>(
-    {
-        typeId: {type: Number, required: true, enum: ThemeGroupTypeId},
-        langKey: {type: String, required: true},
-        elementId: {type: String, required: true},
-        order: {type: Number, default: 0},
-        contents: {type: [schemaThemeGroupTypeContent], default: []}
-    }
-);
-
-const schemaThemeGroup = new mongoose.Schema<PostThemeGroupDocument>(
-    {
-        langKey: {type: String, required: true},
-        elementId: {type: String, required: true},
-        order: {type: Number, default: 0},
-        types: {type: [schemaThemeGroupType], default: []}
-    }
-);
+import componentModel from "./component.model";
 
 const schemaContent = new mongoose.Schema<PostContentDocument>(
     {
@@ -65,9 +35,9 @@ const schema = new mongoose.Schema<PostDocument>(
         views: {type: Number, default: 0},
         isFixed: {type: Boolean},
         pageTypeId: {type: Number},
-        terms: {type: [mongoose.Schema.Types.ObjectId], ref: PostTermModel, default: []},
+        terms: {type: [mongoose.Schema.Types.ObjectId], ref: postTermModel, default: []},
         contents: {type: [schemaContent], default: []},
-        themeGroups: {type: [schemaThemeGroup]}
+        components: {type: [mongoose.Schema.Types.ObjectId], ref: componentModel}
     },
     {timestamps: true}
 ).index({typeId: 1, statusId: 1, authorId: 1});

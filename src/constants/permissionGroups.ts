@@ -7,6 +7,9 @@ export enum PermissionGroupId {
     User,
     Page,
     Navigate,
-    Footer,
-    Subscriber
+    Settings,
+    Service,
+    Testimonial,
+    Subscriber,
+    Component
 }

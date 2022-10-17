@@ -1,5 +1,5 @@
 import { Router } from "express";
-import pageConst from "../constants/page.const";
+import ServicePages from "../constants/servicePages";
 
 import userRouter from "./routes/user.router";
 import authRouter from "./routes/auth.router";
@@ -13,20 +13,22 @@ import serverInfoRouter from "./routes/serverInfo.router";
 import viewRouter from "./routes/view.router";
 import mailerRouter from "./routes/mailer.router";
 import subscriberRouter from "./routes/subscriber.router";
+import componentRouter from "./routes/component.router";
 
 const routers = Router();
 
-routers.use(pageConst.Auth, authRouter)
-routers.use(pageConst.User, userRouter)
-routers.use(pageConst.Profile, profileRouter)
-routers.use(pageConst.Post, postRouter)
-routers.use(pageConst.PostTerm, postTermRouter)
-routers.use(pageConst.Gallery, galleryRouter)
-routers.use(pageConst.Setting, settingRouter)
-routers.use(pageConst.Language, languageRouter)
-routers.use(pageConst.ServerInfo, serverInfoRouter)
-routers.use(pageConst.View, viewRouter)
-routers.use(pageConst.Mailer, mailerRouter)
-routers.use(pageConst.Subscriber, subscriberRouter)
+routers.use(ServicePages.auth, authRouter)
+routers.use(ServicePages.user, userRouter)
+routers.use(ServicePages.profile, profileRouter)
+routers.use(ServicePages.post, postRouter)
+routers.use(ServicePages.postTerm, postTermRouter)
+routers.use(ServicePages.gallery, galleryRouter)
+routers.use(ServicePages.setting, settingRouter)
+routers.use(ServicePages.language, languageRouter)
+routers.use(ServicePages.serverInfo, serverInfoRouter)
+routers.use(ServicePages.view, viewRouter)
+routers.use(ServicePages.mailer, mailerRouter)
+routers.use(ServicePages.subscriber, subscriberRouter)
+routers.use(ServicePages.component, componentRouter)
 
 export default routers.use("/api", routers);

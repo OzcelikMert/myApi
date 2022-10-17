@@ -7,7 +7,7 @@ import {
     UpdateUserParamDocument,
     UserDocument
 } from "../types/services/user";
-import {StatusId} from "../constants/status.const";
+import {StatusId} from "../constants/status";
 import userUtil from "../utils/functions/user.util";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import {Config} from "../config";

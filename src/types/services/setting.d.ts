@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {StatusId} from "../../constants/status.const";
+import {StatusId} from "../../constants/status";
 
 export type SelectSettingParamDocument = {
     langId?: string

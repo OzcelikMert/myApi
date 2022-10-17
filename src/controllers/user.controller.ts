@@ -4,7 +4,7 @@ import {InferType} from "yup";
 import userSchema from "../schemas/user.schema";
 import userService from "../services/user.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
-import {StatusId} from "../constants/status.const";
+import {StatusId} from "../constants/status";
 import Variable from "../library/variable";
 import {SelectUserResultDocument, UpdateUserParamDocument} from "../types/services/user";
 import {Config} from "../config";

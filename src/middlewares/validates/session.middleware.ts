@@ -2,7 +2,7 @@ import {Request, Response, NextFunction} from "express";
 import V from "../../library/variable"
 import {ErrorCodes, Result, StatusCodes} from "../../library/api";
 import userService from "../../services/user.service";
-import {StatusId} from "../../constants/status.const";
+import {StatusId} from "../../constants/status";
 
 export default {
     check: async (
