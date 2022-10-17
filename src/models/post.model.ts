@@ -5,10 +5,18 @@ import {PostTypeId} from "../constants/postTypes";
 import languageModel from "./language.model";
 import postTermModel from "./postTerm.model";
 import {
-    PostContentDocument,
-    PostDocument
+        PostContentButtonDocument,
+        PostContentDocument,
+        PostDocument
 } from "../types/services/post";
 import componentModel from "./component.model";
+
+const schemaContentButton = new mongoose.Schema<PostContentButtonDocument>(
+    {
+            title: {type: String, default: ""},
+            url: {type: String, default: ""}
+    }
+);
 
 const schemaContent = new mongoose.Schema<PostContentDocument>(
     {
@@ -19,7 +27,8 @@ const schemaContent = new mongoose.Schema<PostContentDocument>(
         shortContent: {type: String, default: ""},
         url: {type: String, default: ""},
         seoTitle: {type: String, default: ""},
-        seoContent: {type: String, default: ""}
+        seoContent: {type: String, default: ""},
+        buttons: {type: [schemaContentButton]},
     }
 ).index({langId: 1});
 

@@ -14,15 +14,13 @@ export default {
     async select(params: SelectSettingParamDocument): Promise<SelectSettingResultDocument[]> {
         let filters: mongoose.FilterQuery<SettingDocument> = {}
 
-        let query = settingModel.find(filters, {}).lean();
+        let query = settingModel.find(filters, {});
 
         return (await query.lean().exec())?.map((doc: SelectSettingResultDocument) => {
             if (Array.isArray(doc.seoContents)) {
                 const langId = params.langId ?? doc.defaultLangId.toString();
-                doc.seoContents = doc.seoContents.filter(content => content.langId.toString() == langId) ?? doc.seoContents.filter(content => content.langId.toString() == Config.defaultLangId);
-                if (doc.seoContents.length > 0) {
-                    doc.seoContents = doc.seoContents[0];
-                } else {
+                doc.seoContents = doc.seoContents.findSingle("langId", params.langId) ?? doc.seoContents.findSingle("langId", Config.defaultLangId);
+                if (doc.seoContents) {} else {
                     delete doc.seoContents;
                 }
             }

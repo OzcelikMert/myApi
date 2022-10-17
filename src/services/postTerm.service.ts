@@ -48,10 +48,8 @@ export default {
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
                 if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId) ?? doc.contents.filter(content => content.langId.toString() == Config.defaultLangId);
-                    if (doc.contents.length > 0) {
-                        doc.contents = doc.contents[0];
-                    } else {
+                    doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                    if (doc.contents) {} else {
                         delete doc.contents;
                     }
                 }
@@ -63,16 +61,14 @@ export default {
         }).populate<{ lastAuthorId: SelectPostTermResultDocument["lastAuthorId"] }>({
             path: "lastAuthorId",
             select: "_id name email url"
-        }).lean();
+        })
 
         if (params.maxCount) query.limit(params.maxCount);
 
         return (await query.lean().exec())?.map((doc: SelectPostTermResultDocument) => {
             if (Array.isArray(doc.contents)) {
-                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId) ?? doc.contents.filter(content => content.langId.toString() == Config.defaultLangId);
-                if (doc.contents.length > 0) {
-                    doc.contents = doc.contents[0];
-                } else {
+                doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                if (doc.contents) {} else {
                     delete doc.contents;
                 }
             }

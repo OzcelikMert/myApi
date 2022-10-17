@@ -27,7 +27,7 @@ export default {
             }
         }
 
-        let query = subscriberModel.find(filters, {}).lean();
+        let query = subscriberModel.find(filters, {});
 
         return (await query.lean().exec());
     },

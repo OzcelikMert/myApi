@@ -23,14 +23,13 @@ export default {
         }).populate<{ lastAuthorId: SelectComponentResultDocument["lastAuthorId"] }>({
             path: "lastAuthorId",
             select: "_id name email url"
-        }).lean();
+        });
 
         return (await query.lean().exec())?.map((doc: SelectComponentResultDocument) => {
             doc.types.map(docType => {
                 if (Array.isArray(docType.contents)) {
-                    docType.contents = docType.contents.filter(content => content.langId.toString() == params.langId) ?? docType.contents.filter(content => content.langId.toString() == Config.defaultLangId);
-                    if (docType.contents.length > 0) {
-                        docType.contents = docType.contents[0];
+                    docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", Config.defaultLangId);
+                    if (docType.contents) {
                         if (!params.getContents) {
                             delete docType.contents.content;
                         }

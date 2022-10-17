@@ -59,9 +59,11 @@ export default {
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: SelectPostResultDocument) => {
                 if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId) ?? doc.contents.filter(content => content.langId.toString() == Config.defaultLangId);
-                    if (doc.contents.length > 0) {
-                        doc.contents = doc.contents[0];
+                    doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                    if (doc.contents) {
+                        if (!params.getContents) {
+                            delete doc.contents.content;
+                        }
                     } else {
                         delete doc.contents;
                     }
@@ -73,9 +75,9 @@ export default {
             select: "_id typeId contents.title contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
                 if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId) ?? doc.contents.filter(content => content.langId.toString() == Config.defaultLangId);
-                    if (doc.contents.length > 0) {
-                        doc.contents = doc.contents[0];
+                    doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                    if (doc.contents) {
+                        if (!params.getContents) {}
                     } else {
                         delete doc.contents;
                     }
@@ -87,9 +89,8 @@ export default {
             transform: (doc: SelectComponentResultDocument) => {
                 doc.types.map(docType => {
                     if (Array.isArray(docType.contents)) {
-                        docType.contents = docType.contents.filter(content => content.langId.toString() == params.langId) ?? docType.contents.filter(content => content.langId.toString() == Config.defaultLangId);
-                        if (docType.contents.length > 0) {
-                            docType.contents = docType.contents[0];
+                        docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", Config.defaultLangId);
+                        if (docType.contents) {
                             if (!params.getContents) {
                                 delete docType.contents.content;
                             }
@@ -107,15 +108,14 @@ export default {
         }).populate<{ lastAuthorId: SelectPostResultDocument["lastAuthorId"] }>({
             path: "lastAuthorId",
             select: "_id name email url"
-        }).lean();
+        })
 
         if (params.maxCount) query.limit(params.maxCount);
 
         return (await query.lean().exec())?.map((doc: SelectPostResultDocument) => {
             if (Array.isArray(doc.contents)) {
-                doc.contents = doc.contents.filter(content => content.langId.toString() == params.langId) ?? doc.contents.filter(content => content.langId.toString() == Config.defaultLangId);
-                if (doc.contents.length > 0) {
-                    doc.contents = doc.contents[0];
+                doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                if (doc.contents) {
                     if (!params.getContents) {
                         delete doc.contents.content;
                     }

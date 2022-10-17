@@ -55,6 +55,12 @@ export type SelectPostResultDocument = {
     components?: ComponentDocument[]
 } & Omit<PostDocument, "contents"|"themeGroups"|"terms"|"components">
 
+export interface PostContentButtonDocument {
+    _id?: mongoose.Types.ObjectId
+    title: string,
+    url?: string
+}
+
 export interface PostContentDocument {
     _id?: mongoose.Types.ObjectId
     langId: mongoose.Types.ObjectId
@@ -64,7 +70,8 @@ export interface PostContentDocument {
     shortContent?: string,
     url?: string,
     seoTitle?: string,
-    seoContent?: string
+    seoContent?: string,
+    buttons?: PostContentButtonDocument[]
 }
 
 export interface PostDocument {
@@ -81,5 +88,5 @@ export interface PostDocument {
     isFixed?: boolean,
     terms: mongoose.Types.ObjectId[]
     contents: PostContentDocument[]
-    components?: mongoose.Types.ObjectId[]
+    components?: mongoose.Types.ObjectId[],
 }

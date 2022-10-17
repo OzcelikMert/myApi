@@ -18,6 +18,10 @@ const postBody = object({
         url: string(),
         content: string(),
         shortContent: string(),
+        buttons: array(object({
+            title: string().required({title: ErrorCodes.emptyValue}),
+            url: string()
+        })).default(undefined)
     }).required({contents: ErrorCodes.emptyValue}),
     components: array(string().required({components: ErrorCodes.incorrectData})).default(undefined),
 })

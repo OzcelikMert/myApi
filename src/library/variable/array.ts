@@ -1,11 +1,17 @@
 declare global {
     interface Array<T> {
         indexOfKey(key: keyof this[0] | "", value: any): number
-        findSingle(key: keyof this[0] | "", value: this[0][keyof this[0]]): this[0]
+
+        findSingle(key: keyof this[0] | "" | this[0][keyof this[0]], value: this[0][keyof this[0]]): this[0]
+
         findMulti(key: keyof this[0] | "" | this[0][keyof this[0]], value: this[0][keyof this[0]] | this[0][keyof this[0]][], isLike?: boolean): this
+
         findMultiForObject(obj: Array<any>, find: any, type: 'number' | 'string'): Array<any>
+
         orderBy(key: keyof this[0] | "", sort_type: `asc` | `desc`): this
+
         serializeObject(): object,
+
         remove(index: number, deleteCount?: number): void;
     }
 }
@@ -20,25 +26,40 @@ Array.prototype.indexOfKey = function (key, value) {
     }).indexOf(value.toString());
 }
 Array.prototype.findSingle = function (key, value) {
-    return this.find(function(data, index){
-        data._index = index;
-        return typeof value === "undefined" ? undefined : ((key === "") ? data.toString() : data[key].toString()) == value.toString()
+    let evalKey = "";
+    if (typeof key === "string") {
+        evalKey = key.split(".").map((name: any) => `['${name}']`).join("");
+    }
+    return this.find(function (data, index) {
+        let query = undefined;
+        try {
+            if (evalKey) {
+                query = typeof value === "undefined" ? undefined : (eval(`data${evalKey}.toString()`)) == value
+            } else {
+                query = typeof value === "undefined" ? undefined : ((key === "") ? data.toString() : data[key].toString()) == value;
+            }
+        } catch (e) {
+        }
+        return query;
     });
 }
 Array.prototype.findMulti = function (key, value, isLike = true) {
     let founds = Array();
     let evalKey = "";
-    if(typeof key === "string"){
+    if (typeof key === "string") {
         evalKey = key.split(".").map((name: any) => `['${name}']`).join("");
     }
-    this.find(function(data, index){
-        let query = (Array.isArray(value) ? value.includes(((key === "") ? data : data[key])) : ((key === "") ? data : data[key]) == value);
-        if(evalKey){
-            try{
-                query = (Array.isArray(value) ? value.includes(eval(`data${evalKey}`)) : (eval(`data${evalKey}`)) == value);
-            }catch (e) {}
+    this.find(function (data, index) {
+        let query = false;
+        try {
+            if (evalKey) {
+                query = (Array.isArray(value) ? value.includes(eval(`data${evalKey}.toString()`)) : (eval(`data${evalKey}.toString()`)) == value);
+            } else {
+                query = (Array.isArray(value) ? value.includes(((key === "") ? data.toString() : data[key].toString())) : ((key === "") ? data : data[key].toString()) == value);
+            }
+        } catch (e) {
         }
-        if(query === isLike) founds.push(Object.assign(data, {_index: index}));
+        if (query === isLike) founds.push(Object.assign(data, {_index: index}));
     });
     return founds;
 }
@@ -65,24 +86,24 @@ Array.prototype.orderBy = function (key, sort_type) {
         );
     });
 }
-Array.prototype.findMultiForObject = function (obj: Array<any>, find: any, type: 'number' | 'string' = 'string'){
+Array.prototype.findMultiForObject = function (obj: Array<any>, find: any, type: 'number' | 'string' = 'string') {
     let query = '';
     let multi_find = false;
     for (const key in find) {
-        if (find[key] instanceof Array && find[key].length > 0){
+        if (find[key] instanceof Array && find[key].length > 0) {
             multi_find = true
-            if (type == 'string') query += `[${find[key].map((e:any)=>`'${e}'`)}].includes(a['${key}']) || `
-            if (type == "number") query += `[${find[key].map((e:any)=>`${e}`)}].includes(a['${key}']) || `
-        }else {
+            if (type == 'string') query += `[${find[key].map((e: any) => `'${e}'`)}].includes(a['${key}']) || `
+            if (type == "number") query += `[${find[key].map((e: any) => `${e}`)}].includes(a['${key}']) || `
+        } else {
             query += `a['${key}']=='${find[key]}' && `
         }
     }
-    query = query.slice(0,-3)
+    query = query.slice(0, -3)
     return obj.filter(e => eval(query));
 }
 Array.prototype.serializeObject = function () {
     let result: any = {};
-    this.forEach((item: {name: string, value: any}) => {
+    this.forEach((item: { name: string, value: any }) => {
         result[item.name] = item.value;
     })
     return result;
