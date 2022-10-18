@@ -69,8 +69,8 @@ export default {
                             delete doc.contents;
                         }
                     }
+                    return doc;
                 }
-                return doc;
             }
         }).populate<{ terms: SelectPostResultDocument["terms"] }>({
             path: "terms",

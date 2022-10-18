@@ -18,14 +18,28 @@ export default {
             serviceResult.status = false;
             serviceResult.errorCode = ErrorCodes.notLoggedIn;
             serviceResult.statusCode = StatusCodes.unauthorized;
+            if(req.session){
+                req.session.destroy(err => {});
+            }
         }
 
         if (serviceResult.status) {
+            next();
+        } else {
+            res.status(serviceResult.statusCode).json(serviceResult)
+        }
+    },
+    reload: async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        if (req.session && req.session.data) {
             req.session.reload( err => {
                 next();
             })
-        } else {
-            res.status(serviceResult.statusCode).json(serviceResult)
+        }else {
+            next();
         }
     }
 };
