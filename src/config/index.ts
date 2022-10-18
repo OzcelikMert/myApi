@@ -11,7 +11,6 @@ import {UserRoleId} from "../constants/userRoles";
 import {StatusId} from "../constants/status";
 import languageService from "../services/language.service";
 import settingService from "../services/setting.service";
-import config from "config";
 
 const chalk = require('chalk');
 
@@ -77,7 +76,7 @@ class InitConfig {
     private setSession() {
         Config.app.set('trust proxy', 1)
         Config.app.use(CookieParser());
-        Config.app.use(ExpressSession(Session.config))
+        Config.app.use(ExpressSession(Session.sessionConfig))
     }
 
     private async mongodbConnect() {

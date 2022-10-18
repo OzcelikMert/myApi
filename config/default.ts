@@ -1,4 +1,5 @@
 export default {
+    serverProtocol: "http",
     serverHost: "localhost",
     serverPort: 5001,
     dbProtocol: "mongodb+srv",

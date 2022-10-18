@@ -41,7 +41,9 @@ export default {
                     roleId: user.roleId,
                     ip: req.ip,
                     permission: user.permissions,
-                    token: V.hash((user._id.toString() + req.ip).toString(), "sha256")
+                    token: V.hash((user._id.toString() + req.ip).toString(), "sha256"),
+                    createAt: new Date().getTime(),
+                    updatedAt: new Date().getTime()
                 }
                 req.session.save();
             }else {
