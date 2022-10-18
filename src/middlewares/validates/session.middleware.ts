@@ -21,7 +21,9 @@ export default {
         }
 
         if (serviceResult.status) {
-            next();
+            req.session.reload( err => {
+                next();
+            })
         } else {
             res.status(serviceResult.statusCode).json(serviceResult)
         }

@@ -47,10 +47,12 @@ export default {
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
-                if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
-                    if (doc.contents) {} else {
-                        delete doc.contents;
+                if(doc){
+                    if (Array.isArray(doc.contents)) {
+                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                        if (doc.contents) {} else {
+                            delete doc.contents;
+                        }
                     }
                 }
                 return doc;

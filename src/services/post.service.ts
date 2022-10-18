@@ -58,14 +58,16 @@ export default {
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: SelectPostResultDocument) => {
-                if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
-                    if (doc.contents) {
-                        if (!params.getContents) {
-                            delete doc.contents.content;
+                if(doc){
+                    if (Array.isArray(doc.contents)) {
+                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                        if (doc.contents) {
+                            if (!params.getContents) {
+                                delete doc.contents.content;
+                            }
+                        } else {
+                            delete doc.contents;
                         }
-                    } else {
-                        delete doc.contents;
                     }
                 }
                 return doc;
@@ -74,12 +76,14 @@ export default {
             path: "terms",
             select: "_id typeId contents.title contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
-                if (Array.isArray(doc.contents)) {
-                    doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
-                    if (doc.contents) {
-                        if (!params.getContents) {}
-                    } else {
-                        delete doc.contents;
+                if(doc) {
+                    if (Array.isArray(doc.contents)) {
+                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                        if (doc.contents) {
+                            if (!params.getContents) {}
+                        } else {
+                            delete doc.contents;
+                        }
                     }
                 }
                 return doc;
@@ -87,19 +91,20 @@ export default {
         }).populate<{ components: SelectPostResultDocument["components"] }>({
             path: "components",
             transform: (doc: SelectComponentResultDocument) => {
-                doc.types.map(docType => {
-                    if (Array.isArray(docType.contents)) {
-                        docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", Config.defaultLangId);
-                        if (docType.contents) {
-                            if (!params.getContents) {
-                                delete docType.contents.content;
+                if(doc){
+                    doc.types.map(docType => {
+                        if (Array.isArray(docType.contents)) {
+                            docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", Config.defaultLangId);
+                            if (docType.contents) {
+                                if (!params.getContents) {
+                                    delete docType.contents.content;
+                                }
+                            } else {
+                                delete docType.contents;
                             }
-                        } else {
-                            delete docType.contents;
                         }
-                    }
-                })
-
+                    })
+                }
                 return doc;
             }
         }).populate<{ authorId: SelectPostResultDocument["authorId"] }>({
