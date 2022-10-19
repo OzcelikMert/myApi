@@ -23,7 +23,7 @@ const postBody = object({
             url: string()
         })).default(undefined)
     }).required({contents: ErrorCodes.emptyValue}),
-    components: array(string().required({components: ErrorCodes.incorrectData})).default(undefined),
+    components: array(string().required({components: ErrorCodes.incorrectData})).default([]),
 })
 
 export default {

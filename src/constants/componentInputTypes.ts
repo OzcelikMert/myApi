@@ -1,7 +1,7 @@
-export enum ComponentTypeId {
+export enum ComponentInputTypeId {
     Text = 1,
     TextArea,
     Image,
     Button,
-    Icon
+    Number
 }

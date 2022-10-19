@@ -27,7 +27,8 @@ export default {
             _id: string()
         }),
         query: object({
-            langId: string().required({langId: ErrorCodes.emptyValue}),
+            elementId: string(),
+            langId: string(),
             getContents: number().is([1, 0], {getContents: ErrorCodes.incorrectData}),
         })
     }),

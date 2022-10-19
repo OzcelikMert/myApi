@@ -129,6 +129,9 @@ export default {
                 }
             }
 
+            doc.components = doc.components?.filter(component => component);
+            doc.terms = doc.terms?.filter(term => term);
+
             return doc;
         });
     },

@@ -17,6 +17,11 @@ export default {
             _id: MongoDBHelpers.createObjectId(params._id)
         }
 
+        if (params.elementId) filters = {
+            ...filters,
+            elementId: params.elementId
+        }
+
         let query = componentModel.find(filters).populate<{ authorId: SelectComponentResultDocument["authorId"] }>({
             path: "authorId",
             select: "_id name email url"
@@ -69,9 +74,7 @@ export default {
         delete params._id;
         return (await componentModel.find(filters))?.map(async doc => {
             // Check delete
-            doc.types = doc.types.filter(docType => {
-                return params.types.indexOfKey("_id", docType._id) > -1;
-            })
+            doc.types = doc.types.filter(docType =>  params.types.indexOfKey("_id", docType._id) > -1)
             // Check Update
             for (let paramThemeGroupType of params.types) {
                 let docThemeGroupType = doc.types.findSingle("_id", paramThemeGroupType._id);
