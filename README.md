@@ -2,4 +2,5 @@
 Api for My Admin Panel
 
 Things to do: 
-1- self url update problem (it does not change)
+- self url update problem (it does not change)
+- create auto sitemap.xml
