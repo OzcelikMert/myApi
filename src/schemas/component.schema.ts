@@ -18,7 +18,7 @@ const postBody = object({
             langId: string().required({langId: ErrorCodes.emptyValue}),
             content: string()
         }).required({contents: ErrorCodes.emptyValue})
-    }))).required({types: ErrorCodes.emptyValue})
+    }))).default([])
 })
 
 export default {
