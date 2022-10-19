@@ -44,8 +44,7 @@ export default {
         next: NextFunction
     ) => {
         if (req.session && req.session.data) {
-            console.log(new Date(req.session.data.updatedAt + (sessionTTL * 1000)), new Date(), new Date().diffSeconds(new Date(req.session.data.updatedAt + (sessionTTL * 1000))))
-            if (new Date().diffSeconds(new Date(req.session.data.updatedAt + (sessionTTL * 1000))) < 0) {
+            if (new Date(req.session.data.updatedAt).diffSeconds(new Date()) > sessionTTL) {
                 await new Promise(resolve => {
                     req.session.destroy(async err => {
                         resolve(err)
