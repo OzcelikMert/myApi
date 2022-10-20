@@ -88,6 +88,7 @@ export default {
                     } else {
                         docThemeGroupType.contents.push({
                             ...paramThemeGroupType.contents,
+                            _id: undefined,
                             langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
                         })
                     }
