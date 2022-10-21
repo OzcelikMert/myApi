@@ -17,7 +17,7 @@ let _store: ExpressSession.Store = new store({
 
 const sessionConfig: ExpressSession.SessionOptions = {
     store: _store,
-    name: "authCookie",
+    name: "auth",
     saveUninitialized: false,
     secret: 'ShMf250ld@__45slS',
     resave: false,
