@@ -23,7 +23,6 @@ export default {
         }
         if (params.url) filters = {
             ...filters,
-            "contents.langId": MongoDBHelpers.createObjectId(params.langId),
             "contents.url": params.url
         }
         if (params.typeId) {
