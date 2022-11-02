@@ -1,17 +1,11 @@
 declare global {
     interface Array<T> {
-        indexOfKey(key: keyof this[0] | "", value: any): number
-
-        findSingle(key: keyof this[0] | "" | this[0][keyof this[0]], value: this[0][keyof this[0]]): this[0]
-
-        findMulti(key: keyof this[0] | "" | this[0][keyof this[0]], value: this[0][keyof this[0]] | this[0][keyof this[0]][], isLike?: boolean): this
-
+        indexOfKey(key: keyof T | "", value: any): number
+        findSingle(key: keyof T | ""  | string, value: any): T
+        findMulti(key: keyof T | "" | T | string, value: T[keyof T] | T[keyof T][], isLike?: boolean): this
         findMultiForObject(obj: Array<any>, find: any, type: 'number' | 'string'): Array<any>
-
-        orderBy(key: keyof this[0] | "", sort_type: `asc` | `desc`): this
-
+        orderBy(key: keyof T | "", sort_type: `asc` | `desc`): this
         serializeObject(): object,
-
         remove(index: number, deleteCount?: number): void;
     }
 }

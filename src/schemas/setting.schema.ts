@@ -41,7 +41,16 @@ export default {
                 outGoingServer: string().required({outGoingServer: ErrorCodes.emptyValue}),
                 inComingServer: string().required({inComingServer: ErrorCodes.emptyValue}),
                 port: number().required({port: ErrorCodes.emptyValue})
-            }).required({contactForms: ErrorCodes.incorrectData})).default(undefined)
+            }).required({contactForms: ErrorCodes.incorrectData})).default(undefined),
+            staticLanguages: array(object({
+                _id: string(),
+                langKey: string().required({langKey: ErrorCodes.emptyValue}),
+                contents: object({
+                    _id: string(),
+                    langId: string().required({langId: ErrorCodes.emptyValue}),
+                    content: string().default(""),
+                })
+            }).required({staticLanguages: ErrorCodes.incorrectData})).default(undefined),
         })
     })
 };

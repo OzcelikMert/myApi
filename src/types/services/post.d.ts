@@ -31,7 +31,7 @@ export interface SelectPostParamDocument {
     postId?: string
     typeId?: number | number[],
     pageTypeId?: number
-    langId: string
+    langId?: string
     url?: string
     statusId?: number,
     getContents?: boolean,
@@ -89,4 +89,5 @@ export interface PostDocument {
     terms: mongoose.Types.ObjectId[]
     contents: PostContentDocument[]
     components?: mongoose.Types.ObjectId[],
+    sitemap?: string
 }

@@ -1,5 +1,5 @@
 import {WhereParamDocument} from "./where";
-import MySql from "../../index";
+import MySql from "../../../mysql";
 
 interface JoinParamDocument {
     tableName: string,

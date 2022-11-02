@@ -4,8 +4,26 @@ import {
     SettingContactDocument,
     SettingContactFormDocument,
     SettingDocument,
-    SettingSeoContentDocument
+    SettingSeoContentDocument,
+    SettingStaticLanguageDocument,
+    SettingStaticLanguageContentDocument
 } from "../types/services/setting";
+
+const schemaStaticLanguageContent = new mongoose.Schema<SettingStaticLanguageContentDocument>(
+    {
+        langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
+        content: {type: String, default: ""}
+    },
+    {timestamps: true}
+).index({langId: 1});
+
+const schemaStaticLanguage = new mongoose.Schema<SettingStaticLanguageDocument>(
+    {
+        langKey: {type: String, default: "", required: true},
+        contents: {type: [schemaStaticLanguageContent], default: []}
+    },
+    {timestamps: true}
+);
 
 const schemaContactForm = new mongoose.Schema<SettingContactFormDocument>(
     {
@@ -55,6 +73,7 @@ const schema = new mongoose.Schema<SettingDocument>(
         seoContents: {type: [schemaSEOContent], default: []},
         contact: {type: schemaContact},
         contactForms: {type: [schemaContactForm], default: []},
+        staticLanguages: {type: [schemaStaticLanguage], default: []},
     },
     {timestamps: true}
 );

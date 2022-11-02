@@ -1,4 +1,4 @@
-import MySql, {QueryValueTypes} from "../../index";
+import MySql, {QueryValueTypes} from "../../../mysql";
 
 interface UpdateSetDocument {
     columnName: string

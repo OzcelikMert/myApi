@@ -50,9 +50,6 @@ export default {
                 if(doc){
                     if (Array.isArray(doc.contents)) {
                         doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
-                        if (doc.contents) {} else {
-                            delete doc.contents;
-                        }
                     }
                 }
                 return doc;
@@ -70,9 +67,6 @@ export default {
         return (await query.lean().exec())?.map((doc: SelectPostTermResultDocument) => {
             if (Array.isArray(doc.contents)) {
                 doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
-                if (doc.contents) {} else {
-                    delete doc.contents;
-                }
             }
             return doc;
         })
@@ -93,6 +87,7 @@ export default {
                     langId: MongoDBHelpers.createObjectId(params.contents.langId)
                 }
             ],
+            ...(params.siteMap ? {siteMap: params.siteMap} : {}),
         })
     },
     async update(params: UpdatePostTermParamDocument) {

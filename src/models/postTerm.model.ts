@@ -29,7 +29,8 @@ const schema = new mongoose.Schema<PostTermDocument>(
         lastAuthorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         order: {type: Number, default: 0},
         views: {type: Number, default: 0},
-        contents: {type: [schemaContent], default: []}
+        contents: {type: [schemaContent], default: []},
+        siteMap: {type: String, default: ""}
     },
     {timestamps: true}
 ).index({typeId: 1, postTypeId: 1, statusId: 1, authorId: 1});

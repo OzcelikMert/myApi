@@ -21,6 +21,7 @@
     "@types/response-time": "^2.3.5",
     "@types/session-file-store": "^1.2.2",
     "@types/sharp": "^0.29.2",
+    "@types/xml2js": "^0.4.11",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.2",
     "check-disk-space": "^3.3.0",
@@ -40,6 +41,7 @@
     "session-file-store": "^1.5.0",
     "sharp": "^0.30.6",
     "typescript": "^3.9.10",
+    "xml2js": "^0.4.23",
     "yup": "^0.32.11"
   },
   "devDependencies": {

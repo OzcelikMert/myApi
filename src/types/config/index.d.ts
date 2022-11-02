@@ -7,11 +7,14 @@ interface ConfigDocument {
     onlineUsers: {ip: string, _id: string, createdAt: Date, updatedAt: Date}[]
     paths: {
         root: string
-        services: string
         uploads: {
             images: string
         }
     },
+    url: {
+        server: string
+        sitemaps: string
+    }
     defaultLangId: string
 }
 

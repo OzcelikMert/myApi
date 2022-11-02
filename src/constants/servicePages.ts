@@ -11,5 +11,6 @@ export default {
     view: "/view",
     mailer: "/mailer",
     subscriber: "/subscriber",
-    component: "/component"
+    component: "/component",
+    sitemap: "/sitemap"
 };

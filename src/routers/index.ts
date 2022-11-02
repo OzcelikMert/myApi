@@ -14,6 +14,7 @@ import viewRouter from "./routes/view.router";
 import mailerRouter from "./routes/mailer.router";
 import subscriberRouter from "./routes/subscriber.router";
 import componentRouter from "./routes/component.router";
+import sitemapRouter from "./routes/sitemap.router";
 
 const routers = Router();
 
@@ -30,5 +31,6 @@ routers.use(ServicePages.view, viewRouter)
 routers.use(ServicePages.mailer, mailerRouter)
 routers.use(ServicePages.subscriber, subscriberRouter)
 routers.use(ServicePages.component, componentRouter)
+routers.use(ServicePages.sitemap, sitemapRouter)
 
 export default routers.use("/api", routers);

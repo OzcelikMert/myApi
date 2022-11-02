@@ -5,16 +5,16 @@ import {PostTypeId} from "../constants/postTypes";
 import languageModel from "./language.model";
 import postTermModel from "./postTerm.model";
 import {
-        PostContentButtonDocument,
-        PostContentDocument,
-        PostDocument
+    PostContentButtonDocument,
+    PostContentDocument,
+    PostDocument
 } from "../types/services/post";
 import componentModel from "./component.model";
 
 const schemaContentButton = new mongoose.Schema<PostContentButtonDocument>(
     {
-            title: {type: String, default: ""},
-            url: {type: String, default: ""}
+        title: {type: String, default: ""},
+        url: {type: String, default: ""}
     }
 );
 
@@ -46,7 +46,8 @@ const schema = new mongoose.Schema<PostDocument>(
         pageTypeId: {type: Number},
         terms: {type: [mongoose.Schema.Types.ObjectId], ref: postTermModel, default: []},
         contents: {type: [schemaContent], default: []},
-        components: {type: [mongoose.Schema.Types.ObjectId], ref: componentModel}
+        components: {type: [mongoose.Schema.Types.ObjectId], ref: componentModel},
+        sitemap: {type: String, default: ""}
     },
     {timestamps: true}
 ).index({typeId: 1, statusId: 1, authorId: 1});

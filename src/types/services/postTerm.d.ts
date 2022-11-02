@@ -18,15 +18,11 @@ export type UpdatePostTermParamDocument = {
     lastAuthorId: string,
 } & Omit<InsertPostTermParamDocument, "authorId">
 
-export interface InsertPostTermParamDocument {
+export type InsertPostTermParamDocument = {
     mainId?:string
     authorId: string,
-    postTypeId: number,
-    typeId: number,
-    statusId: number,
-    order: number,
     contents: Omit<PostTermContentDocument, "langId"> & {langId: string}
-}
+} & Omit<PostTermDocument, "_id"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents">
 
 export interface SelectPostTermParamDocument {
     langId: string
@@ -83,4 +79,5 @@ export interface PostTermDocument {
     order: number,
     views: number,
     contents: PostTermContentDocument[]
+    siteMap?: string
 }

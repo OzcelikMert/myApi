@@ -1,8 +1,8 @@
 import V from "../variable"
 import {QueryTerms, QueryValueTypes} from "./queryTerms";
-import {InsertDocument, SelectDocument} from "./modules/queries/";
+import {InsertDocument, SelectDocument} from "../types/mysql/queries/";
 import MySql from "./index";
-import {UpdateDocument} from "./modules/queries/update";
+import {UpdateDocument} from "../types/mysql/queries/update";
 
 export enum QueryTypes {
     Select,

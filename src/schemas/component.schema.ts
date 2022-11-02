@@ -29,7 +29,7 @@ export default {
         query: object({
             elementId: string(),
             langId: string(),
-            getContents: number().is([1, 0], {getContents: ErrorCodes.incorrectData}),
+            getContents: number().is([1], {getContents: ErrorCodes.incorrectData}).default(undefined),
         })
     }),
     post: object({

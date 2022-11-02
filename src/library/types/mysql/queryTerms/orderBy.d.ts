@@ -1,4 +1,4 @@
-import MySql from "../../index";
+import MySql from "../../../mysql";
 
 interface OrderByDocument {
     asc(...columnNames: string[]): MySql,

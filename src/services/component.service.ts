@@ -38,8 +38,6 @@ export default {
                         if (!params.getContents) {
                             delete docType.contents.content;
                         }
-                    } else {
-                        delete docType.contents;
                     }
                 }
             })

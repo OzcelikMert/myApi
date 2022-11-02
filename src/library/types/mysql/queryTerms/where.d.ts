@@ -1,5 +1,5 @@
-import {QueryTerms, QueryValueTypes} from "../../queryTerms";
-import MySql from "../../index";
+import {QueryTerms, QueryValueTypes} from "../../../mysql/queryTerms";
+import MySql from "../../../mysql";
 
 interface WhereParamDocument {
     columnName: string,

@@ -9,6 +9,7 @@ const postBody = object({
     dateStart: string().required({dateStart: ErrorCodes.emptyValue}),
     order: number().required({order: ErrorCodes.emptyValue}),
     isFixed: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
+    siteMap: string().default(undefined),
     contents: object({
         langId: string().required({langId: ErrorCodes.emptyValue}),
         title: string().default(""),
@@ -34,7 +35,7 @@ export default {
             url: string(),
             pageTypeId: number(),
             statusId: number(),
-            getContents: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
+            getContents: number().is([1], {getContents: ErrorCodes.incorrectData}).default(undefined),
             maxCount: number()
         }),
     }),
@@ -45,7 +46,7 @@ export default {
         }),
         query: object({
             langId: string().required({langId: ErrorCodes.emptyValue}),
-            getContents: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
+            getContents: number().is([1], {getContents: ErrorCodes.incorrectData}).default(undefined),
             url: string(),
             pageTypeId: number(),
             statusId: number(),

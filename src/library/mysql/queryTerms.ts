@@ -1,7 +1,7 @@
 import V from "../variable"
-import {WhereParamDocument, JoinParamDocument, JoinDocument, WhereDocument} from "./modules/queryTerms/";
+import {WhereParamDocument, JoinParamDocument, JoinDocument, WhereDocument} from "../types/mysql/queryTerms/";
 import MySql from "./index";
-import {OrderByDocument} from "./modules/queryTerms/orderBy";
+import {OrderByDocument} from "../types/mysql/queryTerms/orderBy";
 
 
 export enum QueryValueTypes {

@@ -8,9 +8,10 @@ export type SelectSettingParamDocument = {
 
 export type InsertSettingParamDocument = {
     defaultLangId: string
-    seoContents?: Omit<SettingSeoContentDocument, "langId"> & {langId: string}
-    contactForms?: (Omit<SettingContactFormDocument, "_id"> & {_id?: string})[]
-} & Omit<SettingDocument,  "_id"|"defaultLangId"|"seoContents"|"contactForms">
+    seoContents?: Omit<SettingSeoContentDocument, "langId"> & { langId: string }
+    contactForms?: (Omit<SettingContactFormDocument, "_id"> & { _id?: string })[]
+    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"|"_id"> & { contents: (Omit<SettingStaticLanguageContentDocument, "langId"|"_id"> & { langId: string, _id?: string }), _id?: string })[]
+} & Omit<SettingDocument, "_id" | "defaultLangId" | "seoContents" | "contactForms" | "staticLanguages">
 
 export type UpdateSettingParamDocument = {
     defaultLangId?: string
@@ -18,9 +19,23 @@ export type UpdateSettingParamDocument = {
 
 export type SelectSettingResultDocument = {
     seoContents?: SettingSeoContentDocument | SettingSeoContentDocument[]
-} & Omit<SettingDocument, "seoContents">
+    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents: SettingStaticLanguageContentDocument | SettingStaticLanguageContentDocument[] })[]
+} & Omit<SettingDocument, "seoContents" | "staticLanguages">
+
+export interface SettingStaticLanguageContentDocument {
+    _id?: mongoose.Types.ObjectId
+    langId: mongoose.Types.ObjectId
+    content?: string,
+}
+
+export interface SettingStaticLanguageDocument {
+    _id?: mongoose.Types.ObjectId
+    langKey: string,
+    contents: SettingStaticLanguageContentDocument[]
+}
 
 export interface SettingSeoContentDocument {
+    _id?: mongoose.Types.ObjectId
     langId: mongoose.Types.ObjectId
     title?: string,
     content?: string,
@@ -60,5 +75,6 @@ export interface SettingDocument {
     script?: string
     seoContents: SettingSeoContentDocument[],
     contact?: SettingContactDocument
-    contactForms?: SettingContactFormDocument[]
+    contactForms?: SettingContactFormDocument[],
+    staticLanguages: SettingStaticLanguageDocument[]
 }

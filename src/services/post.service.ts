@@ -64,8 +64,6 @@ export default {
                             if (!params.getContents) {
                                 delete doc.contents.content;
                             }
-                        } else {
-                            delete doc.contents;
                         }
                     }
                     return doc;
@@ -78,11 +76,6 @@ export default {
                 if(doc) {
                     if (Array.isArray(doc.contents)) {
                         doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
-                        if (doc.contents) {
-                            if (!params.getContents) {}
-                        } else {
-                            delete doc.contents;
-                        }
                     }
                 }
                 return doc;
@@ -98,8 +91,6 @@ export default {
                                 if (!params.getContents) {
                                     delete docType.contents.content;
                                 }
-                            } else {
-                                delete docType.contents;
                             }
                         }
                     })
@@ -112,7 +103,7 @@ export default {
         }).populate<{ lastAuthorId: SelectPostResultDocument["lastAuthorId"] }>({
             path: "lastAuthorId",
             select: "_id name email url"
-        })
+        });
 
         if (params.maxCount) query.limit(params.maxCount);
 
@@ -123,8 +114,6 @@ export default {
                     if (!params.getContents) {
                         delete doc.contents.content;
                     }
-                } else {
-                    delete doc.contents;
                 }
             }
 
@@ -154,7 +143,8 @@ export default {
                     langId: MongoDBHelpers.createObjectId(params.contents.langId)
                 }
             ],
-        })
+            ...(params.sitemap ? {siteMap: params.sitemap} : {}),
+        });
     },
     async update(params: UpdatePostParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {}
@@ -177,7 +167,7 @@ export default {
 
         delete params.postId;
         delete params.typeId;
-        return (await postModel.find(filters))?.map(async doc => {
+        return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
             if (params.contents) {
                 if(params.contents.content) params.contents.content = params.contents.content.encode();
 
@@ -202,9 +192,9 @@ export default {
             });
 
             return await doc.save();
-        });
+        }));
     },
-    async updateStatus(params: UpdatePostStatusIdParamDocument) {
+    async updateStatus(params: UpdatePostStatusIdParamDocument): Promise<PostDocument[]> {
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
         if (Array.isArray(params.postId)) {
@@ -225,15 +215,15 @@ export default {
 
         delete params.postId;
         delete params.typeId;
-        return (await postModel.find(filters))?.map(async doc => {
+        return await Promise.all((await postModel.find(filters))?.map(async doc => {
             doc = Object.assign(doc, {
                 ...params,
                 statusId: params.statusId,
                 lastAuthorId: MongoDBHelpers.createObjectId(params.lastAuthorId)
             });
 
-            return await doc.save();
-        });
+            return Object.assign(await doc.save(), {contents: undefined});
+        }));
     },
     async delete(params: DeletePostParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {}
@@ -248,6 +238,9 @@ export default {
             };
         }
 
-        return await postModel.deleteMany(filters);
+        return await Promise.all(((await postModel.find(filters).exec()).map(async doc => {
+            await doc.remove();
+            return doc;
+        })));
     }
 };

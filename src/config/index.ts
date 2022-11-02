@@ -11,25 +11,36 @@ import {UserRoleId} from "../constants/userRoles";
 import {StatusId} from "../constants/status";
 import languageService from "../services/language.service";
 import settingService from "../services/setting.service";
+import config from "config";
+import * as path from "path"
 
 const chalk = require('chalk');
+
+const serverProtocol = config.get("serverProtocol") as string;
+const serverHost = config.get("serverHost") as string;
 
 let Config: ConfigDocument = {
     app: null,
     passwordSalt: "_@QffsDh14Q",
     publicFolders: [
-        ["uploads"]
+        ["uploads"],
+        ["sitemaps"]
     ],
     onlineUsers: [],
     paths: {
         root: "",
-        get services() {
-            return Config.paths.root + "services/"
-        },
         uploads: {
             get images() {
-                return Config.paths.root + "uploads/images/"
+                return path.resolve(Config.paths.root, "uploads", "images");
             }
+        }
+    },
+    url: {
+        get server() {
+            return `${serverProtocol}://${serverHost}/`
+        },
+        get sitemaps() {
+            return this.server + "sitemaps/"
         }
     },
     defaultLangId: ""
@@ -38,7 +49,7 @@ let Config: ConfigDocument = {
 class InitConfig {
     constructor(app: any) {
         Config.app = app;
-        Config.paths.root = `${require('path').resolve('./')}/src/`;
+        Config.paths.root = `${path.resolve('./', "src")}`;
     }
 
     init() {
@@ -64,11 +75,11 @@ class InitConfig {
 
         Config.publicFolders.forEach((item, index) => {
             if (item.length === 1) {
-                Config.app.use(`/${item}`, Express.static(`${Config.paths.root}${item}`));
-                console.log(chalk.blue(` - /${item}`) + ` = ${Config.paths.root}${item}`)
+                Config.app.use(`/${item}`, Express.static(path.resolve(Config.paths.root, item[0])));
+                console.log(chalk.blue(` - /${item}`) + ` = ${path.resolve(Config.paths.root, item[0])}`)
             } else {
-                Config.app.use(`/${item[0]}`, Express.static(`${Config.paths.root}${item[1]}`));
-                console.log(chalk.blue(` - /${item[0]}`) + ` = ${Config.paths.root}${item[1]}`)
+                Config.app.use(`/${item[0]}`, Express.static(path.resolve(Config.paths.root, item[1])));
+                console.log(chalk.blue(` - /${item[0]}`) + ` = ${path.resolve(Config.paths.root, item[1])}`)
             }
         })
     }
@@ -122,7 +133,7 @@ class InitConfig {
                 defaultLangId: lang[0]._id.toString(),
             });
             Config.defaultLangId = lang[0]._id.toString();
-        }else {
+        } else {
             Config.defaultLangId = settings[0].defaultLangId.toString();
         }
     }

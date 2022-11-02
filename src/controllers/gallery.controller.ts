@@ -17,15 +17,20 @@ export default {
         let serviceResult = new Result();
 
         const fileType = [".jpg", ".png", ".webp", ".gif", ".jpeg"];
-        const images = fs.readdirSync(Config.paths.uploads.images);
-        for(let i=0; i < images.length; i++) {
-            let image = images[i];
-            if(fs.existsSync(Config.paths.uploads.images + image)) {
-                if (fileType.includes(path.extname(image))){
-                    serviceResult.data.push(image)
+
+        await new Promise(resolve => {
+            fs.readdir(Config.paths.uploads.images, (err, images) => {
+                for(let i=0; i < images.length; i++) {
+                    let image = images[i];
+                    if(fs.existsSync(path.resolve(Config.paths.uploads.images, image))) {
+                        if (fileType.includes(path.extname(image))){
+                            serviceResult.data.push(image)
+                        }
+                    }
                 }
-            }
-        }
+                resolve(0)
+            });
+        })
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
@@ -63,14 +68,14 @@ export default {
 
                 try {
                     let ref = newName();
-                    while(fs.existsSync(Config.paths.uploads.images + newName())) {
+                    while(fs.existsSync(path.resolve(Config.paths.uploads.images, newName()))) {
                         ref = newName();
                     }
 
                     let data = await sharp(req.file?.buffer, {animated: true})
                         .webp({quality: 80, force: true, loop: 0})
                         .toBuffer();
-                    fs.createWriteStream(Config.paths.uploads.images + ref).write(data);
+                    fs.createWriteStream(path.resolve(Config.paths.uploads.images, ref)).write(data);
                     serviceResult.data.push(ref);
                 } catch (e) {
                     serviceResult.status = false;
@@ -93,8 +98,8 @@ export default {
 
         await new Promise(resolve => {
             data.body.images?.forEach(image => {
-                if (fs.existsSync(Config.paths.uploads.images + image)) {
-                    fs.unlinkSync(Config.paths.uploads.images + image);
+                if (fs.existsSync(path.resolve(Config.paths.uploads.images, image))) {
+                    fs.unlinkSync(path.resolve(Config.paths.uploads.images, image));
                     fs.close(0);
                     serviceResult.data.push(image);
                 }
