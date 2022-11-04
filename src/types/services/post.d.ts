@@ -5,6 +5,7 @@ import {ComponentDocument} from "./component";
 
 export interface DeletePostParamDocument {
     postId: string | string[]
+    typeId: number
 }
 
 export type UpdatePostStatusIdParamDocument = {

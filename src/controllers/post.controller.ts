@@ -3,11 +3,8 @@ import {Result} from "../library/api";
 import {InferType} from "yup";
 import postSchema from "../schemas/post.schema";
 import postService from "../services/post.service";
-import languageService from "../services/language.service";
-import sitemapUtil, {SitemapNameTypes} from "../utils/functions/sitemap.util";
-import {PostTypeId} from "../constants/postTypes";
-import {Config} from "../config";
-import sitemapController from "./sitemap.controller";
+import postSitemapMiddleware from "../middlewares/sitemap/post.sitemap.middleware";
+import SitemapUtil from "../utils/functions/sitemap.util";
 
 export default {
     getGeneral: async (
@@ -54,28 +51,13 @@ export default {
             ...(data.body.siteMap ? {siteMap: data.body.siteMap} : {}),
         });
 
-        let languages = await languageService.select({id: data.body.contents.langId});
-        if (languages.length > 0) {
-            let language = languages[0];
-            insertData.sitemap = await sitemapUtil.add(
-                data.params.typeId == PostTypeId.Page ? SitemapNameTypes.Page : SitemapNameTypes.Post,
-                [{
-                    _id: insertData._id.toString(),
-                    loc: data.body.contents.url || "",
-                    lastmod: new Date().toISOString(),
-                    changefreq: "weekly",
-                    priority: "0.5",
-                    "xhtml:link": [
-                        {
-                            $: {
-                                hreflang: `${language.shortKey}-${language.locale}`,
-                                rel: "alternate",
-                                href: data.body.contents.url || ""
-                            }
-                        }
-                    ]
-                }]
-            );
+        if(SitemapUtil.isPostSitemapRequire(data.params.typeId)){
+            insertData.sitemap = await postSitemapMiddleware.add({
+                _id: insertData._id.toString(),
+                url: data.body.contents.url ?? "",
+                langId: data.body.contents.langId,
+                typeId: data.params.typeId
+            });
             await insertData.save();
         }
 
@@ -96,27 +78,15 @@ export default {
             ...(data.body.isFixed ? {isFixed: data.body.isFixed == 1} : {}),
         });
 
-        for (const updated of updatedData) {
-            let languages = await languageService.select({id: data.body.contents.langId});
-            if(languages.length > 0){
-                let language = languages[0]
-                await sitemapUtil.edit(
-                    updated.sitemap || "",
-                    data.params.typeId == PostTypeId.Page ? SitemapNameTypes.Page : SitemapNameTypes.Post,
-                    updated._id.toString(),
-                    {
-                        ...(Config.defaultLangId == data.body.contents.langId ? {loc: data.body.contents.url || ""} : {}),
-                        "xhtml:link": [
-                            {
-                                $: {
-                                    hreflang: `${language.shortKey}-${language.locale}`,
-                                    rel: "alternate",
-                                    href: data.body.contents.url || ""
-                                }
-                            }
-                        ]
-                    }
-                );
+        if(SitemapUtil.isPostSitemapRequire(data.params.typeId)){
+            for (const updated of updatedData) {
+                await postSitemapMiddleware.update({
+                    _id: updated._id.toString(),
+                    url: data.body.contents.url ?? "",
+                    langId: data.body.contents.langId,
+                    typeId: data.params.typeId,
+                    sitemap: updated.sitemap ?? ""
+                });
             }
         }
 
@@ -138,22 +108,25 @@ export default {
         res.status(serviceResult.statusCode).json(serviceResult)
     },
     delete: async (
-        req: Request,
+        req: Request<any>,
         res: Response
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof postSchema.delete> = req;
 
         let deletedData = await postService.delete({
+            ...data.params,
             ...data.body
         });
 
-        for (const deleted of deletedData) {
-            await sitemapUtil.delete(
-                deleted.sitemap || "",
-                deleted.typeId == PostTypeId.Page ? SitemapNameTypes.Page : SitemapNameTypes.Post,
-                deleted._id.toString(),
-            );
+        if(SitemapUtil.isPostSitemapRequire(data.params.typeId)){
+            for (const deleted of deletedData) {
+                await postSitemapMiddleware.delete({
+                    _id: deleted._id.toString(),
+                    typeId: data.params.typeId,
+                    sitemap: deleted.sitemap ?? ""
+                });
+            }
         }
 
         res.status(serviceResult.statusCode).json(serviceResult)

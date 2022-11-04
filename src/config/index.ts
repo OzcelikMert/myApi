@@ -11,20 +11,15 @@ import {UserRoleId} from "../constants/userRoles";
 import {StatusId} from "../constants/status";
 import languageService from "../services/language.service";
 import settingService from "../services/setting.service";
-import config from "config";
 import * as path from "path"
 
 const chalk = require('chalk');
-
-const serverProtocol = config.get("serverProtocol") as string;
-const serverHost = config.get("serverHost") as string;
 
 let Config: ConfigDocument = {
     app: null,
     passwordSalt: "_@QffsDh14Q",
     publicFolders: [
-        ["uploads"],
-        ["sitemaps"]
+        ["uploads"]
     ],
     onlineUsers: [],
     paths: {
@@ -33,14 +28,6 @@ let Config: ConfigDocument = {
             get images() {
                 return path.resolve(Config.paths.root, "uploads", "images");
             }
-        }
-    },
-    url: {
-        get server() {
-            return `${serverProtocol}://${serverHost}/`
-        },
-        get sitemaps() {
-            return this.server + "sitemaps/"
         }
     },
     defaultLangId: ""

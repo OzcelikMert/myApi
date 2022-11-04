@@ -1,38 +1,67 @@
 import {
-    SitemapChildrenJsonDocument
+    SitemapChildrenDocument
 } from "../../library/types/sitemap";
 import Sitemap from "../../library/sitemap";
-import {Config} from "../../config";
+import config from "config";
+import {PostTypeId} from "../../constants/postTypes";
+import {
+    SitemapUtilChildrenAlternateDocument,
+    SitemapUtilChildrenDocument
+} from "../../types/utils/functions/sitemap.util";
 
-export enum SitemapNameTypes {
-    Page = 1,
-    Post,
-}
+const clientUrl = config.get("clientUrl") as string;
 
-function getTypeName(type: SitemapNameTypes) {
-    let typeString = "";
-    switch (type) {
-        case SitemapNameTypes.Page:
-            typeString = "page";
-            break;
-        case SitemapNameTypes.Post:
-            typeString = "post";
-            break;
+export default class SitemapUtil {
+    name: string;
+    constructor(name: string) {
+        this.name = name;
     }
-    return typeString;
-}
 
-export default {
-    async add(nameType: SitemapNameTypes, data: SitemapChildrenJsonDocument[]) {
-        let sitemap = new Sitemap( getTypeName(nameType));
-        return await sitemap.addRow(data);
-    },
-    async edit(fileCode: string, nameType: SitemapNameTypes, _id: string, data: SitemapChildrenJsonDocument) {
-        let sitemap = new Sitemap(getTypeName(nameType));
-        await sitemap.updateRow(fileCode, _id, data);
-    },
-    async delete(fileCode: string, nameType: SitemapNameTypes, _id: string,) {
-        let sitemap = new Sitemap(getTypeName(nameType));
+    static isPostSitemapRequire(typeId: PostTypeId){
+        return [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio].includes(typeId);
+    }
+
+    static getPostSitemapName(typeId: PostTypeId){
+        const indexOfS = Object.values(PostTypeId).indexOf(typeId);
+        return Object.keys(PostTypeId)[indexOfS].toLowerCase();
+    }
+
+    private convertData(data: SitemapUtilChildrenDocument): SitemapChildrenDocument {
+        let convertedData: SitemapChildrenDocument = {};
+
+        if(data.loc){
+            convertedData.loc = new URL(data.loc, clientUrl).href;
+        }
+
+        if(data.alternates){
+            convertedData["xhtml:link"] = data.alternates.map(alternate => ({
+                $: {
+                    rel: "alternate",
+                    hreflang: `${alternate.langShortKey}-${alternate.langLocale}`,
+                    href: new URL(`${alternate.langShortKey}-${alternate.langLocale}/${alternate.loc}`, clientUrl).href
+                }
+            }))
+            delete data.alternates;
+        }
+
+        convertedData.lastmod = new Date().toISOString();
+
+        return {
+            ...data,
+            ...convertedData
+        };
+    }
+
+    async add(data: SitemapUtilChildrenDocument[]) {
+        let sitemap = new Sitemap(this.name);
+        return await sitemap.addRow(clientUrl, data.map(d => this.convertData(d)));
+    }
+    async edit(fileCode: string, _id: string, data: SitemapUtilChildrenDocument) {
+        let sitemap = new Sitemap(this.name);
+        await sitemap.updateRow(fileCode, _id, this.convertData(data));
+    }
+    async delete(fileCode: string, _id: string,) {
+        let sitemap = new Sitemap(this.name);
         await sitemap.deleteRow(fileCode, _id);
-    },
+    }
 }

@@ -1,10 +1,11 @@
 import {Request, Response} from "express";
-import {ErrorCodes, Result} from "../library/api";
+import {Result} from "../library/api";
 import fs from "fs";
-import config from "config";
-
-const serverProtocol = config.get("serverProtocol") as string;
-const serverHost = config.get("serverHost") as string;
+import {SitemapDocument} from "../library/types/sitemap";
+import * as path from "path";
+import SitemapFolderPaths from "../library/sitemap/paths";
+import {InferType} from "yup";
+import sitemapSchema from "../schemas/sitemap.schema";
 
 export default {
     get: async (
@@ -12,6 +13,13 @@ export default {
         res: Response
     ) => {
         let serviceResult = new Result();
+        let data: InferType<typeof sitemapSchema.get> = req;
+
+        serviceResult.data = await new Promise<SitemapDocument>(resolve => {
+            fs.readFile(path.resolve(SitemapFolderPaths.main, `${data.params.name}.json`), "utf8", (err, data) => {
+                resolve(JSON.parse(data))
+            });
+        });
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },

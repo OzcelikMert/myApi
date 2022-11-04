@@ -1,8 +1,7 @@
 import SitemapTypeIndex from "./typeIndex";
 import {
     SitemapChildrenDocument,
-    SitemapChildrenJsonDocument,
-    SitemapDocument, SitemapJsonDocument
+    SitemapDocument
 } from "../types/sitemap";
 import fs from "fs";
 import SitemapFolderPaths from "./paths";
@@ -10,6 +9,7 @@ import * as path from "path";
 
 export default class Sitemap extends SitemapTypeIndex {
     private readonly fileName?: string;
+
     constructor(fileName?: string) {
         super();
         this.fileName = fileName;
@@ -19,10 +19,10 @@ export default class Sitemap extends SitemapTypeIndex {
         return {
             urlset: {
                 $: {
-                    xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
-                    "xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+                    "xmlns": "http://www.sitemaps.org/schemas/sitemap/0.9",
                     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                    "xmlns:xhtml": "http://www.w3.org/1999/xhtml"
+                    "xmlns:xhtml": "http://www.w3.org/TR/xhtml11/xhtml11_schema.html",
+                    "xsi:schemaLocation": "http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd http://www.w3.org/TR/xhtml11/xhtml11_schema.html http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"
                 }
             }
         }
@@ -55,7 +55,7 @@ export default class Sitemap extends SitemapTypeIndex {
                     let matchedCode = fileName.match(/(?<code>[0-9]{1,9})/g);
                     if (matchedCode && matchedCode.length > 0) {
                         code = matchedCode[0];
-                        let json = await new Promise<SitemapJsonDocument>(resolve => {
+                        let json = await new Promise<SitemapDocument>(resolve => {
                             fs.readFile(this.getName(code, true), "utf8", (err, data) => {
                                 resolve(JSON.parse(data))
                             });
@@ -73,7 +73,7 @@ export default class Sitemap extends SitemapTypeIndex {
         return this.codeConverter(Number.parseInt(code));
     }
 
-    private async create(fileCode: string) {
+    private async create(url: string, fileCode: string) {
         let json = this.getHead;
 
         await new Promise(resolve => {
@@ -82,17 +82,17 @@ export default class Sitemap extends SitemapTypeIndex {
             })
         })
 
-        await this.addRowIndex([{loc: this.getName(fileCode).replace(".json", ".xml")}])
+        await this.addRowIndex([{loc: new URL(`sitemaps/${this.getName(fileCode).replace(".json", ".xml")}`, url).href}])
     }
 
     private async check(fileCode: string) {
         return fs.existsSync(this.getName(fileCode, true))
     }
 
-    async addRow(data: SitemapChildrenJsonDocument[], fileCode?: string) {
+    async addRow(url: string, data: SitemapChildrenDocument[], fileCode?: string) {
         let lastCode = fileCode ?? await this.getLastCode();
         if (await this.check(lastCode)) {
-            let json = await new Promise<SitemapJsonDocument>(resolve => {
+            let json = await new Promise<SitemapDocument>(resolve => {
                 fs.readFile(this.getName(lastCode, true), "utf8", (err, data) => {
                     resolve(JSON.parse(data))
                 });
@@ -111,15 +111,15 @@ export default class Sitemap extends SitemapTypeIndex {
             })
 
         } else {
-            await this.create(lastCode);
-            lastCode = await this.addRow(data, lastCode);
+            await this.create(url, lastCode);
+            lastCode = await this.addRow(url, data, lastCode);
         }
         return lastCode;
     }
 
-    async updateRow(fileCode: string, _id: string, data: SitemapChildrenJsonDocument) {
+    async updateRow(fileCode: string, _id: string, data: SitemapChildrenDocument) {
         if (await this.check(fileCode)) {
-            let json = await new Promise<SitemapJsonDocument>(resolve => {
+            let json = await new Promise<SitemapDocument>(resolve => {
                 fs.readFile(this.getName(fileCode, true), "utf8", function (err, data) {
                     resolve(JSON.parse(data))
                 });
@@ -130,7 +130,6 @@ export default class Sitemap extends SitemapTypeIndex {
             }
 
             let find = json.urlset.url.findSingle("_id", _id);
-            console.log(fileCode, _id, data);
 
             if (find) {
                 let xHtmlLink = (find["xhtml:link"] ?? []);
@@ -143,7 +142,6 @@ export default class Sitemap extends SitemapTypeIndex {
                     }
                 })
 
-                console.log(xHtmlLink, xHtmlLinkData)
                 find = Object.assign(find, {
                     ...data,
                     ...(data["xhtml:link"] ? {"xhtml:link": xHtmlLink.concat(xHtmlLinkData)} : {})
@@ -161,7 +159,7 @@ export default class Sitemap extends SitemapTypeIndex {
 
     async deleteRow(fileCode: string, _id: string) {
         if (await this.check(fileCode)) {
-            let json = await new Promise<SitemapJsonDocument>(resolve => {
+            let json = await new Promise<SitemapDocument>(resolve => {
                 fs.readFile(this.getName(fileCode, true), "utf8", function (err, data) {
                     resolve(JSON.parse(data))
                 });

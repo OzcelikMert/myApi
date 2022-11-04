@@ -238,6 +238,13 @@ export default {
             };
         }
 
+        if (params.typeId) {
+            filters = {
+                ...filters,
+                typeId: params.typeId
+            }
+        }
+
         return await Promise.all(((await postModel.find(filters).exec()).map(async doc => {
             await doc.remove();
             return doc;

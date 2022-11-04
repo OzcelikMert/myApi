@@ -3,7 +3,6 @@ import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../
 import postSchema from "../../schemas/post.schema";
 import postController from "../../controllers/post.controller";
 import postMiddleware from "../../middlewares/post.middleware";
-import postSitemapMiddleware from "../../middlewares/sitemap/post.sitemap.middleware";
 
 const postRouter = Router();
 
@@ -12,12 +11,12 @@ postRouter.route(`/`)
 
 postRouter.route(`/:typeId`)
     .get([requestMiddleware.check(postSchema.get)], postController.get)
-    .post([requestMiddleware.check(postSchema.post), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkAndSetUrlAlready], postSitemapMiddleware.add, postController.add)
+    .post([requestMiddleware.check(postSchema.post), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkAndSetUrlAlready], postController.add)
     .put([requestMiddleware.check(postSchema.putStatus), sessionMiddleware.check, permissionMiddleware.check], postController.updateStatus)
     .delete([requestMiddleware.check(postSchema.delete), sessionMiddleware.check, permissionMiddleware.check], postController.delete)
 
 postRouter.route(`/:typeId/:postId`)
     .get([requestMiddleware.check(postSchema.get)], postController.get)
-    .put([requestMiddleware.check(postSchema.put), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.check, postMiddleware.checkAndSetUrlAlready],  postSitemapMiddleware.update, postController.update)
+    .put([requestMiddleware.check(postSchema.put), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.check, postMiddleware.checkAndSetUrlAlready], postController.update)
 
 export default postRouter;

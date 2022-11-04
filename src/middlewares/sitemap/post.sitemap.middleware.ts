@@ -1,84 +1,67 @@
-import {NextFunction, Request, Response} from "express";
-import {InferType} from "yup";
-import postSchema from "../../schemas/post.schema";
-import postService from "../../services/post.service";
-import sitemapUtil, {SitemapNameTypes} from "../../utils/functions/sitemap.util";
-import {PostTypeId} from "../../constants/postTypes";
-import {Config} from "../../config";
 import languageService from "../../services/language.service";
+import SitemapUtil from "../../utils/functions/sitemap.util";
+import {Config} from "../../config";
 
 export default {
-    add: async (
-        req: Request<any, any, any, any>,
-        res: Response,
-        next: NextFunction
-    ) => {
-        let data: InferType<typeof postSchema.post> = req;
+    async add(params: {_id: string, typeId: number, langId: string, url: string}) {
+        let sitemap = "";
+        let sitemapName = SitemapUtil.getPostSitemapName(params.typeId);
+        let sitemapUtil = new SitemapUtil(sitemapName);
 
-        /*let languages = await languageService.select({id: data.body.contents.langId});
+        let languages = await languageService.select({id: params.langId});
+        if (languages.length > 0) {
+            let language = languages[0];
+            let loc = `${sitemapName}/${params.url}`;
+            sitemap = await sitemapUtil.add(
+                [{
+                    _id: params._id,
+                    loc: loc,
+                    changefreq: "weekly",
+                    priority: "0.5",
+                    alternates: [
+                        {
+                            langShortKey: language.shortKey,
+                            langLocale: language.locale,
+                            loc: loc
+                        }
+                    ]
+                }]
+            );
+        }
+
+        return sitemap;
+    },
+    async update(params: {_id: string, sitemap: string, typeId: number, langId: string, url: string}) {
+        let sitemapName = SitemapUtil.getPostSitemapName(params.typeId);
+        let sitemapUtil = new SitemapUtil(sitemapName);
+
+        let languages = await languageService.select({id: params.langId});
         if(languages.length > 0){
             let language = languages[0];
-            req.body.siteMap = await sitemapUtil.add(
-                data.params.typeId == PostTypeId.Page ? SitemapNameTypes.Page : SitemapNameTypes.Post,
-                [
-                    {
-                        loc: Config.url.server + data.body.contents.url,
-                        lastmod: new Date().toISOString(),
-                        changefreq: "weekly",
-                        priority: "0.5",
-                        "xhtml:link": [
-                            {
-                                $: {
-                                    hreflang: `${language.shortKey}-${language.locale}`,
-                                    rel: "alternate",
-                                    href: Config.url.server + data.body.contents.url
-                                }
-                            }
-                        ]
-                    }
-                ]
+            let loc = `${sitemapName}/${params.url}`;
+            await sitemapUtil.edit(
+                params.sitemap,
+                params._id,
+                {
+                    ...(Config.defaultLangId == params.langId ? {loc: loc} : {}),
+                    alternates: [
+                        {
+                            langShortKey: language.shortKey,
+                            langLocale: language.locale,
+                            loc: loc
+                        }
+                    ]
+                }
             );
-        }*/
-
-        next();
+        }
     },
-    update: async (
-        req: Request<any, any, any, any>,
-        res: Response,
-        next: NextFunction
-    ) => {
-        let data: InferType<typeof postSchema.put> = req;
+    async delete(params: {_id: string, sitemap: string, typeId: number}) {
+        let sitemap = "";
+        let sitemapName = SitemapUtil.getPostSitemapName(params.typeId);
+        let sitemapUtil = new SitemapUtil(sitemapName);
 
-        /*let posts = await postService.select({
-            langId: Config.defaultLangId,
-            postId: data.params.postId,
-            typeId: data.params.typeId
-        });
+        await sitemapUtil.delete(params.sitemap, params._id);
 
-        for(const post of posts){
-            let languages = await languageService.select({id: data.body.contents.langId});
-            if(!Array.isArray(post.contents) && languages.length > 0){
-                let language = languages[0]
-                await sitemapUtil.edit(
-                    post.siteMap || "",
-                    data.params.typeId == PostTypeId.Page ? SitemapNameTypes.Page : SitemapNameTypes.Post,
-                    Config.url.server  + post.contents?.url,
-                    {
-                        ...(Config.defaultLangId == data.body.contents.langId ? {loc: Config.url.server + data.body.contents.url} : {}),
-                        "xhtml:link": [
-                            {
-                                $: {
-                                    hreflang: `${language.shortKey}-${language.locale}`,
-                                    rel: "alternate",
-                                    href: Config.url.server + data.body.contents.url
-                                }
-                            }
-                        ]
-                    }
-                );
-            }
-        }*/
-
-        next();
+        return sitemap;
     },
-}
+};

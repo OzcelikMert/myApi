@@ -10,7 +10,7 @@ export default class SitemapTypeIndex {
         return {
             sitemapindex: {
                 $: {
-                    xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
+                    "xmlns": "http://www.sitemaps.org/schemas/sitemap/0.9",
                     "xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
                     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
                 }

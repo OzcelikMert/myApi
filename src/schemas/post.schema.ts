@@ -77,6 +77,9 @@ export default {
         })
     }),
     delete: object({
+        params: object({
+            typeId: number().required({typeId: ErrorCodes.emptyValue}),
+        }),
         body: object({
             postId: array(string().required({postId: ErrorCodes.incorrectData})).required({postId: ErrorCodes.emptyValue}),
         })

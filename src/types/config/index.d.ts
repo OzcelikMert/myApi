@@ -11,10 +11,6 @@ interface ConfigDocument {
             images: string
         }
     },
-    url: {
-        server: string
-        sitemaps: string
-    }
     defaultLangId: string
 }
 
