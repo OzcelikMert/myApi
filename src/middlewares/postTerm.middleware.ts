@@ -13,7 +13,7 @@ export default {
         let termId = req.params.termId ?? req.body.termId;
         let typeId = req.params.typeId;
         let postTypeId = req.params.postTypeId;
-        let langId = req.query.langId ?? req.body.contents.langId;
+        let langId = req.query.langId ?? req.body.contents ? req.body.contents.langId : undefined;
 
         let resData = await postTermService.select({
             termId: termId,

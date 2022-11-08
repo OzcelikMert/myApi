@@ -5,7 +5,7 @@ import {
     InsertPostParamDocument,
     PostDocument,
     SelectPostParamDocument, SelectPostResultDocument,
-    UpdatePostParamDocument, UpdatePostStatusIdParamDocument
+    UpdatePostParamDocument, UpdatePostStatusIdParamDocument, UpdatePostViewParamDocument
 } from "../types/services/post";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import {SelectPostTermResultDocument} from "../types/services/postTerm";
@@ -107,16 +107,32 @@ export default {
 
         if (params.maxCount) query.limit(params.maxCount);
 
-        return (await query.lean().exec())?.map((doc: SelectPostResultDocument) => {
+        return (await query.lean().exec()).map((doc: SelectPostResultDocument) => {
+            let views = 0;
+
             if (Array.isArray(doc.contents)) {
-                doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
-                if (doc.contents) {
+                for (const docContent of doc.contents) {
+                    if(docContent.views){
+                        views += Number(docContent.views);
+                    }
+                }
+                let docContent = doc.contents.findSingle("langId", params.langId);
+                if(!docContent){
+                    docContent = doc.contents.findSingle("langId", Config.defaultLangId);
+                    if(docContent){
+                        docContent.views = 0;
+                    }
+                }
+
+                if (docContent) {
+                    doc.contents = docContent;
                     if (!params.getContents) {
                         delete doc.contents.content;
                     }
                 }
             }
 
+            doc.views = views;
             doc.components = doc.components?.filter(component => component);
             doc.terms = doc.terms?.filter(term => term);
 
@@ -195,7 +211,9 @@ export default {
                 ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
             });
 
-            return await doc.save();
+            await doc.save();
+            doc.contents = [];
+            return doc;
         }));
     },
     async updateStatus(params: UpdatePostStatusIdParamDocument): Promise<PostDocument[]> {
@@ -219,14 +237,51 @@ export default {
 
         delete params.postId;
         delete params.typeId;
-        return await Promise.all((await postModel.find(filters))?.map(async doc => {
+        return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
             doc = Object.assign(doc, {
                 ...params,
                 statusId: params.statusId,
                 lastAuthorId: MongoDBHelpers.createObjectId(params.lastAuthorId)
             });
 
-            return Object.assign(await doc.save(), {contents: undefined});
+            await doc.save();
+            doc.contents = [];
+            return doc;
+        }));
+    },
+    async updateView(params: UpdatePostViewParamDocument) {
+        let filters: mongoose.FilterQuery<PostDocument> = {}
+
+        if (params.postId) {
+            filters = {
+                _id: MongoDBHelpers.createObjectId(params.postId)
+            };
+        }
+        if (params.typeId) {
+            filters = {
+                ...filters,
+                typeId: params.typeId
+            }
+        }
+
+        delete params.postId;
+        delete params.typeId;
+        return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
+            let docContent = doc.contents.findSingle("langId", params.langId);
+            if (docContent) {
+                if(docContent.views){
+                    docContent.views = Number(docContent.views) + 1;
+                }else {
+                    docContent.views = 1;
+                }
+
+                await doc.save();
+            }
+
+            return {
+                _id: doc._id,
+                views: docContent?.views
+            };
         }));
     },
     async delete(params: DeletePostParamDocument) {
@@ -251,6 +306,7 @@ export default {
 
         return await Promise.all(((await postModel.find(filters).exec()).map(async doc => {
             await doc.remove();
+            doc.contents = [];
             return doc;
         })));
     }

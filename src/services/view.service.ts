@@ -56,7 +56,6 @@ export default {
         if (params.dateStart) {
             filters = {
                 ...filters,
-
                 createdAt: {
                     $gt: params.dateStart,
                     ...((params.dateEnd) ? {$lt: params.dateEnd} : {})
@@ -91,7 +90,10 @@ export default {
         if (params.dateStart) {
             filters = {
                 ...filters,
-                country: params.country
+                createdAt: {
+                    $gt: params.dateStart,
+                    ...((params.dateEnd) ? {$lt: params.dateEnd} : {})
+                }
             }
         }
 
@@ -123,8 +125,20 @@ export default {
         })
     },
     async delete(params: DeleteViewParamDocument) {
-        return await viewModel.deleteMany({
-            createdAt: {$lt: params.dateEnd}
-        }).exec();
+        let filters: mongoose.FilterQuery<ViewDocument> = {};
+
+        if(params.dateEnd){
+            filters = {
+                ...filters,
+                createdAt: {
+                    $lt: params.dateEnd
+                }
+            }
+        }
+
+        return await Promise.all((await viewModel.find(filters).exec()).map(async doc => {
+            await doc.remove();
+            return doc;
+        }));
     }
 };

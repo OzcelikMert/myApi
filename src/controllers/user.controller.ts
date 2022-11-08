@@ -21,11 +21,6 @@ export default {
             ...data.params
         });
 
-        /*serviceResult.data.map((user: SelectUserResultDocument & {isOnline: boolean}) => {
-            user["isOnline"] = Config.onlineUsers.indexOfKey("_id", user._id.toString()) > -1;
-            return user;
-        })*/
-
         res.status(serviceResult.statusCode).json(serviceResult)
     },
     add: async (
@@ -35,7 +30,7 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof userSchema.post> = req;
 
-        serviceResult.data = await userService.insert(data.body);
+        await userService.insert(data.body);
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
@@ -57,7 +52,7 @@ export default {
             delete params.password;
         }
 
-        serviceResult.data = await userService.update(params);
+        await userService.update(params);
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
@@ -68,7 +63,7 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof userSchema.delete> = req;
 
-        serviceResult.data = await userService.update({
+        await userService.update({
             ...data.params,
             statusId: StatusId.Deleted
         });

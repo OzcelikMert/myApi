@@ -3,6 +3,7 @@ import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../
 import postSchema from "../../schemas/post.schema";
 import postController from "../../controllers/post.controller";
 import postMiddleware from "../../middlewares/post.middleware";
+import viewMiddleware from "../../middlewares/view.middleware";
 
 const postRouter = Router();
 
@@ -18,5 +19,8 @@ postRouter.route(`/:typeId`)
 postRouter.route(`/:typeId/:postId`)
     .get([requestMiddleware.check(postSchema.get)], postController.get)
     .put([requestMiddleware.check(postSchema.put), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.check, postMiddleware.checkAndSetUrlAlready], postController.update)
+
+postRouter.route(`/view/:typeId/:postId`)
+    .put([requestMiddleware.check(postSchema.putView), viewMiddleware.check, postMiddleware.check], postController.updateView)
 
 export default postRouter;

@@ -5,7 +5,7 @@ import {
     InsertPostTermParamDocument,
     PostTermDocument,
     SelectPostTermParamDocument, SelectPostTermResultDocument,
-    UpdatePostTermParamDocument, UpdatePostTermStatusIdParamDocument
+    UpdatePostTermParamDocument, UpdatePostTermStatusIdParamDocument, UpdatePostTermViewParamDocument
 } from "../types/services/postTerm";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
@@ -21,7 +21,6 @@ export default {
         }
         if (params.url) filters = {
             ...filters,
-            "contents.langId": MongoDBHelpers.createObjectId(params.langId),
             "contents.url": params.url
         }
         if (params.typeId) filters = {
@@ -64,10 +63,30 @@ export default {
 
         if (params.maxCount) query.limit(params.maxCount);
 
-        return (await query.lean().exec())?.map((doc: SelectPostTermResultDocument) => {
+        return (await query.lean().exec()).map((doc: SelectPostTermResultDocument) => {
+            let views = 0;
+
             if (Array.isArray(doc.contents)) {
-                doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                for (const docContent of doc.contents) {
+                    if(docContent.views){
+                        views += Number(docContent.views);
+                    }
+                }
+                let docContent = doc.contents.findSingle("langId", params.langId);
+                if(!docContent){
+                    docContent = doc.contents.findSingle("langId", Config.defaultLangId);
+                    if(docContent){
+                        docContent.views = 0;
+                    }
+                }
+
+                if (docContent) {
+                    doc.contents = docContent;
+                }
             }
+
+            doc.views = views;
+
             return doc;
         })
     },
@@ -138,7 +157,9 @@ export default {
                 ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
             });
 
-            return await doc.save();
+            await doc.save();
+            doc.contents = [];
+            return doc;
         }));
     },
     async updateStatus(params: UpdatePostTermStatusIdParamDocument) {
@@ -167,15 +188,57 @@ export default {
         delete params.termId;
         delete params.typeId;
         delete params.postTypeId;
-        return (await postTermModel.find(filters))?.map(async doc => {
+        return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
             doc = Object.assign(doc, {
                 ...params,
                 statusId: params.statusId,
                 lastAuthorId: MongoDBHelpers.createObjectId(params.lastAuthorId)
             });
 
-            return await doc.save();
-        });
+            await doc.save();
+            doc.contents = [];
+            return doc;
+        }));
+    },
+    async updateView(params: UpdatePostTermViewParamDocument) {
+        let filters: mongoose.FilterQuery<PostTermDocument> = {}
+
+        if (params.termId) {
+            filters = {
+                _id: MongoDBHelpers.createObjectId(params.termId)
+            };
+        }
+        if (params.typeId) {
+            filters = {
+                ...filters,
+                typeId: params.typeId
+            }
+        }
+        if (params.postTypeId) filters = {
+            ...filters,
+            postTypeId: params.postTypeId
+        }
+
+        delete params.termId;
+        delete params.typeId;
+        delete params.postTypeId;
+        return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
+            let docContent = doc.contents.findSingle("langId", params.langId);
+            if (docContent) {
+                if(docContent.views){
+                    docContent.views = Number(docContent.views) + 1;
+                }else {
+                    docContent.views = 1;
+                }
+
+                await doc.save();
+            }
+
+            return {
+                _id: doc._id,
+                views: docContent?.views
+            };
+        }));
     },
     async delete(params: DeletePostTermParamDocument) {
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
@@ -206,6 +269,7 @@ export default {
 
         return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
             await doc.remove();
+            doc.contents = [];
             return doc;
         }));
     }

@@ -28,6 +28,7 @@ const schemaContent = new mongoose.Schema<PostContentDocument>(
         url: {type: String, default: ""},
         seoTitle: {type: String, default: ""},
         seoContent: {type: String, default: ""},
+        views: {type: Number, default: 0},
         buttons: {type: [schemaContentButton]},
     }
 ).index({langId: 1});
@@ -41,7 +42,6 @@ const schema = new mongoose.Schema<PostDocument>(
         lastAuthorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         dateStart: {type: Date, default: new Date()},
         order: {type: Number, default: 0},
-        views: {type: Number, default: 0},
         isFixed: {type: Boolean},
         pageTypeId: {type: Number},
         terms: {type: [mongoose.Schema.Types.ObjectId], ref: postTermModel, default: []},

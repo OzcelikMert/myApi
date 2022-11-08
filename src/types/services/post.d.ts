@@ -15,6 +15,12 @@ export type UpdatePostStatusIdParamDocument = {
     lastAuthorId: string
 }
 
+export type UpdatePostViewParamDocument = {
+    postId: string,
+    typeId: number
+    langId: string
+}
+
 export type UpdatePostParamDocument = {
     postId: string,
     lastAuthorId: string,
@@ -51,6 +57,7 @@ export type SelectPostResultDocument = {
             url: string,
         }
     },
+    views?: number,
     terms: PopulateTermsDocument[]
     contents?: PostContentDocument | PostContentDocument[]
     components?: ComponentDocument[]
@@ -72,6 +79,7 @@ export interface PostContentDocument {
     url?: string,
     seoTitle?: string,
     seoContent?: string,
+    views?: number,
     buttons?: PostContentButtonDocument[]
 }
 
@@ -85,7 +93,6 @@ export interface PostDocument {
     lastAuthorId: mongoose.Types.ObjectId
     dateStart: Date,
     order: number,
-    views: number,
     isFixed?: boolean,
     terms: mongoose.Types.ObjectId[]
     contents: PostContentDocument[]

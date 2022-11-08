@@ -12,7 +12,7 @@ export default {
 
         let postId = req.params.postId ?? req.body.postId;
         let typeId = req.params.typeId;
-        let langId = req.query.langId ?? req.body.contents.langId;
+        let langId = req.query.langId ?? req.body.contents ? req.body.contents.langId : undefined;
 
         let resData = await postService.select({
             postId: postId,

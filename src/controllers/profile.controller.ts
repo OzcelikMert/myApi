@@ -12,7 +12,7 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof profileSchema.put> = req;
 
-        serviceResult.data = await userService.update({
+        await userService.update({
             ...data.body,
             userId: req.session.data.id.toString(),
         });
@@ -26,7 +26,7 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof profileSchema.putPassword> = req;
 
-        serviceResult.data = await userService.update({
+        await userService.update({
             userId: req.session.data.id.toString(),
             password: data.body.newPassword
         });

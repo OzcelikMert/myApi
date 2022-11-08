@@ -53,6 +53,9 @@ export default {
             }
         }
 
-        return await subscriberModel.deleteMany(filters);
+        return await Promise.all((await subscriberModel.find(filters).exec()).map(async doc => {
+            await doc.remove();
+            return doc;
+        }));
     }
 };

@@ -64,7 +64,7 @@ export default {
         let query = userModel.find(filters, {});
         if(params.maxCount) query.limit(params.maxCount);
 
-        return (await query.lean().exec())?.map((user: SelectUserResultDocument) => {
+        return (await query.lean().exec()).map((user: SelectUserResultDocument) => {
             delete user.password;
             user.isOnline = Config.onlineUsers.indexOfKey("_id", user._id.toString()) > -1;
             return user;
@@ -90,13 +90,14 @@ export default {
         }
 
         delete params.userId;
-        return (await userModel.find(filters))?.map( async doc => {
+        return await Promise.all((await userModel.find(filters).exec()).map( async doc => {
             if(params.password) {
                 params.password = userUtil.encodePassword(params.password)
             }
 
             doc = Object.assign(doc, params);
-            return await doc.save();
-        })
+            await doc.save();
+            return {_id: doc._id};
+        }));
     }
 };

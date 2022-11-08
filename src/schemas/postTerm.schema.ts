@@ -53,6 +53,17 @@ export default {
             statusId: number().required({statusId: ErrorCodes.emptyValue})
         })
     }),
+    putView: object({
+        params: object({
+            postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
+            typeId: number().required({typeId: ErrorCodes.emptyValue}),
+            termId: string().required({termId: ErrorCodes.emptyValue}),
+        }),
+        body: object({
+            url: string().default(""),
+            langId: string().required({langId: ErrorCodes.emptyValue})
+        })
+    }),
     delete: object({
         params: object({
             postTypeId: number().required({typeId: ErrorCodes.emptyValue}),

@@ -30,7 +30,7 @@ export default {
             select: "_id name email url"
         });
 
-        return (await query.lean().exec())?.map((doc: SelectComponentResultDocument) => {
+        return (await query.lean().exec()).map((doc: SelectComponentResultDocument) => {
             doc.types.map(docType => {
                 if (Array.isArray(docType.contents)) {
                     docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", Config.defaultLangId);
@@ -70,7 +70,7 @@ export default {
         }
 
         delete params._id;
-        return (await componentModel.find(filters))?.map(async doc => {
+        return await Promise.all((await componentModel.find(filters).exec()).map(async doc => {
             // Check delete
             doc.types = doc.types.filter(docType =>  params.types.indexOfKey("_id", docType._id) > -1)
             // Check Update
@@ -113,8 +113,10 @@ export default {
                 ...params,
             });
 
-            return await doc.save();
-        });
+            await doc.save();
+
+            return {_id: doc._id}
+        }));
     },
     async delete(params: DeleteComponentParamDocument) {
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
@@ -129,6 +131,9 @@ export default {
             };
         }
 
-        return await componentModel.deleteMany(filters).exec();
+        return await Promise.all((await componentModel.find(filters).exec()).map(async doc => {
+            await doc.remove();
+            return {_id: doc._id};
+        }))
     }
 };

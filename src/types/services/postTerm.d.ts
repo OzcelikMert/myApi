@@ -15,6 +15,13 @@ export type UpdatePostTermStatusIdParamDocument = {
     lastAuthorId: string
 }
 
+export type UpdatePostTermViewParamDocument = {
+    termId: string,
+    typeId: number
+    langId: string
+    postTypeId: number
+}
+
 export type UpdatePostTermParamDocument = {
     termId: string,
     lastAuthorId: string,
@@ -48,6 +55,7 @@ export type SelectPostTermResultDocument = {
             url: string,
         }
     },
+    views?: number,
     contents?: PostTermContentDocument | PostTermContentDocument[]
 } & Omit<PostTermDocument, "contents">
 
@@ -68,6 +76,7 @@ export interface PostTermContentDocument {
     url?: string,
     seoTitle?: string,
     seoContent?: string
+    views?: number,
 }
 
 export interface PostTermDocument {
@@ -79,7 +88,6 @@ export interface PostTermDocument {
     authorId: mongoose.Types.ObjectId
     lastAuthorId: mongoose.Types.ObjectId
     order: number,
-    views: number,
     contents: PostTermContentDocument[]
     sitemap?: string
 }

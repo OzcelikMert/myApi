@@ -100,10 +100,24 @@ export default {
         let serviceResult = new Result();
         let data: InferType<typeof postSchema.putStatus> = req;
 
-        serviceResult.data = await postService.updateStatus({
+        await postService.updateStatus({
             ...data.body,
             ...data.params,
             lastAuthorId: req.session.data.id.toString()
+        });
+
+        res.status(serviceResult.statusCode).json(serviceResult)
+    },
+    updateView: async (
+        req: Request<any>,
+        res: Response
+    ) => {
+        let serviceResult = new Result();
+        let data: InferType<typeof postSchema.putView> = req;
+
+        await postService.updateView({
+            ...data.params,
+            ...data.body
         });
 
         res.status(serviceResult.statusCode).json(serviceResult)

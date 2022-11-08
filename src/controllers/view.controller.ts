@@ -63,7 +63,7 @@ export default {
         let ip = req.ip;
         let ipDetail = lookup(req.ip);
 
-        serviceResult.data = await viewService.insert({
+        await viewService.insert({
             ...data.body,
             ip: ip,
             languageId: data.body.lang,

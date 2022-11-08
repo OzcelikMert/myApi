@@ -30,7 +30,7 @@ export default {
             ...data.body,
         }
 
-        serviceResult.data = await settingService.update(params)
+        await settingService.update(params)
 
         res.status(serviceResult.statusCode).json(serviceResult)
     }

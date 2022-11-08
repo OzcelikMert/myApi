@@ -16,7 +16,7 @@ export default {
 
         let query = settingModel.find(filters, {});
 
-        return (await query.lean().exec())?.map((doc: SelectSettingResultDocument) => {
+        return (await query.lean().exec()).map((doc: SelectSettingResultDocument) => {
             if (Array.isArray(doc.seoContents)) {
                 doc.seoContents = doc.seoContents.findSingle("langId", params.langId) ?? doc.seoContents.findSingle("langId", Config.defaultLangId);
             }
@@ -82,7 +82,7 @@ export default {
             Config.defaultLangId = params.defaultLangId;
         }
 
-        return (await settingModel.find({}))?.map(async doc => {
+        return await Promise.all((await settingModel.find({}).exec()).map(async doc => {
             if (params.seoContents) {
                 let docSeoContent = doc.seoContents.findSingle("langId", params.seoContents.langId);
                 if (docSeoContent) {
@@ -178,7 +178,8 @@ export default {
                 ...(params.script ? {head: params.script.encode()} : {})
             });
 
-            return await doc.save();
-        });
+            await doc.save();
+            return {}
+        }));
     }
 };
