@@ -5,7 +5,7 @@ export default {
     post: object({
         body: object({
             lang: string().required({lang: ErrorCodes.emptyValue}),
-            url: string().required({url: ErrorCodes.emptyValue}),
+            url: string().default(""),
         })
     })
 };

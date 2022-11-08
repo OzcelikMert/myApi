@@ -4,7 +4,7 @@ import {ViewDocument} from "../types/services/view";
 
 const schema = new mongoose.Schema<ViewDocument>(
     {
-        url: {type: String, required: true},
+        url: {type: String, default: ""},
         languageId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
         ip: {type: String, default: "", required: true},
         country: {type: String, default: ""},

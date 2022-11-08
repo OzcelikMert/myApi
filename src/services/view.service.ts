@@ -8,6 +8,7 @@ import {
     SelectTotalWithViewResultDocument
 } from "../types/services/view";
 import MongoDBHelpers from "../library/mongodb/helpers";
+import Variable from "../library/variable";
 
 export default {
     async select(params: SelectViewParamDocument): Promise<SelectViewResultDocument[]> {
@@ -49,23 +50,6 @@ export default {
 
         return await viewModel.find(filters, {}).lean().exec();
     },
-    async selectTotal(params: SelectViewParamDocument): Promise<SelectTotalViewResultDocument> {
-        let filters: mongoose.FilterQuery<ViewDocument> = {}
-
-        if (params.dateStart) {
-            filters = {
-                ...filters,
-                createdAt: {
-                    $gt: params.dateStart,
-                    ...((params.dateEnd) ? {$lt: params.dateEnd} : {})
-                }
-            }
-        }
-
-        return {
-            total: (await viewModel.countDocuments(filters)) || 0
-        };
-    },
     async selectTotalWithDate(params: SelectViewParamDocument): Promise<SelectTotalWithViewResultDocument[]> {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
 
@@ -87,6 +71,15 @@ export default {
             {
                 $group: {
                     _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    ipList: { $addToSet: "$ip" }
+                }
+            },
+            {
+                $unwind: "$ipList"
+            },
+            {
+                $group: {
+                    _id: "$_id",
                     total: { $sum: 1 }
                 },
             }
@@ -109,6 +102,15 @@ export default {
             {
                 $group: {
                     _id: "$country",
+                    ipList: { $addToSet: "$ip" }
+                },
+            },
+            {
+                $unwind: "$ipList"
+            },
+            {
+                $group: {
+                    _id: "$_id",
                     total: { $sum: 1 }
                 },
             }

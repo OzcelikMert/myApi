@@ -3,9 +3,7 @@ import {
 } from "../../library/types/sitemap";
 import Sitemap from "../../library/sitemap";
 import config from "config";
-import {PostTypeId} from "../../constants/postTypes";
 import {
-    SitemapUtilChildrenAlternateDocument,
     SitemapUtilChildrenDocument
 } from "../../types/utils/functions/sitemap.util";
 
@@ -17,20 +15,14 @@ export default class SitemapUtil {
         this.name = name;
     }
 
-    static isPostSitemapRequire(typeId: PostTypeId){
-        return [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio].includes(typeId);
-    }
-
-    static getPostSitemapName(typeId: PostTypeId){
-        const indexOfS = Object.values(PostTypeId).indexOf(typeId);
-        return Object.keys(PostTypeId)[indexOfS].toLowerCase();
-    }
-
     private convertData(data: SitemapUtilChildrenDocument): SitemapChildrenDocument {
         let convertedData: SitemapChildrenDocument = {};
 
-        if(data.loc){
+        if(typeof data.loc !== "undefined"){
             convertedData.loc = new URL(data.loc, clientUrl).href;
+            if(data.loc == "") {
+                convertedData.loc = convertedData.loc.removeLastChar();
+            }
         }
 
         if(data.alternates){

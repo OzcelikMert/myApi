@@ -54,6 +54,10 @@ export default {
         })
     }),
     delete: object({
+        params: object({
+            postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
+            typeId: number().required({typeId: ErrorCodes.emptyValue}),
+        }),
         body: object({
             termId: array(string().required({termId: ErrorCodes.incorrectData})).required({termId: ErrorCodes.emptyValue}),
         })

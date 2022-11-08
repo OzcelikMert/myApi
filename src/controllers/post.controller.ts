@@ -3,8 +3,7 @@ import {Result} from "../library/api";
 import {InferType} from "yup";
 import postSchema from "../schemas/post.schema";
 import postService from "../services/post.service";
-import postSitemapMiddleware from "../middlewares/sitemap/post.sitemap.middleware";
-import SitemapUtil from "../utils/functions/sitemap.util";
+import postSitemapMiddleware, {isPostSitemapRequire} from "../middlewares/sitemap/post.sitemap.middleware";
 
 export default {
     getGeneral: async (
@@ -51,12 +50,13 @@ export default {
             ...(data.body.siteMap ? {siteMap: data.body.siteMap} : {}),
         });
 
-        if(SitemapUtil.isPostSitemapRequire(data.params.typeId)){
+        if(isPostSitemapRequire(data.params.typeId)){
             insertData.sitemap = await postSitemapMiddleware.add({
                 _id: insertData._id.toString(),
                 url: data.body.contents.url ?? "",
                 langId: data.body.contents.langId,
-                typeId: data.params.typeId
+                typeId: data.params.typeId,
+                pageTypeId: insertData.pageTypeId
             });
             await insertData.save();
         }
@@ -78,14 +78,15 @@ export default {
             ...(data.body.isFixed ? {isFixed: data.body.isFixed == 1} : {}),
         });
 
-        if(SitemapUtil.isPostSitemapRequire(data.params.typeId)){
+        if(isPostSitemapRequire(data.params.typeId)){
             for (const updated of updatedData) {
                 await postSitemapMiddleware.update({
                     _id: updated._id.toString(),
                     url: data.body.contents.url ?? "",
                     langId: data.body.contents.langId,
                     typeId: data.params.typeId,
-                    sitemap: updated.sitemap ?? ""
+                    sitemap: updated.sitemap ?? "",
+                    pageTypeId: updated.pageTypeId
                 });
             }
         }
@@ -119,7 +120,7 @@ export default {
             ...data.body
         });
 
-        if(SitemapUtil.isPostSitemapRequire(data.params.typeId)){
+        if(isPostSitemapRequire(data.params.typeId)){
             for (const deleted of deletedData) {
                 await postSitemapMiddleware.delete({
                     _id: deleted._id.toString(),

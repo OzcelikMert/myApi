@@ -16,12 +16,18 @@ export default {
         let dateStart = new Date();
         dateStart.addDays(-7);
 
-        let resData = await viewService.selectTotal({
+        let resData = await viewService.selectTotalWithDate({
             dateStart: dateStart
         });
 
-        let averageTotal = Math.ceil(resData.total / 7);
-        let weeklyTotal = resData.total;
+        let total = 0;
+
+        for (const data of resData) {
+            total += data.total;
+        }
+
+        let averageTotal = Math.ceil(total / 7);
+        let weeklyTotal = total;
 
         serviceResult.data = {
             liveTotal: Config.onlineUsers.length,

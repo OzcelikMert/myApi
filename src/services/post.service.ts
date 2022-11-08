@@ -186,6 +186,10 @@ export default {
                 delete params.contents;
             }
 
+            if(Variable.isEmpty(params.mainId)){
+                doc.mainId = undefined;
+            }
+
             doc = Object.assign(doc, {
                 ...params,
                 ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),

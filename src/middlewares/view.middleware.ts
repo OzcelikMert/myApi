@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import viewService from "../services/view.service";
-import {DateMask} from "../library/variable";
+import Variable, {DateMask} from "../library/variable";
 
 export default {
     check: async (
@@ -11,6 +11,7 @@ export default {
     ) => {
         let serviceResult = new Result();
 
+        req.body.url = Variable.isEmpty(req.body.url) ? "/" : req.body.url;
         let url = req.body.url;
 
         let dateStart = new Date(new Date().getStringWithMask(DateMask.DATE)),
@@ -44,10 +45,10 @@ export default {
         let dateEnd = new Date();
         dateEnd.addDays(-7);
 
-        let resData = await viewService.selectTotal({dateEnd: dateEnd});
+        let resData = await viewService.select({dateEnd: dateEnd});
 
-        if (resData.total > 0) {
-            viewService.delete({dateEnd: dateEnd})
+        if (resData.length > 0) {
+            await viewService.delete({dateEnd: dateEnd})
         }
         
         next();

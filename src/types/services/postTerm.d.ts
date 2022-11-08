@@ -3,6 +3,8 @@ import {PopulateAuthorIdDocument} from "./user";
 
 export interface DeletePostTermParamDocument {
     termId: string | string[]
+    typeId: number,
+    postTypeId: number
 }
 
 export type UpdatePostTermStatusIdParamDocument = {
@@ -79,5 +81,5 @@ export interface PostTermDocument {
     order: number,
     views: number,
     contents: PostTermContentDocument[]
-    siteMap?: string
+    sitemap?: string
 }

@@ -87,7 +87,7 @@ export default {
                     langId: MongoDBHelpers.createObjectId(params.contents.langId)
                 }
             ],
-            ...(params.siteMap ? {siteMap: params.siteMap} : {}),
+            ...(params.sitemap ? {siteMap: params.sitemap} : {}),
         })
     },
     async update(params: UpdatePostTermParamDocument) {
@@ -116,7 +116,7 @@ export default {
         delete params.termId;
         delete params.typeId;
         delete params.postTypeId;
-        return (await postTermModel.find(filters))?.map(async doc => {
+        return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
             if (params.contents) {
                 let docContent = doc.contents.findSingle("langId", params.contents.langId);
                 if (docContent) {
@@ -139,7 +139,7 @@ export default {
             });
 
             return await doc.save();
-        });
+        }));
     },
     async updateStatus(params: UpdatePostTermStatusIdParamDocument) {
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
@@ -190,6 +190,23 @@ export default {
             };
         }
 
-        return await postTermModel.deleteMany(filters);
+        if (params.typeId) {
+            filters = {
+                ...filters,
+                typeId: params.typeId
+            }
+        }
+
+        if (params.postTypeId) {
+            filters = {
+                ...filters,
+                postTypeId: params.postTypeId
+            }
+        }
+
+        return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
+            await doc.remove();
+            return doc;
+        }));
     }
 };

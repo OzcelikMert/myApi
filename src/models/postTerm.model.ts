@@ -30,7 +30,7 @@ const schema = new mongoose.Schema<PostTermDocument>(
         order: {type: Number, default: 0},
         views: {type: Number, default: 0},
         contents: {type: [schemaContent], default: []},
-        siteMap: {type: String, default: ""}
+        sitemap: {type: String, default: ""}
     },
     {timestamps: true}
 ).index({typeId: 1, postTypeId: 1, statusId: 1, authorId: 1});
