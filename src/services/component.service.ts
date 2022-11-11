@@ -12,9 +12,9 @@ export default {
     async select(params: SelectComponentParamDocument): Promise<SelectComponentResultDocument[]> {
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
 
-        if (params._id) filters = {
+        if (params.componentId) filters = {
             ...filters,
-            _id: MongoDBHelpers.createObjectId(params._id)
+            _id: MongoDBHelpers.createObjectId(params.componentId)
         }
 
         if (params.elementId) filters = {
@@ -63,13 +63,13 @@ export default {
     async update(params: UpdateComponentParamDocument) {
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
 
-        if (params._id) {
+        if (params.componentId) {
             filters = {
-                _id: MongoDBHelpers.createObjectId(params._id)
+                _id: MongoDBHelpers.createObjectId(params.componentId)
             };
         }
 
-        delete params._id;
+        delete params.componentId;
         return await Promise.all((await componentModel.find(filters).exec()).map(async doc => {
             // Check delete
             doc.types = doc.types.filter(docType =>  params.types.indexOfKey("_id", docType._id) > -1)
@@ -121,13 +121,13 @@ export default {
     async delete(params: DeleteComponentParamDocument) {
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
 
-        if (Array.isArray(params._id)) {
+        if (Array.isArray(params.componentId)) {
             filters = {
-                _id: {$in: MongoDBHelpers.createObjectIdArray(params._id)}
+                _id: {$in: MongoDBHelpers.createObjectIdArray(params.componentId)}
             }
         } else {
             filters = {
-                _id: MongoDBHelpers.createObjectId(params._id)
+                _id: MongoDBHelpers.createObjectId(params.componentId)
             };
         }
 

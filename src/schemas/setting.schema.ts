@@ -7,7 +7,7 @@ export default {
             langId: string(),
         }),
     }),
-    put: object({
+    putGeneral: object({
         body: object({
             defaultLangId: string(),
             icon: string(),
@@ -15,12 +15,6 @@ export default {
             logoTwo: string(),
             head: string(),
             script: string(),
-            seoContents: object({
-                langId: string().required({langId: ErrorCodes.emptyValue}),
-                title: string(),
-                content: string(),
-                tags: array(string().required({tags: ErrorCodes.incorrectData})).default([])
-            }).default(undefined),
             contact: object({
                 email: string(),
                 phone: string(),
@@ -32,6 +26,20 @@ export default {
                 linkedin: string(),
                 google: string(),
             }).default(undefined),
+        })
+    }),
+    putSeo: object({
+        body: object({
+            seoContents: object({
+                langId: string().required({langId: ErrorCodes.emptyValue}),
+                title: string(),
+                content: string(),
+                tags: array(string().required({tags: ErrorCodes.incorrectData})).default([])
+            }).required({seoContents: ErrorCodes.emptyValue}),
+        })
+    }),
+    putContactForm: object({
+        body: object({
             contactForms: array(object({
                 _id: string(),
                 name: string().required({name: ErrorCodes.emptyValue}),
@@ -41,7 +49,11 @@ export default {
                 outGoingServer: string().required({outGoingServer: ErrorCodes.emptyValue}),
                 inComingServer: string().required({inComingServer: ErrorCodes.emptyValue}),
                 port: number().required({port: ErrorCodes.emptyValue})
-            }).required({contactForms: ErrorCodes.incorrectData})).default(undefined),
+            }).required({contactForms: ErrorCodes.incorrectData})).required({contactForms: ErrorCodes.emptyValue}),
+        })
+    }),
+    putStaticLanguage: object({
+        body: object({
             staticLanguages: array(object({
                 _id: string(),
                 langKey: string().required({langKey: ErrorCodes.emptyValue}),
@@ -50,7 +62,7 @@ export default {
                     langId: string().required({langId: ErrorCodes.emptyValue}),
                     content: string().default(""),
                 })
-            }).required({staticLanguages: ErrorCodes.incorrectData})).default(undefined),
+            }).required({staticLanguages: ErrorCodes.incorrectData})).required({staticLanguages: ErrorCodes.emptyValue}),
         })
-    })
+    }),
 };

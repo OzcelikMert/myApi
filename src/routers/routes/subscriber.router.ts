@@ -3,6 +3,7 @@ import {permissionMiddleware, requestMiddleware, sessionMiddleware} from "../../
 import subscriberSchema from "../../schemas/subscriber.schema";
 import subscriberController from "../../controllers/subscriber.controller";
 import subscriberMiddleware from "../../middlewares/subscriber.middleware";
+import PagePaths from "../../constants/pagePaths";
 
 const subscriberRouter = Router();
 
@@ -11,7 +12,7 @@ subscriberRouter.route(`/`)
     .post([requestMiddleware.check(subscriberSchema.post), subscriberMiddleware.isThere], subscriberController.add)
     .delete([requestMiddleware.check(subscriberSchema.delete), sessionMiddleware.check, permissionMiddleware.check], subscriberController.delete)
 
-subscriberRouter.route(`/:email`)
+subscriberRouter.route(PagePaths.subscriber().withEmail(false))
     .delete([requestMiddleware.check(subscriberSchema.deleteWithEmail)], subscriberController.deleteWithEmail)
 
 export default subscriberRouter;

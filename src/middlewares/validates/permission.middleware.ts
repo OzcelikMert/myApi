@@ -1,9 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../../library/api";
-import {Config} from "../../config";
-import PermissionPaths from "../../constants/permissions/paths";
-import {PermissionPathDataDocument} from "../../types/constants/permissions/paths";
 import {UserRoleId} from "../../constants/userRoles";
+import permissionUtil from "../../utils/functions/permission.util";
 
 export default {
     check: (
@@ -14,21 +12,14 @@ export default {
         let serviceResult = new Result();
         let session = req.session.data;
 
-        let page = req.originalUrl.replace(`/api`, "");
-        Object.keys(PermissionPaths).forEach(key => {
-            if(page.search(key) > -1){
-                page = key;
-            }
-        })
+        let path = req.originalUrl.replace(`/api`, "");
 
-        let method: keyof PermissionPathDataDocument = req.method.toLowerCase() as any;
-
-        if (
-            session.roleId != UserRoleId.SuperAdmin &&
-            PermissionPaths[page] &&
-            PermissionPaths[page][method] &&
-            session.permission.indexOfKey("", PermissionPaths[page][method]) === -1
-        ) {
+        if (!permissionUtil.checkPermissionPath(
+            path,
+            req.method,
+            session.roleId,
+            session.permission
+        )) {
             serviceResult.status = false;
             serviceResult.errorCode = ErrorCodes.noPerm;
             serviceResult.statusCode = StatusCodes.notFound;

@@ -3,6 +3,7 @@ import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../
 import componentSchema from "../../schemas/component.schema";
 import componentMiddleware from "../../middlewares/component.middleware";
 import componentController from "../../controllers/component.controller";
+import PagePaths from "../../constants/pagePaths";
 
 const componentRouter = Router();
 
@@ -11,7 +12,7 @@ componentRouter.route(`/`)
     .post([requestMiddleware.check(componentSchema.post), sessionMiddleware.check, permissionMiddleware.check], componentController.add)
     .delete([requestMiddleware.check(componentSchema.delete), sessionMiddleware.check, permissionMiddleware.check], componentController.delete)
 
-componentRouter.route(`/:_id`)
+componentRouter.route(PagePaths.component().withId(false))
     .get([requestMiddleware.check(componentSchema.get)], componentController.get)
     .put([requestMiddleware.check(componentSchema.put), sessionMiddleware.check, permissionMiddleware.check, componentMiddleware.check], componentController.update)
 

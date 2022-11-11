@@ -10,13 +10,13 @@ export default {
     ) => {
         let serviceResult = new Result();
 
-        let _id = req.params._id ?? req.body._id;
+        let componentId = req.params.componentId ?? req.body.componentId;
 
-        let resData = await componentService.select({_id: _id});
+        let resData = await componentService.select({componentId: componentId});
 
         if (
             resData.length === 0 ||
-            (Array.isArray(_id) && resData.length != _id.length)
+            (Array.isArray(componentId) && resData.length != componentId.length)
         ) {
             serviceResult.status = false;
             serviceResult.errorCode = ErrorCodes.notFound;

@@ -2,18 +2,18 @@ import mongoose from "mongoose";
 import {PopulateAuthorIdDocument} from "./user";
 
 export interface SelectComponentParamDocument {
-    _id?: string
+    componentId?: string
     langId?: string,
     getContents?: boolean,
     elementId?: string
 }
 
 export interface DeleteComponentParamDocument {
-    _id: string | string[]
+    componentId: string | string[]
 }
 
 export type UpdateComponentParamDocument = {
-    _id: string,
+    componentId: string,
     lastAuthorId: string
     types: (Omit<ComponentTypeDocument, "contents"|"_id"> & {
         _id?: string

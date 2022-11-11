@@ -30,6 +30,23 @@ export default {
             password: string()
         })
     }),
+    putProfile: object({
+        body: object({
+            image: string(),
+            name: string(),
+            comment: string(),
+            phone: string(),
+            facebook: string().url({facebook: ErrorCodes.incorrectData}),
+            instagram: string().url({instagram: ErrorCodes.incorrectData}),
+            twitter: string().url({twitter: ErrorCodes.incorrectData})
+        })
+    }),
+    putPassword: object({
+        body: object({
+            password: string().required({password: ErrorCodes.emptyValue}),
+            newPassword: string().required({newPassword: ErrorCodes.emptyValue})
+        })
+    }),
     delete: object({
         params: object({
             userId: string().required({userId: ErrorCodes.emptyValue}),

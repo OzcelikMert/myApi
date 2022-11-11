@@ -24,7 +24,7 @@ const postBody = object({
 export default {
     get: object({
         params: object({
-            _id: string()
+            componentId: string()
         }),
         query: object({
             elementId: string(),
@@ -37,13 +37,13 @@ export default {
     }),
     put: object({
         params: object({
-            _id: string().required({_id: ErrorCodes.emptyValue}),
+            componentId: string().required({componentId: ErrorCodes.emptyValue}),
         }),
         body: postBody
     }),
     delete: object({
         body: object({
-            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
+            componentId: array(string().required({componentId: ErrorCodes.incorrectData})).required({componentId: ErrorCodes.emptyValue}),
         })
     })
 };

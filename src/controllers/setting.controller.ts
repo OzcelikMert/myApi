@@ -19,12 +19,57 @@ export default {
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
-    set: async (
+    setGeneral: async (
         req: Request,
         res: Response
     ) => {
         let serviceResult = new Result();
-        let data: InferType<typeof settingSchema.put> = req;
+        let data: InferType<typeof settingSchema.putGeneral> = req;
+
+        let params: UpdateSettingParamDocument = {
+            ...data.body,
+        }
+
+        await settingService.update(params)
+
+        res.status(serviceResult.statusCode).json(serviceResult)
+    },
+    setSeo: async (
+        req: Request,
+        res: Response
+    ) => {
+        let serviceResult = new Result();
+        let data: InferType<typeof settingSchema.putSeo> = req;
+
+        let params: UpdateSettingParamDocument = {
+            ...data.body,
+        }
+
+        await settingService.update(params)
+
+        res.status(serviceResult.statusCode).json(serviceResult)
+    },
+    setContactForm: async (
+        req: Request,
+        res: Response
+    ) => {
+        let serviceResult = new Result();
+        let data: InferType<typeof settingSchema.putContactForm> = req;
+
+        let params: UpdateSettingParamDocument = {
+            ...data.body,
+        }
+
+        await settingService.update(params)
+
+        res.status(serviceResult.statusCode).json(serviceResult)
+    },
+    setStaticLanguage: async (
+        req: Request,
+        res: Response
+    ) => {
+        let serviceResult = new Result();
+        let data: InferType<typeof settingSchema.putStaticLanguage> = req;
 
         let params: UpdateSettingParamDocument = {
             ...data.body,

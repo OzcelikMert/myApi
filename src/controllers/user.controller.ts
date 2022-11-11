@@ -56,6 +56,34 @@ export default {
 
         res.status(serviceResult.statusCode).json(serviceResult)
     },
+    updateProfile: async (
+        req: Request<any>,
+        res: Response
+    ) => {
+        let serviceResult = new Result();
+        let data: InferType<typeof userSchema.putProfile> = req;
+
+        await userService.update({
+            ...data.body,
+            userId: req.session.data.id.toString(),
+        });
+
+        res.status(serviceResult.statusCode).json(serviceResult)
+    },
+    updatePassword: async (
+        req: Request<any>,
+        res: Response
+    ) => {
+        let serviceResult = new Result();
+        let data: InferType<typeof userSchema.putPassword> = req;
+
+        await userService.update({
+            userId: req.session.data.id.toString(),
+            password: data.body.newPassword
+        });
+
+        res.status(serviceResult.statusCode).json(serviceResult)
+    },
     delete: async (
         req: Request<any>,
         res: Response

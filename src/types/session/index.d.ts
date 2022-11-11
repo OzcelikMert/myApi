@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {UserRoleId} from "../../constants/userRoles";
 
 declare module 'express-session' {
     interface Session {
@@ -9,7 +10,7 @@ declare module 'express-session' {
 
 interface SessionDataDocument {
     id: mongoose.Types.ObjectId,
-    roleId: number,
+    roleId: UserRoleId,
     email: string,
     ip: string,
     token?: string,

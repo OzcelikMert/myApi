@@ -30,5 +30,6 @@ export enum PermissionId {
     TestimonialEdit,
     TestimonialDelete,
     SubscriberEdit,
-    ComponentEdit
+    ComponentEdit,
+    StaticLanguage
 }

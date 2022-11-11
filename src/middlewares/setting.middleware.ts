@@ -10,7 +10,6 @@ export default {
         next: NextFunction
     ) => {
         let serviceResult = new Result();
-        let data: InferType<typeof settingSchema.put> = req;
 
         if (serviceResult.status) {
             next();
