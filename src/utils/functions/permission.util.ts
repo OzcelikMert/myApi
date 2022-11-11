@@ -4,7 +4,6 @@ import PermissionPaths from "../../constants/permissionsPaths";
 export default {
     checkPermissionPath(path: string, method: string, userRoleId: UserRoleId, userPermissions: number[]){
         method = method.toUpperCase();
-        console.log(path, method)
         for(const permissionPath of PermissionPaths) {
             if(path.startsWith(permissionPath.path)){
                 for (const permissionPathMethod of permissionPath.methods) {
