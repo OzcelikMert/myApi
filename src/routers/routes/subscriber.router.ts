@@ -12,7 +12,7 @@ subscriberRouter.route(`/`)
     .post([requestMiddleware.check(subscriberSchema.post), subscriberMiddleware.isThere], subscriberController.add)
     .delete([requestMiddleware.check(subscriberSchema.delete), sessionMiddleware.check, permissionMiddleware.check], subscriberController.delete)
 
-subscriberRouter.route(PagePaths.subscriber().withEmail(false))
+subscriberRouter.route(PagePaths.subscriber(false).withEmail())
     .delete([requestMiddleware.check(subscriberSchema.deleteWithEmail)], subscriberController.deleteWithEmail)
 
 export default subscriberRouter;

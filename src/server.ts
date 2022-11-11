@@ -46,7 +46,7 @@ new InitConfig(app).init().then(()=> {
 
     app.listen(port, host, () => {
         console.log(chalk.cyan(`=========  SERVER STARTED =========\n`));
-        console.timeEnd(`server`)
+        console.timeEnd(`server`);
     });
 })
 

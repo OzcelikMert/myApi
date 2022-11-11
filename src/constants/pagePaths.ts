@@ -35,166 +35,147 @@ const PagePaths = {
     mailer() {
         return setPath("mailer");
     },
-    setting() {
-        let path = setPath("setting");
+    setting(withMainPath: boolean = true) {
+        let path = withMainPath ? setPath("setting") : "";
 
         return {
             self() {
                 return setPath(path);
             },
-            seo(withMainPath: boolean = true) {
+            seo() {
                 let subPath = "seo";
-                return withMainPath ?  setPath(path, subPath) : setPath(subPath);
+                return setPath(path, subPath);
             },
-            general(withMainPath: boolean = true) {
+            general() {
                 let subPath = "general";
-                return withMainPath ?  setPath(path, subPath) : setPath(subPath);
+                return setPath(path, subPath);
             },
-            contactForm(withMainPath: boolean = true) {
+            contactForm() {
                 let subPath = "contactForm";
-                return withMainPath ?  setPath(path, subPath) : setPath(subPath);
+                return setPath(path, subPath);
             },
-            staticLanguage(withMainPath: boolean = true) {
+            staticLanguage() {
                 let subPath = "staticLanguage";
-                return withMainPath ?  setPath(path, subPath) : setPath(subPath);
+                return setPath(path, subPath);
             },
         }
     },
-    user() {
-        let path = setPath("user");
+    user(withMainPath: boolean = true) {
+        let path = withMainPath ? setPath("user") : "";
 
         return {
             self() {
                 return setPath(path);
             },
-            withId(withMainPath: boolean = true, _id: string | number | undefined = ":userId") {
-                return withMainPath ?  setPath(path, _id) : setPath(_id);
+            withId(_id: string | number | undefined = ":userId") {
+                return setPath(path, _id);
             },
-            profile(withMainPath: boolean = true) {
+            profile() {
                 let subPath = "profile";
-                return withMainPath ?  setPath(path, subPath) : setPath(subPath);
+                return setPath(path, subPath);
             },
-            changePassword(withMainPath: boolean = true) {
+            changePassword() {
                 let subPath = "changePassword";
-                return withMainPath ?  setPath(path, subPath) : setPath(subPath);
+                return setPath(path, subPath);
             },
         }
     },
-    subscriber() {
-        let path = setPath("subscriber");
+    subscriber(withMainPath: boolean = true) {
+        let path = withMainPath ? setPath("subscriber") : "";
 
         return {
             self() {
                 return setPath(path);
             },
-            withEmail(withMainPath: boolean = true, email: string | number | undefined = ":email") {
-                return withMainPath ?  setPath(path, email) : setPath(email);
+            withEmail(email: string | number | undefined = ":email") {
+                return setPath(path, email);
             },
         }
     },
-    sitemap() {
-        let path = setPath("sitemap");
+    sitemap(withMainPath: boolean = true) {
+        let path = withMainPath ? setPath("sitemap") : "";
 
         return {
             self() {
                 return setPath(path);
             },
-            withName(withMainPath: boolean = true, name: string | number | undefined = ":name") {
-                return withMainPath ?  setPath(path, name) : setPath(name);
+            withName(name: string | number | undefined = ":name") {
+                return setPath(path, name);
             },
         }
     },
-    view() {
-        let path = setPath("view");
+    view(withMainPath: boolean = true) {
+        let path = withMainPath ? setPath("view") : "";
 
         return {
             self() {
                 return setPath(path);
             },
-            number(withMainPath: boolean = true) {
+            number() {
                 let subPath = "number";
-                return withMainPath ?  setPath(path, subPath) : setPath(subPath);
+                return setPath(path, subPath);
             },
-            statistics(withMainPath: boolean = true) {
+            statistics() {
                 let subPath = "statistics";
-                return withMainPath ?  setPath(path, subPath) : setPath(subPath);
+                return setPath(path, subPath);
             },
         }
     },
-    component() {
-        let path = setPath("component");
+    component(withMainPath: boolean = true) {
+        let path = withMainPath ? setPath("component") : "";
 
         return {
             self() {
                 return setPath(path);
             },
-            withId(withMainPath: boolean = true, _id: string | number | undefined = ":componentId") {
-                return withMainPath ?  setPath(path, _id) : setPath(_id);
+            withId(_id: string | number | undefined = ":componentId") {
+                return setPath(path, _id);
             },
         }
     },
-    post(firstPath?: string) {
-        let path = setPath("post");
+    post(withMainPath: boolean = true) {
+        let path = withMainPath ? setPath("post") : "";
 
         return {
             self() {
                 return setPath(path);
             },
-            withTypeId(withMainPath: boolean = true, typeId: string | PostTypeId | undefined = ":typeId") {
-                path = withMainPath ?  setPath(firstPath, path, typeId) : setPath(firstPath, typeId);
-                return {
-                    self() {
-                        return setPath(path);
-                    },
-                    withId: PagePaths.post(path).withId
-                }
+            withTypeId(typeId: string | PostTypeId | undefined = ":typeId") {
+                path = setPath(path, typeId);
+                return this
             },
-            withId(withMainPath: boolean = true, _id: string | number | undefined = ":postId") {
-                return withMainPath ?  setPath(firstPath, path, _id) : setPath(firstPath, _id);
+            withId( _id: string | number | undefined = ":postId") {
+                return setPath(path, _id);
             },
-            view(withMainPath: boolean = true) {
+            view() {
                 let subPath = "view";
-                path = withMainPath ?  setPath(firstPath, path, subPath) : setPath(firstPath, subPath);
-                return {
-                    withTypeId: PagePaths.post(path).withTypeId
-                }
+                path = setPath(path, subPath);
+                return this
             },
         }
     },
-    postTerm(firstPath?: string) {
-        let path = setPath("postTerm");
+    postTerm(withMainPath: boolean = true) {
+        let path = withMainPath ? setPath("postTerm") : "";
 
         return {
             self() {
                 return setPath(path);
             },
-            withPostTypeId(withMainPath: boolean = true, postTypeId: string | PostTypeId | undefined = ":postTypeId") {
-                path = withMainPath ? setPath(firstPath, path, postTypeId) : setPath(firstPath, postTypeId);
-                return {
-                    self() {
-                        return setPath(path);
-                    },
-                    withTypeId: PagePaths.postTerm(path).withTypeId
-                }
+            withPostTypeId(postTypeId: string | PostTypeId | undefined = ":postTypeId") {
+                path = setPath(path, postTypeId);
+                return this
             },
-            withTypeId(withMainPath: boolean = true, typeId: string | PostTermTypeId | undefined = ":typeId") {
-                path = withMainPath ?  setPath(firstPath, path, typeId) : setPath(firstPath, typeId);
-                return {
-                    self() {
-                        return setPath(path);
-                    },
-                    withId: PagePaths.postTerm(path).withId
-                }
+            withTypeId(typeId: string | PostTermTypeId | undefined = ":typeId") {
+                path =setPath(path, typeId);
+                return this
             },
-            withId(withMainPath: boolean = true, _id: string | number | undefined = ":termId") {
-                return withMainPath ?  setPath(firstPath, path, _id) : setPath(firstPath, _id);
+            withId(_id: string | number | undefined = ":termId") {
+                return setPath(path, _id);
             },
-            view(withMainPath: boolean = true) {
+            view() {
                 let subPath = "view";
-                path = withMainPath ?  setPath(firstPath, path, subPath) : setPath(firstPath, subPath);
-                return {
-                    withPostTypeId: PagePaths.postTerm(path).withPostTypeId
-                }
+                path = setPath(path, subPath);
+                return this;
             },
         }
     },

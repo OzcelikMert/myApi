@@ -11,17 +11,17 @@ const postRouter = Router();
 postRouter.route(`/`)
     .get([requestMiddleware.check(postSchema.getGeneral)], postController.getGeneral)
 
-postRouter.route(PagePaths.post().withTypeId(false).self())
+postRouter.route(PagePaths.post(false).withTypeId().self())
     .get([requestMiddleware.check(postSchema.get)], postController.get)
     .post([requestMiddleware.check(postSchema.post), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkAndSetUrlAlready], postController.add)
     .put([requestMiddleware.check(postSchema.putStatus), sessionMiddleware.check, permissionMiddleware.check], postController.updateStatus)
     .delete([requestMiddleware.check(postSchema.delete), sessionMiddleware.check, permissionMiddleware.check], postController.delete)
 
-postRouter.route(PagePaths.post().withTypeId(false).withId(false))
+postRouter.route(PagePaths.post(false).withTypeId().withId())
     .get([requestMiddleware.check(postSchema.get)], postController.get)
     .put([requestMiddleware.check(postSchema.put), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.check, postMiddleware.checkAndSetUrlAlready], postController.update)
 
-postRouter.route(PagePaths.post().view(false).withTypeId(false).withId(false))
+postRouter.route(PagePaths.post(false).view().withTypeId().withId())
     .put([requestMiddleware.check(postSchema.putView), viewMiddleware.check, postMiddleware.check], postController.updateView)
 
 export default postRouter;

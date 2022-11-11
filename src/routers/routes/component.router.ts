@@ -12,7 +12,7 @@ componentRouter.route(`/`)
     .post([requestMiddleware.check(componentSchema.post), sessionMiddleware.check, permissionMiddleware.check], componentController.add)
     .delete([requestMiddleware.check(componentSchema.delete), sessionMiddleware.check, permissionMiddleware.check], componentController.delete)
 
-componentRouter.route(PagePaths.component().withId(false))
+componentRouter.route(PagePaths.component(false).withId())
     .get([requestMiddleware.check(componentSchema.get)], componentController.get)
     .put([requestMiddleware.check(componentSchema.put), sessionMiddleware.check, permissionMiddleware.check, componentMiddleware.check], componentController.update)
 

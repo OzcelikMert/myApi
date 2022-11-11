@@ -11,15 +11,15 @@ userRouter.route(`/`)
     .get([sessionMiddleware.check], userController.get)
     .post([requestMiddleware.check(userSchema.post), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.checkRoleRank, userMiddleware.checkAlreadyEmail, userMiddleware.checkAndSetUrlAlready], userController.add)
 
-userRouter.route(PagePaths.user().withId(false))
+userRouter.route(PagePaths.user(false).withId())
     .get([sessionMiddleware.check], userController.get)
     .put([requestMiddleware.check(userSchema.put), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.check, userMiddleware.checkRoleRank, userMiddleware.checkAlreadyEmail, userMiddleware.checkAndSetUrlAlready], userController.update)
     .delete([requestMiddleware.check(userSchema.delete), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.check, userMiddleware.checkRoleRank], userController.delete)
 
-userRouter.route(PagePaths.user().profile(false))
+userRouter.route(PagePaths.user(false).profile())
     .put([requestMiddleware.check(userSchema.putProfile), sessionMiddleware.check, userMiddleware.setIsProfile, userMiddleware.checkAndSetUrlAlready], userController.updateProfile)
 
-userRouter.route(PagePaths.user().changePassword(false))
+userRouter.route(PagePaths.user(false).changePassword())
     .put([requestMiddleware.check(userSchema.putPassword), sessionMiddleware.check, userMiddleware.checkPassword], userController.updatePassword)
 
 export default userRouter;

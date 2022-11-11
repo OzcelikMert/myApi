@@ -7,7 +7,7 @@ import PagePaths from "../../constants/pagePaths";
 
 const sitemapRouter = Router();
 
-sitemapRouter.route(PagePaths.sitemap().withName(false))
+sitemapRouter.route(PagePaths.sitemap(false).withName())
     .get([requestMiddleware.check(sitemapSchema.get), sitemapMiddleware.check], sitemapController.get)
 
 export default sitemapRouter;

@@ -10,10 +10,10 @@ const viewRouter = Router();
 viewRouter.route(`/`)
     .post([requestMiddleware.check(viewSchema.post), viewMiddleware.check, viewMiddleware.delete], viewController.set)
 
-viewRouter.route(PagePaths.view().number(false))
+viewRouter.route(PagePaths.view(false).number())
     .get([sessionMiddleware.check], viewController.getNumber)
 
-viewRouter.route(PagePaths.view().statistics(false))
+viewRouter.route(PagePaths.view(false).statistics())
     .get([sessionMiddleware.check], viewController.getStatistics)
 
 export default viewRouter;
