@@ -5,7 +5,7 @@ import {PermissionPathDocument} from "../../types/constants/permissionPaths";
 
 export default [
     {
-        path: PagePaths.post().withTypeId(true, PostTypeId.Slider).self(),
+        path: PagePaths.post().withTypeId(PostTypeId.Slider).self(),
         methods: [
             {
                 permissionId: PermissionId.SliderAdd,
@@ -22,7 +22,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.post().withTypeId(true, PostTypeId.Page).self(),
+        path: PagePaths.post().withTypeId( PostTypeId.Page).self(),
         methods: [
             {
                 permissionId: PermissionId.PageAdd,
@@ -39,7 +39,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.post().withTypeId(true, PostTypeId.Blog).self(),
+        path: PagePaths.post().withTypeId(PostTypeId.Blog).self(),
         methods: [
             {
                 permissionId: PermissionId.BlogAdd,
@@ -56,7 +56,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.post().withTypeId(true, PostTypeId.Reference).self(),
+        path: PagePaths.post().withTypeId(PostTypeId.Reference).self(),
         methods: [
             {
                 permissionId: PermissionId.ReferenceAdd,
@@ -73,7 +73,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.post().withTypeId(true, PostTypeId.Portfolio).self(),
+        path: PagePaths.post().withTypeId(PostTypeId.Portfolio).self(),
         methods: [
             {
                 permissionId: PermissionId.PortfolioAdd,
@@ -90,7 +90,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.post().withTypeId(true, PostTypeId.Testimonial).self(),
+        path: PagePaths.post().withTypeId(PostTypeId.Testimonial).self(),
         methods: [
             {
                 permissionId: PermissionId.TestimonialAdd,
@@ -107,7 +107,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.post().withTypeId(true, PostTypeId.Navigate).self(),
+        path: PagePaths.post().withTypeId(PostTypeId.Navigate).self(),
         methods: [
             {
                 permissionId: PermissionId.NavigateAdd,

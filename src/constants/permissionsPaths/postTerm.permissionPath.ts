@@ -5,7 +5,7 @@ import {PermissionPathDocument} from "../../types/constants/permissionPaths";
 
 export default [
     {
-        path: PagePaths.postTerm().withPostTypeId(true, PostTypeId.Slider).self(),
+        path: PagePaths.postTerm().withPostTypeId(PostTypeId.Slider).self(),
         methods: [
             {
                 permissionId: PermissionId.SliderAdd,
@@ -22,7 +22,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.postTerm().withPostTypeId(true, PostTypeId.Page).self(),
+        path: PagePaths.postTerm().withPostTypeId(PostTypeId.Page).self(),
         methods: [
             {
                 permissionId: PermissionId.PageAdd,
@@ -39,7 +39,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.postTerm().withPostTypeId(true, PostTypeId.Blog).self(),
+        path: PagePaths.postTerm().withPostTypeId(PostTypeId.Blog).self(),
         methods: [
             {
                 permissionId: PermissionId.BlogAdd,
@@ -56,7 +56,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.postTerm().withPostTypeId(true, PostTypeId.Reference).self(),
+        path: PagePaths.postTerm().withPostTypeId(PostTypeId.Reference).self(),
         methods: [
             {
                 permissionId: PermissionId.ReferenceAdd,
@@ -73,7 +73,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.postTerm().withPostTypeId(true, PostTypeId.Portfolio).self(),
+        path: PagePaths.postTerm().withPostTypeId(PostTypeId.Portfolio).self(),
         methods: [
             {
                 permissionId: PermissionId.PortfolioAdd,
@@ -90,7 +90,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.postTerm().withPostTypeId(true, PostTypeId.Testimonial).self(),
+        path: PagePaths.postTerm().withPostTypeId(PostTypeId.Testimonial).self(),
         methods: [
             {
                 permissionId: PermissionId.TestimonialAdd,
@@ -107,7 +107,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.postTerm().withPostTypeId(true, PostTypeId.Navigate).self(),
+        path: PagePaths.postTerm().withPostTypeId(PostTypeId.Navigate).self(),
         methods: [
             {
                 permissionId: PermissionId.NavigateAdd,
