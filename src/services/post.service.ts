@@ -111,6 +111,12 @@ export default {
             let views = 0;
 
             if (Array.isArray(doc.contents)) {
+                doc.alternates = doc.contents.map(content => ({
+                    langId: content.langId,
+                    title: content.title,
+                    url: content.url
+                }));
+
                 for (const docContent of doc.contents) {
                     if(docContent.views){
                         views += Number(docContent.views);

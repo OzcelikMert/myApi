@@ -57,7 +57,14 @@ export type SelectPostTermResultDocument = {
     },
     views?: number,
     contents?: PostTermContentDocument | PostTermContentDocument[]
+    alternates?: PostTermAlternateDocument[]
 } & Omit<PostTermDocument, "contents">
+
+export interface PostTermAlternateDocument {
+    langId: mongoose.Types.ObjectId
+    title?: string,
+    url?: string
+}
 
 export interface PopulateTermsDocument {
     _id: mongoose.Types.ObjectId,

@@ -60,8 +60,15 @@ export type SelectPostResultDocument = {
     views?: number,
     terms: PopulateTermsDocument[]
     contents?: PostContentDocument | PostContentDocument[]
-    components?: ComponentDocument[]
+    components?: ComponentDocument[],
+    alternates?: PostAlternateDocument[]
 } & Omit<PostDocument, "contents"|"themeGroups"|"terms"|"components">
+
+export interface PostAlternateDocument {
+    langId: mongoose.Types.ObjectId
+    title?: string,
+    url?: string
+}
 
 export interface PostContentButtonDocument {
     _id?: mongoose.Types.ObjectId
