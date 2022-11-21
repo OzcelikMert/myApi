@@ -15,8 +15,6 @@ import "./library/variable/date"
 import "./library/variable/math"
 import viewInitMiddleware from "./middlewares/init/view.init.middleware";
 import {sessionMiddleware} from "./middlewares/validates";
-import PagePaths from "./constants/pagePaths";
-import PermissionPaths from "./constants/permissionsPaths";
 
 const host = config.get("serverHost") as string;
 const port = config.get("serverPort") as number;

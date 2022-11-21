@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import userService from "../services/user.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
-import V, {ClearTypes} from "../library/variable";
+import V from "../library/variable";
 import userRoles from "../constants/userRoles";
 
 export default {

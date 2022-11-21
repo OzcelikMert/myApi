@@ -41,11 +41,13 @@ export default {
         });
     },
     async insert(params: InsertSettingParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         return await settingModel.create({
             ...params,
             defaultLangId: MongoDBHelpers.createObjectId(params.defaultLangId),
-            ...(params.head ? {head: params.head.encode()} : {}),
-            ...(params.script ? {head: params.script.encode()} : {}),
+            ...(params.head ? {head: params.head} : {}),
+            ...(params.script ? {script: params.script} : {}),
             ...(params.contactForms ? {contactForms: params.contactForms} : {}),
             ...(params.seoContents ? {
                 seoContents: [
@@ -69,6 +71,8 @@ export default {
         })
     },
     async update(params: UpdateSettingParamDocument) {
+        params = Variable.clearAllScriptTags(params, ["head", "script"]);
+
         if (params.contactForms) {
             params.contactForms.map(contactForm => {
                 if (Variable.isEmpty(contactForm.password)) {
@@ -174,8 +178,8 @@ export default {
 
             doc = Object.assign(doc, {
                 ...params,
-                ...(params.head ? {head: params.head.encode()} : {}),
-                ...(params.script ? {head: params.script.encode()} : {})
+                ...(params.head ? {head: params.head} : {}),
+                ...(params.script ? {script: params.script} : {})
             });
 
             await doc.save();

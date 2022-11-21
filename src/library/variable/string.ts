@@ -3,6 +3,7 @@ declare global {
         replaceAll(find: string, replace: string): string
         replaceArray(find: Array<string>, replace: Array<string>): string
         removeLastChar(remove_count?: number): string
+        removeScriptTags(): string
         encode(): string
         decode(): string
         convertKey(): string
@@ -34,6 +35,9 @@ String.prototype.convertKey = function () {
 }
 String.prototype.stripTags = function () {
     return this.replace(/<\/?[^>]+>/gi, '');
+}
+String.prototype.removeScriptTags = function () {
+    return this.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
 }
 String.prototype.convertSEOUrl = function () {
     let $this = this.toString();

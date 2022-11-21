@@ -47,7 +47,7 @@ export default {
         let termId = req.params.termId ?? req.body.termId
 
         let url: string = req.body.contents.url;
-        let title: string = req.body.contents.title;
+        let title: string = req.body.contents.title || "";
         let langId: string = req.body.contents.langId;
 
         let urlAlreadyCount = 2;

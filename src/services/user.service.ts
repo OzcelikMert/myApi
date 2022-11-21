@@ -11,6 +11,7 @@ import {StatusId} from "../constants/status";
 import userUtil from "../utils/functions/user.util";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import {Config} from "../config";
+import Variable from "../library/variable";
 
 export default {
     async select(params: SelectUserParamDocument): Promise<SelectUserResultDocument[]> {
@@ -71,12 +72,16 @@ export default {
         });
     },
     async insert(params: InsertUserParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         return await userModel.create({
             ...params,
             password: userUtil.encodePassword(params.password)
         })
     },
     async update(params: UpdateUserParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         let filters: mongoose.FilterQuery<UserDocument> = {}
 
         if (Array.isArray(params.userId)) {

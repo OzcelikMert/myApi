@@ -32,11 +32,15 @@ export default {
         return (await query.lean().exec());
     },
     async insert(params: InsertSubscriberDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         return await subscriberModel.create({
             ...params
         })
     },
     async delete(params: DeleteSubscriberParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         let filters: mongoose.FilterQuery<SubscriberDocument> = {}
 
         if(params._id){

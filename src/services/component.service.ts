@@ -7,6 +7,7 @@ import {
     SelectComponentResultDocument, UpdateComponentParamDocument
 } from "../types/services/component";
 import componentModel from "../models/component.model";
+import Variable from "../library/variable";
 
 export default {
     async select(params: SelectComponentParamDocument): Promise<SelectComponentResultDocument[]> {
@@ -46,6 +47,8 @@ export default {
         });
     },
     async insert(params: InsertComponentParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         return await componentModel.create({
             ...params,
             authorId: MongoDBHelpers.createObjectId(params.authorId),
@@ -61,6 +64,8 @@ export default {
         })
     },
     async update(params: UpdateComponentParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
 
         if (params.componentId) {

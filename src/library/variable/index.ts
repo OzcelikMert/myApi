@@ -1,8 +1,3 @@
-import "./number";
-import "./string";
-import "./array";
-import "./buffer";
-import "./math";
 import {DateMask} from "./date";
 import string from "./string";
 const { createHash } = require('crypto');
@@ -12,63 +7,21 @@ enum FilterTypes {
     INT,
     FLOAT
 }
-enum ClearTypes {
-    STRING,
-    EMAIL,
-    INT,
-    FLOAT,
-    SEO_URL,
-    ALPHABETS
-}
 
 class Variable{
-    static clear(variable: any, type: ClearTypes = ClearTypes.STRING, clear_html_tags = true) : any {
-        variable = (typeof variable != "undefined") ? variable : null;
-        if(variable !== null){
-            variable = (clear_html_tags) ? variable.toString().stripTags() : variable;
-            if (isNaN(variable)) {
-                variable = variable.toString().trim();
+    static clearAllScriptTags<T>(data: any, expectKeys?: string[]): T {
+        for (let key in data) {
+            if (expectKeys && expectKeys.includes(key)) continue;
+
+            let value = data[key];
+            if(typeof value === "object"){
+                value = this.clearAllScriptTags(value);
+            } else if(typeof value === "string"){
+                value = value.removeScriptTags();
             }
-            switch (type){
-                case ClearTypes.INT:
-                    // @ts-ignore
-                    variable = Number.parseInt(Variable.filterVar(variable, FilterTypes.INT));
-                    break;
-                case ClearTypes.FLOAT:
-                    // @ts-ignore
-                    variable = Number.parseFloat(Variable.filterVar(variable, FilterTypes.FLOAT));
-                    break;
-                case ClearTypes.ALPHABETS:
-                    variable = variable.replace(/[^a-zA-ZğüşöçİĞÜŞÖÇ\w ]/g, "");
-                    break;
-                case ClearTypes.EMAIL:
-                    variable = Variable.filterVar(variable, FilterTypes.EMAIL);
-                    break;
-                case ClearTypes.SEO_URL:
-                    variable = variable.toString().convertSEOUrl();
-                    break;
-            }
+
+            data[key] = value;
         }
-
-        return variable;
-    }
-    static clearAllData(data: object | any, not_column: Array<string> = []) : object | any {
-        if(!this.isSet(() => data)) return false;
-
-        for (let [key, _1] of Object.entries(data)) {
-            _1 = (_1 === "on") ? 1 : _1;
-            if (not_column.includes(key)) continue;
-            let clear_type = ClearTypes.STRING;
-            if(!this.isEmpty(_1)) {
-                if(typeof _1 === "object"){ this.clearAllData(_1); continue; }
-                if (!isNaN(Number(_1))){
-                    if (Number(_1).isInt()) clear_type = ClearTypes.INT;
-                    else if (Number(_1).isFloat()) clear_type = ClearTypes.FLOAT;
-                }
-            }
-            data[key] = this.clear(_1, clear_type, true);
-        }
-
         return data;
     }
     static isSet(...variable: any) : boolean{
@@ -135,11 +88,8 @@ class Variable{
 
 export {
     DateMask,
-    FilterTypes,
-    ClearTypes
+    FilterTypes
 }
-//import the module and enable
-new Variable();
 
 export default Variable;
 

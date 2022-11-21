@@ -119,6 +119,8 @@ export default {
         ]).exec();
     },
     async insert(params: InsertViewParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         return await viewModel.create({
             ...params,
             languageId: MongoDBHelpers.createObjectId(params.languageId)

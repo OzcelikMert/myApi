@@ -1,7 +1,6 @@
 import {Request, Response} from "express";
 import {ErrorCodes, Result} from "../library/api";
 import {InferType} from "yup";
-import V, {ClearTypes} from "../library/variable";
 import postTermSchema from "../schemas/postTerm.schema";
 import postTermService from "../services/postTerm.service";
 import postTermSitemapMiddleware, {isPostTermSitemapRequire} from "../middlewares/sitemap/postTerm.sitemap.middleware";
@@ -30,8 +29,6 @@ export default {
 
         let data: InferType<typeof postTermSchema.post> = req;
 
-        data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
-
         let insertData = await postTermService.insert({
             ...data.body,
             ...data.params,
@@ -57,8 +54,6 @@ export default {
     ) => {
         let serviceResult = new Result();
         let data: InferType<typeof postTermSchema.put> = req;
-
-        data.body.contents.url = (data.body.contents.url) ?? V.clear(data.body.contents.title, ClearTypes.SEO_URL);
 
         let updatedData = await postTermService.update({
             ...data.body,

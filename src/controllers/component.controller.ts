@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {ErrorCodes, Result} from "../library/api";
 import {InferType} from "yup";
-import V, {ClearTypes} from "../library/variable";
+import V from "../library/variable";
 import componentSchema from "../schemas/component.schema";
 import componentService from "../services/component.service";
 

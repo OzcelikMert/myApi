@@ -116,6 +116,8 @@ export default {
         })
     },
     async update(params: UpdatePostTermParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
 
         if(Variable.isEmpty(params.mainId)){
@@ -169,6 +171,8 @@ export default {
         }));
     },
     async updateStatus(params: UpdatePostTermStatusIdParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
 
         if (Array.isArray(params.termId)) {
@@ -207,6 +211,8 @@ export default {
         }));
     },
     async updateView(params: UpdatePostTermViewParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
 
         if (params.termId) {

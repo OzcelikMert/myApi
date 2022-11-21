@@ -146,11 +146,11 @@ export default {
         });
     },
     async insert(params: InsertPostParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         if(Variable.isEmpty(params.mainId)){
             delete params.mainId;
         }
-
-        if(params.contents.content) params.contents.content = params.contents.content.encode();
 
         return await postModel.create({
             ...params,
@@ -169,6 +169,8 @@ export default {
         });
     },
     async update(params: UpdatePostParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
         if(Variable.isEmpty(params.mainId)){
@@ -191,8 +193,6 @@ export default {
         delete params.typeId;
         return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
             if (params.contents) {
-                if(params.contents.content) params.contents.content = params.contents.content.encode();
-
                 let docContent = doc.contents.findSingle("langId", params.contents.langId);
                 if (docContent) {
                     docContent = Object.assign(docContent, {
@@ -223,6 +223,8 @@ export default {
         }));
     },
     async updateStatus(params: UpdatePostStatusIdParamDocument): Promise<PostDocument[]> {
+        params = Variable.clearAllScriptTags(params);
+
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
         if (Array.isArray(params.postId)) {
@@ -256,6 +258,8 @@ export default {
         }));
     },
     async updateView(params: UpdatePostViewParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
         if (params.postId) {
