@@ -4,6 +4,7 @@ import {StatusId} from "../../constants/status";
 export type SelectSettingParamDocument = {
     langId?: string
     getContactFormPasswords?: boolean
+    onlyDefaultLanguageId?: boolean
 }
 
 export type InsertSettingParamDocument = {

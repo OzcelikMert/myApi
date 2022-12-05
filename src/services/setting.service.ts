@@ -13,8 +13,13 @@ import {Config} from "../config";
 export default {
     async select(params: SelectSettingParamDocument): Promise<SelectSettingResultDocument[]> {
         let filters: mongoose.FilterQuery<SettingDocument> = {}
+        let projection: mongoose.ProjectionType<SettingDocument> = {};
 
-        let query = settingModel.find(filters, {});
+        if(params.onlyDefaultLanguageId){
+            projection = {defaultLangId: 1}
+        }
+
+        let query = settingModel.find(filters, projection);
 
         return (await query.lean().exec()).map((doc: SelectSettingResultDocument) => {
             if (Array.isArray(doc.seoContents)) {

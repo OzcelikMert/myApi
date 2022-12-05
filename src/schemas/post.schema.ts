@@ -30,7 +30,7 @@ const postBody = object({
 export default {
     getGeneral: object({
         query: object({
-            langId: string().required({langId: ErrorCodes.emptyValue}),
+            langId: string(),
             typeId: array(number().required({typeId: ErrorCodes.incorrectData})),
             url: string(),
             pageTypeId: number(),
@@ -45,7 +45,7 @@ export default {
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         query: object({
-            langId: string().required({langId: ErrorCodes.emptyValue}),
+            langId: string(),
             getContents: number().is([1], {getContents: ErrorCodes.incorrectData}).default(undefined),
             url: string(),
             pageTypeId: number(),

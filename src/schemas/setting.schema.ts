@@ -5,6 +5,7 @@ export default {
     get: object({
         query: object({
             langId: string(),
+            onlyDefaultLanguageId: boolean()
         }),
     }),
     putGeneral: object({
