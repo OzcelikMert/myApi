@@ -39,8 +39,8 @@ new InitConfig(app).init().then(()=> {
     }));
 
     app.use(responseTime());
-    app.use([viewInitMiddleware.set, sessionMiddleware.reload], routers);
     app.use(compression());
+    app.use([viewInitMiddleware.set, sessionMiddleware.reload], routers);
 
     app.listen(port, host, () => {
         console.log(chalk.cyan(`=========  SERVER STARTED =========\n`));

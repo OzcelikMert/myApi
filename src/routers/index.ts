@@ -31,4 +31,4 @@ routers.use(PagePaths.component().self(), componentRouter)
 routers.use(PagePaths.post().self(), postRouter)
 routers.use(PagePaths.postTerm().self(), postTermRouter)
 
-export default routers.use("/api", routers);
+export default routers;
