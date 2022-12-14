@@ -4,11 +4,9 @@
   "description": "",
   "main": "src/server.ts",
   "scripts": {
-    "start": "nodemon --watch src/server.ts",
+    "start": "node ./dist/server.js --env=production",
     "build": "tsc && node build/src/server.js",
-    "dev": "nodemon --config nodemon.json src/server.ts",
-    "start2": "nodemon -w src --ext ts --exec ts-node src/server.ts",
-    "start3": "node ./dist/server.js --env=production"
+    "dev": "nodemon --config nodemon.json src/server.ts"
   },
   "author": "Mert ÖZÇELİK",
   "license": "ISC",
