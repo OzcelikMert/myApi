@@ -46,7 +46,7 @@ export default {
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
-                if(doc){
+                if (doc) {
                     if (Array.isArray(doc.contents)) {
                         doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
                     }
@@ -74,14 +74,14 @@ export default {
                 }));
 
                 for (const docContent of doc.contents) {
-                    if(docContent.views){
+                    if (docContent.views) {
                         views += Number(docContent.views);
                     }
                 }
                 let docContent = doc.contents.findSingle("langId", params.langId);
-                if(!docContent){
+                if (!docContent) {
                     docContent = doc.contents.findSingle("langId", Config.defaultLangId);
-                    if(docContent){
+                    if (docContent) {
                         docContent.views = 0;
                     }
                 }
@@ -97,7 +97,7 @@ export default {
         })
     },
     async insert(params: InsertPostTermParamDocument) {
-        if(Variable.isEmpty(params.mainId)){
+        if (Variable.isEmpty(params.mainId)) {
             delete params.mainId;
         }
 
@@ -107,10 +107,10 @@ export default {
             lastAuthorId: params.authorId,
             ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
             contents: [
-                {
+                params.contents ? {
                     ...params.contents,
                     langId: MongoDBHelpers.createObjectId(params.contents.langId)
-                }
+                } : {}
             ],
             ...(params.sitemap ? {siteMap: params.sitemap} : {}),
         })
@@ -120,7 +120,7 @@ export default {
 
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
 
-        if(Variable.isEmpty(params.mainId)){
+        if (Variable.isEmpty(params.mainId)) {
             delete params.mainId;
         }
 
@@ -175,15 +175,18 @@ export default {
 
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
 
-        if (Array.isArray(params.termId)) {
-            filters = {
-                _id: {$in: MongoDBHelpers.createObjectIdArray(params.termId)}
+        if(params.termId){
+            if (Array.isArray(params.termId)) {
+                filters = {
+                    _id: {$in: MongoDBHelpers.createObjectIdArray(params.termId)}
+                }
+            } else {
+                filters = {
+                    _id: MongoDBHelpers.createObjectId(params.termId)
+                };
             }
-        } else {
-            filters = {
-                _id: MongoDBHelpers.createObjectId(params.termId)
-            };
         }
+
         if (params.typeId) {
             filters = {
                 ...filters,
@@ -237,9 +240,9 @@ export default {
         return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
             let docContent = doc.contents.findSingle("langId", params.langId);
             if (docContent) {
-                if(docContent.views){
+                if (docContent.views) {
                     docContent.views = Number(docContent.views) + 1;
-                }else {
+                } else {
                     docContent.views = 1;
                 }
 

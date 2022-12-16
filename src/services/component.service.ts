@@ -76,43 +76,44 @@ export default {
 
         delete params.componentId;
         return await Promise.all((await componentModel.find(filters).exec()).map(async doc => {
-            // Check delete
-            doc.types = doc.types.filter(docType =>  params.types.indexOfKey("_id", docType._id) > -1)
-            // Check Update
-            for (let paramThemeGroupType of params.types) {
-                let docThemeGroupType = doc.types.findSingle("_id", paramThemeGroupType._id);
-                if (docThemeGroupType) {
-                    let docGroupTypeContent = docThemeGroupType.contents.findSingle("langId", paramThemeGroupType.contents.langId);
-                    if (docGroupTypeContent) {
-                        docGroupTypeContent = Object.assign(docGroupTypeContent, {
-                            ...paramThemeGroupType.contents,
-                            langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
-                        });
+            if(params.types){
+                // Check delete
+                doc.types = doc.types.filter(docType =>  params.types && params.types.indexOfKey("_id", docType._id) > -1)
+                // Check Update
+                for (let paramThemeGroupType of params.types) {
+                    let docThemeGroupType = doc.types.findSingle("_id", paramThemeGroupType._id);
+                    if (docThemeGroupType) {
+                        let docGroupTypeContent = docThemeGroupType.contents.findSingle("langId", paramThemeGroupType.contents.langId);
+                        if (docGroupTypeContent) {
+                            docGroupTypeContent = Object.assign(docGroupTypeContent, {
+                                ...paramThemeGroupType.contents,
+                                langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
+                            });
+                        } else {
+                            docThemeGroupType.contents.push({
+                                ...paramThemeGroupType.contents,
+                                _id: undefined,
+                                langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
+                            })
+                        }
+                        docThemeGroupType = Object.assign(docThemeGroupType, {
+                            ...paramThemeGroupType,
+                            contents: docThemeGroupType.contents,
+                            _id: docThemeGroupType._id
+                        })
                     } else {
-                        docThemeGroupType.contents.push({
-                            ...paramThemeGroupType.contents,
+                        doc.types.push({
+                            ...paramThemeGroupType,
                             _id: undefined,
-                            langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
+                            contents: [{
+                                ...paramThemeGroupType.contents,
+                                langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
+                            }]
                         })
                     }
-                    docThemeGroupType = Object.assign(docThemeGroupType, {
-                        ...paramThemeGroupType,
-                        contents: docThemeGroupType.contents,
-                        _id: docThemeGroupType._id
-                    })
-                } else {
-                    doc.types.push({
-                        ...paramThemeGroupType,
-                        _id: undefined,
-                        contents: [{
-                            ...paramThemeGroupType.contents,
-                            langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
-                        }]
-                    })
                 }
+                delete params.types;
             }
-            delete params.types;
-
 
             doc = Object.assign(doc, {
                 ...params,

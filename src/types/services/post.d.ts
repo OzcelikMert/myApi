@@ -9,20 +9,20 @@ export interface DeletePostParamDocument {
 }
 
 export type UpdatePostStatusIdParamDocument = {
-    postId: string | string[],
-    typeId: number
+    postId?: string | string[],
+    typeId?: number
     statusId: number,
     lastAuthorId: string
 }
 
 export type UpdatePostViewParamDocument = {
-    postId: string,
-    typeId: number
+    postId?: string,
+    typeId?: number
     langId: string
 }
 
 export type UpdatePostParamDocument = {
-    postId: string,
+    postId?: string,
     lastAuthorId: string,
 } & Omit<InsertPostParamDocument, "authorId">
 
@@ -30,7 +30,7 @@ export type InsertPostParamDocument = {
     mainId?:string
     authorId: string
     terms: string[]
-    contents: Omit<PostContentDocument, "_id"|"langId"> & {langId: string}
+    contents?: Omit<PostContentDocument, "_id"|"langId"> & {langId: string}
     components?: string[]
 } & Omit<PostDocument, "_id"|"components"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms">
 
@@ -92,7 +92,7 @@ export interface PostContentDocument {
 
 export interface PostDocument {
     _id?: mongoose.Types.ObjectId
-    typeId: number,
+    typeId?: number,
     statusId: number,
     pageTypeId?: number,
     mainId?: mongoose.Types.ObjectId

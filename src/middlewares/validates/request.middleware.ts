@@ -16,7 +16,7 @@ export default {
                 params: req.params
             }, {abortEarly: false, stripUnknown: true});
             req = Object.assign(req, validatedData);
-        } catch (e) {
+        } catch (e: any) {
             serviceResult.status = false;
             serviceResult.data = e.errors;
             serviceResult.errorCode = ErrorCodes.incorrectData;

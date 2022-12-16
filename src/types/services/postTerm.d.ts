@@ -8,29 +8,29 @@ export interface DeletePostTermParamDocument {
 }
 
 export type UpdatePostTermStatusIdParamDocument = {
-    termId: string | string[],
+    termId?: string | string[],
     postTypeId?: number,
-    typeId: number
+    typeId?: number
     statusId: number,
     lastAuthorId: string
 }
 
 export type UpdatePostTermViewParamDocument = {
-    termId: string,
-    typeId: number
+    termId?: string,
+    typeId?: number
     langId: string
-    postTypeId: number
+    postTypeId?: number
 }
 
 export type UpdatePostTermParamDocument = {
-    termId: string,
+    termId?: string,
     lastAuthorId: string,
 } & Omit<InsertPostTermParamDocument, "authorId">
 
 export type InsertPostTermParamDocument = {
     mainId?:string
     authorId: string,
-    contents: Omit<PostTermContentDocument, "langId"> & {langId: string}
+    contents?: Omit<PostTermContentDocument, "langId"> & {langId: string}
 } & Omit<PostTermDocument, "_id"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents">
 
 export interface SelectPostTermParamDocument {
@@ -88,8 +88,8 @@ export interface PostTermContentDocument {
 
 export interface PostTermDocument {
     _id: mongoose.Types.ObjectId
-    postTypeId: number,
-    typeId: number,
+    postTypeId?: number,
+    typeId?: number,
     mainId?: mongoose.Types.ObjectId
     statusId: number,
     authorId: mongoose.Types.ObjectId

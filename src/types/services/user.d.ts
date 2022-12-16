@@ -21,7 +21,7 @@ export interface InsertUserParamDocument {
 }
 
 export interface UpdateUserParamDocument {
-    userId: string
+    userId?: string
     roleId?: number
     statusId?: number
     image?: string
@@ -59,7 +59,7 @@ export interface UserDocument {
     comment: string,
     phone: string,
     email: string,
-    password: string,
+    password?: string,
     permissions: number[],
     banDateEnd: Date,
     banComment: string,

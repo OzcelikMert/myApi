@@ -13,9 +13,9 @@ export interface DeleteComponentParamDocument {
 }
 
 export type UpdateComponentParamDocument = {
-    componentId: string,
+    componentId?: string,
     lastAuthorId: string
-    types: (Omit<ComponentTypeDocument, "contents"|"_id"> & {
+    types?: (Omit<ComponentTypeDocument, "contents"|"_id"> & {
         _id?: string
         contents: Omit<ComponentTypeContentDocument, "langId"|"_id"> & {langId: string}
     })[]
