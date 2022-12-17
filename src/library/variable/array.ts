@@ -17,7 +17,9 @@ Array.prototype.indexOfKey = function (key, value) {
             if(typeof key === "string"){
                 if(key !== ""){
                     for(const name of key.split(".")) {
-                        _data = _data[name];
+                        if(typeof _data !== "undefined"){
+                            _data = _data[name];
+                        }
                     }
                 }
             }
@@ -35,7 +37,9 @@ Array.prototype.findSingle = function (key, value) {
                 if(key !== ""){
                     let _data = data;
                     for(const name of key.split(".")) {
-                        _data = _data[name];
+                        if(typeof _data !== "undefined"){
+                            _data = _data[name];
+                        }
                     }
                 }
             }
@@ -54,7 +58,9 @@ Array.prototype.findMulti = function (key, value, isLike = true) {
                 if(key !== ""){
                     let _data = data;
                     for(const name of key.split(".")) {
-                        _data = _data[name];
+                        if(typeof _data !== "undefined"){
+                            _data = _data[name];
+                        }
                     }
                 }
             }
