@@ -122,6 +122,7 @@ export default {
                         views += Number(docContent.views);
                     }
                 }
+
                 let docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId));
                 if (!docContent) {
                     docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
@@ -130,6 +131,7 @@ export default {
                     }
                 }
 
+                console.log(docContent)
                 if (docContent) {
                     doc.contents = docContent;
                     if (!params.getContents) {
