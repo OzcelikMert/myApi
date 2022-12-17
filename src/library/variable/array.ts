@@ -13,7 +13,6 @@ function convertQueryData(data: any): string {
     return JSON.stringify({d: data});
 }
 
-
 Array.prototype.indexOfKey = function (key, value) {
     let findIndex = -1;
     if(typeof value !== "undefined"){
