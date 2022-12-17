@@ -131,7 +131,6 @@ export default {
                     }
                 }
 
-                console.log(docContent)
                 if (docContent) {
                     doc.contents = docContent;
                     if (!params.getContents) {
