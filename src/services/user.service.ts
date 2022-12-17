@@ -1,5 +1,4 @@
 import * as mongoose from "mongoose";
-import V from "../library/variable";
 import userModel from "../models/user.model";
 import {
     InsertUserParamDocument,
@@ -8,7 +7,7 @@ import {
     UserDocument
 } from "../types/services/user";
 import {StatusId} from "../constants/status";
-import userUtil from "../utils/functions/user.util";
+import userUtil from "../utils/user.util";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import {Config} from "../config";
 import Variable from "../library/variable";

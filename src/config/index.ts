@@ -12,8 +12,8 @@ import {StatusId} from "../constants/status";
 import languageService from "../services/language.service";
 import settingService from "../services/setting.service";
 import * as path from "path"
-
-const chalk = require('chalk');
+import {generate} from "generate-password";
+import chalk from "chalk";
 
 let Config: ConfigDocument = {
     app: null,
@@ -58,7 +58,7 @@ class InitConfig {
     }
 
     private setPublicFolders() {
-        console.log(chalk.green('#Public Folders:'))
+        console.log(chalk.green('#Public Folders'))
 
         Config.publicFolders.forEach((item, index) => {
             if (item.length === 1) {
@@ -80,7 +80,8 @@ class InitConfig {
     private async mongodbConnect() {
         try {
             await dbConnect();
-            console.log(chalk.green(`#MongoDB \n  ${chalk.blue(`- Connected`)}`))
+            console.log(chalk.green(`#MongoDB`))
+            console.log(chalk.blue(`- Created`))
         } catch (e) {
             console.error("MongoDB Connection Error")
             console.error(e)
@@ -89,14 +90,20 @@ class InitConfig {
 
     private async checkSuperAdminUser() {
         if ((await userService.select({roleId: UserRoleId.SuperAdmin})).length === 0) {
+            let password = generate({
+                length: 10
+            })
             await userService.insert({
                 name: "Super Admin",
                 email: "admin@admin.com",
                 statusId: StatusId.Active,
-                password: "11",
+                password: password,
                 roleId: UserRoleId.SuperAdmin,
                 permissions: []
             })
+            console.log(chalk.green(`#Admin Account`))
+            console.log(chalk.blue(`- Created`))
+            console.log(chalk.blue(`- ${password}`))
         }
     }
 
@@ -106,9 +113,11 @@ class InitConfig {
                 title: "English",
                 image: "gb.webp",
                 shortKey: "en",
-                locale: "en_US",
+                locale: "us",
                 statusId: StatusId.Active
             })
+            console.log(chalk.green(`#Language`))
+            console.log(chalk.blue(`- Created`))
         }
     }
 
@@ -120,6 +129,8 @@ class InitConfig {
                 defaultLangId: lang[0]._id.toString(),
             });
             Config.defaultLangId = lang[0]._id.toString();
+            console.log(chalk.green(`#Setting`))
+            console.log(chalk.blue(`- Created`))
         } else {
             Config.defaultLangId = settings[0].defaultLangId.toString();
         }

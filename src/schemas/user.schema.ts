@@ -1,4 +1,4 @@
-import { object, string, number, boolean, array } from "yup";
+import { object, string, number, array } from "yup";
 import {ErrorCodes} from "../library/api";
 
 const postBody = {

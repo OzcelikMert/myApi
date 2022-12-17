@@ -1,8 +1,8 @@
 export default {
     clientUrl: "http://localhost:3000/",
     serverProtocol: "http",
-    serverHost: "localhost",
     serverPort: 5001,
+    serverTrafficMBLimit: 2,
     dbProtocol: "mongodb+srv",
     dbHost: "cluster0.2tvkcla.mongodb.net",
     dbHostParams: "",

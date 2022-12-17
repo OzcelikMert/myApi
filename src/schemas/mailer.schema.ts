@@ -1,4 +1,4 @@
-import {object, string, boolean} from "yup";
+import {object, string} from "yup";
 import {ErrorCodes} from "../library/api";
 
 export default {

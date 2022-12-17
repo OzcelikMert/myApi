@@ -1,5 +1,5 @@
 import Crypto from "crypto";
-import {Config} from "../../config";
+import {Config} from "../config";
 
 export default {
     encodePassword(password: string) : string {

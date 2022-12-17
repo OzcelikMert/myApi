@@ -48,7 +48,7 @@ export default {
             transform: (doc: SelectPostTermResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
-                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                        doc.contents = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId)) ?? doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
                     }
                 }
                 return doc;
@@ -78,9 +78,9 @@ export default {
                         views += Number(docContent.views);
                     }
                 }
-                let docContent = doc.contents.findSingle("langId", params.langId);
+                let docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId));
                 if (!docContent) {
-                    docContent = doc.contents.findSingle("langId", Config.defaultLangId);
+                    docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
                     if (docContent) {
                         docContent.views = 0;
                     }
@@ -145,7 +145,7 @@ export default {
         delete params.postTypeId;
         return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
             if (params.contents) {
-                let docContent = doc.contents.findSingle("langId", params.contents.langId);
+                let docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.contents.langId));
                 if (docContent) {
                     docContent = Object.assign(docContent, {
                         ...params.contents,
@@ -238,7 +238,7 @@ export default {
         delete params.typeId;
         delete params.postTypeId;
         return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
-            let docContent = doc.contents.findSingle("langId", params.langId);
+            let docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId));
             if (docContent) {
                 if (docContent.views) {
                     docContent.views = Number(docContent.views) + 1;

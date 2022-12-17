@@ -3,7 +3,8 @@ import {Result} from "../library/api";
 import {InferType} from "yup";
 import postSchema from "../schemas/post.schema";
 import postService from "../services/post.service";
-import postSitemapMiddleware, {isPostSitemapRequire} from "../middlewares/sitemap/post.sitemap.middleware";
+import postSitemapUtil, {isPostSitemapRequire} from "../utils/sitemap/post.sitemap.util";
+import logMiddleware from "../middlewares/log.middleware";
 
 export default {
     getGeneral: async (
@@ -23,16 +24,18 @@ export default {
         req: Request<any, any, any, any>,
         res: Response
     ) => {
-        let serviceResult = new Result();
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
 
-        let data: InferType<typeof postSchema.get> = req;
+            let data: InferType<typeof postSchema.get> = req;
 
-        serviceResult.data = await postService.select({
-            ...data.params,
-            ...data.query
-        });
+            serviceResult.data = await postService.select({
+                ...data.params,
+                ...data.query
+            });
 
-        res.status(serviceResult.statusCode).json(serviceResult)
+            res.status(serviceResult.statusCode).json(serviceResult)
+        })
     },
     add: async (
         req: Request<any>,
@@ -51,7 +54,7 @@ export default {
         });
 
         if(isPostSitemapRequire(data.params.typeId)){
-            insertData.sitemap = await postSitemapMiddleware.add({
+            insertData.sitemap = await postSitemapUtil.add({
                 _id: insertData._id.toString(),
                 url: data.body.contents.url ?? "",
                 langId: data.body.contents.langId,
@@ -80,7 +83,7 @@ export default {
 
         if(isPostSitemapRequire(data.params.typeId)){
             for (const updated of updatedData) {
-                await postSitemapMiddleware.update({
+                await postSitemapUtil.update({
                     _id: updated._id.toString(),
                     url: data.body.contents.url ?? "",
                     langId: data.body.contents.langId,
@@ -136,7 +139,7 @@ export default {
 
         if(isPostSitemapRequire(data.params.typeId)){
             for (const deleted of deletedData) {
-                await postSitemapMiddleware.delete({
+                await postSitemapUtil.delete({
                     _id: deleted._id.toString(),
                     typeId: data.params.typeId,
                     sitemap: deleted.sitemap ?? ""

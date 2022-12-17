@@ -11,6 +11,7 @@ const user = config.get("dbUser") as string;
 const password = config.get("dbPassword") as string;
 
 function dbConnect() {
+    mongoose.set("strictQuery", false);
     return mongoose.connect(`${protocol}://${host}${!Variable.isEmpty(port) ? `:${port}` : ""}${!Variable.isEmpty(hostParams) ? `${hostParams}` : ""}`, {
         autoCreate: true,
         autoIndex: true,

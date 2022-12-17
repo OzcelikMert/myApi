@@ -1,39 +1,54 @@
 import languageService from "../../services/language.service";
-import SitemapUtil from "../../utils/functions/sitemap.util";
+import SitemapUtil from "../sitemap.util";
 import {Config} from "../../config";
 import {PostTypeId} from "../../constants/postTypes";
-import {PostTermTypeId} from "../../constants/postTermTypes";
-import {getPostSitemapName, isPostSitemapRequire} from "./post.sitemap.middleware";
+import {PageTypeId} from "../../constants/pageTypes";
 
-export function isPostTermSitemapRequire(postTypeId: PostTypeId){
-    return isPostSitemapRequire(postTypeId, [PostTypeId.Page]);
+export function isPostSitemapRequire(typeId: PostTypeId, expect: PostTypeId[] = []){
+    return [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio].filter(type => !expect.includes(type)).includes(typeId);
 }
 
-export function getPostTermSitemapName(typeId: PostTermTypeId){
-    const indexOfS = Object.values(PostTermTypeId).indexOf(typeId);
-    return Object.keys(PostTermTypeId)[indexOfS].toLowerCase();
+export function getPostSitemapName(typeId: PostTypeId){
+    const indexOfS = Object.values(PostTypeId).indexOf(typeId);
+    return Object.keys(PostTypeId)[indexOfS].toLowerCase();
 }
 
-export function  getPostTermSitemapLoc(typeId: PostTermTypeId, postTypeId: PostTypeId, url: string){
-    return `${getPostSitemapName(postTypeId)}/${getPostTermSitemapName(typeId)}/${url}`;
+export function  getPostSitemapLoc(typeId: PostTypeId, url: string, pageTypeId?: PageTypeId){
+    let sitemapName = typeId == PostTypeId.Page ? "" : `${getPostSitemapName(typeId)}/`;
+    url = pageTypeId == PageTypeId.HomePage ? "" : url;
+    return `${sitemapName}${url}`;
+}
+
+export function  getPostSitemapPriority(typeId: PostTypeId, pageTypeId?: PageTypeId){
+    let priority = "0.5";
+
+    if(typeId == PostTypeId.Page){
+        priority = "0.8";
+    }
+
+    if(pageTypeId == PageTypeId.HomePage){
+        priority = "1.0";
+    }
+
+    return priority;
 }
 
 export default {
-    async add(params: {_id: string, typeId: PostTermTypeId, postTypeId: PostTypeId, langId: string, url: string}) {
+    async add(params: {_id: string, typeId: PostTypeId, langId: string, url: string, pageTypeId?: PageTypeId}) {
         let sitemap = "";
-        let sitemapName = getPostSitemapName(params.postTypeId);
+        let sitemapName = getPostSitemapName(params.typeId);
         let sitemapUtil = new SitemapUtil(sitemapName);
 
         let languages = await languageService.select({id: params.langId});
         if (languages.length > 0) {
             let language = languages[0];
-            let loc = getPostTermSitemapLoc(params.typeId, params.postTypeId, params.url);
+            let loc = getPostSitemapLoc(params.typeId, params.url, params.pageTypeId);
             sitemap = await sitemapUtil.add(
                 [{
                     _id: params._id,
                     loc: loc,
                     changefreq: "weekly",
-                    priority: "0.4",
+                    priority: getPostSitemapPriority(params.typeId, params.pageTypeId),
                     alternates: [
                         {
                             langShortKey: language.shortKey,
@@ -47,19 +62,20 @@ export default {
 
         return sitemap;
     },
-    async update(params: {_id: string, sitemap: string, typeId: PostTermTypeId, postTypeId: PostTypeId, langId: string, url: string}) {
-        let sitemapName = getPostSitemapName(params.postTypeId);
+    async update(params: {_id: string, sitemap: string, typeId: PostTypeId, langId: string, url: string, pageTypeId?: PageTypeId}) {
+        let sitemapName = getPostSitemapName(params.typeId);
         let sitemapUtil = new SitemapUtil(sitemapName);
 
         let languages = await languageService.select({id: params.langId});
         if(languages.length > 0){
             let language = languages[0];
-            let loc = getPostTermSitemapLoc(params.typeId, params.postTypeId, params.url);
+            let loc = getPostSitemapLoc(params.typeId, params.url, params.pageTypeId);
             await sitemapUtil.edit(
                 params.sitemap,
                 params._id,
                 {
                     ...(Config.defaultLangId == params.langId ? {loc: loc} : {}),
+                    priority: getPostSitemapPriority(params.typeId, params.pageTypeId),
                     alternates: [
                         {
                             langShortKey: language.shortKey,

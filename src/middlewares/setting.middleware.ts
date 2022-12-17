@@ -1,7 +1,6 @@
 import {NextFunction, Request, Response} from "express";
-import {ErrorCodes, Result, StatusCodes} from "../library/api";
-import {InferType} from "yup";
-import settingSchema from "../schemas/setting.schema";
+import {Result} from "../library/api";
+import logMiddleware from "./log.middleware";
 
 export default {
     check: async (
@@ -9,12 +8,14 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new Result();
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
 
-        if (serviceResult.status) {
-            next();
-        } else {
-            res.status(serviceResult.statusCode).json(serviceResult)
-        }
+            if (serviceResult.status) {
+                next();
+            } else {
+                res.status(serviceResult.statusCode).json(serviceResult)
+            }
+        });
     }
 };

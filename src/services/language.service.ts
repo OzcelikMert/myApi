@@ -1,5 +1,4 @@
 import * as mongoose from "mongoose";
-import V from "../library/variable";
 import languageModel from "../models/language.model";
 import {
     InsertLanguageDocument,

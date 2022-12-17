@@ -59,7 +59,7 @@ export default {
             transform: (doc: SelectPostResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
-                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                        doc.contents = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId)) ?? doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
                         if (doc.contents) {
                             if (!params.getContents) {
                                 delete doc.contents.content;
@@ -75,7 +75,7 @@ export default {
             transform: (doc: SelectPostTermResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
-                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", Config.defaultLangId);
+                        doc.contents = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId)) ?? doc.contents.findSingle("langId", (Config.defaultLangId));
                     }
                 }
                 return doc;
@@ -86,7 +86,7 @@ export default {
                 if (doc) {
                     doc.types.map(docType => {
                         if (Array.isArray(docType.contents)) {
-                            docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", Config.defaultLangId);
+                            docType.contents = docType.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId)) ?? docType.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
                             if (docType.contents) {
                                 if (!params.getContents) {
                                     delete docType.contents.content;
@@ -122,9 +122,9 @@ export default {
                         views += Number(docContent.views);
                     }
                 }
-                let docContent = doc.contents.findSingle("langId", params.langId);
+                let docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId));
                 if (!docContent) {
-                    docContent = doc.contents.findSingle("langId", Config.defaultLangId);
+                    docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
                     if (docContent) {
                         docContent.views = 0;
                     }
@@ -194,7 +194,7 @@ export default {
         delete params.typeId;
         return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
             if (params.contents) {
-                let docContent = doc.contents.findSingle("langId", params.contents.langId);
+                let docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.contents.langId));
                 if (docContent) {
                     docContent = Object.assign(docContent, {
                         ...params.contents,
@@ -281,7 +281,7 @@ export default {
         delete params.postId;
         delete params.typeId;
         return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
-            let docContent = doc.contents.findSingle("langId", params.langId);
+            let docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId));
             if (docContent) {
                 if (docContent.views) {
                     docContent.views = Number(docContent.views) + 1;

@@ -1,11 +1,11 @@
 import {
     SitemapChildrenDocument
-} from "../../library/types/sitemap";
-import Sitemap from "../../library/sitemap";
+} from "../library/types/sitemap";
+import Sitemap from "../library/sitemap";
 import config from "config";
 import {
     SitemapUtilChildrenDocument
-} from "../../types/utils/functions/sitemap.util";
+} from "../types/utils/functions/sitemap.util";
 
 const clientUrl = config.get("clientUrl") as string;
 

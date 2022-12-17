@@ -1,4 +1,4 @@
-import {object, string, number, boolean, array, mixed} from "yup";
+import {object, string, array} from "yup";
 import {ErrorCodes} from "../library/api";
 
 export default {

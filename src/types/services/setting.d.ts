@@ -20,7 +20,7 @@ export type UpdateSettingParamDocument = {
 
 export type SelectSettingResultDocument = {
     seoContents?: SettingSeoContentDocument | SettingSeoContentDocument[]
-    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents: SettingStaticLanguageContentDocument | SettingStaticLanguageContentDocument[] })[]
+    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents?: SettingStaticLanguageContentDocument | SettingStaticLanguageContentDocument[] })[]
 } & Omit<SettingDocument, "seoContents" | "staticLanguages">
 
 export interface SettingStaticLanguageContentDocument {

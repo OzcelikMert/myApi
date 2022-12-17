@@ -23,13 +23,13 @@ export default {
 
         return (await query.lean().exec()).map((doc: SelectSettingResultDocument) => {
             if (Array.isArray(doc.seoContents)) {
-                doc.seoContents = doc.seoContents.findSingle("langId", params.langId) ?? doc.seoContents.findSingle("langId", Config.defaultLangId);
+                doc.seoContents = doc.seoContents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId)) ?? doc.seoContents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
             }
 
             if (Array.isArray(doc.staticLanguages)) {
                 doc.staticLanguages = doc.staticLanguages.map(staticLang => {
                     if(Array.isArray(staticLang.contents)){
-                        staticLang.contents = staticLang.contents.findSingle("langId", params.langId) ?? staticLang.contents.findSingle("langId", Config.defaultLangId);
+                        staticLang.contents = staticLang.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId)) ?? staticLang.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
                     }
                     return staticLang;
                 })
@@ -93,7 +93,7 @@ export default {
 
         return await Promise.all((await settingModel.find({}).exec()).map(async doc => {
             if (params.seoContents) {
-                let docSeoContent = doc.seoContents.findSingle("langId", params.seoContents.langId);
+                let docSeoContent = doc.seoContents.findSingle("langId", MongoDBHelpers.createObjectId(params.seoContents.langId));
                 if (docSeoContent) {
                     docSeoContent = Object.assign(docSeoContent, {
                         ...params.seoContents,
@@ -113,9 +113,9 @@ export default {
                 doc.staticLanguages = doc.staticLanguages.filter(staticLanguage =>  params.staticLanguages && params.staticLanguages.indexOfKey("_id", staticLanguage._id) > -1)
                 // Check Update
                 for (let paramStaticLanguage of params.staticLanguages) {
-                    let docStaticLanguage = doc.staticLanguages.findSingle("_id", paramStaticLanguage._id);
+                    let docStaticLanguage = doc.staticLanguages.findSingle("_id", MongoDBHelpers.createObjectId(paramStaticLanguage._id));
                     if (docStaticLanguage) {
-                        let docStaticLanguageContent = docStaticLanguage.contents.findSingle("langId", paramStaticLanguage.contents.langId);
+                        let docStaticLanguageContent = docStaticLanguage.contents.findSingle("langId", MongoDBHelpers.createObjectId(paramStaticLanguage.contents.langId));
                         if (docStaticLanguageContent) {
                             docStaticLanguageContent = Object.assign(docStaticLanguageContent, {
                                 ...paramStaticLanguage.contents,
@@ -164,7 +164,7 @@ export default {
 
                 // Check Update
                 for (let paramContactForm of params.contactForms) {
-                    let docContactForm = doc.contactForms.findSingle("_id", paramContactForm._id);
+                    let docContactForm = doc.contactForms.findSingle("_id", MongoDBHelpers.createObjectId(paramContactForm._id));
                     if (docContactForm) {
                         docContactForm = Object.assign(docContactForm, {
                             ...paramContactForm,

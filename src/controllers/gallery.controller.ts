@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import V, {DateMask} from "../library/variable"
+import {DateMask} from "../library/variable"
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import {InferType} from "yup";
 import fs from "fs";
@@ -8,105 +8,111 @@ import path from "path";
 import sharp from "sharp";
 import multer from "multer";
 import gallerySchema from "../schemas/gallery.schema";
+import logMiddleware from "../middlewares/log.middleware";
 
 export default {
     get: async (
         req: Request<any, any,any, any>,
         res: Response
     ) => {
-        let serviceResult = new Result();
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
 
-        const fileType = [".jpg", ".png", ".webp", ".gif", ".jpeg"];
+            const fileType = [".jpg", ".png", ".webp", ".gif", ".jpeg"];
 
-        await new Promise(resolve => {
-            fs.readdir(Config.paths.uploads.images, (err, images) => {
-                for(let i=0; i < images.length; i++) {
-                    let image = images[i];
-                    if(fs.existsSync(path.resolve(Config.paths.uploads.images, image))) {
-                        if (fileType.includes(path.extname(image))){
-                            serviceResult.data.push(image)
+            await new Promise(resolve => {
+                fs.readdir(Config.paths.uploads.images, (err, images) => {
+                    for(let i=0; i < images.length; i++) {
+                        let image = images[i];
+                        if(fs.existsSync(path.resolve(Config.paths.uploads.images, image))) {
+                            if (fileType.includes(path.extname(image))){
+                                serviceResult.data.push(image)
+                            }
                         }
                     }
-                }
-                resolve(0)
-            });
-        })
+                    resolve(0)
+                });
+            })
 
-        res.status(serviceResult.statusCode).json(serviceResult)
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
     },
     add: async (
         req: Request,
         res: Response
     ) => {
-        let serviceResult = new Result();
-
-        function newName() {
-            const timestamp = new Date().getStringWithMask(DateMask.UNIFIED_ALL);
-            return `${timestamp}-${Math.randomCustom(1, 999999)}.webp`;
-        }
-
-        const upload = multer({
-            storage: multer.memoryStorage(),
-            fileFilter: (req, file, cb: any)=> {
-                let ext = path.extname(file.originalname)?.replace(".", "");
-                let filter = ["jpg", "jpeg", "png", "gif"];
-                if(filter.includes(ext)) {
-                    cb(null,true);
-                } else {
-                    cb('Only Images Are Allow', false);
-                }
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            function newName() {
+                const timestamp = new Date().getStringWithMask(DateMask.UNIFIED_ALL);
+                return `${timestamp}-${Math.randomCustom(1, 999999)}.webp`;
             }
-        }).single("file");
 
-        await new Promise(resolve => {
-            upload(req, res, async function (err: any) {
-                if(err) {
-                    serviceResult.status = false;
-                    serviceResult.errorCode = ErrorCodes.uploadError;
-                    serviceResult.statusCode = StatusCodes.badRequest;
+            const upload = multer({
+                storage: multer.memoryStorage(),
+                fileFilter: (req, file, cb: any)=> {
+                    let ext = path.extname(file.originalname)?.replace(".", "");
+                    let filter = ["jpg", "jpeg", "png", "gif"];
+                    if(filter.includes(ext)) {
+                        cb(null,true);
+                    } else {
+                        cb('Only Images Are Allow', false);
+                    }
                 }
+            }).single("file");
 
-                try {
-                    let ref = newName();
-                    while(fs.existsSync(path.resolve(Config.paths.uploads.images, newName()))) {
-                        ref = newName();
+            await new Promise(resolve => {
+                upload(req, res, async function (err: any) {
+                    if(err) {
+                        serviceResult.status = false;
+                        serviceResult.errorCode = ErrorCodes.uploadError;
+                        serviceResult.statusCode = StatusCodes.badRequest;
                     }
 
-                    let data = await sharp(req.file?.buffer, {animated: true})
-                        .webp({quality: 80, force: true, loop: 0})
-                        .toBuffer();
-                    fs.createWriteStream(path.resolve(Config.paths.uploads.images, ref)).write(data);
-                    serviceResult.data.push(ref);
-                } catch (e) {
-                    serviceResult.status = false;
-                    serviceResult.errorCode = ErrorCodes.uploadError;
-                    serviceResult.statusCode = StatusCodes.badRequest;
-                } finally {
-                    resolve(0);
-                }
-            });
-        });
+                    try {
+                        let ref = newName();
+                        while(fs.existsSync(path.resolve(Config.paths.uploads.images, newName()))) {
+                            ref = newName();
+                        }
 
-        res.status(serviceResult.statusCode).json(serviceResult)
+                        let data = await sharp(req.file?.buffer, {animated: true})
+                            .webp({quality: 80, force: true, loop: 0})
+                            .toBuffer();
+                        fs.createWriteStream(path.resolve(Config.paths.uploads.images, ref)).write(data);
+                        serviceResult.data.push(ref);
+                    } catch (e) {
+                        serviceResult.status = false;
+                        serviceResult.errorCode = ErrorCodes.uploadError;
+                        serviceResult.statusCode = StatusCodes.badRequest;
+                    } finally {
+                        resolve(0);
+                    }
+                });
+            });
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
     },
     delete: async (
         req: Request,
         res: Response
     ) => {
-        let serviceResult = new Result();
-        let data: InferType<typeof gallerySchema.delete> = req;
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            let data: InferType<typeof gallerySchema.delete> = req;
 
-        await new Promise(resolve => {
-            data.body.images?.forEach(image => {
-                if (fs.existsSync(path.resolve(Config.paths.uploads.images, image))) {
-                    fs.unlinkSync(path.resolve(Config.paths.uploads.images, image));
-                    fs.close(0);
-                    serviceResult.data.push(image);
-                }
-            })
-            resolve(0);
+            await new Promise(resolve => {
+                data.body.images?.forEach(image => {
+                    if (fs.existsSync(path.resolve(Config.paths.uploads.images, image))) {
+                        fs.unlinkSync(path.resolve(Config.paths.uploads.images, image));
+                        fs.close(0);
+                        serviceResult.data.push(image);
+                    }
+                })
+                resolve(0);
+            });
+
+            res.status(serviceResult.statusCode).json(serviceResult)
         });
-
-        res.status(serviceResult.statusCode).json(serviceResult)
     }
 };

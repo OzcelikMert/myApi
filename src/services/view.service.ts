@@ -2,7 +2,7 @@ import * as mongoose from "mongoose";
 import viewModel from "../models/view.model";
 import {
     DeleteViewParamDocument,
-    InsertViewParamDocument, SelectTotalViewResultDocument,
+    InsertViewParamDocument,
     SelectViewParamDocument, SelectViewResultDocument,
     ViewDocument,
     SelectTotalWithViewResultDocument

@@ -34,7 +34,7 @@ export default {
         return (await query.lean().exec()).map((doc: SelectComponentResultDocument) => {
             doc.types.map(docType => {
                 if (Array.isArray(docType.contents)) {
-                    docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", Config.defaultLangId);
+                    docType.contents = docType.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId)) ?? docType.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
                     if (docType.contents) {
                         if (!params.getContents) {
                             delete docType.contents.content;
@@ -81,9 +81,9 @@ export default {
                 doc.types = doc.types.filter(docType =>  params.types && params.types.indexOfKey("_id", docType._id) > -1)
                 // Check Update
                 for (let paramThemeGroupType of params.types) {
-                    let docThemeGroupType = doc.types.findSingle("_id", paramThemeGroupType._id);
+                    let docThemeGroupType = doc.types.findSingle("_id", MongoDBHelpers.createObjectId(paramThemeGroupType._id));
                     if (docThemeGroupType) {
-                        let docGroupTypeContent = docThemeGroupType.contents.findSingle("langId", paramThemeGroupType.contents.langId);
+                        let docGroupTypeContent = docThemeGroupType.contents.findSingle("langId", MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId));
                         if (docGroupTypeContent) {
                             docGroupTypeContent = Object.assign(docGroupTypeContent, {
                                 ...paramThemeGroupType.contents,

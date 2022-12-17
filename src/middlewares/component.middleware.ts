@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import componentService from "../services/component.service";
+import logMiddleware from "./log.middleware";
 
 export default {
     check: async (
@@ -8,25 +9,27 @@ export default {
         res: Response,
         next: NextFunction
     ) => {
-        let serviceResult = new Result();
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
 
-        let componentId = req.params.componentId ?? req.body.componentId;
+            let componentId = req.params.componentId ?? req.body.componentId;
 
-        let resData = await componentService.select({componentId: componentId});
+            let resData = await componentService.select({componentId: componentId});
 
-        if (
-            resData.length === 0 ||
-            (Array.isArray(componentId) && resData.length != componentId.length)
-        ) {
-            serviceResult.status = false;
-            serviceResult.errorCode = ErrorCodes.notFound;
-            serviceResult.statusCode = StatusCodes.notFound;
-        }
+            if (
+                resData.length === 0 ||
+                (Array.isArray(componentId) && resData.length != componentId.length)
+            ) {
+                serviceResult.status = false;
+                serviceResult.errorCode = ErrorCodes.notFound;
+                serviceResult.statusCode = StatusCodes.notFound;
+            }
 
-        if (serviceResult.status) {
-            next();
-        } else {
-            res.status(serviceResult.statusCode).json(serviceResult)
-        }
+            if (serviceResult.status) {
+                next();
+            } else {
+                res.status(serviceResult.statusCode).json(serviceResult)
+            }
+        });
     }
 };

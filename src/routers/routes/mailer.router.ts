@@ -1,4 +1,4 @@
-import {requestMiddleware, sessionMiddleware} from "../../middlewares/validates";
+import {requestMiddleware} from "../../middlewares/validates";
 import {Router} from "express";
 import mailerSchema from "../../schemas/mailer.schema";
 import mailerMiddleware from "../../middlewares/mailer.middleware";
