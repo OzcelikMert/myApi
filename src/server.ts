@@ -18,7 +18,6 @@ import {sessionMiddleware} from "./middlewares/validates";
 
 const port = config.get("serverPort") as number;
 const trafficMBLimit = config.get("serverTrafficMBLimit") as number || 2;
-
 const whitelist = config.get("whiteList") as string[];
 
 console.time(`server`)

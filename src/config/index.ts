@@ -73,7 +73,7 @@ class InitConfig {
 
     private setSession() {
         Config.app.set('trust proxy', 1)
-        Config.app.use(CookieParser());
+        Config.app.use(CookieParser(Session.sessionConfig.secret));
         Config.app.use(ExpressSession(Session.sessionConfig))
     }
 
