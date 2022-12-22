@@ -18,6 +18,7 @@ export default {
             let resData = await userService.select({
                 userId: userId
             });
+
             if (resData.length === 0) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.notFound;

@@ -4,7 +4,7 @@ import {ErrorCodes} from "../library/api";
 export default {
     get: object({
         query: object({
-            isRefresh: boolean()
+
         })
     }),
     post: object({
