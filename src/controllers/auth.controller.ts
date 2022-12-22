@@ -17,8 +17,6 @@ export default {
             let data: InferType<typeof authSchema.get> = req;
 
             serviceResult.data = await userService.select({userId: req.session.data.id.toString()});
-            console.log(serviceResult.data, new Date());
-            console.log("----------------------------");
             res.status(serviceResult.statusCode).json(serviceResult)
         })
     },
