@@ -80,6 +80,7 @@ export interface PostContentDocument {
     _id?: mongoose.Types.ObjectId
     langId: mongoose.Types.ObjectId
     image?: string,
+    icon?: string
     title?: string,
     content?: string,
     shortContent?: string,

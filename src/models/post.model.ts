@@ -22,6 +22,7 @@ const schemaContent = new mongoose.Schema<PostContentDocument>(
     {
         langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
         image: {type: String, default: ""},
+        icon: {type: String},
         title: {type: String, default: ""},
         content: {type: String, default: ""},
         shortContent: {type: String, default: ""},

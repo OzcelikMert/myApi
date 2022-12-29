@@ -15,6 +15,7 @@ const postBody = object({
         title: string().default(""),
         seoContent: string(),
         image: string(),
+        icon: string(),
         seoTitle: string(),
         url: string(),
         content: string(),
