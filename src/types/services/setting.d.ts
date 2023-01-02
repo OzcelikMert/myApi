@@ -47,6 +47,7 @@ export interface SettingContactFormDocument {
     _id?: mongoose.Types.ObjectId
     name: string
     key: string
+    outGoingEmail: string
     email: string
     password?: string
     outGoingServer: string

@@ -45,6 +45,7 @@ export default {
                 _id: string(),
                 name: string().required({name: ErrorCodes.emptyValue}),
                 key: string().required({key: ErrorCodes.emptyValue}),
+                outGoingEmail: string().required({outGoingEmail: ErrorCodes.emptyValue}),
                 email: string().required({email: ErrorCodes.emptyValue}),
                 password: string(),
                 outGoingServer: string().required({outGoingServer: ErrorCodes.emptyValue}),

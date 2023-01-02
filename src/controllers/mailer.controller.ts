@@ -18,59 +18,64 @@ export default {
 
             let setting = (await settingService.select({getContactFormPasswords: true}))[0];
             let contactForm = setting.contactForms?.findSingle("_id", MongoDBHelpers.createObjectId(data.body.contactFormId));
-
-            try {
-                let transporter = NodeMailer.createTransport({
-                    host: contactForm?.outGoingServer,
-                    port: contactForm?.port,
-                    secure: contactForm?.port == 465,
-                    auth: {
-                        user: contactForm?.email,
-                        pass: contactForm?.password
-                    }
-                });
-
-                if(await transporter.verify()){
-                    serviceResult.data = [];
-
-                    let sendMail = await transporter.sendMail({
-                        from: contactForm?.email,
-                        to: contactForm?.email,
-                        subject: contactForm?.name,
-                        html: data.body.message,
-                        replyTo: data.body.email
+            if(contactForm){
+                try {
+                    let transporter = NodeMailer.createTransport({
+                        host: contactForm.outGoingServer,
+                        port: contactForm.port,
+                        secure: contactForm.port == 465,
+                        auth: {
+                            user: contactForm.email,
+                            pass: contactForm.password
+                        }
                     });
 
-                    serviceResult.data.push({
-                        "_id": sendMail.messageId,
-                        "response": sendMail.response
-                    });
+                    if(await transporter.verify()){
+                        serviceResult.data = [];
 
-                    if(data.body.replyMessage) {
-                        let sendMailReply = await transporter.sendMail({
-                            from: contactForm?.email,
-                            to: data.body.email,
-                            subject: contactForm?.name,
-                            html: data.body.replyMessage,
+                        let sendMail = await transporter.sendMail({
+                            from: contactForm.email,
+                            to: contactForm.outGoingEmail,
+                            subject: contactForm.name,
+                            html: data.body.message,
                             replyTo: data.body.email
                         });
+
                         serviceResult.data.push({
-                            "_id": sendMailReply.messageId,
-                            "response": sendMailReply.response
+                            "_id": sendMail.messageId,
+                            "response": sendMail.response
                         });
+
+                        if(data.body.replyMessage) {
+                            let sendMailReply = await transporter.sendMail({
+                                from: contactForm?.email,
+                                to: data.body.email,
+                                subject: contactForm?.name,
+                                html: data.body.replyMessage,
+                                replyTo: data.body.email
+                            });
+                            serviceResult.data.push({
+                                "_id": sendMailReply.messageId,
+                                "response": sendMailReply.response
+                            });
+                        }
+
+
+                    }else {
+                        serviceResult.status = false;
+                        serviceResult.statusCode = StatusCodes.conflict;
+                        serviceResult.errorCode = ErrorCodes.incorrectData;
                     }
-
-
-                }else {
+                }catch (e) {
                     serviceResult.status = false;
                     serviceResult.statusCode = StatusCodes.conflict;
                     serviceResult.errorCode = ErrorCodes.incorrectData;
+                    serviceResult.customData = e;
                 }
-            }catch (e) {
+            }else {
                 serviceResult.status = false;
                 serviceResult.statusCode = StatusCodes.conflict;
                 serviceResult.errorCode = ErrorCodes.incorrectData;
-                serviceResult.customData = e;
             }
 
             res.status(serviceResult.statusCode).json(serviceResult)

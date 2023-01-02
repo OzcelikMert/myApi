@@ -28,6 +28,7 @@ const schemaStaticLanguage = new mongoose.Schema<SettingStaticLanguageDocument>(
 const schemaContactForm = new mongoose.Schema<SettingContactFormDocument>(
     {
         name: {type: String, default: ""},
+        outGoingEmail: {type: String, default: ""},
         email: {type: String, default: ""},
         key: {type: String, default: ""},
         password: {type: String, default: ""},
