@@ -13,6 +13,8 @@ export default {
             let date = new Date();
             let _id = (req.session && req.session.data && req.session.data.id) ? req.session.data.id.toString() : "";
 
+            Config.onlineUsers = Config.onlineUsers.filter(onlineUser => date.diffMinutes(onlineUser.updatedAt) < 10);
+
             let findIndex = Config.onlineUsers.indexOfKey("ip", ip);
             if(findIndex > -1){
                 Config.onlineUsers[findIndex].updatedAt = date;
@@ -25,8 +27,6 @@ export default {
                     _id: _id
                 })
             }
-
-            Config.onlineUsers = Config.onlineUsers.filter(onlineUser => date.diffMinutes(onlineUser.updatedAt) < 10);
 
             next();
         });

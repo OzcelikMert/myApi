@@ -120,12 +120,12 @@ Date.prototype.getStringWithMask = function (mask, utc = false) {
     });
 };
 Date.prototype.diffMinutes = function (date) {
-    let diff =(date.getTime() - this.getTime()) / 1000;
+    let diff = (this.getTime() - date.getTime()) / 1000;
     diff /= 60;
     return Math.round(diff);
 }
 Date.prototype.diffSeconds = function (date) {
-    let diff = (date.getTime() - this.getTime()) / 1000;
+    let diff = (this.getTime() - date.getTime()) / 1000;
     return Math.round(diff);
 }
 export default {}
