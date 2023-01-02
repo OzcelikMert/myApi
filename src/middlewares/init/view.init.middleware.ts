@@ -26,11 +26,7 @@ export default {
                 })
             }
 
-            Config.onlineUsers.forEach( (onlineUser, index) => {
-                if(date.diffMinutes(onlineUser.updatedAt) > 10 ){
-                    Config.onlineUsers.remove(index);
-                }
-            })
+            Config.onlineUsers = Config.onlineUsers.filter(onlineUser => date.diffMinutes(onlineUser.updatedAt) < 10);
 
             next();
         });

@@ -15,6 +15,7 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
+            let date = new Date();
             let dateStart = new Date();
             dateStart.addDays(-7);
 
@@ -30,6 +31,8 @@ export default {
 
             let averageTotal = Math.ceil(total / 7);
             let weeklyTotal = total;
+
+            Config.onlineUsers = Config.onlineUsers.filter(onlineUser => date.diffMinutes(onlineUser.updatedAt) < 10);
 
             serviceResult.data = {
                 liveTotal: Config.onlineUsers.length,
