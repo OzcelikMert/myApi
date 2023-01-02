@@ -58,9 +58,10 @@ export default {
             if (userRoleId > 0) {
                 let sessionUserRole = UserRoles.findSingle("id", req.session.data.roleId);
                 let userRole = UserRoles.findSingle("id", userRoleId);
+
                 if(
                     (typeof sessionUserRole === "undefined" || typeof userRole === "undefined") ||
-                    (userRole.rank <= sessionUserRole.rank)
+                    (userRole.rank >= sessionUserRole.rank)
                 ){
                     serviceResult.status = false;
                     serviceResult.errorCode = ErrorCodes.noPerm;
