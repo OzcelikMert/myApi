@@ -22,7 +22,7 @@ export default [
         ]
     },
     {
-        path: PagePaths.post().withTypeId( PostTypeId.Page).self(),
+        path: PagePaths.post().withTypeId(PostTypeId.Page).self(),
         methods: [
             {
                 permissionId: PermissionId.PageAdd,
@@ -119,6 +119,23 @@ export default [
             },
             {
                 permissionId: PermissionId.NavigateEdit,
+                method: "PUT"
+            },
+        ]
+    },
+    {
+        path: PagePaths.post().withTypeId(PostTypeId.Service).self(),
+        methods: [
+            {
+                permissionId: PermissionId.ServiceAdd,
+                method: "POST"
+            },
+            {
+                permissionId: PermissionId.ServiceDelete,
+                method: "DELETE"
+            },
+            {
+                permissionId: PermissionId.ServiceEdit,
                 method: "PUT"
             },
         ]

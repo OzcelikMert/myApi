@@ -122,5 +122,22 @@ export default [
                 method: "PUT"
             },
         ]
+    },
+    {
+        path: PagePaths.postTerm().withPostTypeId(PostTypeId.Service).self(),
+        methods: [
+            {
+                permissionId: PermissionId.ServiceAdd,
+                method: "POST"
+            },
+            {
+                permissionId: PermissionId.ServiceDelete,
+                method: "DELETE"
+            },
+            {
+                permissionId: PermissionId.ServiceEdit,
+                method: "PUT"
+            },
+        ]
     }
 ] as PermissionPathDocument[]

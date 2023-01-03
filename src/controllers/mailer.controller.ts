@@ -27,6 +27,9 @@ export default {
                         auth: {
                             user: contactForm.email,
                             pass: contactForm.password
+                        },
+                        tls: {
+                            rejectUnauthorized: false
                         }
                     });
 
@@ -48,9 +51,9 @@ export default {
 
                         if(data.body.replyMessage) {
                             let sendMailReply = await transporter.sendMail({
-                                from: contactForm?.email,
+                                from: contactForm.email,
                                 to: data.body.email,
-                                subject: contactForm?.name,
+                                subject: contactForm.name,
                                 html: data.body.replyMessage,
                                 replyTo: data.body.email
                             });
