@@ -55,7 +55,6 @@ export default {
                     })
                 }
             }
-
             if (req.session && req.session.data) {
                 req.session.data.updatedAt = Date.now();
             }

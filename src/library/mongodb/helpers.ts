@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 class MongoDBHelpers {
-    static createObjectId(string?: string) {
+    static createObjectId(string?: any) {
         // @ts-ignore
         let returnData = new mongoose.Types.ObjectId()._id;
         if(string){
@@ -11,7 +11,7 @@ class MongoDBHelpers {
         }
         return returnData
     }
-    static createObjectIdArray(strings: string[]) {
+    static createObjectIdArray(strings: any[]) {
         // @ts-ignore
         return strings.map(string => {
             // @ts-ignore
@@ -23,6 +23,23 @@ class MongoDBHelpers {
             }
             return returnData
         });
+    }
+    static convertObjectIdInData<T>(data: T, keys: string[]) : T {
+        let anyData = data as any;
+        for(const dataKey in anyData){
+            if(keys.includes(dataKey)){
+                if(Array.isArray(anyData[dataKey])){
+                    anyData[dataKey] = MongoDBHelpers.createObjectIdArray(anyData[dataKey]);
+                }else{
+                    anyData[dataKey] = MongoDBHelpers.createObjectId(anyData[dataKey]);
+                }
+            }else {
+                if(typeof anyData[dataKey] === "object"){
+                    anyData[dataKey] = MongoDBHelpers.convertObjectIdInData(anyData[dataKey], keys)
+                }
+            }
+        }
+        return anyData;
     }
 }
 

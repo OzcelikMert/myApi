@@ -7,9 +7,96 @@ import postTermModel from "./postTerm.model";
 import {
     PostContentButtonDocument,
     PostContentDocument,
-    PostDocument
+    PostDocument,
+    PostECommerceAttributeDocument,
+    PostECommerceDocument,
+    PostECommerceInventoryDocument,
+    PostECommercePricingDocument,
+    PostECommerceShippingDocument,
+    PostECommerceVariationContentDocument,
+    PostECommerceVariationDocument,
+    PostECommerceVariationSelectedDocument
 } from "../types/services/post";
 import componentModel from "./component.model";
+import {ProductTypeId} from "../constants/productTypes";
+import {AttributeTypeId} from "../constants/attributeTypes";
+
+const schemaPostECommerceVariationContent = new mongoose.Schema<PostECommerceVariationContentDocument>(
+    {
+        langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
+        image: {type: String, default: ""},
+        content: {type: String, default: ""},
+        shortContent: {type: String, default: ""},
+    }
+).index({langId: 1});
+
+const schemaECommerceVariationSelected = new mongoose.Schema<PostECommerceVariationSelectedDocument>(
+    {
+        attributeId: {type: mongoose.Schema.Types.ObjectId, ref: postTermModel, required: true},
+        variationId: {type: mongoose.Schema.Types.ObjectId, ref: postTermModel, required: true},
+    },
+    {timestamps: true}
+).index({attributeId: 1});
+
+const schemaECommerceAttribute = new mongoose.Schema<PostECommerceAttributeDocument>(
+    {
+        attributeId: {type: mongoose.Schema.Types.ObjectId, ref: postTermModel, required: true},
+        typeId: {type: Number, enum: AttributeTypeId, default: AttributeTypeId.Text}
+    },
+    {timestamps: true}
+).index({attributeId: 1});
+
+const schemaECommerceShipping = new mongoose.Schema<PostECommerceShippingDocument>(
+    {
+        width: {type: Number, default: 0},
+        height: {type: Number, default: 0},
+        depth: {type: Number, default: 0},
+        weight: {type: Number, default: 0},
+    }
+);
+
+const schemaECommerceInventory = new mongoose.Schema<PostECommerceInventoryDocument>(
+    {
+        sku: {type: String, default: ""},
+        quantity: {type: Number, default: 0},
+        isManageStock: {type: Boolean, default: false},
+    }
+);
+
+const schemaECommercePricing = new mongoose.Schema<PostECommercePricingDocument>(
+    {
+        compared: {type: Number, default: 0},
+        shipping: {type: Number, default: 0},
+        taxExcluded: {type: Number, default: 0},
+        taxIncluded: {type: Number, default: 0},
+        taxRate: {type: Number, default: 0},
+    }
+);
+
+const schemaECommerceVariation= new mongoose.Schema<PostECommerceVariationDocument>(
+    {
+        order: {type: Number, default: 0},
+        selectedVariations: {type: [schemaECommerceVariationSelected], default: []},
+        images: {type: [String], default: []},
+        inventory: {type: schemaECommerceInventory, required: true},
+        pricing: {type: schemaECommercePricing, required: true},
+        shipping: {type: schemaECommerceShipping, required: true},
+        contents: {type: [schemaPostECommerceVariationContent], required: true},
+    },
+    {timestamps: true}
+);
+
+const schemaECommerce = new mongoose.Schema<PostECommerceDocument>(
+    {
+        typeId: {type: Number, enum: ProductTypeId, required: true},
+        inventory: {type: schemaECommerceInventory},
+        pricing: {type: schemaECommercePricing},
+        shipping: {type: schemaECommerceShipping},
+        attributes: {type: [schemaECommerceAttribute], default: []},
+        variations: {type: [schemaECommerceVariation], default: []},
+        variationDefaults: {type: [schemaECommerceVariationSelected], default: []}
+    }
+);
 
 const schemaContentButton = new mongoose.Schema<PostContentButtonDocument>(
     {
@@ -48,7 +135,8 @@ const schema = new mongoose.Schema<PostDocument>(
         terms: {type: [mongoose.Schema.Types.ObjectId], ref: postTermModel, default: []},
         contents: {type: [schemaContent], default: []},
         components: {type: [mongoose.Schema.Types.ObjectId], ref: componentModel},
-        sitemap: {type: String, default: ""}
+        sitemap: {type: String, default: ""},
+        eCommerce: {type: schemaECommerce}
     },
     {timestamps: true}
 ).index({typeId: 1, statusId: 1, authorId: 1});

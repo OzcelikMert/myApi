@@ -50,9 +50,9 @@ export type SelectPostResultDocument = {
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
     mainId?: {
-        _id: mongoose.Types.ObjectId
+        _id: mongoose.Types.ObjectId | string
         contents: {
-            langId: mongoose.Types.ObjectId
+            langId: mongoose.Types.ObjectId | string
             title: string,
             url: string,
         }
@@ -65,21 +65,84 @@ export type SelectPostResultDocument = {
 } & Omit<PostDocument, "contents"|"themeGroups"|"terms"|"components">
 
 export interface PostAlternateDocument {
-    langId: mongoose.Types.ObjectId
+    langId: mongoose.Types.ObjectId | string
     title?: string,
     url?: string
 }
 
+export interface PostECommerceVariationContentDocument {
+    _id?: mongoose.Types.ObjectId | string
+    langId: mongoose.Types.ObjectId | string
+    image?: string
+    content?: string,
+    shortContent?: string,
+}
+
+export interface PostECommerceVariationSelectedDocument {
+    _id?: mongoose.Types.ObjectId | string
+    attributeId: mongoose.Types.ObjectId | string
+    variationId: mongoose.Types.ObjectId | string
+}
+
+export interface PostECommerceVariationDocument {
+    _id?: mongoose.Types.ObjectId | string
+    order: number
+    selectedVariations: PostECommerceVariationSelectedDocument[]
+    images: string[]
+    contents?: PostECommerceVariationContentDocument | PostECommerceVariationContentDocument[]
+    inventory: PostECommerceInventoryDocument
+    shipping: PostECommerceShippingDocument
+    pricing: PostECommercePricingDocument
+}
+
+export interface PostECommerceAttributeDocument {
+    _id?: mongoose.Types.ObjectId | string
+    attributeId: mongoose.Types.ObjectId | string
+    variations: mongoose.Types.ObjectId[] | string[]
+    typeId: number
+}
+
+export interface PostECommerceShippingDocument {
+    width: number
+    height: number
+    depth: number
+    weight: number
+}
+
+export interface PostECommerceInventoryDocument {
+    sku: string
+    isManageStock: boolean
+    quantity: number
+}
+
+export interface PostECommercePricingDocument {
+    taxRate: number
+    taxExcluded: number
+    taxIncluded: number
+    compared: number
+    shipping: number
+}
+
+export interface PostECommerceDocument {
+    typeId?: number
+    pricing?: PostECommercePricingDocument
+    inventory?: PostECommerceInventoryDocument
+    shipping?: PostECommerceShippingDocument
+    attributes?: PostECommerceAttributeDocument[]
+    variations?: PostECommerceVariationDocument[]
+    variationDefaults?: PostECommerceVariationSelectedDocument[]
+}
+
 export interface PostContentButtonDocument {
-    _id?: mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId | string
     title: string,
     url?: string
 }
 
 export interface PostContentDocument {
-    _id?: mongoose.Types.ObjectId
-    langId: mongoose.Types.ObjectId
-    image?: string,
+    _id?: mongoose.Types.ObjectId | string
+    langId: mongoose.Types.ObjectId | string
+    image?: string
     icon?: string
     title?: string,
     content?: string,
@@ -92,18 +155,19 @@ export interface PostContentDocument {
 }
 
 export interface PostDocument {
-    _id?: mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId | string
     typeId?: number,
     statusId: number,
     pageTypeId?: number,
-    mainId?: mongoose.Types.ObjectId
-    authorId: mongoose.Types.ObjectId
-    lastAuthorId: mongoose.Types.ObjectId
+    mainId?: mongoose.Types.ObjectId | string
+    authorId: mongoose.Types.ObjectId | string
+    lastAuthorId: mongoose.Types.ObjectId | string
     dateStart: Date,
     order: number,
     isFixed?: boolean,
-    terms: mongoose.Types.ObjectId[]
+    terms: mongoose.Types.ObjectId[] | string[]
     contents: PostContentDocument[]
-    components?: mongoose.Types.ObjectId[],
+    components?: mongoose.Types.ObjectId[] | string []
     sitemap?: string
+    eCommerce?: PostECommerceDocument
 }

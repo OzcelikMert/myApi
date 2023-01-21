@@ -1,4 +1,4 @@
-import { object, string, number, boolean, array } from "yup";
+import {object, string, number, boolean, array, mixed} from "yup";
 import {ErrorCodes} from "../library/api";
 
 const postBody = object({
@@ -26,6 +26,68 @@ const postBody = object({
         })).default(undefined)
     }).required({contents: ErrorCodes.emptyValue}),
     components: array(string().required({components: ErrorCodes.incorrectData})).default([]),
+    eCommerce: object({
+        typeId: number(),
+        pricing: object({
+            taxRate: number().default(0),
+            taxExcluded: number().default(0),
+            taxIncluded: number().default(0),
+            compared: number().default(0),
+            shipping: number().default(0),
+        }).default(undefined),
+        inventory: object({
+            sku: string().default(""),
+            quantity: number().default(0),
+            isManageStock: boolean().default(false)
+        }).default(undefined),
+        shipping: object({
+            width: number().default(0),
+            height: number().default(0),
+            depth: number().default(0),
+            weight: number().default(0),
+        }).default(undefined),
+        attributes: array(object({
+            typeId: number().required({typeId: ErrorCodes.emptyValue}),
+            attributeId: string().required({attributeId: ErrorCodes.emptyValue}),
+            variations: array(string().required({variations: ErrorCodes.incorrectData})).default([]),
+        }).required({attributes: ErrorCodes.incorrectData})).default([]),
+        variations: array(object({
+            selectedVariations: array(object({
+                attributeId: string().required({attributeId: ErrorCodes.emptyValue}),
+                variationId: string().required({variationId: ErrorCodes.emptyValue}),
+            }).required({variations: ErrorCodes.incorrectData})).default([]),
+            images: array(string().required({images: ErrorCodes.incorrectData})).default([]),
+            order: number().required({order: ErrorCodes.emptyValue}),
+            pricing: object({
+                taxRate: number().default(0),
+                taxExcluded: number().default(0),
+                taxIncluded: number().default(0),
+                compared: number().default(0),
+                shipping: number().default(0),
+            }).required({pricing: ErrorCodes.emptyValue}),
+            inventory: object({
+                sku: string().default(""),
+                quantity: number().default(0),
+                isManageStock: boolean().default(false)
+            }).required({inventory: ErrorCodes.emptyValue}),
+            shipping: object({
+                width: number().default(0),
+                height: number().default(0),
+                depth: number().default(0),
+                weight: number().default(0),
+            }).required({shipping: ErrorCodes.emptyValue}),
+            contents: object({
+                langId: string().required({langId: ErrorCodes.emptyValue}),
+                image: string(),
+                content: string(),
+                shortContent: string(),
+            }).required({contents: ErrorCodes.emptyValue})
+        }).required({variationItems: ErrorCodes.incorrectData})).default([]),
+        variationDefaults: array(object({
+            attributeId: string().required({attributeId: ErrorCodes.emptyValue}),
+            variationId: string().required({variationId: ErrorCodes.emptyValue}),
+        }).required({variationDefaults: ErrorCodes.incorrectData})).default([]),
+    }).default(undefined)
 })
 
 export default {

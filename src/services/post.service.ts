@@ -12,6 +12,7 @@ import {SelectPostTermResultDocument} from "../types/services/postTerm";
 import Variable from "../library/variable";
 import {Config} from "../config";
 import {SelectComponentResultDocument} from "../types/services/component";
+import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
 
 export default {
     async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
@@ -148,6 +149,11 @@ export default {
     },
     async insert(params: InsertPostParamDocument) {
         params = Variable.clearAllScriptTags(params);
+        console.log(params);
+        console.log("=====================================================")
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
+        console.log("=====================================================")
+        console.log(params)
 
         if (Variable.isEmpty(params.mainId)) {
             delete params.mainId;
@@ -167,7 +173,7 @@ export default {
                         langId: MongoDBHelpers.createObjectId(params.contents.langId)
                     } : {}
             ],
-            ...(params.sitemap ? {siteMap: params.sitemap} : {}),
+            ...(params.sitemap ? {siteMap: params.sitemap} : {})
         });
     },
     async update(params: UpdatePostParamDocument) {

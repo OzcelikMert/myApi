@@ -1,4 +1,6 @@
 export enum PostTermTypeId {
     Category = 1,
-    Tag
+    Tag,
+    Attributes,
+    Variations
 }

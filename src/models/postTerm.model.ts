@@ -22,10 +22,10 @@ const schemaContent = new mongoose.Schema<PostTermContentDocument>(
 
 const schema = new mongoose.Schema<PostTermDocument>(
     {
+        typeId: {type: Number, required: true, enum: PostTermTypeId},
         postTypeId: {type: Number, required: true, enum: PostTypeId},
         statusId: {type: Number, required: true, enum: StatusId},
         mainId: {type: mongoose.Schema.Types.ObjectId, ref: "postTerms"},
-        typeId: {type: Number, required: true, enum: PostTermTypeId},
         authorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         lastAuthorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         order: {type: Number, default: 0},

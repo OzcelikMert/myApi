@@ -14,6 +14,7 @@ import settingService from "../services/setting.service";
 import * as path from "path"
 import {generate} from "generate-password";
 import chalk from "chalk";
+import {PostDocument} from "../types/services/post";
 
 let Config: ConfigDocument = {
     app: null,
