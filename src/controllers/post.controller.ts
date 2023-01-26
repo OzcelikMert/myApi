@@ -51,9 +51,8 @@ export default {
                 ...data.params,
                 ...data.body,
                 authorId: req.session.data.id.toString(),
-                dateStart: new Date(data.body.dateStart),
-                ...(data.body.isFixed ? {isFixed: data.body.isFixed == 1} : {}),
-                ...(data.body.siteMap ? {siteMap: data.body.siteMap} : {}),
+                lastAuthorId: req.session.data.id.toString(),
+                dateStart: new Date(data.body.dateStart)
             });
 
             if(isPostSitemapRequire(data.params.typeId)){
@@ -82,8 +81,7 @@ export default {
                 ...data.params,
                 ...data.body,
                 lastAuthorId: req.session.data.id.toString(),
-                dateStart: new Date(data.body.dateStart),
-                ...(data.body.isFixed ? {isFixed: data.body.isFixed == 1} : {}),
+                dateStart: new Date(data.body.dateStart)
             });
 
             if(isPostSitemapRequire(data.params.typeId)){
@@ -93,8 +91,8 @@ export default {
                         url: data.body.contents.url ?? "",
                         langId: data.body.contents.langId,
                         typeId: data.params.typeId,
-                        sitemap: updated.sitemap ?? "",
-                        pageTypeId: updated.pageTypeId
+                        pageTypeId: data.body.pageTypeId,
+                        sitemap: updated.sitemap ?? ""
                     });
                 }
             }

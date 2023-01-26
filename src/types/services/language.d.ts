@@ -1,16 +1,15 @@
 import mongoose from "mongoose";
 
 export interface SelectLanguageParamDocument {
-    id?: string
+    _id?: string
 }
 
-export type InsertLanguageDocument = {
-} & Omit<LanguageDocument, "_id">
+export type InsertLanguageDocument = {} & Omit<LanguageDocument, "_id">
 
 export type SelectLanguageResultDocument = {} & LanguageDocument
 
 export interface LanguageDocument {
-    _id: mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId | string
     title: string
     image: string
     shortKey: string

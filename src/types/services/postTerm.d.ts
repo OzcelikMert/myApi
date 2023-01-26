@@ -2,40 +2,30 @@ import mongoose from "mongoose";
 import {PopulateAuthorIdDocument} from "./user";
 
 export interface DeletePostTermParamDocument {
-    termId: string | string[]
+    _id: string | string[]
     typeId: number,
     postTypeId: number
 }
 
 export type UpdatePostTermStatusIdParamDocument = {
-    termId?: string | string[],
+    _id?: string | string[],
     postTypeId?: number,
     typeId?: number
     statusId: number,
     lastAuthorId: string
 }
 
-export type UpdatePostTermViewParamDocument = {
-    termId?: string,
-    typeId?: number
-    langId: string
-    postTypeId?: number
-}
-
 export type UpdatePostTermParamDocument = {
-    termId?: string,
-    lastAuthorId: string,
+    _id?: string,
 } & Omit<InsertPostTermParamDocument, "authorId">
 
 export type InsertPostTermParamDocument = {
-    mainId?:string
-    authorId: string,
-    contents?: Omit<PostTermContentDocument, "langId"> & {langId: string}
-} & Omit<PostTermDocument, "_id"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents">
+    contents?: PostTermContentDocument
+} & Omit<PostTermDocument, "_id"|"contents">
 
 export interface SelectPostTermParamDocument {
     langId: string
-    termId?: string
+    _id?: string
     typeId?: number | number[],
     postTypeId?: number,
     url?: string
@@ -55,45 +45,43 @@ export type SelectPostTermResultDocument = {
             url: string,
         }
     },
-    views?: number,
     contents?: PostTermContentDocument | PostTermContentDocument[]
     alternates?: PostTermAlternateDocument[]
 } & Omit<PostTermDocument, "contents">
 
 export interface PostTermAlternateDocument {
-    langId: mongoose.Types.ObjectId
+    langId: mongoose.Types.ObjectId | string
     title?: string,
     url?: string
 }
 
 export interface PopulateTermsDocument {
-    _id: mongoose.Types.ObjectId,
+    _id: mongoose.Types.ObjectId | string,
     typeId: number,
     contents: {
-        langId: mongoose.Types.ObjectId,
+        langId: mongoose.Types.ObjectId | string,
         title: string,
     }[]
 }
 
 export interface PostTermContentDocument {
-    langId: mongoose.Types.ObjectId
+    langId: mongoose.Types.ObjectId | string
     image?: string,
     title?: string,
     shortContent?: string,
     url?: string,
     seoTitle?: string,
     seoContent?: string
-    views?: number,
 }
 
 export interface PostTermDocument {
-    _id: mongoose.Types.ObjectId
+    _id: mongoose.Types.ObjectId | string
     postTypeId?: number,
     typeId?: number,
-    mainId?: mongoose.Types.ObjectId
+    mainId?: mongoose.Types.ObjectId | string
     statusId: number,
-    authorId: mongoose.Types.ObjectId
-    lastAuthorId: mongoose.Types.ObjectId
+    authorId: mongoose.Types.ObjectId | string
+    lastAuthorId: mongoose.Types.ObjectId | string
     order: number,
     contents: PostTermContentDocument[]
     sitemap?: string

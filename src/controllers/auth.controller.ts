@@ -6,6 +6,8 @@ import authSchema from "../schemas/auth.schema";
 import userService from "../services/user.service";
 import {StatusId} from "../constants/status";
 import logMiddleware from "../middlewares/log.middleware";
+import {Config} from "../config";
+import userUtil from "../utils/user.util";
 
 export default {
     getSession: async (
@@ -16,7 +18,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof authSchema.get> = req;
 
-            serviceResult.data = await userService.select({userId: req.session.data.id.toString()});
+            serviceResult.data = await userService.select({_id: req.session.data.id.toString()});
             res.status(serviceResult.statusCode).json(serviceResult)
         })
     },
@@ -35,15 +37,16 @@ export default {
             if(resData.length > 0){
                 let user = resData[0];
                 if(user.statusId == StatusId.Active) {
+                    let time = new Date().getTime();
                     req.session.data = {
                         id: user._id,
                         email: user.email,
                         roleId: user.roleId,
                         ip: req.ip,
                         permission: user.permissions,
-                        token: V.hash((user._id.toString() + req.ip).toString(), "sha256"),
-                        createAt: new Date().getTime(),
-                        updatedAt: new Date().getTime()
+                        token: userUtil.createToken(user._id.toString(), req.ip, time),
+                        createAt: time,
+                        updatedAt: time
                     }
                     req.session.save();
                 }else {

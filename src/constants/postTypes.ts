@@ -7,6 +7,5 @@ export enum PostTypeId {
     Service,
     Testimonial,
     Navigate,
-    Product,
-    ProductVariation
+    Product
 }

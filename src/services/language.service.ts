@@ -8,15 +8,17 @@ import {
 } from "../types/services/language";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
+import languageObjectIdKeys from "../constants/objectIdKeys/language.objectIdKeys";
 
 export default {
     async select(params: SelectLanguageParamDocument): Promise<SelectLanguageResultDocument[]> {
         let filters: mongoose.FilterQuery<LanguageDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, languageObjectIdKeys);
 
-        if (params.id) {
+        if (params._id) {
             filters = {
                 ...filters,
-                _id: MongoDBHelpers.createObjectId(params.id)
+                _id: params._id
             }
         }
 
@@ -24,9 +26,8 @@ export default {
     },
     async insert(params: InsertLanguageDocument) {
         params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, languageObjectIdKeys);
 
-        return await languageModel.create({
-            ...params
-        })
+        return await languageModel.create(params)
     }
 };

@@ -17,7 +17,7 @@ export interface SelectViewParamDocument {
 
 export interface InsertViewParamDocument {
     url: string,
-    languageId: string
+    langId: string
     ip: string,
     country?: string,
     city?: string,
@@ -36,9 +36,9 @@ export type SelectTotalWithViewResultDocument = {
 }
 
 export interface ViewDocument {
-    _id: mongoose.Types.ObjectId
+    _id: mongoose.Types.ObjectId | string
     url: string,
-    languageId: mongoose.Types.ObjectId
+    langId: mongoose.Types.ObjectId | string
     ip: string,
     country: string,
     city: string,

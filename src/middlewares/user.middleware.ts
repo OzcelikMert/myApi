@@ -13,10 +13,10 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            let userId = req.params.userId;
+            let _id = req.params._id;
 
             let resData = await userService.select({
-                userId: userId
+                _id: _id
             });
 
             if (resData.length === 0) {
@@ -41,14 +41,14 @@ export default {
             let serviceResult = new Result();
 
             let roleId = req.body.roleId;
-            let userId = req.params.userId;
+            let _id = req.params._id;
             let userRoleId = 0;
 
             if (roleId) {
                 userRoleId = roleId;
-            } else if (userId) {
+            } else if (_id) {
                 let resData = await userService.select({
-                    userId: userId
+                    _id: _id
                 });
                 if (resData.length > 0) {
                     userRoleId = resData[0].roleId;
@@ -84,12 +84,12 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            let userId = req.params.userId;
+            let _id = req.params._id;
             let email = req.body.email;
 
-            if (userId) {
+            if (_id) {
                 let resData = await userService.select({
-                    userId: userId
+                    _id: _id
                 });
                 if (resData.length > 0) {
                     if (email) {
@@ -130,14 +130,14 @@ export default {
             let name: string = req.body.name;
 
             if(name) {
-                let userId = req.body.userId ? req.body.userId : req.body.isProfile ? req.session.data.id : undefined;
+                let _id = req.body._id ? req.body._id : req.body.isProfile ? req.session.data.id : undefined;
 
                 let urlAlreadyCount = 2;
                 url = url && url.length > 0 ? url : name.convertSEOUrl();
 
                 let oldUrl = url;
                 while ((await userService.select({
-                    ignoreUserId: userId ? [userId] : undefined,
+                    ignoreUserId: _id ? [_id] : undefined,
                     url: url,
                     maxCount: 1
                 })).length > 0) {

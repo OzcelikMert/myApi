@@ -35,6 +35,7 @@ export default {
             await componentService.insert({
                 ...data.body,
                 authorId: req.session.data.id.toString(),
+                lastAuthorId: req.session.data.id.toString()
             });
 
             res.status(serviceResult.statusCode).json(serviceResult)

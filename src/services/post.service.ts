@@ -17,10 +17,12 @@ import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
 export default {
     async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
         let filters: mongoose.FilterQuery<PostDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, [...postObjectIdKeys, "ignorePostId"]);
+        let defaultLangId = MongoDBHelpers.createObjectId(Config.defaultLangId);
 
-        if (params.postId) filters = {
+        if (params._id) filters = {
             ...filters,
-            _id: MongoDBHelpers.createObjectId(params.postId)
+            _id: params._id
         }
         if (params.url) filters = {
             ...filters,
@@ -50,7 +52,7 @@ export default {
         if (params.ignorePostId) {
             filters = {
                 ...filters,
-                _id: {$nin: MongoDBHelpers.createObjectIdArray(params.ignorePostId)}
+                _id: {$nin: params.ignorePostId}
             }
         }
 
@@ -60,7 +62,7 @@ export default {
             transform: (doc: SelectPostResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
-                        doc.contents = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId)) ?? doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
+                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
                         if (doc.contents) {
                             if (!params.getContents) {
                                 delete doc.contents.content;
@@ -76,7 +78,7 @@ export default {
             transform: (doc: SelectPostTermResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
-                        doc.contents = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId)) ?? doc.contents.findSingle("langId", (Config.defaultLangId));
+                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
                     }
                 }
                 return doc;
@@ -87,7 +89,7 @@ export default {
                 if (doc) {
                     doc.types.map(docType => {
                         if (Array.isArray(docType.contents)) {
-                            docType.contents = docType.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId)) ?? docType.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
+                            docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", defaultLangId);
                             if (docType.contents) {
                                 if (!params.getContents) {
                                     delete docType.contents.content;
@@ -124,9 +126,9 @@ export default {
                     }
                 }
 
-                let docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId));
+                let docContent = doc.contents.findSingle("langId", params.langId);
                 if (!docContent) {
-                    docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
+                    docContent = doc.contents.findSingle("langId", defaultLangId);
                     if (docContent) {
                         docContent.views = 0;
                     }
@@ -140,6 +142,22 @@ export default {
                 }
             }
 
+            if(doc.eCommerce){
+                if(doc.eCommerce.variations){
+                    for(let docECommerceVariation of doc.eCommerce.variations){
+                        if(Array.isArray(docECommerceVariation.contents)){
+                            let docEcommerceVariationContent = docECommerceVariation.contents.findSingle("langId", params.langId) ?? docECommerceVariation.contents.findSingle("langId", defaultLangId);
+                            if (docEcommerceVariationContent) {
+                                docECommerceVariation.contents = docEcommerceVariationContent;
+                                if (!params.getContents) {
+                                    delete docECommerceVariation.contents.content;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             doc.views = views;
             doc.components = doc.components?.filter(component => component);
             doc.terms = doc.terms?.filter(term => term);
@@ -149,45 +167,23 @@ export default {
     },
     async insert(params: InsertPostParamDocument) {
         params = Variable.clearAllScriptTags(params);
-        console.log(params);
-        console.log("=====================================================")
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
-        console.log("=====================================================")
-        console.log(params)
 
         if (Variable.isEmpty(params.mainId)) {
             delete params.mainId;
         }
 
-        return await postModel.create({
-            ...params,
-            terms: MongoDBHelpers.createObjectIdArray(params.terms),
-            ...(params.components ? {components: MongoDBHelpers.createObjectIdArray(params.components)} : {}),
-            authorId: MongoDBHelpers.createObjectId(params.authorId),
-            lastAuthorId: MongoDBHelpers.createObjectId(params.authorId),
-            ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
-            contents: [
-                params.contents
-                    ? {
-                        ...params.contents,
-                        langId: MongoDBHelpers.createObjectId(params.contents.langId)
-                    } : {}
-            ],
-            ...(params.sitemap ? {siteMap: params.sitemap} : {})
-        });
+        return await postModel.create(params);
     },
     async update(params: UpdatePostParamDocument) {
         params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
-        if (Variable.isEmpty(params.mainId)) {
-            delete params.mainId;
-        }
-
-        if (params.postId) {
+        if (params._id) {
             filters = {
-                _id: MongoDBHelpers.createObjectId(params.postId)
+                _id: params._id
             };
         }
         if (params.typeId) {
@@ -197,21 +193,13 @@ export default {
             }
         }
 
-        delete params.postId;
-        delete params.typeId;
         return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
             if (params.contents) {
-                let docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.contents.langId));
+                let docContent = doc.contents.findSingle("langId", params.contents.langId);
                 if (docContent) {
-                    docContent = Object.assign(docContent, {
-                        ...params.contents,
-                        langId: MongoDBHelpers.createObjectId(params.contents.langId)
-                    });
+                    docContent = Object.assign(docContent, params.contents);
                 } else {
-                    doc.contents.push({
-                        ...params.contents,
-                        langId: MongoDBHelpers.createObjectId(params.contents.langId),
-                    })
+                    doc.contents.push(params.contents)
                 }
                 delete params.contents;
             }
@@ -220,29 +208,34 @@ export default {
                 doc.mainId = undefined;
             }
 
-            doc = Object.assign(doc, {
-                ...params,
-                ...(params.mainId ? {mainId: MongoDBHelpers.createObjectId(params.mainId)} : {}),
-            });
+            if(params.mainId){
+                doc.mainId = params.mainId;
+            }
 
             await doc.save();
-            doc.contents = [];
-            return doc;
+
+            return {
+                _id: doc._id,
+                sitemap: doc.sitemap,
+                pageTypeId: doc.pageTypeId,
+                lastAuthorId: doc.lastAuthorId
+            }
         }));
     },
-    async updateStatus(params: UpdatePostStatusIdParamDocument): Promise<PostDocument[]> {
+    async updateStatus(params: UpdatePostStatusIdParamDocument) {
         params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
-        if(params.postId) {
-            if (Array.isArray(params.postId)) {
+        if(params._id) {
+            if (Array.isArray(params._id)) {
                 filters = {
-                    _id: {$in: MongoDBHelpers.createObjectIdArray(params.postId)}
+                    _id: {$in: params._id}
                 }
             } else {
                 filters = {
-                    _id: MongoDBHelpers.createObjectId(params.postId)
+                    _id: params._id
                 };
             }
         }
@@ -254,28 +247,28 @@ export default {
             }
         }
 
-        delete params.postId;
-        delete params.typeId;
         return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
-            doc = Object.assign(doc, {
-                ...params,
-                statusId: params.statusId,
-                lastAuthorId: MongoDBHelpers.createObjectId(params.lastAuthorId)
-            });
+            doc.statusId = params.statusId;
+            doc.lastAuthorId = params.lastAuthorId;
 
             await doc.save();
-            doc.contents = [];
-            return doc;
+
+            return {
+                _id: doc._id,
+                statusId: doc.statusId,
+                lastAuthorId: doc.lastAuthorId
+            };
         }));
     },
     async updateView(params: UpdatePostViewParamDocument) {
         params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
-        if (params.postId) {
+        if (params._id) {
             filters = {
-                _id: MongoDBHelpers.createObjectId(params.postId)
+                _id: params._id
             };
         }
         if (params.typeId) {
@@ -285,17 +278,14 @@ export default {
             }
         }
 
-        delete params.postId;
-        delete params.typeId;
         return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
-            let docContent = doc.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId));
+            let docContent = doc.contents.findSingle("langId", params.langId);
             if (docContent) {
                 if (docContent.views) {
                     docContent.views = Number(docContent.views) + 1;
                 } else {
                     docContent.views = 1;
                 }
-
                 await doc.save();
             }
 
@@ -307,14 +297,15 @@ export default {
     },
     async delete(params: DeletePostParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
-        if (Array.isArray(params.postId)) {
+        if (Array.isArray(params._id)) {
             filters = {
-                _id: {$in: MongoDBHelpers.createObjectIdArray(params.postId)}
+                _id: {$in: params._id}
             }
         } else {
             filters = {
-                _id: MongoDBHelpers.createObjectId(params.postId)
+                _id: params._id
             };
         }
 
@@ -327,8 +318,10 @@ export default {
 
         return await Promise.all(((await postModel.find(filters).exec()).map(async doc => {
             await doc.remove();
-            doc.contents = [];
-            return doc;
+            return {
+                _id: doc._id,
+                sitemap: doc.sitemap
+            };
         })));
     }
 };

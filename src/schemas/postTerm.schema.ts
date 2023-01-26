@@ -18,7 +18,7 @@ const postBody = object({
 export default {
     get: object({
         params: object({
-            termId: string(),
+            _id: string(),
             postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
             typeId: number(),
         }),
@@ -37,7 +37,7 @@ export default {
     }),
     put: object({
         params: object({
-            termId: string().required({termId: ErrorCodes.emptyValue}),
+            _id: string().required({termId: ErrorCodes.emptyValue}),
             postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
@@ -49,19 +49,8 @@ export default {
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         body: object({
-            termId: array(string().required({termId: ErrorCodes.incorrectData})).required({termId: ErrorCodes.emptyValue}),
+            _id: array(string().required({termId: ErrorCodes.incorrectData})).required({termId: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue})
-        })
-    }),
-    putView: object({
-        params: object({
-            postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
-            typeId: number().required({typeId: ErrorCodes.emptyValue}),
-            termId: string().required({termId: ErrorCodes.emptyValue}),
-        }),
-        body: object({
-            url: string().default(""),
-            langId: string().required({langId: ErrorCodes.emptyValue})
         })
     }),
     delete: object({
@@ -70,7 +59,7 @@ export default {
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         body: object({
-            termId: array(string().required({termId: ErrorCodes.incorrectData})).required({termId: ErrorCodes.emptyValue}),
+            _id: array(string().required({termId: ErrorCodes.incorrectData})).required({termId: ErrorCodes.emptyValue}),
         })
     })
 };

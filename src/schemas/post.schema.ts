@@ -1,14 +1,14 @@
-import {object, string, number, boolean, array, mixed} from "yup";
+import {object, string, number, boolean, array, mixed, SchemaOf} from "yup";
 import {ErrorCodes} from "../library/api";
 
 const postBody = object({
     mainId: string(),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
     pageTypeId: number(),
-    terms: array(string().required({termId: ErrorCodes.incorrectData})).default([]),
+    terms: array(string().required({terms: ErrorCodes.incorrectData})).default([]),
     dateStart: string().required({dateStart: ErrorCodes.emptyValue}),
     order: number().required({order: ErrorCodes.emptyValue}),
-    isFixed: number().is([1, 0], {isFixed: ErrorCodes.incorrectData}),
+    isFixed: boolean().default(false),
     siteMap: string().default(undefined),
     contents: object({
         langId: string().required({langId: ErrorCodes.emptyValue}),
@@ -49,7 +49,7 @@ const postBody = object({
         attributes: array(object({
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
             attributeId: string().required({attributeId: ErrorCodes.emptyValue}),
-            variations: array(string().required({variations: ErrorCodes.incorrectData})).default([]),
+            variationId: array(string().required({variationId: ErrorCodes.incorrectData})).default([]),
         }).required({attributes: ErrorCodes.incorrectData})).default([]),
         variations: array(object({
             selectedVariations: array(object({
@@ -98,18 +98,18 @@ export default {
             url: string(),
             pageTypeId: number(),
             statusId: number(),
-            getContents: number().is([1], {getContents: ErrorCodes.incorrectData}).default(undefined),
+            getContents: boolean().default(false),
             maxCount: number()
         }),
     }),
     get: object({
         params: object({
-            postId: string(),
+            _id: string(),
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         query: object({
             langId: string(),
-            getContents: number().is([1], {getContents: ErrorCodes.incorrectData}).default(undefined),
+            getContents: boolean().default(false),
             url: string(),
             pageTypeId: number(),
             statusId: number(),
@@ -126,7 +126,7 @@ export default {
     put: object({
         params: object({
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
-            postId: string().required({postId: ErrorCodes.emptyValue}),
+            _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
         body: postBody
     }),
@@ -135,14 +135,14 @@ export default {
             typeId: number().required({typeId: ErrorCodes.emptyValue})
         }),
         body: object({
-            postId: array(string().required({postId: ErrorCodes.incorrectData})).required({postId: ErrorCodes.emptyValue}),
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue})
         })
     }),
     putView: object({
         params: object({
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
-            postId: string().required({postId: ErrorCodes.emptyValue}),
+            _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
         body: object({
             url: string().default(""),
@@ -154,7 +154,7 @@ export default {
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         body: object({
-            postId: array(string().required({postId: ErrorCodes.incorrectData})).required({postId: ErrorCodes.emptyValue}),
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
         })
     })
 };

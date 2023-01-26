@@ -12,13 +12,13 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            let termId = req.params.termId ?? req.body.termId;
+            let _id = req.params._id ?? req.body._id;
             let typeId = req.params.typeId;
             let postTypeId = req.params.postTypeId;
             let langId = req.query.langId ?? req.body.contents ? req.body.contents.langId : undefined;
 
             let resData = await postTermService.select({
-                termId: termId,
+                _id: _id,
                 postTypeId: postTypeId,
                 typeId: typeId,
                 langId: langId
@@ -26,7 +26,7 @@ export default {
 
             if (
                 resData.length === 0 ||
-                (Array.isArray(termId) && resData.length != termId.length)
+                (Array.isArray(_id) && resData.length != _id.length)
             ) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.notFound;
@@ -48,7 +48,7 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let typeId = req.params.typeId;
             let postTypeId = req.params.postTypeId;
-            let termId = req.params.termId ?? req.body.termId
+            let _id = req.params._id ?? req.body._id
 
             let url: string = req.body.contents.url;
             let title: string = req.body.contents.title || "";
@@ -59,7 +59,7 @@ export default {
 
             let oldUrl = url;
             while((await postTermService.select({
-                ignoreTermId: termId ? [termId] : undefined,
+                ignoreTermId: _id ? [_id] : undefined,
                 postTypeId: postTypeId,
                 typeId: typeId,
                 langId: langId,

@@ -9,7 +9,7 @@ declare module 'express-session' {
 }
 
 interface SessionDataDocument {
-    id: mongoose.Types.ObjectId,
+    id: mongoose.Types.ObjectId | string,
     roleId: UserRoleId,
     email: string,
     ip: string,

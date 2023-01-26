@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export type InsertLogParamDocument = {} & Omit<LogDocument, "_id">
 
 export interface LogDocument {
-    _id: mongoose.Types.ObjectId
+    _id: mongoose.Types.ObjectId | string
     url: string,
     method: string
     ip: string

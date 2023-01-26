@@ -12,13 +12,13 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            let componentId = req.params.componentId ?? req.body.componentId;
+            let _id = req.params._id ?? req.body._id;
 
-            let resData = await componentService.select({componentId: componentId});
+            let resData = await componentService.select({_id: _id});
 
             if (
                 resData.length === 0 ||
-                (Array.isArray(componentId) && resData.length != componentId.length)
+                (Array.isArray(_id) && resData.length != _id.length)
             ) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.notFound;

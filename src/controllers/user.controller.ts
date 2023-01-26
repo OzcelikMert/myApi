@@ -32,7 +32,10 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.post> = req;
 
-            await userService.insert(data.body);
+            await userService.insert({
+                ...data.body,
+                ...(data.body.banDateEnd ? {banDateEnd: new Date(data.body.banDateEnd)} : {banDateEnd: undefined})
+            });
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -45,18 +48,11 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.put> = req;
 
-            let params: UpdateUserParamDocument = {
-                ...data.body,
+            await userService.update({
                 ...data.params,
-                banDateEnd: undefined,
-                ...(data.body.banDateEnd ? {banDateEnd: new Date(data.body.banDateEnd)} : {})
-            }
-
-            if(Variable.isEmpty(params.password)){
-                delete params.password;
-            }
-
-            await userService.update(params);
+                ...data.body,
+                ...(data.body.banDateEnd ? {banDateEnd: new Date(data.body.banDateEnd)} : {banDateEnd: undefined})
+            });
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -69,9 +65,9 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.putProfile> = req;
 
-            await userService.update({
+            await userService.updateProfile({
                 ...data.body,
-                userId: req.session.data.id.toString(),
+                _id: req.session.data.id.toString(),
             });
 
             res.status(serviceResult.statusCode).json(serviceResult)
@@ -85,8 +81,8 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.putPassword> = req;
 
-            await userService.update({
-                userId: req.session.data.id.toString(),
+            await userService.updatePassword({
+                _id: req.session.data.id.toString(),
                 password: data.body.newPassword
             });
 
@@ -101,10 +97,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.delete> = req;
 
-            await userService.update({
-                ...data.params,
-                statusId: StatusId.Deleted
-            });
+            await userService.delete(data.params);
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });

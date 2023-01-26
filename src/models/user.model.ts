@@ -19,8 +19,7 @@ const schema = new mongoose.Schema<UserDocument>(
         banComment: {type: String, default: ""},
         facebook: {type: String, default: ""},
         instagram: {type: String, default: ""},
-        twitter: {type: String, default: ""},
-        views: {type: Number, default: 0},
+        twitter: {type: String, default: ""}
     },
     {timestamps: true}
 ).index({roleId: 1, statusId: 1});

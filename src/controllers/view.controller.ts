@@ -72,7 +72,6 @@ export default {
             await viewService.insert({
                 ...data.body,
                 ip: ip,
-                languageId: data.body.lang,
                 ...ipDetail
             })
 

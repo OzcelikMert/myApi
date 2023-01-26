@@ -4,7 +4,7 @@ import {ErrorCodes} from "../library/api";
 export default {
     post: object({
         body: object({
-            lang: string().required({lang: ErrorCodes.emptyValue}),
+            langId: string().required({langId: ErrorCodes.emptyValue}),
             url: string().default(""),
         })
     })

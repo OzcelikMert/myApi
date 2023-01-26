@@ -10,7 +10,7 @@ export default {
     }),
     putGeneral: object({
         body: object({
-            defaultLangId: string(),
+            defaultLangId: string().required({defaultLangId: ErrorCodes.emptyValue}),
             icon: string(),
             logo: string(),
             logoTwo: string(),

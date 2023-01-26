@@ -7,6 +7,5 @@ export default [
     "lastAuthorId",
     "langId",
     "attributeId",
-    "variationId",
-    "variations",
+    "variationId"
 ]

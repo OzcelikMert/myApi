@@ -67,7 +67,7 @@ const PagePaths = {
             self() {
                 return setPath(path);
             },
-            withId(_id: string | number | undefined = ":userId") {
+            withId(_id: string | number | undefined = ":_id") {
                 return setPath(path, _id);
             },
             profile() {
@@ -128,7 +128,7 @@ const PagePaths = {
             self() {
                 return setPath(path);
             },
-            withId(_id: string | number | undefined = ":componentId") {
+            withId(_id: string | number | undefined = ":_id") {
                 return setPath(path, _id);
             },
         }
@@ -144,7 +144,7 @@ const PagePaths = {
                 path = setPath(path, typeId);
                 return this
             },
-            withId( _id: string | number | undefined = ":postId") {
+            withId( _id: string | number | undefined = ":_id") {
                 return setPath(path, _id);
             },
             view() {
@@ -169,13 +169,8 @@ const PagePaths = {
                 path =setPath(path, typeId);
                 return this
             },
-            withId(_id: string | number | undefined = ":termId") {
+            withId(_id: string | number | undefined = ":_id") {
                 return setPath(path, _id);
-            },
-            view() {
-                let subPath = "view";
-                path = setPath(path, subPath);
-                return this;
             },
         }
     },

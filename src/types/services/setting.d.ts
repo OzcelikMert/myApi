@@ -7,16 +7,24 @@ export type SelectSettingParamDocument = {
     onlyDefaultLanguageId?: boolean
 }
 
-export type InsertSettingParamDocument = {
-    defaultLangId: string
-    seoContents?: Omit<SettingSeoContentDocument, "langId"> & { langId: string }
-    contactForms?: (Omit<SettingContactFormDocument, "_id"> & { _id?: string })[]
-    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"|"_id"> & { contents: (Omit<SettingStaticLanguageContentDocument, "langId"|"_id"> & { langId: string, _id?: string }), _id?: string })[]
-} & Omit<SettingDocument, "_id" | "defaultLangId" | "seoContents" | "contactForms" | "staticLanguages">
+export type UpdateSettingGeneralParamDocument = {} & Omit<InsertSettingParamDocument, "seoContents"|"contactForms"|"staticLanguages">
 
-export type UpdateSettingParamDocument = {
-    defaultLangId?: string
-} & Omit<InsertSettingParamDocument, "defaultLangId">
+export type UpdateSettingSEOParamDocument = {
+    seoContents?: SettingSeoContentDocument
+}
+
+export type UpdateSettingContactFormParamDocument = {
+    contactForms: SettingContactFormDocument[]
+}
+
+export type UpdateSettingStaticLanguageParamDocument = {
+    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents: SettingStaticLanguageContentDocument})[]
+}
+
+export type InsertSettingParamDocument = {
+    seoContents?: SettingSeoContentDocument
+    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents: SettingStaticLanguageContentDocument})[]
+} & Omit<SettingDocument, "_id" | "seoContents" | "staticLanguages">
 
 export type SelectSettingResultDocument = {
     seoContents?: SettingSeoContentDocument | SettingSeoContentDocument[]
@@ -24,27 +32,27 @@ export type SelectSettingResultDocument = {
 } & Omit<SettingDocument, "seoContents" | "staticLanguages">
 
 export interface SettingStaticLanguageContentDocument {
-    _id?: mongoose.Types.ObjectId
-    langId: mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId | string
+    langId: mongoose.Types.ObjectId | string
     content?: string,
 }
 
 export interface SettingStaticLanguageDocument {
-    _id?: mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId | string
     langKey: string,
     contents: SettingStaticLanguageContentDocument[]
 }
 
 export interface SettingSeoContentDocument {
-    _id?: mongoose.Types.ObjectId
-    langId: mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId | string
+    langId: mongoose.Types.ObjectId | string
     title?: string,
     content?: string,
     tags?: string[]
 }
 
 export interface SettingContactFormDocument {
-    _id?: mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId | string
     name: string
     key: string
     outGoingEmail: string
@@ -68,8 +76,8 @@ export interface SettingContactDocument {
 }
 
 export interface SettingDocument {
-    _id: mongoose.Types.ObjectId
-    defaultLangId: mongoose.Types.ObjectId
+    _id: mongoose.Types.ObjectId | string
+    defaultLangId: mongoose.Types.ObjectId | string
     icon?: string
     logo?: string
     logoTwo?: string

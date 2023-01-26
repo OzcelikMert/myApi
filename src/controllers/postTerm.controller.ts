@@ -36,6 +36,7 @@ export default {
             let insertData = await postTermService.insert({
                 ...data.body,
                 ...data.params,
+                lastAuthorId: req.session.data.id.toString(),
                 authorId: req.session.data.id.toString(),
             });
 
@@ -95,22 +96,6 @@ export default {
                 ...data.body,
                 ...data.params,
                 lastAuthorId: req.session.data.id.toString()
-            });
-
-            res.status(serviceResult.statusCode).json(serviceResult)
-        });
-    },
-    updateView: async (
-        req: Request<any>,
-        res: Response
-    ) => {
-        await logMiddleware.error(req, res, async () => {
-            let serviceResult = new Result();
-            let data: InferType<typeof postTermSchema.putView> = req;
-
-            await postTermService.updateView({
-                ...data.params,
-                ...data.body
             });
 
             res.status(serviceResult.statusCode).json(serviceResult)

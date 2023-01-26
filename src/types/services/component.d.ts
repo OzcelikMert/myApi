@@ -2,31 +2,25 @@ import mongoose from "mongoose";
 import {PopulateAuthorIdDocument} from "./user";
 
 export interface SelectComponentParamDocument {
-    componentId?: string
+    _id?: string
     langId?: string,
     getContents?: boolean,
     elementId?: string
 }
 
 export interface DeleteComponentParamDocument {
-    componentId: string | string[]
+    _id: string | string[]
 }
 
 export type UpdateComponentParamDocument = {
-    componentId?: string,
-    lastAuthorId: string
-    types?: (Omit<ComponentTypeDocument, "contents"|"_id"> & {
-        _id?: string
-        contents: Omit<ComponentTypeContentDocument, "langId"|"_id"> & {langId: string}
-    })[]
-} & Omit<InsertComponentParamDocument, "authorId"|"types">
+    _id?: string
+} & Omit<InsertComponentParamDocument, "authorId">
 
 export type InsertComponentParamDocument = {
-    authorId: string
-    types: (Omit<ComponentTypeDocument, "contents"|"_id"> & {
-        contents: Omit<ComponentTypeContentDocument, "langId"|"_id"> & {langId: string}
+    types?: (Omit<ComponentTypeDocument, "contents"> & {
+        contents: ComponentTypeContentDocument
     })[]
-} & Omit<ComponentDocument, "_id"|"lastAuthorId"|"authorId"|"types">
+} & Omit<ComponentDocument, "_id"|"types">
 
 export type SelectComponentResultDocument = {
     authorId: PopulateAuthorIdDocument,
@@ -37,15 +31,15 @@ export type SelectComponentResultDocument = {
 } & Omit<ComponentDocument, "types">
 
 export interface ComponentTypeContentDocument {
-    _id?: mongoose.Types.ObjectId,
-    langId:  mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId | string,
+    langId:  mongoose.Types.ObjectId | string
     content?: string
     url?: string
     comment?: string
 }
 
 export interface ComponentTypeDocument {
-    _id?: mongoose.Types.ObjectId,
+    _id?: mongoose.Types.ObjectId | string,
     elementId: string
     typeId: number,
     langKey: string,
@@ -54,9 +48,9 @@ export interface ComponentTypeDocument {
 }
 
 export interface ComponentDocument {
-    _id?: mongoose.Types.ObjectId,
-    authorId: mongoose.Types.ObjectId
-    lastAuthorId: mongoose.Types.ObjectId
+    _id?: mongoose.Types.ObjectId | string,
+    authorId: mongoose.Types.ObjectId | string
+    lastAuthorId: mongoose.Types.ObjectId | string
     elementId: string
     langKey: string,
     order: number,

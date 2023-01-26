@@ -8,14 +8,17 @@ import {
 } from "../types/services/component";
 import componentModel from "../models/component.model";
 import Variable from "../library/variable";
+import componentObjectIdKeys from "../constants/objectIdKeys/component.objectIdKeys";
 
 export default {
     async select(params: SelectComponentParamDocument): Promise<SelectComponentResultDocument[]> {
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
+        let defaultLangId = MongoDBHelpers.createObjectId(Config.defaultLangId);
 
-        if (params.componentId) filters = {
+        if (params._id) filters = {
             ...filters,
-            _id: MongoDBHelpers.createObjectId(params.componentId)
+            _id: params._id
         }
 
         if (params.elementId) filters = {
@@ -34,7 +37,7 @@ export default {
         return (await query.lean().exec()).map((doc: SelectComponentResultDocument) => {
             doc.types.map(docType => {
                 if (Array.isArray(docType.contents)) {
-                    docType.contents = docType.contents.findSingle("langId", MongoDBHelpers.createObjectId(params.langId)) ?? docType.contents.findSingle("langId", MongoDBHelpers.createObjectId(Config.defaultLangId));
+                    docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", defaultLangId);
                     if (docType.contents) {
                         if (!params.getContents) {
                             delete docType.contents.content;
@@ -48,53 +51,35 @@ export default {
     },
     async insert(params: InsertComponentParamDocument) {
         params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
 
-        return await componentModel.create({
-            ...params,
-            authorId: MongoDBHelpers.createObjectId(params.authorId),
-            lastAuthorId: MongoDBHelpers.createObjectId(params.authorId),
-            types: params.types.map(type => ({
-                ...type,
-                _id: undefined,
-                contents: {
-                    ...type.contents,
-                    langId: MongoDBHelpers.createObjectId(type.contents.langId)
-                }
-            }))
-        })
+        return await componentModel.create(params)
     },
     async update(params: UpdateComponentParamDocument) {
         params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
 
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
 
-        if (params.componentId) {
+        if (params._id) {
             filters = {
-                _id: MongoDBHelpers.createObjectId(params.componentId)
+                _id: params._id
             };
         }
 
-        delete params.componentId;
         return await Promise.all((await componentModel.find(filters).exec()).map(async doc => {
             if(params.types){
                 // Check delete
                 doc.types = doc.types.filter(docType =>  params.types && params.types.indexOfKey("_id", docType._id) > -1)
                 // Check Update
                 for (let paramThemeGroupType of params.types) {
-                    let docThemeGroupType = doc.types.findSingle("_id", MongoDBHelpers.createObjectId(paramThemeGroupType._id));
+                    let docThemeGroupType = doc.types.findSingle("_id", paramThemeGroupType._id);
                     if (docThemeGroupType) {
-                        let docGroupTypeContent = docThemeGroupType.contents.findSingle("langId", MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId));
+                        let docGroupTypeContent = docThemeGroupType.contents.findSingle("langId", paramThemeGroupType.contents.langId);
                         if (docGroupTypeContent) {
-                            docGroupTypeContent = Object.assign(docGroupTypeContent, {
-                                ...paramThemeGroupType.contents,
-                                langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
-                            });
+                            docGroupTypeContent = Object.assign(docGroupTypeContent, paramThemeGroupType.contents);
                         } else {
-                            docThemeGroupType.contents.push({
-                                ...paramThemeGroupType.contents,
-                                _id: undefined,
-                                langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
-                            })
+                            docThemeGroupType.contents.push(paramThemeGroupType.contents)
                         }
                         docThemeGroupType = Object.assign(docThemeGroupType, {
                             ...paramThemeGroupType,
@@ -104,20 +89,14 @@ export default {
                     } else {
                         doc.types.push({
                             ...paramThemeGroupType,
-                            _id: undefined,
-                            contents: [{
-                                ...paramThemeGroupType.contents,
-                                langId: MongoDBHelpers.createObjectId(paramThemeGroupType.contents.langId)
-                            }]
+                            contents: [paramThemeGroupType.contents]
                         })
                     }
                 }
                 delete params.types;
             }
 
-            doc = Object.assign(doc, {
-                ...params,
-            });
+            doc = Object.assign(doc, params);
 
             await doc.save();
 
@@ -126,14 +105,15 @@ export default {
     },
     async delete(params: DeleteComponentParamDocument) {
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
 
-        if (Array.isArray(params.componentId)) {
+        if (Array.isArray(params._id)) {
             filters = {
-                _id: {$in: MongoDBHelpers.createObjectIdArray(params.componentId)}
+                _id: {$in: params._id}
             }
         } else {
             filters = {
-                _id: MongoDBHelpers.createObjectId(params.componentId)
+                _id: params._id
             };
         }
 

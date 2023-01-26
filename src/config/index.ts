@@ -127,9 +127,9 @@ class InitConfig {
         if (settings.length === 0) {
             let lang = await languageService.select({});
             await settingService.insert({
-                defaultLangId: lang[0]._id.toString(),
+                defaultLangId: lang[0]._id?.toString() || "",
             });
-            Config.defaultLangId = lang[0]._id.toString();
+            Config.defaultLangId = lang[0]._id?.toString() || "";
             console.log(chalk.green(`#Setting`))
             console.log(chalk.blue(`- Created`))
         } else {

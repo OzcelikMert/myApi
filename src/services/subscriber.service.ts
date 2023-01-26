@@ -9,15 +9,17 @@ import {
     SubscriberDocument
 } from "../types/services/subscriber";
 import subscriberModel from "../models/subscriber.model";
+import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
 
 export default {
     async select(params: SelectSubscriberParamDocument): Promise<SelectSubscriberResultDocument[]> {
         let filters: mongoose.FilterQuery<SubscriberDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
         if (params.id) {
             filters = {
                 ...filters,
-                _id: MongoDBHelpers.createObjectId(params.id)
+                _id: params.id
             }
         }
         if (params.email) {
@@ -33,20 +35,20 @@ export default {
     },
     async insert(params: InsertSubscriberDocument) {
         params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
-        return await subscriberModel.create({
-            ...params
-        })
+        return await subscriberModel.create(params)
     },
     async delete(params: DeleteSubscriberParamDocument) {
         params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
         let filters: mongoose.FilterQuery<SubscriberDocument> = {}
 
         if(params._id){
             if (Array.isArray(params._id)) {
                 filters = {
-                    _id: {$in: MongoDBHelpers.createObjectIdArray(params._id)}
+                    _id: {$in: params._id}
                 }
             }
         }

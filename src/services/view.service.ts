@@ -9,10 +9,12 @@ import {
 } from "../types/services/view";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
+import viewObjectIdKeys from "../constants/objectIdKeys/view.objectIdKeys";
 
 export default {
     async select(params: SelectViewParamDocument): Promise<SelectViewResultDocument[]> {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, viewObjectIdKeys);
 
         if (params.ip) filters = {
             ...filters,
@@ -24,7 +26,7 @@ export default {
         }
         if (params.langId) filters = {
             ...filters,
-            languageId: MongoDBHelpers.createObjectId(params.langId)
+            langId: params.langId
         }
         if (params.city) filters = {
             ...filters,
@@ -52,6 +54,7 @@ export default {
     },
     async selectTotalWithDate(params: SelectViewParamDocument): Promise<SelectTotalWithViewResultDocument[]> {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, viewObjectIdKeys);
 
         if (params.dateStart) {
             filters = {
@@ -86,6 +89,7 @@ export default {
     },
     async selectTotalWithCountry(params: SelectViewParamDocument): Promise<SelectTotalWithViewResultDocument[]> {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, viewObjectIdKeys);
 
         if (params.dateStart) {
             filters = {
@@ -120,14 +124,13 @@ export default {
     },
     async insert(params: InsertViewParamDocument) {
         params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, viewObjectIdKeys);
 
-        return await viewModel.create({
-            ...params,
-            languageId: MongoDBHelpers.createObjectId(params.languageId)
-        })
+        return await viewModel.create(params)
     },
     async delete(params: DeleteViewParamDocument) {
         let filters: mongoose.FilterQuery<ViewDocument> = {};
+        params = MongoDBHelpers.convertObjectIdInData(params, viewObjectIdKeys);
 
         if(params.dateEnd){
             filters = {

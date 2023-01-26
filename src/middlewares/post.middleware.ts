@@ -12,19 +12,19 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            let postId = req.params.postId ?? req.body.postId;
+            let _id = req.params._id ?? req.body._id;
             let typeId = req.params.typeId;
             let langId = req.query.langId ?? req.body.contents ? req.body.contents.langId : undefined;
 
             let resData = await postService.select({
-                postId: postId,
+                _id: _id,
                 typeId: typeId,
                 langId: langId
             });
 
             if (
                 resData.length === 0 ||
-                (Array.isArray(postId) && resData.length != postId.length)
+                (Array.isArray(_id) && resData.length != _id.length)
             ) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.notFound;
@@ -45,7 +45,7 @@ export default {
     ) => {
         await logMiddleware.error(req, res, async () => {
             let typeId: number = req.params.typeId;
-            let postId: string = req.params.postId ?? req.body.postId;
+            let _id: string = req.params._id ?? req.body._id;
 
             if(req.body.contents){
                 let url: string = req.body.contents.url;
@@ -57,7 +57,7 @@ export default {
 
                 let oldUrl = url;
                 while((await postService.select({
-                    ignorePostId: postId ? [postId] : undefined,
+                    ignorePostId: _id ? [_id] : undefined,
                     langId: langId,
                     typeId: typeId,
                     url: url,

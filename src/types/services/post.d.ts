@@ -4,38 +4,33 @@ import {PopulateTermsDocument} from "./postTerm";
 import {ComponentDocument} from "./component";
 
 export interface DeletePostParamDocument {
-    postId: string | string[]
+    _id: string | string[]
     typeId: number
 }
 
 export type UpdatePostStatusIdParamDocument = {
-    postId?: string | string[],
+    _id?: string | string[],
     typeId?: number
     statusId: number,
     lastAuthorId: string
 }
 
 export type UpdatePostViewParamDocument = {
-    postId?: string,
+    _id?: string,
     typeId?: number
     langId: string
 }
 
 export type UpdatePostParamDocument = {
-    postId?: string,
-    lastAuthorId: string,
+    _id?: string
 } & Omit<InsertPostParamDocument, "authorId">
 
 export type InsertPostParamDocument = {
-    mainId?:string
-    authorId: string
-    terms: string[]
-    contents?: Omit<PostContentDocument, "_id"|"langId"> & {langId: string}
-    components?: string[]
-} & Omit<PostDocument, "_id"|"components"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms">
+    contents?: Omit<PostContentDocument, "_id">
+} & Omit<PostDocument, "_id"|"views"|"contents">
 
 export interface SelectPostParamDocument {
-    postId?: string
+    _id?: string
     typeId?: number | number[],
     pageTypeId?: number
     langId?: string
@@ -98,7 +93,7 @@ export interface PostECommerceVariationDocument {
 export interface PostECommerceAttributeDocument {
     _id?: mongoose.Types.ObjectId | string
     attributeId: mongoose.Types.ObjectId | string
-    variations: mongoose.Types.ObjectId[] | string[]
+    variationId: mongoose.Types.ObjectId[] | string[]
     typeId: number
 }
 
