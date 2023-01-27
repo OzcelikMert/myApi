@@ -13,8 +13,16 @@ export type UpdateSettingSEOParamDocument = {
     seoContents?: SettingSeoContentDocument
 }
 
+export type UpdateSettingECommerceParamDocument = {
+    eCommerce: SettingECommerceDocument
+}
+
 export type UpdateSettingContactFormParamDocument = {
     contactForms: SettingContactFormDocument[]
+}
+
+export type UpdateSettingSocialMediaParamDocument = {
+    socialMedia: SettingSocialMediaDocument[]
 }
 
 export type UpdateSettingStaticLanguageParamDocument = {
@@ -63,16 +71,22 @@ export interface SettingContactFormDocument {
     port: number
 }
 
+export interface SettingSocialMediaDocument {
+    _id?: mongoose.Types.ObjectId | string
+    elementId: string
+    title: string
+    url: string
+}
+
 export interface SettingContactDocument {
     email?: string,
     phone?: string,
     address?: string,
     addressMap?: string
-    facebook?: string,
-    instagram?: string,
-    twitter?: string,
-    linkedin?: string,
-    google?: string,
+}
+
+export interface SettingECommerceDocument {
+    currencyId: number
 }
 
 export interface SettingDocument {
@@ -87,4 +101,6 @@ export interface SettingDocument {
     contact?: SettingContactDocument
     contactForms?: SettingContactFormDocument[],
     staticLanguages: SettingStaticLanguageDocument[]
+    socialMedia?: SettingSocialMediaDocument[]
+    eCommerce?: SettingECommerceDocument
 }

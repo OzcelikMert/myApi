@@ -6,8 +6,9 @@ import {
     SettingDocument,
     SettingSeoContentDocument,
     SettingStaticLanguageDocument,
-    SettingStaticLanguageContentDocument
+    SettingStaticLanguageContentDocument, SettingSocialMediaDocument, SettingECommerceDocument
 } from "../types/services/setting";
+import {CurrencyId} from "../constants/currencyTypes";
 
 const schemaStaticLanguageContent = new mongoose.Schema<SettingStaticLanguageContentDocument>(
     {
@@ -39,17 +40,26 @@ const schemaContactForm = new mongoose.Schema<SettingContactFormDocument>(
     {timestamps: true}
 );
 
+const schemaSocialMedia = new mongoose.Schema<SettingSocialMediaDocument>(
+    {
+        elementId: {type: String},
+        title: {type: String},
+        url: {type: String},
+    }
+);
+
+const schemaECommerce = new mongoose.Schema<SettingECommerceDocument>(
+    {
+        currencyId: {type: Number, enum: CurrencyId, default: CurrencyId.TurkishLira},
+    }
+);
+
 const schemaContact = new mongoose.Schema<SettingContactDocument>(
     {
         email: {type: String},
         phone: {type: String},
         address: {type: String},
         addressMap: {type: String},
-        facebook: {type: String},
-        instagram: {type: String},
-        twitter: {type: String},
-        linkedin: {type: String},
-        google: {type: String}
     }
 );
 
@@ -75,6 +85,8 @@ const schema = new mongoose.Schema<SettingDocument>(
         contact: {type: schemaContact},
         contactForms: {type: [schemaContactForm], default: []},
         staticLanguages: {type: [schemaStaticLanguage], default: []},
+        socialMedia: {type: [schemaSocialMedia], default: []},
+        eCommerce: {type: schemaECommerce},
     },
     {timestamps: true}
 );

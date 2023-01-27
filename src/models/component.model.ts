@@ -33,6 +33,6 @@ const schema = new mongoose.Schema<ComponentDocument>(
             types: {type: [schemaType], default: []}
     },
     {timestamps: true}
-).index({typeId: 1, statusId: 1, authorId: 1});
+).index({authorId: 1});
 
 export default mongoose.model<ComponentDocument>("components", schema)

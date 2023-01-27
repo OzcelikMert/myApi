@@ -2,9 +2,15 @@ import * as mongoose from "mongoose";
 import settingModel from "../models/setting.model";
 import {
     InsertSettingParamDocument,
-    SelectSettingParamDocument, SelectSettingResultDocument,
-    SettingDocument, UpdateSettingContactFormParamDocument, UpdateSettingGeneralParamDocument,
-    UpdateSettingSEOParamDocument, UpdateSettingStaticLanguageParamDocument
+    SelectSettingParamDocument,
+    SelectSettingResultDocument,
+    SettingDocument,
+    UpdateSettingContactFormParamDocument,
+    UpdateSettingECommerceParamDocument,
+    UpdateSettingGeneralParamDocument,
+    UpdateSettingSEOParamDocument,
+    UpdateSettingSocialMediaParamDocument,
+    UpdateSettingStaticLanguageParamDocument
 } from "../types/services/setting";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
@@ -147,5 +153,25 @@ export default {
             await doc.save();
             return params;
         }));
-    }
+    },
+    async updateSocialMedia(params: UpdateSettingSocialMediaParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, settingObjectIdKeys);
+
+        return await Promise.all((await settingModel.find({}).exec()).map(async doc => {
+            doc.socialMedia = params.socialMedia;
+            await doc.save();
+            return params;
+        }));
+    },
+    async updateECommerce(params: UpdateSettingECommerceParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, settingObjectIdKeys);
+
+        return await Promise.all((await settingModel.find({}).exec()).map(async doc => {
+            doc = Object.assign(doc, params);
+            await doc.save();
+            return params;
+        }));
+    },
 };

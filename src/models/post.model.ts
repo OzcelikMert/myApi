@@ -49,10 +49,10 @@ const schemaECommerceAttribute = new mongoose.Schema<PostECommerceAttributeDocum
 
 const schemaECommerceShipping = new mongoose.Schema<PostECommerceShippingDocument>(
     {
-        width: {type: Number, default: 0},
-        height: {type: Number, default: 0},
-        depth: {type: Number, default: 0},
-        weight: {type: Number, default: 0},
+        width: {type: String, default: ""},
+        height: {type: String, default: ""},
+        depth: {type: String, default: ""},
+        weight: {type: String, default: ""},
     }
 );
 

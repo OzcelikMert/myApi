@@ -8,6 +8,7 @@ import settingPermissionPath from "./setting.permissionPath";
 import componentPermissionPath from "./component.permissionPath";
 import postPermissionPath from "./post.permissionPath";
 import postTermPermissionPath from "./postTerm.permissionPath";
+import navigatePermissionPath from "./navigate.permissionPath";
 
 const PermissionPaths: PermissionPathDocument[] = [
     ...userPermissionPath,
@@ -17,7 +18,8 @@ const PermissionPaths: PermissionPathDocument[] = [
     ...settingPermissionPath,
     ...componentPermissionPath,
     ...postPermissionPath,
-    ...postTermPermissionPath
+    ...postTermPermissionPath,
+    ...navigatePermissionPath
 ];
 
 export default PermissionPaths;

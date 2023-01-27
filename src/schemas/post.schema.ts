@@ -41,10 +41,10 @@ const postBody = object({
             isManageStock: boolean().default(false)
         }).default(undefined),
         shipping: object({
-            width: number().default(0),
-            height: number().default(0),
-            depth: number().default(0),
-            weight: number().default(0),
+            width: string().default(""),
+            height: string().default(""),
+            depth: string().default(""),
+            weight: string().default(""),
         }).default(undefined),
         attributes: array(object({
             typeId: number().required({typeId: ErrorCodes.emptyValue}),

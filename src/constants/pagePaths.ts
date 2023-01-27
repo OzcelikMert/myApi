@@ -58,6 +58,14 @@ const PagePaths = {
                 let subPath = "staticLanguage";
                 return setPath(path, subPath);
             },
+            socialMedia() {
+                let subPath = "socialMedia";
+                return setPath(path, subPath);
+            },
+            eCommerce() {
+                let subPath = "eCommerce";
+                return setPath(path, subPath);
+            },
         }
     },
     user(withMainPath: boolean = true) {
@@ -123,6 +131,18 @@ const PagePaths = {
     },
     component(withMainPath: boolean = true) {
         let path = withMainPath ? setPath("component") : "";
+
+        return {
+            self() {
+                return setPath(path);
+            },
+            withId(_id: string | number | undefined = ":_id") {
+                return setPath(path, _id);
+            },
+        }
+    },
+    navigation(withMainPath: boolean = true) {
+        let path = withMainPath ? setPath("navigation") : "";
 
         return {
             self() {

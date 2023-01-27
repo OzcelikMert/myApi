@@ -11,5 +11,6 @@ export enum PermissionGroupId {
     Service,
     Testimonial,
     Subscriber,
-    Component
+    Component,
+    ECommerce
 }

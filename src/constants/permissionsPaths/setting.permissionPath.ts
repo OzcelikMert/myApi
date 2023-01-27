@@ -39,5 +39,23 @@ export default [
                 method: "PUT"
             }
         ]
+    },
+    {
+        path: PagePaths.setting().socialMedia(),
+        methods: [
+            {
+                permissionId: PermissionId.SettingEdit,
+                method: "PUT"
+            }
+        ]
+    },
+    {
+        path: PagePaths.setting().eCommerce(),
+        methods: [
+            {
+                userRoleId: UserRoleId.Admin,
+                method: "PUT"
+            }
+        ]
     }
 ] as PermissionPathDocument[]

@@ -14,6 +14,7 @@ import subscriberRouter from "./routes/subscriber.router";
 import componentRouter from "./routes/component.router";
 import sitemapRouter from "./routes/sitemap.router";
 import PagePaths from "../constants/pagePaths";
+import navigationRouter from "./routes/navigation.router";
 
 const routers = Router();
 
@@ -30,5 +31,6 @@ routers.use(PagePaths.setting().self(), settingRouter)
 routers.use(PagePaths.component().self(), componentRouter)
 routers.use(PagePaths.post().self(), postRouter)
 routers.use(PagePaths.postTerm().self(), postTermRouter)
+routers.use(PagePaths.navigation().self(), navigationRouter)
 
 export default routers;

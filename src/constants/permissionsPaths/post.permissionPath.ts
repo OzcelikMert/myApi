@@ -84,7 +84,7 @@ export default [
                 method: "DELETE"
             },
             {
-                permissionId: PermissionId.PortfolioDelete,
+                permissionId: PermissionId.PortfolioEdit,
                 method: "PUT"
             },
         ]
@@ -107,23 +107,6 @@ export default [
         ]
     },
     {
-        path: PagePaths.post().withTypeId(PostTypeId.Navigate).self(),
-        methods: [
-            {
-                permissionId: PermissionId.NavigateAdd,
-                method: "POST"
-            },
-            {
-                permissionId: PermissionId.NavigateDelete,
-                method: "DELETE"
-            },
-            {
-                permissionId: PermissionId.NavigateEdit,
-                method: "PUT"
-            },
-        ]
-    },
-    {
         path: PagePaths.post().withTypeId(PostTypeId.Service).self(),
         methods: [
             {
@@ -136,6 +119,23 @@ export default [
             },
             {
                 permissionId: PermissionId.ServiceEdit,
+                method: "PUT"
+            },
+        ]
+    },
+    {
+        path: PagePaths.post().withTypeId(PostTypeId.Product).self(),
+        methods: [
+            {
+                permissionId: PermissionId.ProductAdd,
+                method: "POST"
+            },
+            {
+                permissionId: PermissionId.ProductDelete,
+                method: "DELETE"
+            },
+            {
+                permissionId: PermissionId.ProductEdit,
                 method: "PUT"
             },
         ]

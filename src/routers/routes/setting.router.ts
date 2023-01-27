@@ -21,4 +21,10 @@ settingRouter.route(PagePaths.setting(false).contactForm())
 settingRouter.route(PagePaths.setting(false).staticLanguage())
     .put([requestMiddleware.check(settingSchema.putStaticLanguage), sessionMiddleware.check, permissionMiddleware.check], settingController.setStaticLanguage)
 
+settingRouter.route(PagePaths.setting(false).socialMedia())
+    .put([requestMiddleware.check(settingSchema.putSocialMedia), sessionMiddleware.check, permissionMiddleware.check], settingController.setSocialMedia)
+
+settingRouter.route(PagePaths.setting(false).eCommerce())
+    .put([requestMiddleware.check(settingSchema.putECommerce), sessionMiddleware.check, permissionMiddleware.check], settingController.setECommerce)
+
 export default settingRouter;

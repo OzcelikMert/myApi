@@ -98,10 +98,10 @@ export interface PostECommerceAttributeDocument {
 }
 
 export interface PostECommerceShippingDocument {
-    width: number
-    height: number
-    depth: number
-    weight: number
+    width: string
+    height: string
+    depth: string
+    weight: string
 }
 
 export interface PostECommerceInventoryDocument {

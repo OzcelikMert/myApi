@@ -1,4 +1,4 @@
-import { object, number, boolean, string, array } from "yup";
+import { object, number, boolean, string, array, mixed } from "yup";
 import {ErrorCodes} from "../library/api";
 
 export default {
@@ -54,6 +54,16 @@ export default {
             }).required({contactForms: ErrorCodes.incorrectData})).required({contactForms: ErrorCodes.emptyValue}),
         })
     }),
+    putSocialMedia: object({
+        body: object({
+            socialMedia: array(object({
+                _id: string(),
+                elementId: string().default(""),
+                title: string().default(""),
+                url: string().default(""),
+            }).required({socialMedia: ErrorCodes.incorrectData})).required({socialMedia: ErrorCodes.emptyValue}),
+        })
+    }),
     putStaticLanguage: object({
         body: object({
             staticLanguages: array(object({
@@ -65,6 +75,13 @@ export default {
                     content: string().default(""),
                 })
             }).required({staticLanguages: ErrorCodes.incorrectData})).required({staticLanguages: ErrorCodes.emptyValue}),
+        })
+    }),
+    putECommerce: object({
+        body: object({
+            eCommerce: object({
+                currencyId: number().required({currencyId: ErrorCodes.emptyValue}),
+            }).required({eCommerce: ErrorCodes.incorrectData}),
         })
     }),
 };

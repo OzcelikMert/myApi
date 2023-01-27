@@ -72,5 +72,31 @@ export default {
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
-    }
+    },
+    setSocialMedia: async (
+        req: Request,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            let data: InferType<typeof settingSchema.putSocialMedia> = req;
+
+            await settingService.updateSocialMedia(data.body)
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
+    setECommerce: async (
+        req: Request,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            let data: InferType<typeof settingSchema.putECommerce> = req;
+
+            await settingService.updateECommerce(data.body)
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
 };
