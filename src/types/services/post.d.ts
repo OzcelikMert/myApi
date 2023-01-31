@@ -44,14 +44,6 @@ export interface SelectPostParamDocument {
 export type SelectPostResultDocument = {
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
-    mainId?: {
-        _id: mongoose.Types.ObjectId | string
-        contents: {
-            langId: mongoose.Types.ObjectId | string
-            title: string,
-            url: string,
-        }
-    },
     views?: number,
     terms: PopulateTermsDocument[]
     contents?: PostContentDocument | PostContentDocument[]
@@ -154,7 +146,6 @@ export interface PostDocument {
     typeId?: number,
     statusId: number,
     pageTypeId?: number,
-    mainId?: mongoose.Types.ObjectId | string
     authorId: mongoose.Types.ObjectId | string
     lastAuthorId: mongoose.Types.ObjectId | string
     dateStart: Date,

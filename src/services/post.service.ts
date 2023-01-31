@@ -56,23 +56,7 @@ export default {
             }
         }
 
-        let query = postModel.find(filters).populate<{ mainId: SelectPostResultDocument["mainId"] }>({
-            path: "mainId",
-            select: "_id contents.title contents.url contents.langId",
-            transform: (doc: SelectPostResultDocument) => {
-                if (doc) {
-                    if (Array.isArray(doc.contents)) {
-                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
-                        if (doc.contents) {
-                            if (!params.getContents) {
-                                delete doc.contents.content;
-                            }
-                        }
-                    }
-                    return doc;
-                }
-            }
-        }).populate<{ terms: SelectPostResultDocument["terms"] }>({
+        let query = postModel.find(filters).populate<{ terms: SelectPostResultDocument["terms"] }>({
             path: "terms",
             select: "_id typeId contents.title contents.langId",
             transform: (doc: SelectPostTermResultDocument) => {
@@ -169,10 +153,6 @@ export default {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
-        if (Variable.isEmpty(params.mainId)) {
-            delete params.mainId;
-        }
-
         return await postModel.create(params);
     },
     async update(params: UpdatePostParamDocument) {
@@ -202,14 +182,6 @@ export default {
                     doc.contents.push(params.contents)
                 }
                 delete params.contents;
-            }
-
-            if (Variable.isEmpty(params.mainId)) {
-                doc.mainId = undefined;
-            }
-
-            if(params.mainId){
-                doc.mainId = params.mainId;
             }
 
             await doc.save();

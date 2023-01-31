@@ -3,7 +3,6 @@ import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../
 import postTermSchema from "../../schemas/postTerm.schema";
 import postTermMiddleware from "../../middlewares/postTerm.middleware";
 import postTermController from "../../controllers/postTerm.controller";
-import viewMiddleware from "../../middlewares/view.middleware";
 import PagePaths from "../../constants/pagePaths";
 
 const postTermRouter = Router();

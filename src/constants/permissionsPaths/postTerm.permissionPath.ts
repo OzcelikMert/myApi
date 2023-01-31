@@ -107,23 +107,6 @@ export default [
         ]
     },
     {
-        path: PagePaths.postTerm().withPostTypeId(PostTypeId.Navigate).self(),
-        methods: [
-            {
-                permissionId: PermissionId.NavigateAdd,
-                method: "POST"
-            },
-            {
-                permissionId: PermissionId.NavigateDelete,
-                method: "DELETE"
-            },
-            {
-                permissionId: PermissionId.NavigateEdit,
-                method: "PUT"
-            },
-        ]
-    },
-    {
         path: PagePaths.postTerm().withPostTypeId(PostTypeId.Service).self(),
         methods: [
             {

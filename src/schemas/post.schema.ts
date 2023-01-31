@@ -2,7 +2,6 @@ import {object, string, number, boolean, array, mixed, SchemaOf} from "yup";
 import {ErrorCodes} from "../library/api";
 
 const postBody = object({
-    mainId: string(),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
     pageTypeId: number(),
     terms: array(string().required({terms: ErrorCodes.incorrectData})).default([]),
@@ -71,10 +70,10 @@ const postBody = object({
                 isManageStock: boolean().default(false)
             }).required({inventory: ErrorCodes.emptyValue}),
             shipping: object({
-                width: number().default(0),
-                height: number().default(0),
-                depth: number().default(0),
-                weight: number().default(0),
+                width: string().default(""),
+                height: string().default(""),
+                depth: string().default(""),
+                weight: string().default(""),
             }).required({shipping: ErrorCodes.emptyValue}),
             contents: object({
                 langId: string().required({langId: ErrorCodes.emptyValue}),

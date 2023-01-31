@@ -24,7 +24,7 @@ export default {
         let sitemapName = getPostSitemapName(params.postTypeId);
         let sitemapUtil = new SitemapUtil(sitemapName);
 
-        let languages = await languageService.select({id: params.langId});
+        let languages = await languageService.select({_id: params.langId});
         if (languages.length > 0) {
             let language = languages[0];
             let loc = getPostTermSitemapLoc(params.typeId, params.postTypeId, params.url);
@@ -51,7 +51,7 @@ export default {
         let sitemapName = getPostSitemapName(params.postTypeId);
         let sitemapUtil = new SitemapUtil(sitemapName);
 
-        let languages = await languageService.select({id: params.langId});
+        let languages = await languageService.select({_id: params.langId});
         if(languages.length > 0){
             let language = languages[0];
             let loc = getPostTermSitemapLoc(params.typeId, params.postTypeId, params.url);

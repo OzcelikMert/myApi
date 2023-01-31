@@ -34,5 +34,6 @@ export enum PermissionId {
     StaticLanguage,
     ProductAdd,
     ProductEdit,
-    ProductDelete
+    ProductDelete,
+    ECommerce
 }

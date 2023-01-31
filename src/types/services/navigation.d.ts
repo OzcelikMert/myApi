@@ -24,7 +24,6 @@ export interface SelectNavigationParamDocument {
     langId?: string
     url?: string
     statusId?: number
-    getContents?: boolean
     maxCount?: number
 }
 
