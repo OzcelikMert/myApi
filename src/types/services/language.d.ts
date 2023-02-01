@@ -4,7 +4,11 @@ export interface SelectLanguageParamDocument {
     _id?: string
 }
 
-export type InsertLanguageDocument = {} & Omit<LanguageDocument, "_id">
+export type UpdateLanguageParamDocument = {
+    _id: string
+} & InsertLanguageParamDocument
+
+export type InsertLanguageParamDocument = {} & Omit<LanguageDocument, "_id">
 
 export type SelectLanguageResultDocument = {} & LanguageDocument
 

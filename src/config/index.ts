@@ -26,9 +26,8 @@ let Config: ConfigDocument = {
     paths: {
         root: "",
         uploads: {
-            get images() {
-                return path.resolve(Config.paths.root, "uploads", "images");
-            }
+            get images() {return path.resolve(Config.paths.root, "uploads", "images");},
+            get flags() {return path.resolve(Config.paths.root, "uploads", "flags");}
         }
     },
     defaultLangId: ""

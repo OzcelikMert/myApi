@@ -183,6 +183,7 @@ export default {
                 }
                 delete params.contents;
             }
+            doc = Object.assign(doc, params);
 
             await doc.save();
 

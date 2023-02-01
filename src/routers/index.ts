@@ -21,7 +21,7 @@ const routers = Router();
 routers.use(PagePaths.auth(), authRouter)
 routers.use(PagePaths.user().self(), userRouter)
 routers.use(PagePaths.gallery(), galleryRouter)
-routers.use(PagePaths.language(), languageRouter)
+routers.use(PagePaths.language().self(), languageRouter)
 routers.use(PagePaths.serverInfo(), serverInfoRouter)
 routers.use(PagePaths.subscriber().self(), subscriberRouter)
 routers.use(PagePaths.view().self(), viewRouter)

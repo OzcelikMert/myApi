@@ -9,8 +9,20 @@ const PagePaths = {
     gallery() {
         return pagePathUtil.setPath("gallery");
     },
-    language() {
-        return pagePathUtil.setPath("language");
+    language(withMainPath: boolean = true) {
+        let path = withMainPath ? pagePathUtil.setPath("language") : "";
+
+        return {
+            self() {
+                return pagePathUtil.setPath(path);
+            },
+            withId(_id: string | number | undefined = ":_id") {
+                return pagePathUtil.setPath(path, _id);
+            },
+            flags() {
+                return pagePathUtil.setPath(path, "flags");
+            }
+        }
     },
     serverInfo() {
         return pagePathUtil.setPath("serverInfo");
@@ -26,28 +38,22 @@ const PagePaths = {
                 return pagePathUtil.setPath(path);
             },
             seo() {
-                let subPath = "seo";
-                return pagePathUtil.setPath(path, subPath);
+                return pagePathUtil.setPath(path, "seo");
             },
             general() {
-                let subPath = "general";
-                return pagePathUtil.setPath(path, subPath);
+                return pagePathUtil.setPath(path, "general");
             },
             contactForm() {
-                let subPath = "contactForm";
-                return pagePathUtil.setPath(path, subPath);
+                return pagePathUtil.setPath(path, "contactForm");
             },
             staticLanguage() {
-                let subPath = "staticLanguage";
-                return pagePathUtil.setPath(path, subPath);
+                return pagePathUtil.setPath(path, "staticLanguage");
             },
             socialMedia() {
-                let subPath = "socialMedia";
-                return pagePathUtil.setPath(path, subPath);
+                return pagePathUtil.setPath(path, "socialMedia");
             },
             eCommerce() {
-                let subPath = "eCommerce";
-                return pagePathUtil.setPath(path, subPath);
+                return pagePathUtil.setPath(path, "eCommerce");
             },
         }
     },
@@ -62,12 +68,10 @@ const PagePaths = {
                 return pagePathUtil.setPath(path, _id);
             },
             profile() {
-                let subPath = "profile";
-                return pagePathUtil.setPath(path, subPath);
+                return pagePathUtil.setPath(path, "profile");
             },
             changePassword() {
-                let subPath = "changePassword";
-                return pagePathUtil.setPath(path, subPath);
+                return pagePathUtil.setPath(path, "changePassword");
             },
         }
     },
@@ -103,12 +107,10 @@ const PagePaths = {
                 return pagePathUtil.setPath(path);
             },
             number() {
-                let subPath = "number";
-                return pagePathUtil.setPath(path, subPath);
+                return pagePathUtil.setPath(path, "number");
             },
             statistics() {
-                let subPath = "statistics";
-                return pagePathUtil.setPath(path, subPath);
+                return pagePathUtil.setPath(path, "statistics");
             },
         }
     },
@@ -151,8 +153,7 @@ const PagePaths = {
                 return pagePathUtil.setPath(path, _id);
             },
             view() {
-                let subPath = "view";
-                path = pagePathUtil.setPath(path, subPath);
+                path = pagePathUtil.setPath(path, "view");
                 return this
             },
         }

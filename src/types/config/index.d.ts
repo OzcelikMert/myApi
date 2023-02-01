@@ -16,6 +16,7 @@ interface ConfigDocument {
         root: string
         uploads: {
             images: string
+            flags: string
         }
     },
     defaultLangId: string
