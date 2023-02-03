@@ -10,7 +10,7 @@ export interface DeletePostParamDocument {
 
 export type UpdatePostStatusIdParamDocument = {
     _id?: string | string[],
-    typeId?: number
+    typeId: number
     statusId: number,
     lastAuthorId: string
 }
