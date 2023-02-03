@@ -21,6 +21,13 @@ export default {
             }
         }
 
+        if (params.statusId) {
+            filters = {
+                ...filters,
+                statusId: params.statusId
+            }
+        }
+
         return await languageModel.find(filters, {}).lean().exec();
     },
     async insert(params: InsertLanguageParamDocument) {

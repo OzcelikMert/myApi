@@ -1,4 +1,4 @@
-import {number, object, string} from "yup";
+import {boolean, number, object, string} from "yup";
 import {ErrorCodes} from "../library/api";
 
 const postBody = object({
@@ -14,6 +14,9 @@ export default {
         params: object({
             _id: string(),
         }),
+        query: object({
+            statusId: number()
+        })
     }),
     post: object({
         body: postBody

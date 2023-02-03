@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 export interface SelectLanguageParamDocument {
     _id?: string
+    statusId?: number
 }
 
 export type UpdateLanguageParamDocument = {

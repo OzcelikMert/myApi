@@ -44,7 +44,8 @@ export default {
             let data: InferType<typeof languageSchema.get> = req;
 
             serviceResult.data = await languageService.select({
-                ...data.params
+                ...data.params,
+                ...data.query
             });
 
             res.status(serviceResult.statusCode).json(serviceResult)
