@@ -4,7 +4,7 @@ import {StatusId} from "../../constants/status";
 export type SelectSettingParamDocument = {
     langId?: string
     getContactFormPasswords?: boolean
-    onlyDefaultLanguageId?: boolean
+    projection?: "general" | "seo" | "eCommerce" | "contactForm" | "socialMedia" | "staticLanguage"
 }
 
 export type UpdateSettingGeneralParamDocument = {} & Omit<InsertSettingParamDocument, "seoContents"|"contactForms"|"staticLanguages">

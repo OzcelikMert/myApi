@@ -25,8 +25,15 @@ export default {
         params = MongoDBHelpers.convertObjectIdInData(params, settingObjectIdKeys);
         let defaultLangId = MongoDBHelpers.createObjectId(Config.defaultLangId);
 
-        if(params.onlyDefaultLanguageId){
-            projection = {defaultLangId: 1}
+        if(params.projection){
+            switch (params.projection) {
+                case "general": projection = {eCommerce: 0, staticLanguages: 0, socialMedia: 0, contactForms: 0, seoContents: 0}; break;
+                case "seo": projection = {seoContents: 1}; break;
+                case "contactForm": projection = {contactForms: 1}; break;
+                case "eCommerce": projection = {eCommerce: 1}; break;
+                case "staticLanguage": projection = {staticLanguages: 1}; break;
+                case "socialMedia": projection = {socialMedia: 1}; break;
+            }
         }
 
         let query = settingModel.find(filters, projection);
