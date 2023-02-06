@@ -5,7 +5,7 @@ import {PostTypeId} from "../../constants/postTypes";
 import {PageTypeId} from "../../constants/pageTypes";
 
 export function isPostSitemapRequire(typeId: PostTypeId, expect: PostTypeId[] = []){
-    return [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio].filter(type => !expect.includes(type)).includes(typeId);
+    return [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.Product].filter(type => !expect.includes(type)).includes(typeId);
 }
 
 export function getPostSitemapName(typeId: PostTypeId){

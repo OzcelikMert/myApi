@@ -40,7 +40,7 @@ export default {
                 authorId: req.session.data.id.toString(),
             });
 
-            if(isPostTermSitemapRequire(data.params.postTypeId)){
+            if(isPostTermSitemapRequire(data.params.typeId, data.params.postTypeId)){
                 insertData.sitemap = await postTermSitemapUtil.add({
                     _id: insertData._id.toString(),
                     url: data.body.contents.url ?? "",
@@ -68,7 +68,7 @@ export default {
                 lastAuthorId: req.session.data.id.toString()
             });
 
-            if(isPostTermSitemapRequire(data.params.postTypeId)){
+            if(isPostTermSitemapRequire(data.params.typeId, data.params.postTypeId)){
                 for (const updated of updatedData) {
                     await postTermSitemapUtil.update({
                         _id: updated._id.toString(),
@@ -114,7 +114,7 @@ export default {
                 ...data.body
             });
 
-            if(isPostTermSitemapRequire(data.params.postTypeId)){
+            if(isPostTermSitemapRequire(data.params.typeId, data.params.postTypeId)){
                 for (const deleted of deletedData) {
                     await postTermSitemapUtil.delete({
                         _id: deleted._id.toString(),

@@ -5,8 +5,8 @@ import {PostTypeId} from "../../constants/postTypes";
 import {PostTermTypeId} from "../../constants/postTermTypes";
 import {getPostSitemapName, isPostSitemapRequire} from "./post.sitemap.util";
 
-export function isPostTermSitemapRequire(postTypeId: PostTypeId){
-    return isPostSitemapRequire(postTypeId, [PostTypeId.Page]);
+export function isPostTermSitemapRequire(typeId: PostTermTypeId, postTypeId: PostTypeId){
+    return [PostTermTypeId.Category, PostTermTypeId.Tag].includes(typeId) && isPostSitemapRequire(postTypeId, [PostTypeId.Page]);
 }
 
 export function getPostTermSitemapName(typeId: PostTermTypeId){
