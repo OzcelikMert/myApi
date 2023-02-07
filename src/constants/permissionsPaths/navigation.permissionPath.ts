@@ -1,5 +1,4 @@
 import PagePaths from "../pagePaths";
-import {UserRoleId} from "../userRoles";
 import {PermissionId} from "../permissions";
 import {PermissionPathDocument} from "../../types/constants/permissionPaths";
 

@@ -1,4 +1,4 @@
-import { object, string, number, array } from "yup";
+import {object, string, number, array, boolean} from "yup";
 import {ErrorCodes} from "../library/api";
 
 const postBody = object({
@@ -29,7 +29,7 @@ export default {
         query: object({
             elementId: string(),
             langId: string(),
-            getContents: number().is([1], {getContents: ErrorCodes.incorrectData}).default(undefined),
+            getContents: boolean().default(false),
         })
     }),
     post: object({
