@@ -111,7 +111,8 @@ export interface PostECommercePricingDocument {
 }
 
 export interface PostECommerceDocument {
-    typeId?: number
+    typeId: number
+    images: string[]
     pricing?: PostECommercePricingDocument
     inventory?: PostECommerceInventoryDocument
     shipping?: PostECommerceShippingDocument

@@ -90,6 +90,7 @@ const schemaECommerceVariation= new mongoose.Schema<PostECommerceVariationDocume
 const schemaECommerce = new mongoose.Schema<PostECommerceDocument>(
     {
         typeId: {type: Number, enum: ProductTypeId, required: true},
+        images: {type: [String], default: []},
         inventory: {type: schemaECommerceInventory},
         pricing: {type: schemaECommercePricing},
         shipping: {type: schemaECommerceShipping},

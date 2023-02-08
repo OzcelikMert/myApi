@@ -1,5 +1,6 @@
 import {object, string, number, boolean, array, mixed, SchemaOf} from "yup";
 import {ErrorCodes} from "../library/api";
+import {ProductTypeId} from "../constants/productTypes";
 
 const postBody = object({
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
@@ -26,7 +27,8 @@ const postBody = object({
     }).required({contents: ErrorCodes.emptyValue}),
     components: array(string().required({components: ErrorCodes.incorrectData})).default([]),
     eCommerce: object({
-        typeId: number(),
+        typeId: number().default(ProductTypeId.SimpleProduct),
+        images: array(string().required({images: ErrorCodes.incorrectData})).default([]),
         pricing: object({
             taxRate: number().default(0),
             taxExcluded: number().default(0),
