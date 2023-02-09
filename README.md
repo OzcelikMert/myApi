@@ -6,3 +6,4 @@ Things to do:
 + settingse eger column name gelirse gelen column isminin datasini cekip sadece o columunu geri gonder
 + yeni eklenen ozelliklerin sitemapini ayarla
 - sitemap icin daha kullanisli bir yol bul direk databaseden cekmek gibi
+- Postlar ve sayfa butonlari olan tum icerikler icin pageNumber parametersi ekle ve o sayi adeti kadar gonder
