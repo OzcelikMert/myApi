@@ -114,7 +114,8 @@ class InitConfig {
                 image: "gb.webp",
                 shortKey: "en",
                 locale: "us",
-                statusId: StatusId.Active
+                statusId: StatusId.Active,
+                order: -1
             })
             console.log(chalk.green(`#Language`))
             console.log(chalk.blue(`- Created`))

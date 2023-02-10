@@ -7,6 +7,7 @@ const postBody = object({
     shortKey: string().required({shortKey: ErrorCodes.emptyValue}),
     locale: string().required({locale: ErrorCodes.emptyValue}),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
+    order: number().default(0)
 })
 
 export default {

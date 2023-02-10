@@ -8,7 +8,8 @@ const schema = new mongoose.Schema<LanguageDocument>(
         image: {type: String, required: true},
         shortKey: {type: String, required: true},
         locale: {type: String, required: true},
-        statusId: {type: Number, required: true, enum: StatusId}
+        statusId: {type: Number, required: true, enum: StatusId},
+        order: {type: Number, default: 0}
     },
     {timestamps: true}
 )

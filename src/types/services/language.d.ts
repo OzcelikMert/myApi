@@ -20,4 +20,5 @@ export interface LanguageDocument {
     shortKey: string
     locale: string
     statusId: number
+    order: number
 }
