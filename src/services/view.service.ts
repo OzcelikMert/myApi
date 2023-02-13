@@ -120,7 +120,7 @@ export default {
                     total: { $sum: 1 }
                 },
             }
-        ]).exec();
+        ]).sort({_id: 1}).exec();
     },
     async insert(params: InsertViewParamDocument) {
         params = Variable.clearAllScriptTags(params);

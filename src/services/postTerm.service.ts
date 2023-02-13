@@ -11,6 +11,8 @@ import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
 import {Config} from "../config";
 import postTermObjectIdKeys from "../constants/objectIdKeys/postTerm.objectIdKeys";
+import postModel from "../models/post.model";
+import {PostTermTypeId} from "../constants/postTermTypes";
 
 export default {
     async select(params: SelectPostTermParamDocument): Promise<SelectPostTermResultDocument[]> {
@@ -64,9 +66,9 @@ export default {
             select: "_id name email url"
         })
 
-        if (params.maxCount) query.limit(params.maxCount);
+        if (params.count) query.limit(params.count);
 
-        return (await query.lean().exec()).map((doc: SelectPostTermResultDocument) => {
+        return Promise.all((await query.lean().exec()).map(async ( doc: SelectPostTermResultDocument) => {
             if (Array.isArray(doc.contents)) {
                 doc.alternates = doc.contents.map(content => ({
                     langId: content.langId,
@@ -84,8 +86,12 @@ export default {
                 }
             }
 
+            if(params.withPostCount && [PostTermTypeId.Category, PostTermTypeId.Tag].includes(doc.typeId)){
+                doc.postCount = (await postModel.find({typeId: doc.postTypeId, terms: { $in: [doc._id]}}).count().exec())
+            }
+
             return doc;
-        })
+        }))
     },
     async insert(params: InsertPostTermParamDocument) {
         params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);

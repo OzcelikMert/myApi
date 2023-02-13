@@ -22,6 +22,21 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
+    getCount: async (
+        req: Request<any, any, any, any>,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            let data: InferType<typeof postSchema.getCount> = req;
+
+            serviceResult.data = await postService.selectCount({
+                ...data.query
+            });
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
     get: async (
         req: Request<any, any, any, any>,
         res: Response
@@ -35,6 +50,15 @@ export default {
                 ...data.params,
                 ...data.query
             });
+
+            if(data.query.page) {
+                serviceResult.customData = {
+                    allCount: await postService.selectCount({
+                        ...data.params,
+                        ...data.query
+                    })
+                }
+            }
 
             res.status(serviceResult.statusCode).json(serviceResult)
         })

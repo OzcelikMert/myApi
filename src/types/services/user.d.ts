@@ -6,7 +6,7 @@ export interface SelectUserParamDocument {
     email?: string,
     password?: string,
     url?: string,
-    maxCount?: number,
+    count?: number,
     roleId?: number
     ignoreUserId?: string[]
 }

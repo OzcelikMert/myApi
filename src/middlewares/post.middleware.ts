@@ -61,7 +61,7 @@ export default {
                     langId: langId,
                     typeId: typeId,
                     url: url,
-                    maxCount: 1
+                    count: 1
                 })).length > 0) {
 
                     url = `${oldUrl}-${urlAlreadyCount}`;

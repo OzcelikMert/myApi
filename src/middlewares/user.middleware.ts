@@ -139,7 +139,7 @@ export default {
                 while ((await userService.select({
                     ignoreUserId: _id ? [_id] : undefined,
                     url: url,
-                    maxCount: 1
+                    count: 1
                 })).length > 0) {
 
                     url = `${oldUrl}-${urlAlreadyCount}`;

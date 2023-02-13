@@ -66,7 +66,8 @@ export default {
         }
 
         let query = userModel.find(filters, {});
-        if(params.maxCount) query.limit(params.maxCount);
+
+        if(params.count) query.limit(params.count);
 
         return (await query.lean().exec()).map((user: SelectUserResultDocument) => {
             delete user.password;

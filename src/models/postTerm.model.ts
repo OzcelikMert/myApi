@@ -5,6 +5,7 @@ import {PostTermTypeId} from "../constants/postTermTypes";
 import userModel from "./user.model";
 import languageModel from "./language.model";
 import {PostTermContentDocument, PostTermDocument} from "../types/services/postTerm";
+import postModel from "./post.model";
 
 const schemaContent = new mongoose.Schema<PostTermContentDocument>(
     {

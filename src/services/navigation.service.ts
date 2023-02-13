@@ -50,8 +50,6 @@ export default {
             select: "_id name email url"
         });
 
-        if (params.maxCount) query.limit(params.maxCount);
-
         return (await query.lean().exec()).map((doc: SelectNavigationResultDocument) => {
             if (Array.isArray(doc.contents)) {
                 let docContent = doc.contents.findSingle("langId", params.langId);

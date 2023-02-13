@@ -37,8 +37,21 @@ export interface SelectPostParamDocument {
     url?: string
     statusId?: number,
     getContents?: boolean,
-    maxCount?: number,
+    count?: number,
+    page?: number
     ignorePostId?: string[]
+}
+
+export interface SelectPostCountParamDocument {
+    typeId?: number | number[]
+    pageTypeId?: number
+    url?: string
+    statusId?: number
+    ignorePostId?: string[]
+}
+
+export interface SelectPostCountForTypeParamDocument {
+    typeId?: number | number[]
 }
 
 export type SelectPostResultDocument = {

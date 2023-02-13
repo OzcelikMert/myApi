@@ -24,14 +24,15 @@ export type InsertPostTermParamDocument = {
 } & Omit<PostTermDocument, "_id"|"contents">
 
 export interface SelectPostTermParamDocument {
-    langId: string
+    langId?: string
     _id?: string
     typeId?: number | number[],
     postTypeId?: number,
     url?: string
     statusId?: number,
     ignoreTermId?: string[],
-    maxCount?: number
+    count?: number
+    withPostCount?: boolean
 }
 
 export type SelectPostTermResultDocument = {
@@ -46,7 +47,8 @@ export type SelectPostTermResultDocument = {
         }
     },
     contents?: PostTermContentDocument | PostTermContentDocument[]
-    alternates?: PostTermAlternateDocument[]
+    alternates?: PostTermAlternateDocument[],
+    postCount?: number
 } & Omit<PostTermDocument, "contents">
 
 export interface PostTermAlternateDocument {
@@ -77,7 +79,7 @@ export interface PostTermContentDocument {
 export interface PostTermDocument {
     _id: mongoose.Types.ObjectId | string
     postTypeId?: number,
-    typeId?: number,
+    typeId: number,
     mainId?: mongoose.Types.ObjectId | string
     statusId: number,
     authorId: mongoose.Types.ObjectId | string

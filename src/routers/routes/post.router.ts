@@ -11,6 +11,9 @@ const postRouter = Router();
 postRouter.route(`/`)
     .get([requestMiddleware.check(postSchema.getGeneral)], postController.getGeneral)
 
+postRouter.route(PagePaths.post(false).count())
+    .get([requestMiddleware.check(postSchema.getCount)], postController.getCount)
+
 postRouter.route(PagePaths.post(false).withTypeId().self())
     .get([requestMiddleware.check(postSchema.get)], postController.get)
     .post([requestMiddleware.check(postSchema.post), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkAndSetUrlAlready], postController.add)

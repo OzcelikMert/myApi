@@ -100,8 +100,13 @@ export default {
             pageTypeId: number(),
             statusId: number(),
             getContents: boolean().default(false),
-            maxCount: number()
+            count: number()
         }),
+    }),
+    getCount: object({
+        query: object({
+            typeId: array(number().required({typeId: ErrorCodes.incorrectData})),
+        })
     }),
     get: object({
         params: object({
@@ -114,7 +119,8 @@ export default {
             url: string(),
             pageTypeId: number(),
             statusId: number(),
-            maxCount: number(),
+            count: number(),
+            page: number(),
             isPrimary: boolean()
         })
     }),

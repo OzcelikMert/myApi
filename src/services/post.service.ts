@@ -3,7 +3,7 @@ import postModel from "../models/post.model";
 import {
     DeletePostParamDocument,
     InsertPostParamDocument,
-    PostDocument,
+    PostDocument, SelectPostCountForTypeParamDocument, SelectPostCountParamDocument,
     SelectPostParamDocument, SelectPostResultDocument,
     UpdatePostParamDocument, UpdatePostStatusIdParamDocument, UpdatePostViewParamDocument
 } from "../types/services/post";
@@ -13,6 +13,8 @@ import Variable from "../library/variable";
 import {Config} from "../config";
 import {SelectComponentResultDocument} from "../types/services/component";
 import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
+import {StatusId} from "../constants/status";
+import {SelectTotalWithViewResultDocument} from "../types/services/view";
 
 export default {
     async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
@@ -92,7 +94,8 @@ export default {
             select: "_id name email url"
         });
 
-        if (params.maxCount) query.limit(params.maxCount);
+        if(params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));
+        if (params.count) query.limit(params.count);
 
         return (await query.lean().exec()).map((doc: SelectPostResultDocument) => {
             let views = 0;
@@ -148,6 +151,87 @@ export default {
 
             return doc;
         });
+    },
+    async selectCount(params: SelectPostCountParamDocument): Promise<number> {
+        let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
+
+        if (params.url) filters = {
+            ...filters,
+            "contents.url": params.url
+        }
+        if (params.typeId) {
+            if (Array.isArray(params.typeId)) {
+                filters = {
+                    ...filters,
+                    typeId: {$in: params.typeId}
+                }
+            } else {
+                filters = {
+                    ...filters,
+                    typeId: params.typeId
+                }
+            }
+        }
+        if (params.pageTypeId) filters = {
+            ...filters,
+            pageTypeId: params.pageTypeId
+        }
+        if (params.statusId) filters = {
+            ...filters,
+            statusId: params.statusId
+        }
+        if (params.ignorePostId) {
+            filters = {
+                ...filters,
+                _id: {$nin: params.ignorePostId}
+            }
+        }
+
+        let query = postModel.find(filters);
+
+        return await query.count().exec();
+    },
+    async selectCountForType(params: SelectPostCountForTypeParamDocument): Promise<SelectTotalWithViewResultDocument[]> {
+        let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
+
+        if (params.typeId) {
+            if (Array.isArray(params.typeId)) {
+                filters = {
+                    ...filters,
+                    typeId: {$in: params.typeId}
+                }
+            } else {
+                filters = {
+                    ...filters,
+                    typeId: params.typeId
+                }
+            }
+        }
+
+        let query = postModel.aggregate([
+            {
+                $match: filters
+            },
+            {
+                $group: {
+                    _id: "$typeId",
+                    idList: { $addToSet: "$_id" }
+                }
+            },
+            {
+                $unwind: "$idList"
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    total: { $sum: 1 }
+                },
+            }
+        ]).sort({_id: 1});
+
+        return await query.exec();
     },
     async insert(params: InsertPostParamDocument) {
         params = Variable.clearAllScriptTags(params);

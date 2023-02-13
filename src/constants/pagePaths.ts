@@ -149,12 +149,15 @@ const PagePaths = {
                 path = pagePathUtil.setPath(path, typeId);
                 return this
             },
-            withId( _id: string | number | undefined = ":_id") {
+            withId(_id: string | number | undefined = ":_id") {
                 return pagePathUtil.setPath(path, _id);
             },
             view() {
                 path = pagePathUtil.setPath(path, "view");
                 return this
+            },
+            count() {
+                return pagePathUtil.setPath(path, "count");
             },
         }
     },
@@ -170,7 +173,7 @@ const PagePaths = {
                 return this
             },
             withTypeId(typeId: string | PostTermTypeId | undefined = ":typeId") {
-                path =pagePathUtil.setPath(path, typeId);
+                path = pagePathUtil.setPath(path, typeId);
                 return this
             },
             withId(_id: string | number | undefined = ":_id") {
