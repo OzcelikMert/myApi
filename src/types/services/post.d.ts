@@ -40,6 +40,7 @@ export interface SelectPostParamDocument {
     count?: number,
     page?: number
     ignorePostId?: string[]
+    title?: string
 }
 
 export interface SelectPostCountParamDocument {
@@ -48,6 +49,7 @@ export interface SelectPostCountParamDocument {
     url?: string
     statusId?: number
     ignorePostId?: string[]
+    title?: string
 }
 
 export interface SelectPostCountForTypeParamDocument {

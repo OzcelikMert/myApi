@@ -30,6 +30,10 @@ export default {
             ...filters,
             "contents.url": params.url
         }
+        if (params.title) filters = {
+            ...filters,
+            "contents.title": params.title
+        }
         if (params.typeId) {
             if (Array.isArray(params.typeId)) {
                 filters = {
@@ -97,6 +101,8 @@ export default {
         if(params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));
         if (params.count) query.limit(params.count);
 
+        query.sort({isFixed: -1, order: -1, createdAt: -1});
+
         return (await query.lean().exec()).map((doc: SelectPostResultDocument) => {
             let views = 0;
 
@@ -159,6 +165,10 @@ export default {
         if (params.url) filters = {
             ...filters,
             "contents.url": params.url
+        }
+        if (params.title) filters = {
+            ...filters,
+            "contents.title": params.title
         }
         if (params.typeId) {
             if (Array.isArray(params.typeId)) {

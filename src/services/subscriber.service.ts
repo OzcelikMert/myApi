@@ -31,6 +31,8 @@ export default {
 
         let query = subscriberModel.find(filters, {});
 
+        query.sort({createdAt: -1});
+
         return (await query.lean().exec());
     },
     async insert(params: InsertSubscriberDocument) {

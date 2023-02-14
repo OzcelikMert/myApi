@@ -68,6 +68,8 @@ export default {
 
         if (params.count) query.limit(params.count);
 
+        query.sort({order: -1, createdAt: -1});
+
         return Promise.all((await query.lean().exec()).map(async ( doc: SelectPostTermResultDocument) => {
             if (Array.isArray(doc.contents)) {
                 doc.alternates = doc.contents.map(content => ({

@@ -69,6 +69,8 @@ export default {
 
         if(params.count) query.limit(params.count);
 
+        query.sort({createdAt: -1});
+
         return (await query.lean().exec()).map((user: SelectUserResultDocument) => {
             delete user.password;
             user.isOnline = Config.onlineUsers.indexOfKey("_id", user._id?.toString()) > -1;

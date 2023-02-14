@@ -28,7 +28,11 @@ export default {
             }
         }
 
-        return await languageModel.find(filters, {}).lean().exec();
+        let query = languageModel.find(filters, {});
+
+        query.sort({order: -1, createdAt: -1});
+
+        return await query.lean().exec();
     },
     async insert(params: InsertLanguageParamDocument) {
         params = Variable.clearAllScriptTags(params);

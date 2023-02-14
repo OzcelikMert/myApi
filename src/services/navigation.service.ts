@@ -50,6 +50,9 @@ export default {
             select: "_id name email url"
         });
 
+        query.sort({order: -1, createdAt: -1});
+
+
         return (await query.lean().exec()).map((doc: SelectNavigationResultDocument) => {
             if (Array.isArray(doc.contents)) {
                 let docContent = doc.contents.findSingle("langId", params.langId);
