@@ -25,6 +25,11 @@ const postBody = object({
             url: string()
         })).default(undefined)
     }).required({contents: ErrorCodes.emptyValue}),
+    beforeAndAfter: object({
+        imageBefore: string().required({imageBefore: ErrorCodes.emptyValue}),
+        imageAfter: string().required({imageBefore: ErrorCodes.emptyValue}),
+        images: array(string().required({images: ErrorCodes.incorrectData})).default([]),
+    }).default(undefined),
     components: array(string().required({components: ErrorCodes.incorrectData})).default([]),
     eCommerce: object({
         typeId: number().default(ProductTypeId.SimpleProduct),

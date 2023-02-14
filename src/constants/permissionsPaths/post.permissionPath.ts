@@ -139,5 +139,22 @@ export default [
                 method: "PUT"
             },
         ]
+    },
+    {
+        path: PagePaths.post().withTypeId(PostTypeId.BeforeAndAfter).self(),
+        methods: [
+            {
+                permissionId: PermissionId.BeforeAndAfterAdd,
+                method: "POST"
+            },
+            {
+                permissionId: PermissionId.BeforeAndAfterDelete,
+                method: "DELETE"
+            },
+            {
+                permissionId: PermissionId.BeforeAndAfterEdit,
+                method: "PUT"
+            },
+        ]
     }
 ] as PermissionPathDocument[]

@@ -35,5 +35,8 @@ export enum PermissionId {
     ProductAdd,
     ProductEdit,
     ProductDelete,
-    ECommerce
+    ECommerce,
+    BeforeAndAfterAdd,
+    BeforeAndAfterEdit,
+    BeforeAndAfterDelete,
 }

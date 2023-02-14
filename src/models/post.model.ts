@@ -5,6 +5,7 @@ import {PostTypeId} from "../constants/postTypes";
 import languageModel from "./language.model";
 import postTermModel from "./postTerm.model";
 import {
+    PostBeforeAndAfterDocument,
     PostContentButtonDocument,
     PostContentDocument,
     PostDocument,
@@ -107,6 +108,15 @@ const schemaContentButton = new mongoose.Schema<PostContentButtonDocument>(
     }
 );
 
+const schemaBeforeAndAfter = new mongoose.Schema<PostBeforeAndAfterDocument>(
+    {
+        imageBefore: {type: String, default: ""},
+        imageAfter: {type: String, default: ""},
+        images: {type: [String], default: []}
+    }
+);
+
+
 const schemaContent = new mongoose.Schema<PostContentDocument>(
     {
         langId: {type: mongoose.Schema.Types.ObjectId, ref: languageModel, required: true},
@@ -137,7 +147,8 @@ const schema = new mongoose.Schema<PostDocument>(
         contents: {type: [schemaContent], default: []},
         components: {type: [mongoose.Schema.Types.ObjectId], ref: componentModel},
         sitemap: {type: String, default: ""},
-        eCommerce: {type: schemaECommerce}
+        eCommerce: {type: schemaECommerce},
+        beforeAndAfter: {type: schemaBeforeAndAfter}
     },
     {timestamps: true}
 ).index({typeId: 1, statusId: 1, authorId: 1});

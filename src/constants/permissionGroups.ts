@@ -14,5 +14,6 @@ export enum PermissionGroupId {
     Component,
     StaticLanguage,
     Product,
-    ECommerce
+    ECommerce,
+    BeforeAndAfter
 }

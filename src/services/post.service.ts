@@ -101,7 +101,11 @@ export default {
         if(params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));
         if (params.count) query.limit(params.count);
 
-        query.sort({isFixed: -1, order: -1, createdAt: -1});
+        if(params.isGeneral) {
+            query.sort({createdAt: -1});
+        }else {
+            query.sort({isFixed: -1, order: -1, createdAt: -1});
+        }
 
         return (await query.lean().exec()).map((doc: SelectPostResultDocument) => {
             let views = 0;

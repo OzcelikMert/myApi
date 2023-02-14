@@ -41,6 +41,7 @@ export interface SelectPostParamDocument {
     page?: number
     ignorePostId?: string[]
     title?: string
+    isGeneral?: boolean
 }
 
 export interface SelectPostCountParamDocument {
@@ -142,6 +143,12 @@ export interface PostContentButtonDocument {
     url?: string
 }
 
+export interface PostBeforeAndAfterDocument {
+    imageBefore: string
+    imageAfter: string
+    images: string[]
+}
+
 export interface PostContentDocument {
     _id?: mongoose.Types.ObjectId | string
     langId: mongoose.Types.ObjectId | string
@@ -171,5 +178,6 @@ export interface PostDocument {
     contents: PostContentDocument[]
     components?: mongoose.Types.ObjectId[] | string []
     sitemap?: string
+    beforeAndAfter?: PostBeforeAndAfterDocument
     eCommerce?: PostECommerceDocument
 }

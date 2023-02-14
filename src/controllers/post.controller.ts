@@ -16,7 +16,8 @@ export default {
             let data: InferType<typeof postSchema.getGeneral> = req;
 
             serviceResult.data = await postService.select({
-                ...data.query
+                ...data.query,
+                isGeneral: true
             });
 
             res.status(serviceResult.statusCode).json(serviceResult)

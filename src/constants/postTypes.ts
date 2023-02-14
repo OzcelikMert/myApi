@@ -6,5 +6,6 @@ export enum PostTypeId {
     Reference,
     Service,
     Testimonial,
-    Product
+    Product,
+    BeforeAndAfter
 }

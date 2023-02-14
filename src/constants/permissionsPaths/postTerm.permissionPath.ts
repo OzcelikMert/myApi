@@ -122,5 +122,39 @@ export default [
                 method: "PUT"
             },
         ]
+    },
+    {
+        path: PagePaths.postTerm().withPostTypeId(PostTypeId.Product).self(),
+        methods: [
+            {
+                permissionId: PermissionId.ProductAdd,
+                method: "POST"
+            },
+            {
+                permissionId: PermissionId.ProductDelete,
+                method: "DELETE"
+            },
+            {
+                permissionId: PermissionId.ProductEdit,
+                method: "PUT"
+            },
+        ]
+    },
+    {
+        path: PagePaths.postTerm().withPostTypeId(PostTypeId.BeforeAndAfter).self(),
+        methods: [
+            {
+                permissionId: PermissionId.BeforeAndAfterAdd,
+                method: "POST"
+            },
+            {
+                permissionId: PermissionId.BeforeAndAfterDelete,
+                method: "DELETE"
+            },
+            {
+                permissionId: PermissionId.BeforeAndAfterEdit,
+                method: "PUT"
+            },
+        ]
     }
 ] as PermissionPathDocument[]
