@@ -100,7 +100,7 @@ export default {
         if(params.isGeneral && params.page) {
             query.sort({createdAt: -1});
         }else {
-            query.sort({isFixed: -1, order: -1, createdAt: -1});
+            query.sort({isFixed: -1, order: 1, createdAt: -1});
         }
 
         if(params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));

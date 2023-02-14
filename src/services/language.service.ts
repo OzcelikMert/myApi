@@ -30,7 +30,7 @@ export default {
 
         let query = languageModel.find(filters, {});
 
-        query.sort({order: -1, createdAt: -1});
+        query.sort({order: 1, createdAt: -1});
 
         return await query.lean().exec();
     },

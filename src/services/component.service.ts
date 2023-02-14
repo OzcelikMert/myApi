@@ -34,7 +34,7 @@ export default {
             select: "_id name email url"
         });
 
-        query.sort({order: -1, createdAt: -1});
+        query.sort({order: 1, createdAt: -1});
 
         return (await query.lean().exec()).map((doc: SelectComponentResultDocument) => {
             doc.types.map(docType => {
