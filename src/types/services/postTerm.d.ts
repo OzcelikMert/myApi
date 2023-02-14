@@ -87,4 +87,6 @@ export interface PostTermDocument {
     order: number,
     contents: PostTermContentDocument[]
     sitemap?: string
+    updatedAt?: string
+    createdAt?: string
 }

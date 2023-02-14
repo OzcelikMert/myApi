@@ -3,7 +3,7 @@ import postModel from "../models/post.model";
 import {
     DeletePostParamDocument,
     InsertPostParamDocument,
-    PostDocument, SelectPostCountForTypeParamDocument, SelectPostCountParamDocument,
+    PostDocument, SelectPostCountParamDocument,
     SelectPostParamDocument, SelectPostResultDocument,
     UpdatePostParamDocument, UpdatePostStatusIdParamDocument, UpdatePostViewParamDocument
 } from "../types/services/post";
@@ -14,7 +14,6 @@ import {Config} from "../config";
 import {SelectComponentResultDocument} from "../types/services/component";
 import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
 import {StatusId} from "../constants/status";
-import {SelectTotalWithViewResultDocument} from "../types/services/view";
 
 export default {
     async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
@@ -32,7 +31,7 @@ export default {
         }
         if (params.title) filters = {
             ...filters,
-            "contents.title": params.title
+            "contents.title": { $regex: new RegExp(params.title, "i") }
         }
         if (params.typeId) {
             if (Array.isArray(params.typeId)) {
@@ -98,14 +97,14 @@ export default {
             select: "_id name email url"
         });
 
-        if(params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));
-        if (params.count) query.limit(params.count);
-
-        if(params.isGeneral) {
+        if(params.isGeneral && params.page) {
             query.sort({createdAt: -1});
         }else {
             query.sort({isFixed: -1, order: -1, createdAt: -1});
         }
+
+        if(params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));
+        if (params.count) query.limit(params.count);
 
         return (await query.lean().exec()).map((doc: SelectPostResultDocument) => {
             let views = 0;
@@ -205,47 +204,6 @@ export default {
         let query = postModel.find(filters);
 
         return await query.count().exec();
-    },
-    async selectCountForType(params: SelectPostCountForTypeParamDocument): Promise<SelectTotalWithViewResultDocument[]> {
-        let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
-        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
-
-        if (params.typeId) {
-            if (Array.isArray(params.typeId)) {
-                filters = {
-                    ...filters,
-                    typeId: {$in: params.typeId}
-                }
-            } else {
-                filters = {
-                    ...filters,
-                    typeId: params.typeId
-                }
-            }
-        }
-
-        let query = postModel.aggregate([
-            {
-                $match: filters
-            },
-            {
-                $group: {
-                    _id: "$typeId",
-                    idList: { $addToSet: "$_id" }
-                }
-            },
-            {
-                $unwind: "$idList"
-            },
-            {
-                $group: {
-                    _id: "$_id",
-                    total: { $sum: 1 }
-                },
-            }
-        ]).sort({_id: 1});
-
-        return await query.exec();
     },
     async insert(params: InsertPostParamDocument) {
         params = Variable.clearAllScriptTags(params);

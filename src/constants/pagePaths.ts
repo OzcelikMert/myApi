@@ -94,8 +94,14 @@ const PagePaths = {
             self() {
                 return pagePathUtil.setPath(path);
             },
-            withName(name: string | number | undefined = ":name") {
-                return pagePathUtil.setPath(path, name);
+            post() {
+                return pagePathUtil.setPath(path, "post");
+            },
+            postTerm() {
+                return pagePathUtil.setPath(path, "postTerm");
+            },
+            maps() {
+                return pagePathUtil.setPath(path, "maps");
             },
         }
     },

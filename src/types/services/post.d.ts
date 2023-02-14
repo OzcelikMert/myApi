@@ -53,10 +53,6 @@ export interface SelectPostCountParamDocument {
     title?: string
 }
 
-export interface SelectPostCountForTypeParamDocument {
-    typeId?: number | number[]
-}
-
 export type SelectPostResultDocument = {
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
@@ -180,4 +176,6 @@ export interface PostDocument {
     sitemap?: string
     beforeAndAfter?: PostBeforeAndAfterDocument
     eCommerce?: PostECommerceDocument
+    updatedAt?: string
+    createdAt?: string
 }
