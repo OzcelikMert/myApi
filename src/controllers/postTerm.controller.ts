@@ -51,6 +51,8 @@ export default {
                 await insertData.save();
             }
 
+            serviceResult.data = [{_id: insertData._id}];
+
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },

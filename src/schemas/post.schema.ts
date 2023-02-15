@@ -128,7 +128,8 @@ export default {
             statusId: number(),
             count: number(),
             page: number(),
-            isPrimary: boolean()
+            isPrimary: boolean(),
+            ignoreDefaultLanguage: boolean()
         })
     }),
     post: object({

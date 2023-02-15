@@ -42,6 +42,7 @@ export interface SelectPostParamDocument {
     ignorePostId?: string[]
     title?: string
     isGeneral?: boolean
+    ignoreDefaultLanguage?: boolean
 }
 
 export interface SelectPostCountParamDocument {

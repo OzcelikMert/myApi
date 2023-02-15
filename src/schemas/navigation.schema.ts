@@ -20,7 +20,8 @@ export default {
         query: object({
             langId: string(),
             url: string(),
-            statusId: number()
+            statusId: number(),
+            ignoreDefaultLanguage: boolean()
         })
     }),
     post: object({

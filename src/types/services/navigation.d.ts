@@ -24,6 +24,7 @@ export interface SelectNavigationParamDocument {
     langId?: string
     url?: string
     statusId?: number
+    ignoreDefaultLanguage?: boolean
 }
 
 export type SelectNavigationResultDocument = {

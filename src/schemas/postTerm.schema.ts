@@ -26,7 +26,8 @@ export default {
             withPostCount: boolean().default(false),
             langId: string(),
             statusId: number(),
-            count: number()
+            count: number(),
+            ignoreDefaultLanguage: boolean()
         })
     }),
     post: object({

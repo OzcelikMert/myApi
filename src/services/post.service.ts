@@ -123,7 +123,7 @@ export default {
                 }
 
                 let docContent = doc.contents.findSingle("langId", params.langId);
-                if (!docContent) {
+                if (!docContent && !params.ignoreDefaultLanguage) {
                     docContent = doc.contents.findSingle("langId", defaultLangId);
                     if (docContent) {
                         docContent.views = 0;

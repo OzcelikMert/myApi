@@ -33,6 +33,7 @@ export interface SelectPostTermParamDocument {
     ignoreTermId?: string[],
     count?: number
     withPostCount?: boolean
+    ignoreDefaultLanguage?: boolean
 }
 
 export type SelectPostTermResultDocument = {

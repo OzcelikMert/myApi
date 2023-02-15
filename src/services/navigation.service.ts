@@ -56,7 +56,7 @@ export default {
         return (await query.lean().exec()).map((doc: SelectNavigationResultDocument) => {
             if (Array.isArray(doc.contents)) {
                 let docContent = doc.contents.findSingle("langId", params.langId);
-                if (!docContent) {
+                if (!docContent && !params.ignoreDefaultLanguage) {
                     docContent = doc.contents.findSingle("langId", defaultLangId);
                 }
 

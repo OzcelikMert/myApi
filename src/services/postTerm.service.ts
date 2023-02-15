@@ -79,7 +79,7 @@ export default {
                 }));
 
                 let docContent = doc.contents.findSingle("langId", params.langId);
-                if (!docContent) {
+                if (!docContent && !params.ignoreDefaultLanguage) {
                     docContent = doc.contents.findSingle("langId", defaultLangId);
                 }
 
@@ -88,7 +88,7 @@ export default {
                 }
             }
 
-            if(params.withPostCount && [PostTermTypeId.Category, PostTermTypeId.Tag].includes(doc.typeId)){
+            if(params.withPostCount && [PostTermTypeId.Category].includes(doc.typeId)){
                 doc.postCount = (await postModel.find({typeId: doc.postTypeId, terms: { $in: [doc._id]}}).count().exec())
             }
 
