@@ -33,6 +33,7 @@ export default {
                 case "eCommerce": projection = {eCommerce: 1}; break;
                 case "staticLanguage": projection = {staticLanguages: 1}; break;
                 case "socialMedia": projection = {socialMedia: 1}; break;
+                default: projection = {contactForms: 0}; break;
             }
         }
 
