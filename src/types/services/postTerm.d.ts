@@ -87,7 +87,6 @@ export interface PostTermDocument {
     lastAuthorId: mongoose.Types.ObjectId | string
     order: number,
     contents: PostTermContentDocument[]
-    sitemap?: string
     updatedAt?: string
     createdAt?: string
 }

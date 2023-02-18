@@ -40,17 +40,6 @@ export default {
                 authorId: req.session.data.id.toString(),
             });
 
-            if(isPostTermSitemapRequire(data.params.typeId, data.params.postTypeId)){
-                insertData.sitemap = await postTermSitemapUtil.add({
-                    _id: insertData._id.toString(),
-                    url: data.body.contents.url ?? "",
-                    langId: data.body.contents.langId,
-                    typeId: data.params.typeId,
-                    postTypeId: data.params.postTypeId
-                });
-                await insertData.save();
-            }
-
             serviceResult.data = [{_id: insertData._id}];
 
             res.status(serviceResult.statusCode).json(serviceResult)
@@ -64,24 +53,11 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof postTermSchema.put> = req;
 
-            let updatedData = await postTermService.update({
+            serviceResult.data = await postTermService.update({
                 ...data.body,
                 ...data.params,
                 lastAuthorId: req.session.data.id.toString()
             });
-
-            if(isPostTermSitemapRequire(data.params.typeId, data.params.postTypeId)){
-                for (const updated of updatedData) {
-                    await postTermSitemapUtil.update({
-                        _id: updated._id.toString(),
-                        url: data.body.contents.url ?? "",
-                        langId: data.body.contents.langId,
-                        typeId: data.params.typeId,
-                        postTypeId: data.params.postTypeId,
-                        sitemap: updated.sitemap ?? ""
-                    });
-                }
-            }
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -94,7 +70,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof postTermSchema.putStatus> = req;
 
-            await postTermService.updateStatus({
+            serviceResult.data = await postTermService.updateStatus({
                 ...data.body,
                 ...data.params,
                 lastAuthorId: req.session.data.id.toString()
@@ -111,20 +87,10 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof postTermSchema.delete> = req;
 
-            let deletedData = await postTermService.delete({
+            serviceResult.data = await postTermService.delete({
                 ...data.params,
                 ...data.body
             });
-
-            if(isPostTermSitemapRequire(data.params.typeId, data.params.postTypeId)){
-                for (const deleted of deletedData) {
-                    await postTermSitemapUtil.delete({
-                        _id: deleted._id.toString(),
-                        typeId: data.params.typeId,
-                        sitemap: deleted.sitemap ?? ""
-                    });
-                }
-            }
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });

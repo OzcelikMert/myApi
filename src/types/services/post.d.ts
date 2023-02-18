@@ -174,7 +174,6 @@ export interface PostDocument {
     terms: mongoose.Types.ObjectId[] | string[]
     contents: PostContentDocument[]
     components?: mongoose.Types.ObjectId[] | string []
-    sitemap?: string
     beforeAndAfter?: PostBeforeAndAfterDocument
     eCommerce?: PostECommerceDocument
     updatedAt?: string

@@ -16,8 +16,8 @@ export default {
             let serviceResult = new Result();
 
             serviceResult.data = {
-                post: await sitemapService.selectPostCountForType({typeId: [PostTypeId.Page, PostTypeId.BeforeAndAfter, PostTypeId.Portfolio, PostTypeId.Blog]}),
-                postTerm: await sitemapService.selectPostTermCountForType({typeId: [PostTermTypeId.Category, PostTermTypeId.Tag]})
+                post: await sitemapService.selectPostCountForType({typeId: [PostTypeId.Page, PostTypeId.Portfolio, PostTypeId.Blog]}),
+                postTerm: [] //await sitemapService.selectPostTermCountForType({typeId: [PostTermTypeId.Category, PostTermTypeId.Tag]})
             };
 
             res.status(serviceResult.statusCode).json(serviceResult)

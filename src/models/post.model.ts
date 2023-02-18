@@ -146,7 +146,6 @@ const schema = new mongoose.Schema<PostDocument>(
         terms: {type: [mongoose.Schema.Types.ObjectId], ref: postTermModel, default: []},
         contents: {type: [schemaContent], default: []},
         components: {type: [mongoose.Schema.Types.ObjectId], ref: componentModel},
-        sitemap: {type: String, default: ""},
         eCommerce: {type: schemaECommerce},
         beforeAndAfter: {type: schemaBeforeAndAfter}
     },

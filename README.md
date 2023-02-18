@@ -9,5 +9,5 @@ Things to do:
 + postlrada title ile armada yaptir
 + servislerden gelen datalarin siralamasinin dogru ioldugunu kontrol et (tarih sondan ilke)
 + datalar gelirken is fixed olanlar en onde gozuksun sonrasi sorta gore ayarlansin sonrasi ise olusturma tarihine gore ayarlansin
-- sitemap icin daha kullanisli bir yol bul direk databaseden cekmek gibi
-- sitemapi yapinca modellerde olan sitemap columnunu sil
++ sitemap icin daha kullanisli bir yol bul direk databaseden cekmek gibi
++ sitemapi yapinca modellerde olan sitemap columnunu sil

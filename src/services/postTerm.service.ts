@@ -151,7 +151,6 @@ export default {
 
             return {
                 _id: doc._id,
-                sitemap: doc.sitemap,
                 lastAuthorId: doc.lastAuthorId
             };
         }));
@@ -230,7 +229,6 @@ export default {
             await doc.remove();
             return {
                 _id: doc._id,
-                sitemap: doc.sitemap
             };
         }));
     }

@@ -80,16 +80,9 @@ export default {
                 dateStart: new Date(data.body.dateStart)
             });
 
-            if(isPostSitemapRequire(data.params.typeId)){
-                insertData.sitemap = await postSitemapUtil.add({
-                    _id: insertData._id.toString(),
-                    url: data.body.contents.url ?? "",
-                    langId: data.body.contents.langId,
-                    typeId: data.params.typeId,
-                    pageTypeId: insertData.pageTypeId
-                });
-                await insertData.save();
-            }
+            serviceResult.data = [{
+                _id: insertData._id
+            }]
 
             res.status(serviceResult.statusCode).json(serviceResult);
         });
@@ -102,25 +95,12 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof postSchema.put> = req;
 
-            let updatedData = await postService.update({
+            serviceResult.data = await postService.update({
                 ...data.params,
                 ...data.body,
                 lastAuthorId: req.session.data.id.toString(),
                 dateStart: new Date(data.body.dateStart)
             });
-
-            if(isPostSitemapRequire(data.params.typeId)){
-                for (const updated of updatedData) {
-                    await postSitemapUtil.update({
-                        _id: updated._id.toString(),
-                        url: data.body.contents.url ?? "",
-                        langId: data.body.contents.langId,
-                        typeId: data.params.typeId,
-                        pageTypeId: data.body.pageTypeId,
-                        sitemap: updated.sitemap ?? ""
-                    });
-                }
-            }
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -133,7 +113,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof postSchema.putStatus> = req;
 
-            await postService.updateStatus({
+            serviceResult.data = await postService.updateStatus({
                 ...data.body,
                 ...data.params,
                 lastAuthorId: req.session.data.id.toString()
@@ -150,7 +130,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof postSchema.putView> = req;
 
-            await postService.updateView({
+            serviceResult.data = await postService.updateView({
                 ...data.params,
                 ...data.body
             });
@@ -166,20 +146,10 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof postSchema.delete> = req;
 
-            let deletedData = await postService.delete({
+            serviceResult.data = await postService.delete({
                 ...data.params,
                 ...data.body
             });
-
-            if(isPostSitemapRequire(data.params.typeId)){
-                for (const deleted of deletedData) {
-                    await postSitemapUtil.delete({
-                        _id: deleted._id.toString(),
-                        typeId: data.params.typeId,
-                        sitemap: deleted.sitemap ?? ""
-                    });
-                }
-            }
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
