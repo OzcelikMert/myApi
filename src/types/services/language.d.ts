@@ -5,6 +5,11 @@ export interface SelectLanguageParamDocument {
     statusId?: number
 }
 
+export type UpdateLanguageRankParamDocument = {
+    _id?: string | string[]
+    rank: number
+}
+
 export type UpdateLanguageParamDocument = {
     _id: string
 } & InsertLanguageParamDocument
@@ -20,5 +25,5 @@ export interface LanguageDocument {
     shortKey: string
     locale: string
     statusId: number
-    order: number
+    rank: number
 }

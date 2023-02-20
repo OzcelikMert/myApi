@@ -122,6 +122,23 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
+    updateRank: async (
+        req: Request<any>,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            let data: InferType<typeof postSchema.putRank> = req;
+
+            serviceResult.data = await postService.updateRank({
+                ...data.body,
+                ...data.params,
+                lastAuthorId: req.session.data.id.toString()
+            });
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
     updateView: async (
         req: Request<any>,
         res: Response

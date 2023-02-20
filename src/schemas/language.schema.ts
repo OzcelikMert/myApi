@@ -1,4 +1,4 @@
-import {boolean, number, object, string} from "yup";
+import {array, boolean, number, object, string} from "yup";
 import {ErrorCodes} from "../library/api";
 
 const postBody = object({
@@ -7,7 +7,7 @@ const postBody = object({
     shortKey: string().required({shortKey: ErrorCodes.emptyValue}),
     locale: string().required({locale: ErrorCodes.emptyValue}),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
-    order: number().default(0)
+    rank: number().default(0)
 })
 
 export default {
@@ -27,5 +27,11 @@ export default {
             _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
         body: postBody
-    })
+    }),
+    putRank: object({
+        body: object({
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
+            rank: number().required({rank: ErrorCodes.emptyValue})
+        })
+    }),
 };

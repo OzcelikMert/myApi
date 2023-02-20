@@ -21,6 +21,9 @@ const PagePaths = {
             },
             flags() {
                 return pagePathUtil.setPath(path, "flags");
+            },
+            rank() {
+                return pagePathUtil.setPath(path, "rank");
             }
         }
     },
@@ -130,6 +133,9 @@ const PagePaths = {
             withId(_id: string | number | undefined = ":_id") {
                 return pagePathUtil.setPath(path, _id);
             },
+            rank() {
+                return pagePathUtil.setPath(path, "rank");
+            },
         }
     },
     navigation(withMainPath: boolean = true) {
@@ -138,6 +144,12 @@ const PagePaths = {
         return {
             self() {
                 return pagePathUtil.setPath(path);
+            },
+            status() {
+                return pagePathUtil.setPath(path, "status");
+            },
+            rank() {
+                return pagePathUtil.setPath(path, "rank");
             },
             withId(_id: string | number | undefined = ":_id") {
                 return pagePathUtil.setPath(path, _id);
@@ -165,6 +177,14 @@ const PagePaths = {
             count() {
                 return pagePathUtil.setPath(path, "count");
             },
+            status() {
+                path = pagePathUtil.setPath(path, "status");
+                return this
+            },
+            rank() {
+                path = pagePathUtil.setPath(path, "rank");
+                return this
+            },
         }
     },
     postTerm(withMainPath: boolean = true) {
@@ -184,6 +204,14 @@ const PagePaths = {
             },
             withId(_id: string | number | undefined = ":_id") {
                 return pagePathUtil.setPath(path, _id);
+            },
+            status() {
+                path = pagePathUtil.setPath(path, "status");
+                return this
+            },
+            rank() {
+                path = pagePathUtil.setPath(path, "rank");
+                return this
             },
         }
     },

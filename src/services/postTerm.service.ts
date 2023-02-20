@@ -5,7 +5,7 @@ import {
     InsertPostTermParamDocument,
     PostTermDocument,
     SelectPostTermParamDocument, SelectPostTermResultDocument,
-    UpdatePostTermParamDocument, UpdatePostTermStatusIdParamDocument
+    UpdatePostTermParamDocument, UpdatePostTermRankParamDocument, UpdatePostTermStatusIdParamDocument
 } from "../types/services/postTerm";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
@@ -68,7 +68,7 @@ export default {
 
         if (params.count) query.limit(params.count);
 
-        query.sort({order: 1, createdAt: -1});
+        query.sort({rank: 1, createdAt: -1});
 
         return Promise.all((await query.lean().exec()).map(async ( doc: SelectPostTermResultDocument) => {
             if (Array.isArray(doc.contents)) {
@@ -193,6 +193,48 @@ export default {
             return {
                 _id: doc._id,
                 statusId: doc.statusId,
+                lastAuthorId: doc.lastAuthorId
+            };
+        }));
+    },
+    async updateRank(params: UpdatePostTermRankParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
+
+        let filters: mongoose.FilterQuery<PostTermDocument> = {}
+
+        if(params._id){
+            if (Array.isArray(params._id)) {
+                filters = {
+                    _id: {$in: params._id}
+                }
+            } else {
+                filters = {
+                    _id: params._id
+                };
+            }
+        }
+
+        if (params.typeId) {
+            filters = {
+                ...filters,
+                typeId: params.typeId
+            }
+        }
+        if (params.postTypeId) filters = {
+            ...filters,
+            postTypeId: params.postTypeId
+        }
+
+        return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
+            doc.rank = params.rank;
+            doc.lastAuthorId = params.lastAuthorId;
+
+            await doc.save();
+
+            return {
+                _id: doc._id,
+                rank: doc.rank,
                 lastAuthorId: doc.lastAuthorId
             };
         }));

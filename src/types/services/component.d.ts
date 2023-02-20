@@ -12,6 +12,12 @@ export interface DeleteComponentParamDocument {
     _id: string | string[]
 }
 
+export type UpdateComponentRankParamDocument = {
+    _id?: string | string[],
+    rank: number,
+    lastAuthorId: string
+}
+
 export type UpdateComponentParamDocument = {
     _id?: string
 } & Omit<InsertComponentParamDocument, "authorId">
@@ -43,7 +49,7 @@ export interface ComponentTypeDocument {
     elementId: string
     typeId: number,
     langKey: string,
-    order: number,
+    rank: number,
     contents: ComponentTypeContentDocument[]
 }
 
@@ -53,6 +59,6 @@ export interface ComponentDocument {
     lastAuthorId: mongoose.Types.ObjectId | string
     elementId: string
     langKey: string,
-    order: number,
+    rank: number,
     types: ComponentTypeDocument[]
 }

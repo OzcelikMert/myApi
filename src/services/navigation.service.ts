@@ -8,7 +8,10 @@ import {
     InsertNavigationParamDocument,
     NavigationDocument,
     SelectNavigationParamDocument,
-    SelectNavigationResultDocument, UpdateNavigationParamDocument, UpdateNavigationStatusIdParamDocument
+    SelectNavigationResultDocument,
+    UpdateNavigationParamDocument,
+    UpdateNavigationRankParamDocument,
+    UpdateNavigationStatusIdParamDocument
 } from "../types/services/navigation";
 import navigationModel from "../models/navigation.model";
 
@@ -50,7 +53,7 @@ export default {
             select: "_id name email url"
         });
 
-        query.sort({order: 1, createdAt: -1});
+        query.sort({rank: 1, createdAt: -1});
 
 
         return (await query.lean().exec()).map((doc: SelectNavigationResultDocument) => {
@@ -146,6 +149,37 @@ export default {
             return {
                 _id: doc._id,
                 statusId: doc.statusId,
+                lastAuthorId: doc.lastAuthorId
+            };
+        }));
+    },
+    async updateRank(params: UpdateNavigationRankParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, navigationObjectIdKeys);
+
+        let filters: mongoose.FilterQuery<NavigationDocument> = {}
+
+        if(params._id) {
+            if (Array.isArray(params._id)) {
+                filters = {
+                    _id: {$in: params._id}
+                }
+            } else {
+                filters = {
+                    _id: params._id
+                };
+            }
+        }
+
+        return await Promise.all((await navigationModel.find(filters).exec()).map(async doc => {
+            doc.rank = params.rank;
+            doc.lastAuthorId = params.lastAuthorId;
+
+            await doc.save();
+
+            return {
+                _id: doc._id,
+                rank: doc.rank,
                 lastAuthorId: doc.lastAuthorId
             };
         }));

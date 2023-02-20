@@ -15,6 +15,14 @@ export type UpdatePostTermStatusIdParamDocument = {
     lastAuthorId: string
 }
 
+export type UpdatePostTermRankParamDocument = {
+    _id?: string | string[],
+    postTypeId?: number,
+    typeId?: number
+    rank: number,
+    lastAuthorId: string
+}
+
 export type UpdatePostTermParamDocument = {
     _id?: string,
 } & Omit<InsertPostTermParamDocument, "authorId">
@@ -85,7 +93,7 @@ export interface PostTermDocument {
     statusId: number,
     authorId: mongoose.Types.ObjectId | string
     lastAuthorId: mongoose.Types.ObjectId | string
-    order: number,
+    rank: number,
     contents: PostTermContentDocument[]
     updatedAt?: string
     createdAt?: string

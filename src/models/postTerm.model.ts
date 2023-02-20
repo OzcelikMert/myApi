@@ -28,7 +28,7 @@ const schema = new mongoose.Schema<PostTermDocument>(
         mainId: {type: mongoose.Schema.Types.ObjectId, ref: "postTerms"},
         authorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         lastAuthorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
-        order: {type: Number, default: 0},
+        rank: {type: Number, default: 0},
         contents: {type: [schemaContent], default: []},
     },
     {timestamps: true}

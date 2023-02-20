@@ -4,7 +4,7 @@ import {ErrorCodes} from "../library/api";
 const postBody = object({
     mainId: string(),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
-    order: number().required({order: ErrorCodes.emptyValue}),
+    rank: number().required({rank: ErrorCodes.emptyValue}),
     contents: object({
         langId: string().required({langId: ErrorCodes.emptyValue}),
         title: string().required({title: ErrorCodes.emptyValue}),
@@ -53,6 +53,16 @@ export default {
         body: object({
             _id: array(string().required({termId: ErrorCodes.incorrectData})).required({termId: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue})
+        })
+    }),
+    putRank: object({
+        params: object({
+            postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
+            typeId: number().required({typeId: ErrorCodes.emptyValue}),
+        }),
+        body: object({
+            _id: array(string().required({termId: ErrorCodes.incorrectData})).required({termId: ErrorCodes.emptyValue}),
+            rank: number().required({rank: ErrorCodes.emptyValue})
         })
     }),
     delete: object({

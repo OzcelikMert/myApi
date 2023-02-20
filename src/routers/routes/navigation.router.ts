@@ -9,8 +9,13 @@ const navigationRouter = Router();
 navigationRouter.route(`/`)
     .get([requestMiddleware.check(navigationSchema.get)], navigationController.get)
     .post([requestMiddleware.check(navigationSchema.post), sessionMiddleware.check, permissionMiddleware.check], navigationController.add)
-    .put([requestMiddleware.check(navigationSchema.putStatus), sessionMiddleware.check, permissionMiddleware.check], navigationController.updateStatus)
     .delete([requestMiddleware.check(navigationSchema.delete), sessionMiddleware.check, permissionMiddleware.check], navigationController.delete)
+
+navigationRouter.route(PagePaths.navigation(false).status())
+    .put([requestMiddleware.check(navigationSchema.putStatus), sessionMiddleware.check, permissionMiddleware.check], navigationController.updateStatus)
+
+navigationRouter.route(PagePaths.navigation(false).rank())
+    .put([requestMiddleware.check(navigationSchema.putRank), sessionMiddleware.check, permissionMiddleware.check], navigationController.updateRank)
 
 navigationRouter.route(PagePaths.navigation(false).withId())
     .get([requestMiddleware.check(navigationSchema.get)], navigationController.get)

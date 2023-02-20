@@ -4,13 +4,13 @@ import {ErrorCodes} from "../library/api";
 const postBody = object({
     elementId: string().required({elementId: ErrorCodes.emptyValue}),
     langKey: string().required({langKey: ErrorCodes.emptyValue}),
-    order: number().required({order: ErrorCodes.emptyValue}),
+    rank: number().required({rank: ErrorCodes.emptyValue}),
     types: (array(object({
         _id: string(),
         elementId: string().required({elementId: ErrorCodes.emptyValue}),
         typeId: number().required({typeId: ErrorCodes.emptyValue}),
         langKey: string().required({langKey: ErrorCodes.emptyValue}),
-        order: number().required({order: ErrorCodes.emptyValue}),
+        rank: number().required({rank: ErrorCodes.emptyValue}),
         contents: object({
             _id: string(),
             url: string(),
@@ -40,6 +40,12 @@ export default {
             _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
         body: postBody
+    }),
+    putRank: object({
+        body: object({
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
+            rank: number().required({rank: ErrorCodes.emptyValue})
+        })
     }),
     delete: object({
         body: object({

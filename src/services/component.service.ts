@@ -4,7 +4,7 @@ import {Config} from "../config";
 import {
     ComponentDocument, DeleteComponentParamDocument, InsertComponentParamDocument,
     SelectComponentParamDocument,
-    SelectComponentResultDocument, UpdateComponentParamDocument
+    SelectComponentResultDocument, UpdateComponentParamDocument, UpdateComponentRankParamDocument
 } from "../types/services/component";
 import componentModel from "../models/component.model";
 import Variable from "../library/variable";
@@ -34,7 +34,7 @@ export default {
             select: "_id name email url"
         });
 
-        query.sort({order: 1, createdAt: -1});
+        query.sort({rank: 1, createdAt: -1});
 
         return (await query.lean().exec()).map((doc: SelectComponentResultDocument) => {
             doc.types.map(docType => {
@@ -103,6 +103,37 @@ export default {
             await doc.save();
 
             return {_id: doc._id}
+        }));
+    },
+    async updateRank(params: UpdateComponentRankParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
+
+        let filters: mongoose.FilterQuery<ComponentDocument> = {}
+
+        if(params._id) {
+            if (Array.isArray(params._id)) {
+                filters = {
+                    _id: {$in: params._id}
+                }
+            } else {
+                filters = {
+                    _id: params._id
+                };
+            }
+        }
+
+        return await Promise.all((await componentModel.find(filters).exec()).map(async doc => {
+            doc.rank = params.rank;
+            doc.lastAuthorId = params.lastAuthorId;
+
+            await doc.save();
+
+            return {
+                _id: doc._id,
+                rank: doc.rank,
+                lastAuthorId: doc.lastAuthorId
+            };
         }));
     },
     async delete(params: DeleteComponentParamDocument) {

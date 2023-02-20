@@ -13,6 +13,9 @@ languageRouter.route(`/`)
 languageRouter.route(PagePaths.language(false).flags())
     .get([requestMiddleware.check(languageSchema.get), sessionMiddleware.check, permissionMiddleware.check], languageController.getFlags)
 
+languageRouter.route(PagePaths.language(false).rank())
+    .put([requestMiddleware.check(languageSchema.putRank), sessionMiddleware.check, permissionMiddleware.check], languageController.updateRank)
+
 languageRouter.route(PagePaths.language(false).withId())
     .get([requestMiddleware.check(languageSchema.get)], languageController.get)
     .put([requestMiddleware.check(languageSchema.put), sessionMiddleware.check, permissionMiddleware.check], languageController.update)

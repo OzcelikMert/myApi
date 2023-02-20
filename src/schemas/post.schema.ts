@@ -7,7 +7,7 @@ const postBody = object({
     pageTypeId: number(),
     terms: array(string().required({terms: ErrorCodes.incorrectData})).default([]),
     dateStart: string().required({dateStart: ErrorCodes.emptyValue}),
-    order: number().required({order: ErrorCodes.emptyValue}),
+    rank: number().required({rank: ErrorCodes.emptyValue}),
     isFixed: boolean().default(false),
     siteMap: string().default(undefined),
     contents: object({
@@ -63,7 +63,7 @@ const postBody = object({
                 variationId: string().required({variationId: ErrorCodes.emptyValue}),
             }).required({variations: ErrorCodes.incorrectData})).default([]),
             images: array(string().required({images: ErrorCodes.incorrectData})).default([]),
-            order: number().required({order: ErrorCodes.emptyValue}),
+            rank: number().required({rank: ErrorCodes.emptyValue}),
             pricing: object({
                 taxRate: number().default(0),
                 taxExcluded: number().default(0),
@@ -152,6 +152,15 @@ export default {
         body: object({
             _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue})
+        })
+    }),
+    putRank: object({
+        params: object({
+            typeId: number().required({typeId: ErrorCodes.emptyValue})
+        }),
+        body: object({
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
+            rank: number().required({rank: ErrorCodes.emptyValue})
         })
     }),
     putView: object({

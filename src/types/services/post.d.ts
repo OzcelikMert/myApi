@@ -15,6 +15,13 @@ export type UpdatePostStatusIdParamDocument = {
     lastAuthorId: string
 }
 
+export type UpdatePostRankParamDocument = {
+    _id?: string | string[],
+    typeId: number
+    rank: number
+    lastAuthorId: string
+}
+
 export type UpdatePostViewParamDocument = {
     _id?: string,
     typeId?: number
@@ -86,7 +93,7 @@ export interface PostECommerceVariationSelectedDocument {
 
 export interface PostECommerceVariationDocument {
     _id?: mongoose.Types.ObjectId | string
-    order: number
+    rank: number
     selectedVariations: PostECommerceVariationSelectedDocument[]
     images: string[]
     contents?: PostECommerceVariationContentDocument | PostECommerceVariationContentDocument[]
@@ -169,7 +176,7 @@ export interface PostDocument {
     authorId: mongoose.Types.ObjectId | string
     lastAuthorId: mongoose.Types.ObjectId | string
     dateStart: Date,
-    order: number,
+    rank: number,
     isFixed?: boolean,
     terms: mongoose.Types.ObjectId[] | string[]
     contents: PostContentDocument[]

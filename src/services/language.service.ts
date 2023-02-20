@@ -3,7 +3,10 @@ import languageModel from "../models/language.model";
 import {
     LanguageDocument,
     SelectLanguageResultDocument,
-    SelectLanguageParamDocument, UpdateLanguageParamDocument, InsertLanguageParamDocument
+    SelectLanguageParamDocument,
+    UpdateLanguageParamDocument,
+    InsertLanguageParamDocument,
+    UpdateLanguageRankParamDocument
 } from "../types/services/language";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
@@ -30,7 +33,7 @@ export default {
 
         let query = languageModel.find(filters, {});
 
-        query.sort({order: 1, createdAt: -1});
+        query.sort({rank: 1, createdAt: -1});
 
         return await query.lean().exec();
     },
@@ -59,6 +62,34 @@ export default {
             return {
                 ...params,
                 _id: doc._id,
+            };
+        }));
+    },
+    async updateRank(params: UpdateLanguageRankParamDocument) {
+        let filters: mongoose.FilterQuery<LanguageDocument> = {}
+        params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, languageObjectIdKeys);
+
+        if(params._id) {
+            if (Array.isArray(params._id)) {
+                filters = {
+                    _id: {$in: params._id}
+                }
+            } else {
+                filters = {
+                    _id: params._id
+                };
+            }
+        }
+
+        return await Promise.all((await languageModel.find(filters).exec()).map(async doc => {
+            doc.rank = params.rank;
+
+            await doc.save();
+
+            return {
+                _id: doc._id,
+                rank: doc.rank
             };
         }));
     }

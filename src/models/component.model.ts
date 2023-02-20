@@ -18,7 +18,7 @@ const schemaType = new mongoose.Schema<ComponentTypeDocument>(
             typeId: {type: Number, required: true, enum: ComponentInputTypeId},
             langKey: {type: String, required: true},
             elementId: {type: String, required: true},
-            order: {type: Number, default: 0},
+            rank: {type: Number, default: 0},
             contents: {type: [schemaTypeContent], default: []}
     }
 );
@@ -29,7 +29,7 @@ const schema = new mongoose.Schema<ComponentDocument>(
             lastAuthorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
             langKey: {type: String, required: true},
             elementId: {type: String, required: true},
-            order: {type: Number, default: 0},
+            rank: {type: Number, default: 0},
             types: {type: [schemaType], default: []}
     },
     {timestamps: true}

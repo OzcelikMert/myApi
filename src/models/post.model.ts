@@ -77,7 +77,7 @@ const schemaECommercePricing = new mongoose.Schema<PostECommercePricingDocument>
 
 const schemaECommerceVariation= new mongoose.Schema<PostECommerceVariationDocument>(
     {
-        order: {type: Number, default: 0},
+        rank: {type: Number, default: 0},
         selectedVariations: {type: [schemaECommerceVariationSelected], default: []},
         images: {type: [String], default: []},
         inventory: {type: schemaECommerceInventory, required: true},
@@ -140,7 +140,7 @@ const schema = new mongoose.Schema<PostDocument>(
         authorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         lastAuthorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
         dateStart: {type: Date, default: new Date()},
-        order: {type: Number, default: 0},
+        rank: {type: Number, default: 0},
         isFixed: {type: Boolean},
         pageTypeId: {type: Number},
         terms: {type: [mongoose.Schema.Types.ObjectId], ref: postTermModel, default: []},

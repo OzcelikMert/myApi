@@ -115,7 +115,7 @@ class InitConfig {
                 shortKey: "en",
                 locale: "us",
                 statusId: StatusId.Active,
-                order: -1
+                rank: -1
             })
             console.log(chalk.green(`#Language`))
             console.log(chalk.blue(`- Created`))

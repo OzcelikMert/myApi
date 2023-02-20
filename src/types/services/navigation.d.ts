@@ -11,6 +11,12 @@ export type UpdateNavigationStatusIdParamDocument = {
     lastAuthorId: string
 }
 
+export type UpdateNavigationRankParamDocument = {
+    _id?: string | string[],
+    rank: number,
+    lastAuthorId: string
+}
+
 export type UpdateNavigationParamDocument = {
     _id?: string
 } & Omit<InsertNavigationParamDocument, "authorId">
@@ -54,6 +60,6 @@ export interface NavigationDocument {
     mainId?: mongoose.Types.ObjectId | string
     authorId: mongoose.Types.ObjectId | string
     lastAuthorId: mongoose.Types.ObjectId | string
-    order: number,
+    rank: number,
     contents: NavigationContentDocument[]
 }

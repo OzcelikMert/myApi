@@ -7,13 +7,18 @@ import PagePaths from "../../constants/pagePaths";
 
 const postTermRouter = Router();
 
+postTermRouter.route(PagePaths.postTerm(false).status().withPostTypeId().withTypeId().self())
+    .put([requestMiddleware.check(postTermSchema.putStatus), sessionMiddleware.check, permissionMiddleware.check], postTermController.updateStatus)
+
+postTermRouter.route(PagePaths.postTerm(false).rank().withPostTypeId().withTypeId().self())
+    .put([requestMiddleware.check(postTermSchema.putRank), sessionMiddleware.check, permissionMiddleware.check], postTermController.updateRank)
+
 postTermRouter.route(PagePaths.postTerm(false).withPostTypeId().self())
     .get([requestMiddleware.check(postTermSchema.get)], postTermController.get)
 
 postTermRouter.route(PagePaths.postTerm(false).withPostTypeId().withTypeId().self())
     .get([requestMiddleware.check(postTermSchema.get)], postTermController.get)
     .post([requestMiddleware.check(postTermSchema.post), sessionMiddleware.check, permissionMiddleware.check, postTermMiddleware.checkAndSetUrlAlready], postTermController.add)
-    .put([requestMiddleware.check(postTermSchema.putStatus), sessionMiddleware.check, permissionMiddleware.check], postTermController.updateStatus)
     .delete([requestMiddleware.check(postTermSchema.delete), sessionMiddleware.check, permissionMiddleware.check], postTermController.delete)
 
 postTermRouter.route(PagePaths.postTerm(false).withPostTypeId().withTypeId().withId())

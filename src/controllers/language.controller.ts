@@ -82,4 +82,19 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
+    updateRank: async (
+        req: Request<any>,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            let data: InferType<typeof languageSchema.putRank> = req;
+
+            serviceResult.data = await languageService.updateRank({
+                ...data.body,
+            });
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
 };
