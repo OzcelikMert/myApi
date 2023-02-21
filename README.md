@@ -11,3 +11,4 @@ Things to do:
 + datalar gelirken is fixed olanlar en onde gozuksun sonrasi sorta gore ayarlansin sonrasi ise olusturma tarihine gore ayarlansin
 + sitemap icin daha kullanisli bir yol bul direk databaseden cekmek gibi
 + sitemapi yapinca modellerde olan sitemap columnunu sil
++ Ecommerceda eslesen attribute ler ve variationlarin termden populatelerini cek
