@@ -9,6 +9,7 @@ import {
 import componentModel from "../models/component.model";
 import Variable from "../library/variable";
 import componentObjectIdKeys from "../constants/objectIdKeys/component.objectIdKeys";
+import {SelectPostResultDocument} from "../types/services/post";
 
 export default {
     async select(params: SelectComponentParamDocument): Promise<SelectComponentResultDocument[]> {
@@ -26,13 +27,13 @@ export default {
             elementId: params.elementId
         }
 
-        let query = componentModel.find(filters).populate<{ authorId: SelectComponentResultDocument["authorId"] }>({
-            path: "authorId",
+        let query = componentModel.find(filters).populate<{ authorId: SelectPostResultDocument["authorId"], lastAuthorId: SelectPostResultDocument["lastAuthorId"] }>({
+            path: [
+                "authorId",
+                "lastAuthorId"
+            ].join(" "),
             select: "_id name email url"
-        }).populate<{ lastAuthorId: SelectComponentResultDocument["lastAuthorId"] }>({
-            path: "lastAuthorId",
-            select: "_id name email url"
-        });
+        })
 
         query.sort({rank: 1, createdAt: -1});
 
@@ -112,14 +113,9 @@ export default {
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
 
         if(params._id) {
-            if (Array.isArray(params._id)) {
-                filters = {
-                    _id: {$in: params._id}
-                }
-            } else {
-                filters = {
-                    _id: params._id
-                };
+            filters = {
+                ...filters,
+                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
             }
         }
 
@@ -140,14 +136,9 @@ export default {
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
 
-        if (Array.isArray(params._id)) {
-            filters = {
-                _id: {$in: params._id}
-            }
-        } else {
-            filters = {
-                _id: params._id
-            };
+        filters = {
+            ...filters,
+            _id: Array.isArray(params._id) ? {$in: params._id} : params._id
         }
 
         return await Promise.all((await componentModel.find(filters).exec()).map(async doc => {

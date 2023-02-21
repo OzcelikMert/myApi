@@ -13,6 +13,8 @@ import {Config} from "../config";
 import postTermObjectIdKeys from "../constants/objectIdKeys/postTerm.objectIdKeys";
 import postModel from "../models/post.model";
 import {PostTermTypeId} from "../constants/postTermTypes";
+import {StatusId} from "../constants/status";
+import {SelectPostResultDocument} from "../types/services/post";
 
 export default {
     async select(params: SelectPostTermParamDocument): Promise<SelectPostTermResultDocument[]> {
@@ -50,6 +52,7 @@ export default {
         let query = postTermModel.find(filters, {}).populate<{ mainId: SelectPostTermResultDocument["mainId"] }>({
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
+            match: {statusId: StatusId.Active},
             transform: (doc: SelectPostTermResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
@@ -58,11 +61,11 @@ export default {
                 }
                 return doc;
             }
-        }).populate<{ authorId: SelectPostTermResultDocument["authorId"] }>({
-            path: "authorId",
-            select: "_id name email url"
-        }).populate<{ lastAuthorId: SelectPostTermResultDocument["lastAuthorId"] }>({
-            path: "lastAuthorId",
+        }).populate<{ authorId: SelectPostResultDocument["authorId"], lastAuthorId: SelectPostResultDocument["lastAuthorId"] }>({
+            path: [
+                "authorId",
+                "lastAuthorId"
+            ].join(" "),
             select: "_id name email url"
         })
 
@@ -162,14 +165,9 @@ export default {
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
 
         if(params._id){
-            if (Array.isArray(params._id)) {
-                filters = {
-                    _id: {$in: params._id}
-                }
-            } else {
-                filters = {
-                    _id: params._id
-                };
+            filters = {
+                ...filters,
+                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
             }
         }
 
@@ -204,14 +202,9 @@ export default {
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
 
         if(params._id){
-            if (Array.isArray(params._id)) {
-                filters = {
-                    _id: {$in: params._id}
-                }
-            } else {
-                filters = {
-                    _id: params._id
-                };
+            filters = {
+                ...filters,
+                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
             }
         }
 
@@ -243,14 +236,9 @@ export default {
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
 
-        if (Array.isArray(params._id)) {
-            filters = {
-                _id: {$in: params._id}
-            }
-        } else {
-            filters = {
-                _id: params._id
-            };
+        filters = {
+            ...filters,
+            _id: Array.isArray(params._id) ? {$in: params._id} : params._id
         }
 
         if (params.typeId) {

@@ -14,6 +14,8 @@ import {Config} from "../config";
 import {SelectComponentResultDocument} from "../types/services/component";
 import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
 import {StatusId} from "../constants/status";
+import {PostTermTypeId} from "../constants/postTermTypes";
+import {PostTypeId} from "../constants/postTypes";
 
 export default {
     async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
@@ -34,16 +36,9 @@ export default {
             "contents.title": { $regex: new RegExp(params.title, "i") }
         }
         if (params.typeId) {
-            if (Array.isArray(params.typeId)) {
-                filters = {
-                    ...filters,
-                    typeId: {$in: params.typeId}
-                }
-            } else {
-                filters = {
-                    ...filters,
-                    typeId: params.typeId
-                }
+            filters = {
+                ...filters,
+                typeId: Array.isArray(params.typeId) ? {$in: params.typeId} : params.typeId
             }
         }
         if (params.pageTypeId) filters = {
@@ -63,7 +58,35 @@ export default {
 
         let query = postModel.find(filters).populate<{ terms: SelectPostResultDocument["terms"] }>({
             path: "terms",
-            select: "_id typeId contents.title contents.langId contents.url",
+            select: "_id typeId contents.title contents.langId contents.url contents.image",
+            match: {
+                typeId: {$in: [PostTermTypeId.Category, PostTermTypeId.Tag]},
+                statusId: StatusId.Active,
+                ...(params.typeId ? {postTypeId: Array.isArray(params.typeId) ? {$in: params.typeId} : params.typeId} : {})
+            },
+            transform: (doc: SelectPostTermResultDocument) => {
+                if (doc) {
+                    if (Array.isArray(doc.contents)) {
+                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
+                    }
+                }
+                return doc;
+            }
+        }).populate<{ eCommerce: SelectPostResultDocument["eCommerce"]}>({
+            path: [
+                "eCommerce.attributes.attributeId",
+                "eCommerce.attributes.variations",
+                "eCommerce.variations.selectedVariations.attributeId",
+                "eCommerce.variations.selectedVariations.variationId",
+                "eCommerce.variationDefaults.attributeId",
+                "eCommerce.variationDefaults.variationId",
+            ].join(" "),
+            select: "_id typeId contents.title contents.langId contents.url contents.image",
+            match: {
+                typeId: {$in: [PostTermTypeId.Attributes, PostTermTypeId.Variations]},
+                statusId: StatusId.Active,
+                postTypeId: PostTypeId.Product
+            },
             transform: (doc: SelectPostTermResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
@@ -89,13 +112,13 @@ export default {
                 }
                 return doc;
             }
-        }).populate<{ authorId: SelectPostResultDocument["authorId"] }>({
-            path: "authorId",
+        }).populate<{ authorId: SelectPostResultDocument["authorId"], lastAuthorId: SelectPostResultDocument["lastAuthorId"] }>({
+            path: [
+                "authorId",
+                "lastAuthorId"
+            ].join(" "),
             select: "_id name email url"
-        }).populate<{ lastAuthorId: SelectPostResultDocument["lastAuthorId"] }>({
-            path: "lastAuthorId",
-            select: "_id name email url"
-        });
+        })
 
         if(params.isGeneral && params.page) {
             query.sort({createdAt: -1});
@@ -174,16 +197,9 @@ export default {
             "contents.title": params.title
         }
         if (params.typeId) {
-            if (Array.isArray(params.typeId)) {
-                filters = {
-                    ...filters,
-                    typeId: {$in: params.typeId}
-                }
-            } else {
-                filters = {
-                    ...filters,
-                    typeId: params.typeId
-                }
+            filters = {
+                ...filters,
+                typeId: Array.isArray(params.typeId) ? {$in: params.typeId} : params.typeId
             }
         }
         if (params.pageTypeId) filters = {
@@ -257,14 +273,9 @@ export default {
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
         if(params._id) {
-            if (Array.isArray(params._id)) {
-                filters = {
-                    _id: {$in: params._id}
-                }
-            } else {
-                filters = {
-                    _id: params._id
-                };
+            filters = {
+                ...filters,
+                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
             }
         }
 
@@ -295,14 +306,9 @@ export default {
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
         if(params._id) {
-            if (Array.isArray(params._id)) {
-                filters = {
-                    _id: {$in: params._id}
-                }
-            } else {
-                filters = {
-                    _id: params._id
-                };
+            filters = {
+                ...filters,
+                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
             }
         }
 
@@ -365,14 +371,9 @@ export default {
         let filters: mongoose.FilterQuery<PostDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
-        if (Array.isArray(params._id)) {
-            filters = {
-                _id: {$in: params._id}
-            }
-        } else {
-            filters = {
-                _id: params._id
-            };
+        filters = {
+            ...filters,
+            _id: Array.isArray(params._id) ? {$in: params._id} : params._id
         }
 
         if (params.typeId) {

@@ -55,7 +55,7 @@ const postBody = object({
         attributes: array(object({
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
             attributeId: string().required({attributeId: ErrorCodes.emptyValue}),
-            variationId: array(string().required({variationId: ErrorCodes.incorrectData})).default([]),
+            variations: array(string().required({variationId: ErrorCodes.incorrectData})).default([]),
         }).required({attributes: ErrorCodes.incorrectData})).default([]),
         variations: array(object({
             selectedVariations: array(object({

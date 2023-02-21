@@ -71,14 +71,9 @@ export default {
         params = MongoDBHelpers.convertObjectIdInData(params, languageObjectIdKeys);
 
         if(params._id) {
-            if (Array.isArray(params._id)) {
-                filters = {
-                    _id: {$in: params._id}
-                }
-            } else {
-                filters = {
-                    _id: params._id
-                };
+            filters = {
+                ...filters,
+                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
             }
         }
 

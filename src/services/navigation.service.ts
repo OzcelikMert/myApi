@@ -14,6 +14,8 @@ import {
     UpdateNavigationStatusIdParamDocument
 } from "../types/services/navigation";
 import navigationModel from "../models/navigation.model";
+import {StatusId} from "../constants/status";
+import {SelectPostResultDocument} from "../types/services/post";
 
 export default {
     async select(params: SelectNavigationParamDocument): Promise<SelectNavigationResultDocument[]> {
@@ -37,6 +39,7 @@ export default {
         let query = navigationModel.find(filters).populate<{ mainId: SelectNavigationResultDocument["mainId"] }>({
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
+            match: {statusId: StatusId.Active},
             transform: (doc: SelectNavigationResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
@@ -45,13 +48,13 @@ export default {
                     return doc;
                 }
             }
-        }).populate<{ authorId: SelectNavigationResultDocument["authorId"] }>({
-            path: "authorId",
+        }).populate<{ authorId: SelectPostResultDocument["authorId"], lastAuthorId: SelectPostResultDocument["lastAuthorId"] }>({
+            path: [
+                "authorId",
+                "lastAuthorId"
+            ].join(" "),
             select: "_id name email url"
-        }).populate<{ lastAuthorId: SelectNavigationResultDocument["lastAuthorId"] }>({
-            path: "lastAuthorId",
-            select: "_id name email url"
-        });
+        })
 
         query.sort({rank: 1, createdAt: -1});
 
@@ -129,14 +132,9 @@ export default {
         let filters: mongoose.FilterQuery<NavigationDocument> = {}
 
         if(params._id) {
-            if (Array.isArray(params._id)) {
-                filters = {
-                    _id: {$in: params._id}
-                }
-            } else {
-                filters = {
-                    _id: params._id
-                };
+            filters = {
+                ...filters,
+                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
             }
         }
 
@@ -160,14 +158,9 @@ export default {
         let filters: mongoose.FilterQuery<NavigationDocument> = {}
 
         if(params._id) {
-            if (Array.isArray(params._id)) {
-                filters = {
-                    _id: {$in: params._id}
-                }
-            } else {
-                filters = {
-                    _id: params._id
-                };
+            filters = {
+                ...filters,
+                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
             }
         }
 
@@ -189,14 +182,9 @@ export default {
 
         let filters: mongoose.FilterQuery<NavigationDocument> = {}
 
-        if (Array.isArray(params._id)) {
-            filters = {
-                _id: {$in: params._id}
-            }
-        } else {
-            filters = {
-                _id: params._id
-            };
+        filters = {
+            ...filters,
+            _id: Array.isArray(params._id) ? {$in: params._id} : params._id
         }
 
         return await Promise.all(((await navigationModel.find(filters).exec()).map(async doc => {

@@ -71,7 +71,9 @@ export interface PopulateTermsDocument {
     typeId: number,
     contents: {
         langId: mongoose.Types.ObjectId | string,
-        title: string,
+        title?: string,
+        image?: string
+        url?: string
     }[]
 }
 

@@ -48,10 +48,9 @@ export default {
         let filters: mongoose.FilterQuery<SubscriberDocument> = {}
 
         if(params._id){
-            if (Array.isArray(params._id)) {
-                filters = {
-                    _id: {$in: params._id}
-                }
+            filters = {
+                ...filters,
+                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
             }
         }
         if (params.email) {

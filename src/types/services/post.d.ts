@@ -69,7 +69,23 @@ export type SelectPostResultDocument = {
     contents?: PostContentDocument | PostContentDocument[]
     components?: ComponentDocument[],
     alternates?: PostAlternateDocument[]
-} & Omit<PostDocument, "contents"|"themeGroups"|"terms"|"components">
+    eCommerce?: (Omit<PostECommerceDocument, "attributes"|"variations"|"variationDefaults"> & {
+         attributes?: (Omit<PostECommerceAttributeDocument, "attributeId"|"variations"> & {
+             attributeId: PopulateTermsDocument,
+             variations: PopulateTermsDocument[]
+         })[]
+         variations?: (Omit<PostECommerceVariationDocument, "selectedVariations"> & {
+             selectedVariations: (Omit<PostECommerceVariationSelectedDocument, "variationId"|"attributeId"> & {
+                 attributeId: PopulateTermsDocument
+                 variationId: PopulateTermsDocument
+             })[]
+         })[]
+         variationDefaults?: (Omit<PostECommerceVariationSelectedDocument, "variationId"|"attributeId"> & {
+             attributeId: PopulateTermsDocument
+             variationId: PopulateTermsDocument
+         })[]
+     })
+} & Omit<PostDocument, "contents"|"themeGroups"|"terms"|"components"|"eCommerce"> & {[key: string]: any}
 
 export interface PostAlternateDocument {
     langId: mongoose.Types.ObjectId | string
@@ -105,7 +121,7 @@ export interface PostECommerceVariationDocument {
 export interface PostECommerceAttributeDocument {
     _id?: mongoose.Types.ObjectId | string
     attributeId: mongoose.Types.ObjectId | string
-    variationId: mongoose.Types.ObjectId[] | string[]
+    variations: mongoose.Types.ObjectId[] | string[]
     typeId: number
 }
 

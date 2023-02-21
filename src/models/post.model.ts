@@ -42,7 +42,7 @@ const schemaECommerceVariationSelected = new mongoose.Schema<PostECommerceVariat
 const schemaECommerceAttribute = new mongoose.Schema<PostECommerceAttributeDocument>(
     {
         attributeId: {type: mongoose.Schema.Types.ObjectId, ref: postTermModel, required: true},
-        variationId: {type: [mongoose.Schema.Types.ObjectId], ref: postTermModel, default: []},
+        variations: {type: [mongoose.Schema.Types.ObjectId], ref: postTermModel, default: []},
         typeId: {type: Number, enum: AttributeTypeId, default: AttributeTypeId.Text}
     },
     {timestamps: true}
