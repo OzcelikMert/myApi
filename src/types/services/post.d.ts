@@ -65,27 +65,13 @@ export type SelectPostResultDocument = {
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
     views?: number,
-    terms: PopulateTermsDocument[]
+    categories?: PopulateTermsDocument[]
+    tags?: PopulateTermsDocument[]
     contents?: PostContentDocument | PostContentDocument[]
     components?: ComponentDocument[],
     alternates?: PostAlternateDocument[]
-    eCommerce?: (Omit<PostECommerceDocument, "attributes"|"variations"|"variationDefaults"> & {
-         attributes?: (Omit<PostECommerceAttributeDocument, "attributeId"|"variations"> & {
-             attributeId: PopulateTermsDocument,
-             variations: PopulateTermsDocument[]
-         })[]
-         variations?: (Omit<PostECommerceVariationDocument, "selectedVariations"> & {
-             selectedVariations: (Omit<PostECommerceVariationSelectedDocument, "variationId"|"attributeId"> & {
-                 attributeId: PopulateTermsDocument
-                 variationId: PopulateTermsDocument
-             })[]
-         })[]
-         variationDefaults?: (Omit<PostECommerceVariationSelectedDocument, "variationId"|"attributeId"> & {
-             attributeId: PopulateTermsDocument
-             variationId: PopulateTermsDocument
-         })[]
-     })
-} & Omit<PostDocument, "contents"|"themeGroups"|"terms"|"components"|"eCommerce"> & {[key: string]: any}
+    eCommerce?: PostECommerceDocument<PopulateTermsDocument, PopulateTermsDocument[]>
+} & Omit<PostDocument, "contents"|"categories"|"tags"|"components"|"eCommerce">
 
 export interface PostAlternateDocument {
     langId: mongoose.Types.ObjectId | string
@@ -101,16 +87,16 @@ export interface PostECommerceVariationContentDocument {
     shortContent?: string,
 }
 
-export interface PostECommerceVariationSelectedDocument {
+export interface PostECommerceVariationSelectedDocument<T = mongoose.Types.ObjectId | string> {
     _id?: mongoose.Types.ObjectId | string
-    attributeId: mongoose.Types.ObjectId | string
-    variationId: mongoose.Types.ObjectId | string
+    attributeId: T
+    variationId: T
 }
 
-export interface PostECommerceVariationDocument {
+export interface PostECommerceVariationDocument<T = mongoose.Types.ObjectId | string> {
     _id?: mongoose.Types.ObjectId | string
     rank: number
-    selectedVariations: PostECommerceVariationSelectedDocument[]
+    selectedVariations: PostECommerceVariationSelectedDocument<T>[]
     images: string[]
     contents?: PostECommerceVariationContentDocument | PostECommerceVariationContentDocument[]
     inventory: PostECommerceInventoryDocument
@@ -118,10 +104,10 @@ export interface PostECommerceVariationDocument {
     pricing: PostECommercePricingDocument
 }
 
-export interface PostECommerceAttributeDocument {
+export interface PostECommerceAttributeDocument<T = mongoose.Types.ObjectId | string, P = mongoose.Types.ObjectId[] | string[]> {
     _id?: mongoose.Types.ObjectId | string
-    attributeId: mongoose.Types.ObjectId | string
-    variations: mongoose.Types.ObjectId[] | string[]
+    attributeId: T
+    variations: P
     typeId: number
 }
 
@@ -146,15 +132,15 @@ export interface PostECommercePricingDocument {
     shipping: number
 }
 
-export interface PostECommerceDocument {
+export interface PostECommerceDocument<T = mongoose.Types.ObjectId | string, P = mongoose.Types.ObjectId[] | string[]> {
     typeId: number
     images: string[]
     pricing?: PostECommercePricingDocument
     inventory?: PostECommerceInventoryDocument
     shipping?: PostECommerceShippingDocument
-    attributes?: PostECommerceAttributeDocument[]
-    variations?: PostECommerceVariationDocument[]
-    variationDefaults?: PostECommerceVariationSelectedDocument[]
+    attributes?: PostECommerceAttributeDocument<T, P>[]
+    variations?: PostECommerceVariationDocument<T>[]
+    variationDefaults?: PostECommerceVariationSelectedDocument<T>[]
 }
 
 export interface PostContentButtonDocument {
@@ -194,7 +180,8 @@ export interface PostDocument {
     dateStart: Date,
     rank: number,
     isFixed?: boolean,
-    terms: mongoose.Types.ObjectId[] | string[]
+    categories?: mongoose.Types.ObjectId[] | string[]
+    tags?: mongoose.Types.ObjectId[] | string[]
     contents: PostContentDocument[]
     components?: mongoose.Types.ObjectId[] | string []
     beforeAndAfter?: PostBeforeAndAfterDocument

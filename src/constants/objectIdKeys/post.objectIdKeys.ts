@@ -1,7 +1,8 @@
 export default [
     "_id",
     "mainId",
-    "terms",
+    "categories",
+    "tags",
     "components",
     "authorId",
     "lastAuthorId",

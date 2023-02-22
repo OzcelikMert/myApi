@@ -51,8 +51,9 @@ export default {
 
         let query = postTermModel.find(filters, {}).populate<{ mainId: SelectPostTermResultDocument["mainId"] }>({
             path: "mainId",
-            select: "_id contents.title contents.url contents.langId",
+            select: "_id typeId contents.title contents.langId contents.url contents.image",
             match: {statusId: StatusId.Active},
+            options: { omitUndefined: true },
             transform: (doc: SelectPostTermResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
@@ -92,7 +93,7 @@ export default {
             }
 
             if(params.withPostCount && [PostTermTypeId.Category].includes(doc.typeId)){
-                doc.postCount = (await postModel.find({typeId: doc.postTypeId, terms: { $in: [doc._id]}}).count().exec())
+                doc.postCount = (await postModel.find({typeId: doc.postTypeId, categories: { $in: [doc._id]}}).count().exec())
             }
 
             return doc;

@@ -5,7 +5,8 @@ import {ProductTypeId} from "../constants/productTypes";
 const postBody = object({
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
     pageTypeId: number(),
-    terms: array(string().required({terms: ErrorCodes.incorrectData})).default([]),
+    categories: array(string().required({categories: ErrorCodes.incorrectData})).default(undefined),
+    tags: array(string().required({tags: ErrorCodes.incorrectData})).default(undefined),
     dateStart: string().required({dateStart: ErrorCodes.emptyValue}),
     rank: number().required({rank: ErrorCodes.emptyValue}),
     isFixed: boolean().default(false),

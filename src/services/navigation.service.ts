@@ -40,6 +40,7 @@ export default {
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
             match: {statusId: StatusId.Active},
+            options: { omitUndefined: true },
             transform: (doc: SelectNavigationResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {

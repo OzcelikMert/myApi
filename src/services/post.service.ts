@@ -56,14 +56,19 @@ export default {
             }
         }
 
-        let query = postModel.find(filters).populate<{ terms: SelectPostResultDocument["terms"] }>({
-            path: "terms",
+
+        let query = postModel.find(filters).populate<{ categories: SelectPostResultDocument["categories"], tags: SelectPostResultDocument["tags"] }>({
+            path: [
+                "categories",
+                "tags"
+            ].join(" "),
             select: "_id typeId contents.title contents.langId contents.url contents.image",
             match: {
                 typeId: {$in: [PostTermTypeId.Category, PostTermTypeId.Tag]},
                 statusId: StatusId.Active,
                 ...(params.typeId ? {postTypeId: Array.isArray(params.typeId) ? {$in: params.typeId} : params.typeId} : {})
             },
+            options: { omitUndefined: true },
             transform: (doc: SelectPostTermResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
@@ -87,6 +92,7 @@ export default {
                 statusId: StatusId.Active,
                 postTypeId: PostTypeId.Product
             },
+            options: { omitUndefined: true },
             transform: (doc: SelectPostTermResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
@@ -97,6 +103,7 @@ export default {
             }
         }).populate<{ components: SelectPostResultDocument["components"] }>({
             path: "components",
+            options: { omitUndefined: true },
             transform: (doc: SelectComponentResultDocument) => {
                 if (doc) {
                     doc.types.map(docType => {
@@ -132,6 +139,18 @@ export default {
         return (await query.lean().exec()).map((doc: SelectPostResultDocument) => {
             let views = 0;
 
+            if(doc.categories){
+                doc.categories = doc.categories.filter(item => item);
+            }
+
+            if(doc.tags){
+                doc.tags = doc.tags.filter(item => item);
+            }
+
+            if(doc.components){
+                doc.components = doc.components.filter(item => item);
+            }
+
             if (Array.isArray(doc.contents)) {
                 doc.alternates = doc.contents.map(content => ({
                     langId: content.langId,
@@ -164,6 +183,7 @@ export default {
             if(doc.eCommerce){
                 if(doc.eCommerce.variations){
                     for(let docECommerceVariation of doc.eCommerce.variations){
+                        docECommerceVariation.selectedVariations = docECommerceVariation.selectedVariations.filter(item => item.attributeId);
                         if(Array.isArray(docECommerceVariation.contents)){
                             let docEcommerceVariationContent = docECommerceVariation.contents.findSingle("langId", params.langId) ?? docECommerceVariation.contents.findSingle("langId", defaultLangId);
                             if (docEcommerceVariationContent) {
@@ -175,11 +195,17 @@ export default {
                         }
                     }
                 }
+
+                if(doc.eCommerce.variationDefaults){
+                    doc.eCommerce.variationDefaults =  doc.eCommerce.variationDefaults.filter(item => item.attributeId);
+                }
+
+                if(doc.eCommerce.attributes){
+                    doc.eCommerce.attributes = doc.eCommerce.attributes.filter(item => item.attributeId);
+                }
             }
 
             doc.views = views;
-            doc.components = doc.components?.filter(component => component);
-            doc.terms = doc.terms?.filter(term => term);
 
             return doc;
         });
