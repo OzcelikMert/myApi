@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import {LogDocument} from "../types/services/log";
+import {LogDocument} from "../types/models/log";
 import userModel from "./user.model";
 
 const schema = new mongoose.Schema<LogDocument>(

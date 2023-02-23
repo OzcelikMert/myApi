@@ -6,17 +6,33 @@ import componentService from "../services/component.service";
 import logMiddleware from "../middlewares/log.middleware";
 
 export default {
-    get: async (
+    getOne: async (
         req: Request<any, any, any, any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            let data: InferType<typeof componentSchema.get> = req;
+            let data: InferType<typeof componentSchema.getOne> = req;
 
-            serviceResult.data = await componentService.select({
+            serviceResult.data = await componentService.getOne({
                 ...data.params,
+                ...data.query
+            });
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        })
+    },
+    getMany: async (
+        req: Request<any, any, any, any>,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+
+            let data: InferType<typeof componentSchema.getMany> = req;
+
+            serviceResult.data = await componentService.getMany({
                 ...data.query
             });
 
@@ -32,7 +48,7 @@ export default {
 
             let data: InferType<typeof componentSchema.post> = req;
 
-            await componentService.insert({
+            await componentService.add({
                 ...data.body,
                 authorId: req.session.data.id.toString(),
                 lastAuthorId: req.session.data.id.toString()
@@ -41,15 +57,15 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
-    update: async (
+    updateOne: async (
         req: Request<any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof componentSchema.put> = req;
+            let data: InferType<typeof componentSchema.putOne> = req;
 
-            await componentService.update({
+            await componentService.updateOne({
                 ...data.params,
                 ...data.body,
                 lastAuthorId: req.session.data.id.toString()
@@ -58,31 +74,15 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
-    updateRank: async (
-        req: Request<any>,
-        res: Response
-    ) => {
-        await logMiddleware.error(req, res, async () => {
-            let serviceResult = new Result();
-            let data: InferType<typeof componentSchema.putRank> = req;
-
-            await componentService.updateRank({
-                ...data.body,
-                lastAuthorId: req.session.data.id.toString()
-            });
-
-            res.status(serviceResult.statusCode).json(serviceResult)
-        });
-    },
-    delete: async (
+    deleteMany: async (
         req: Request,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof componentSchema.delete> = req;
+            let data: InferType<typeof componentSchema.deleteMany> = req;
 
-            await componentService.delete({
+            await componentService.deleteMany({
                 ...data.body
             });
 

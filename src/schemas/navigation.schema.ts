@@ -13,13 +13,19 @@ const postBody = object({
 })
 
 export default {
-    get: object({
+    getOne: object({
         params: object({
-            _id: string(),
+            _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
         query: object({
             langId: string(),
-            url: string(),
+            statusId: number()
+        })
+    }),
+    getMany: object({
+        query: object({
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),
+            langId: string(),
             statusId: number(),
             ignoreDefaultLanguage: boolean()
         })
@@ -27,25 +33,27 @@ export default {
     post: object({
         body: postBody
     }),
-    put: object({
+    putOne: object({
         params: object({
             _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
         body: postBody
     }),
-    putStatus: object({
+    putManyStatus: object({
         body: object({
             _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue})
         })
     }),
-    putRank: object({
+    putOneRank: object({
+        params: object({
+            _id: string().required({_id: ErrorCodes.emptyValue}),
+        }),
         body: object({
-            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
             rank: number().required({rank: ErrorCodes.emptyValue})
         })
     }),
-    delete: object({
+    deleteMany: object({
         body: object({
             _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
         })

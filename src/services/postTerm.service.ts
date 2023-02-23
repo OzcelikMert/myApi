@@ -14,7 +14,6 @@ import postTermObjectIdKeys from "../constants/objectIdKeys/postTerm.objectIdKey
 import postModel from "../models/post.model";
 import {PostTermTypeId} from "../constants/postTermTypes";
 import {StatusId} from "../constants/status";
-import {SelectPostResultDocument} from "../types/services/post";
 
 export default {
     async select(params: SelectPostTermParamDocument): Promise<SelectPostTermResultDocument[]> {
@@ -62,12 +61,12 @@ export default {
                 }
                 return doc;
             }
-        }).populate<{ authorId: SelectPostResultDocument["authorId"], lastAuthorId: SelectPostResultDocument["lastAuthorId"] }>({
+        }).populate<{ authorId: SelectPostTermResultDocument["authorId"], lastAuthorId: SelectPostTermResultDocument["lastAuthorId"] }>({
             path: [
                 "authorId",
                 "lastAuthorId"
             ].join(" "),
-            select: "_id name email url"
+            select: "_id name url"
         })
 
         if (params.count) query.limit(params.count);

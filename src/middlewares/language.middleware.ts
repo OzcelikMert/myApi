@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
-import componentService from "../services/component.service";
 import logMiddleware from "./log.middleware";
+import languageService from "../services/language.service";
 
 export default {
     checkOne: async (
@@ -14,7 +14,7 @@ export default {
 
             let _id = req.params._id as string;
 
-            let resData = await componentService.getOne({_id: _id});
+            let resData = await languageService.getOne({_id: _id});
 
             if (!resData) {
                 serviceResult.status = false;
@@ -39,7 +39,7 @@ export default {
 
             let _id = req.body._id as string[];
 
-            let resData = await componentService.getMany({_id: _id});
+            let resData = await languageService.getMany({_id: _id});
 
             if (
                 resData.length == 0 ||

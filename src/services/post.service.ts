@@ -1,24 +1,30 @@
 import * as mongoose from "mongoose";
 import postModel from "../models/post.model";
 import {
-    DeletePostParamDocument,
-    InsertPostParamDocument,
-    PostDocument, SelectPostCountParamDocument,
-    SelectPostParamDocument, SelectPostResultDocument,
-    UpdatePostParamDocument, UpdatePostRankParamDocument, UpdatePostStatusIdParamDocument, UpdatePostViewParamDocument
+    PostDeleteManyParamDocument,
+    PostAddParamDocument,
+    PostGetCountParamDocument,
+    PostGetOneParamDocument,
+    PostGetResultDocument,
+    PostGetManyParamDocument,
+    PostUpdateOneParamDocument,
+    PostUpdateOneRankParamDocument,
+    PostUpdateManyStatusIdParamDocument,
+    PostUpdateOneViewParamDocument
 } from "../types/services/post";
+import {PostDocument} from "../types/models/post";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import {SelectPostTermResultDocument} from "../types/services/postTerm";
 import Variable from "../library/variable";
 import {Config} from "../config";
-import {SelectComponentResultDocument} from "../types/services/component";
+import {ComponentGetResultDocument} from "../types/services/component";
 import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
 import {StatusId} from "../constants/status";
 import {PostTermTypeId} from "../constants/postTermTypes";
 import {PostTypeId} from "../constants/postTypes";
 
 export default {
-    async select(params: SelectPostParamDocument): Promise<SelectPostResultDocument[]> {
+    async getOne(params: PostGetOneParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, [...postObjectIdKeys, "ignorePostId"]);
         let defaultLangId = MongoDBHelpers.createObjectId(Config.defaultLangId);
@@ -31,14 +37,10 @@ export default {
             ...filters,
             "contents.url": params.url
         }
-        if (params.title) filters = {
-            ...filters,
-            "contents.title": { $regex: new RegExp(params.title, "i") }
-        }
         if (params.typeId) {
             filters = {
                 ...filters,
-                typeId: Array.isArray(params.typeId) ? {$in: params.typeId} : params.typeId
+                typeId: params.typeId
             }
         }
         if (params.pageTypeId) filters = {
@@ -56,8 +58,7 @@ export default {
             }
         }
 
-
-        let query = postModel.find(filters).populate<{ categories: SelectPostResultDocument["categories"], tags: SelectPostResultDocument["tags"] }>({
+        let query = postModel.findOne(filters).populate<{ categories: PostGetResultDocument["categories"], tags: PostGetResultDocument["tags"] }>({
             path: [
                 "categories",
                 "tags"
@@ -66,9 +67,9 @@ export default {
             match: {
                 typeId: {$in: [PostTermTypeId.Category, PostTermTypeId.Tag]},
                 statusId: StatusId.Active,
-                ...(params.typeId ? {postTypeId: Array.isArray(params.typeId) ? {$in: params.typeId} : params.typeId} : {})
+                postTypeId: params.typeId
             },
-            options: { omitUndefined: true },
+            options: {omitUndefined: true},
             transform: (doc: SelectPostTermResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
@@ -77,7 +78,7 @@ export default {
                 }
                 return doc;
             }
-        }).populate<{ eCommerce: SelectPostResultDocument["eCommerce"]}>({
+        }).populate<{ eCommerce: PostGetResultDocument["eCommerce"] }>({
             path: [
                 "eCommerce.attributes.attributeId",
                 "eCommerce.attributes.variations",
@@ -92,7 +93,7 @@ export default {
                 statusId: StatusId.Active,
                 postTypeId: PostTypeId.Product
             },
-            options: { omitUndefined: true },
+            options: {omitUndefined: true},
             transform: (doc: SelectPostTermResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
@@ -101,53 +102,223 @@ export default {
                 }
                 return doc;
             }
-        }).populate<{ components: SelectPostResultDocument["components"] }>({
+        }).populate<{ components: PostGetResultDocument["components"] }>({
             path: "components",
-            options: { omitUndefined: true },
-            transform: (doc: SelectComponentResultDocument) => {
+            options: {omitUndefined: true},
+            transform: (doc: ComponentGetResultDocument) => {
                 if (doc) {
                     doc.types.map(docType => {
                         if (Array.isArray(docType.contents)) {
                             docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", defaultLangId);
                             if (docType.contents) {
-                                if (!params.getContents) {
-                                    delete docType.contents.content;
-                                }
+                                delete docType.contents.content;
                             }
                         }
                     })
                 }
                 return doc;
             }
-        }).populate<{ authorId: SelectPostResultDocument["authorId"], lastAuthorId: SelectPostResultDocument["lastAuthorId"] }>({
+        }).populate<{ authorId: PostGetResultDocument["authorId"], lastAuthorId: PostGetResultDocument["lastAuthorId"] }>({
             path: [
                 "authorId",
                 "lastAuthorId"
             ].join(" "),
-            select: "_id name email url"
-        })
+            select: "_id name url"
+        });
 
-        if(params.isGeneral && params.page) {
-            query.sort({createdAt: -1});
-        }else {
-            query.sort({isFixed: -1, rank: 1, createdAt: -1});
-        }
+        let doc = (await query.lean().exec()) as PostGetResultDocument | null;
 
-        if(params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));
-        if (params.count) query.limit(params.count);
-
-        return (await query.lean().exec()).map((doc: SelectPostResultDocument) => {
+        if (doc) {
             let views = 0;
 
-            if(doc.categories){
+            if (doc.categories) {
                 doc.categories = doc.categories.filter(item => item);
             }
 
-            if(doc.tags){
+            if (doc.tags) {
                 doc.tags = doc.tags.filter(item => item);
             }
 
-            if(doc.components){
+            if (doc.components) {
+                doc.components = doc.components.filter(item => item);
+            }
+
+            if (Array.isArray(doc.contents)) {
+                doc.alternates = doc.contents.map(content => ({
+                    langId: content.langId,
+                    title: content.title,
+                    url: content.url
+                }));
+
+                for (const docContent of doc.contents) {
+                    if (docContent.views) {
+                        views += Number(docContent.views);
+                    }
+                }
+
+                let docContent = doc.contents.findSingle("langId", params.langId);
+                if (!docContent) {
+                    docContent = doc.contents.findSingle("langId", defaultLangId);
+                    if (docContent) {
+                        docContent.views = 0;
+                    }
+                }
+
+                doc.contents = docContent;
+            }
+
+            if (doc.eCommerce) {
+                if (doc.eCommerce.variations) {
+                    for (let docECommerceVariation of doc.eCommerce.variations) {
+                        docECommerceVariation.selectedVariations = docECommerceVariation.selectedVariations.filter(item => item.attributeId);
+                        if (Array.isArray(docECommerceVariation.contents)) {
+                            docECommerceVariation.contents = docECommerceVariation.contents.findSingle("langId", params.langId) ?? docECommerceVariation.contents.findSingle("langId", defaultLangId);
+                        }
+                    }
+                }
+
+                if (doc.eCommerce.variationDefaults) {
+                    doc.eCommerce.variationDefaults = doc.eCommerce.variationDefaults.filter(item => item.attributeId);
+                }
+
+                if (doc.eCommerce.attributes) {
+                    doc.eCommerce.attributes = doc.eCommerce.attributes.filter(item => item.attributeId);
+                }
+            }
+
+            doc.views = views;
+        }
+
+        return doc;
+    },
+    async getMany(params: PostGetManyParamDocument) {
+        let filters: mongoose.FilterQuery<PostDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, [...postObjectIdKeys, "ignorePostId"]);
+        let defaultLangId = MongoDBHelpers.createObjectId(Config.defaultLangId);
+
+        if (params._id) filters = {
+            ...filters,
+            _id: {$in: params._id}
+        }
+        if (params.title) filters = {
+            ...filters,
+            "contents.title": {$regex: new RegExp(params.title, "i")}
+        }
+        if (params.typeId) {
+            filters = {
+                ...filters,
+                typeId: {$in: params.typeId}
+            }
+        }
+        if (params.pageTypeId) filters = {
+            ...filters,
+            pageTypeId: {$in: params.pageTypeId}
+        }
+        if (params.statusId) filters = {
+            ...filters,
+            statusId: params.statusId
+        }
+        if (params.ignorePostId) {
+            filters = {
+                ...filters,
+                _id: {$nin: params.ignorePostId}
+            }
+        }
+
+
+        let query = postModel.find(filters).populate<{ categories: PostGetResultDocument["categories"], tags: PostGetResultDocument["tags"] }>({
+            path: [
+                "categories",
+                "tags"
+            ].join(" "),
+            select: "_id typeId contents.title contents.langId contents.url contents.image",
+            match: {
+                typeId: {$in: [PostTermTypeId.Category, PostTermTypeId.Tag]},
+                statusId: StatusId.Active,
+                postTypeId: {$in: params.typeId}
+            },
+            options: {omitUndefined: true},
+            transform: (doc: SelectPostTermResultDocument) => {
+                if (doc) {
+                    if (Array.isArray(doc.contents)) {
+                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
+                        delete doc.contents?.shortContent;
+                        delete doc.contents?.seoContent;
+                    }
+                }
+                return doc;
+            }
+        }).populate<{ eCommerce: PostGetResultDocument["eCommerce"] }>({
+            path: [
+                "eCommerce.attributes.attributeId",
+                "eCommerce.attributes.variations",
+                "eCommerce.variations.selectedVariations.attributeId",
+                "eCommerce.variations.selectedVariations.variationId",
+                "eCommerce.variationDefaults.attributeId",
+                "eCommerce.variationDefaults.variationId",
+            ].join(" "),
+            select: "_id typeId contents.title contents.langId contents.url contents.image",
+            match: {
+                typeId: {$in: [PostTermTypeId.Attributes, PostTermTypeId.Variations]},
+                statusId: StatusId.Active,
+                postTypeId: {$in: params.typeId}
+            },
+            options: {omitUndefined: true},
+            transform: (doc: SelectPostTermResultDocument) => {
+                if (doc) {
+                    if (Array.isArray(doc.contents)) {
+                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
+                        delete doc.contents?.shortContent;
+                        delete doc.contents?.seoContent;
+                    }
+                }
+                return doc;
+            }
+        }).populate<{ components: PostGetResultDocument["components"] }>({
+            path: "components",
+            options: {omitUndefined: true},
+            transform: (doc: ComponentGetResultDocument) => {
+                if (doc) {
+                    doc.types.map(docType => {
+                        if (Array.isArray(docType.contents)) {
+                            docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", defaultLangId);
+                            if (docType.contents) {
+                                delete docType.contents.content;
+                            }
+                        }
+                    })
+                }
+                return doc;
+            }
+        }).populate<{ authorId: PostGetResultDocument["authorId"], lastAuthorId: PostGetResultDocument["lastAuthorId"] }>({
+            path: [
+                "authorId",
+                "lastAuthorId"
+            ].join(" "),
+            select: "_id name url"
+        });
+
+        if (params.typeId.length > 1 && params.page) {
+            query.sort({createdAt: -1});
+        } else {
+            query.sort({isFixed: -1, rank: 1, createdAt: -1});
+        }
+
+        if (params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));
+        if (params.count) query.limit(params.count);
+
+        return (await query.lean().exec()).map((doc: PostGetResultDocument) => {
+            let views = 0;
+
+            if (doc.categories) {
+                doc.categories = doc.categories.filter(item => item);
+            }
+
+            if (doc.tags) {
+                doc.tags = doc.tags.filter(item => item);
+            }
+
+            if (doc.components) {
                 doc.components = doc.components.filter(item => item);
             }
 
@@ -172,35 +343,26 @@ export default {
                     }
                 }
 
-                if (docContent) {
-                    doc.contents = docContent;
-                    if (!params.getContents) {
-                        delete doc.contents.content;
-                    }
-                }
+                doc.contents = docContent;
+                delete doc.contents?.content;
             }
 
-            if(doc.eCommerce){
-                if(doc.eCommerce.variations){
-                    for(let docECommerceVariation of doc.eCommerce.variations){
+            if (doc.eCommerce) {
+                if (doc.eCommerce.variations) {
+                    for (let docECommerceVariation of doc.eCommerce.variations) {
                         docECommerceVariation.selectedVariations = docECommerceVariation.selectedVariations.filter(item => item.attributeId);
-                        if(Array.isArray(docECommerceVariation.contents)){
-                            let docEcommerceVariationContent = docECommerceVariation.contents.findSingle("langId", params.langId) ?? docECommerceVariation.contents.findSingle("langId", defaultLangId);
-                            if (docEcommerceVariationContent) {
-                                docECommerceVariation.contents = docEcommerceVariationContent;
-                                if (!params.getContents) {
-                                    delete docECommerceVariation.contents.content;
-                                }
-                            }
+                        if (Array.isArray(docECommerceVariation.contents)) {
+                            docECommerceVariation.contents = docECommerceVariation.contents.findSingle("langId", params.langId) ?? docECommerceVariation.contents.findSingle("langId", defaultLangId);
+                            delete docECommerceVariation.contents?.content;
                         }
                     }
                 }
 
-                if(doc.eCommerce.variationDefaults){
-                    doc.eCommerce.variationDefaults =  doc.eCommerce.variationDefaults.filter(item => item.attributeId);
+                if (doc.eCommerce.variationDefaults) {
+                    doc.eCommerce.variationDefaults = doc.eCommerce.variationDefaults.filter(item => item.attributeId);
                 }
 
-                if(doc.eCommerce.attributes){
+                if (doc.eCommerce.attributes) {
                     doc.eCommerce.attributes = doc.eCommerce.attributes.filter(item => item.attributeId);
                 }
             }
@@ -210,50 +372,32 @@ export default {
             return doc;
         });
     },
-    async selectCount(params: SelectPostCountParamDocument): Promise<number> {
+    async getManyCount(params: PostGetCountParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
-        if (params.url) filters = {
-            ...filters,
-            "contents.url": params.url
-        }
-        if (params.title) filters = {
-            ...filters,
-            "contents.title": params.title
-        }
         if (params.typeId) {
             filters = {
                 ...filters,
-                typeId: Array.isArray(params.typeId) ? {$in: params.typeId} : params.typeId
+                typeId: {$in: params.typeId}
             }
-        }
-        if (params.pageTypeId) filters = {
-            ...filters,
-            pageTypeId: params.pageTypeId
         }
         if (params.statusId) filters = {
             ...filters,
             statusId: params.statusId
         }
-        if (params.ignorePostId) {
-            filters = {
-                ...filters,
-                _id: {$nin: params.ignorePostId}
-            }
-        }
 
         let query = postModel.find(filters);
 
-        return await query.count().exec();
+        return await query.countDocuments().exec();
     },
-    async insert(params: InsertPostParamDocument) {
+    async add(params: PostAddParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
         return await postModel.create(params);
     },
-    async update(params: UpdatePostParamDocument) {
+    async updateOne(params: PostUpdateOneParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
@@ -271,40 +415,43 @@ export default {
             }
         }
 
-        return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
+        let doc = (await postModel.findOne(filters).exec());
+
+        if(doc) {
             if (params.contents) {
-                let docContent = doc.contents.findSingle("langId", params.contents.langId);
-                if (docContent) {
-                    docContent = Object.assign(docContent, params.contents);
-                } else {
-                    doc.contents.push(params.contents)
+                if (Array.isArray(doc.contents)) {
+                    let docContent = doc.contents.findSingle("langId", params.contents.langId);
+                    if (docContent) {
+                        docContent = Object.assign(docContent, params.contents);
+                    } else {
+                        doc.contents.push(params.contents)
+                    }
                 }
                 delete params.contents;
             }
             doc = Object.assign(doc, params);
 
             await doc.save();
+        }
 
-            return {
-                _id: doc._id,
-                pageTypeId: doc.pageTypeId,
-                lastAuthorId: doc.lastAuthorId
-            }
-        }));
+        return {
+            _id: doc?._id,
+            pageTypeId: doc?.pageTypeId,
+            lastAuthorId: doc?.lastAuthorId
+        }
     },
-    async updateStatus(params: UpdatePostStatusIdParamDocument) {
+    async updateManyStatus(params: PostUpdateManyStatusIdParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
-        if(params._id) {
+        if (params._id) {
             filters = {
                 ...filters,
-                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
+                _id: {$in: params._id}
             }
         }
-
         if (params.typeId) {
             filters = {
                 ...filters,
@@ -325,19 +472,18 @@ export default {
             };
         }));
     },
-    async updateRank(params: UpdatePostRankParamDocument) {
+    async updateOneRank(params: PostUpdateOneRankParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
         let filters: mongoose.FilterQuery<PostDocument> = {}
 
-        if(params._id) {
+        if (params._id) {
             filters = {
                 ...filters,
-                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
+                _id: params._id
             }
         }
-
         if (params.typeId) {
             filters = {
                 ...filters,
@@ -345,20 +491,22 @@ export default {
             }
         }
 
-        return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
+        let doc = (await postModel.findOne(filters).exec());
+
+        if(doc) {
             doc.rank = params.rank;
             doc.lastAuthorId = params.lastAuthorId;
 
             await doc.save();
+        }
 
-            return {
-                _id: doc._id,
-                rank: doc.rank,
-                lastAuthorId: doc.lastAuthorId
-            };
-        }));
+        return {
+            _id: doc?._id,
+            rank: doc?.rank,
+            lastAuthorId: doc?.lastAuthorId
+        };
     },
-    async updateView(params: UpdatePostViewParamDocument) {
+    async updateOneView(params: PostUpdateOneViewParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
@@ -376,7 +524,11 @@ export default {
             }
         }
 
-        return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
+        let doc = (await postModel.findOne(filters).exec());
+
+        let views = 0,
+            totalViews = 0;
+        if(doc) {
             let docContent = doc.contents.findSingle("langId", params.langId);
             if (docContent) {
                 if (docContent.views) {
@@ -384,22 +536,33 @@ export default {
                 } else {
                     docContent.views = 1;
                 }
+
+                views = docContent.views;
+
                 await doc.save();
             }
 
-            return {
-                _id: doc._id,
-                views: docContent?.views
-            };
-        }));
+            for (const docContent of doc.contents) {
+                if (docContent.views) {
+                    totalViews += Number(docContent.views);
+                }
+            }
+        }
+
+        return {
+            _id: doc?._id,
+            langId: params.langId,
+            views: views,
+            totalViews: totalViews
+        };
     },
-    async delete(params: DeletePostParamDocument) {
+    async deleteMany(params: PostDeleteManyParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
         filters = {
             ...filters,
-            _id: Array.isArray(params._id) ? {$in: params._id} : params._id
+            _id: {$in: params._id}
         }
 
         if (params.typeId) {

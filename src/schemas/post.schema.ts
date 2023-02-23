@@ -17,7 +17,6 @@ const postBody = object({
         seoContent: string(),
         image: string(),
         icon: string(),
-        seoTitle: string(),
         url: string(),
         content: string(),
         shortContent: string(),
@@ -98,39 +97,35 @@ const postBody = object({
 })
 
 export default {
-    getGeneral: object({
-        query: object({
-            langId: string(),
-            typeId: array(number().required({typeId: ErrorCodes.incorrectData})),
-            url: string(),
-            title: string(),
-            pageTypeId: number(),
-            statusId: number(),
-            getContents: boolean().default(false),
-            count: number()
-        }),
-    }),
-    getCount: object({
-        query: object({
-            typeId: array(number().required({typeId: ErrorCodes.incorrectData})),
-        })
-    }),
-    get: object({
+    getOne: object({
         params: object({
-            _id: string(),
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         query: object({
+            _id: string(),
             langId: string(),
-            getContents: boolean().default(false),
             url: string(),
-            title: string(),
             pageTypeId: number(),
+            statusId: number(),
+        })
+    }),
+    getMany: object({
+        query: object({
+            typeId: array(number().required({typeId: ErrorCodes.incorrectData})).required({typeId: ErrorCodes.emptyValue}),
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),
+            pageTypeId: array(number().required({typeId: ErrorCodes.incorrectData})).default(undefined),
+            langId: string(),
+            title: string(),
             statusId: number(),
             count: number(),
             page: number(),
-            isPrimary: boolean(),
             ignoreDefaultLanguage: boolean()
+        })
+    }),
+    getManyCount: object({
+        query: object({
+            typeId: array(number().required({typeId: ErrorCodes.incorrectData})).required({typeId: ErrorCodes.emptyValue}),
+            statusId: number(),
         })
     }),
     post: object({
@@ -139,14 +134,14 @@ export default {
         }),
         body: postBody
     }),
-    put: object({
+    putOne: object({
         params: object({
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
             _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
         body: postBody
     }),
-    putStatus: object({
+    putManyStatus: object({
         params: object({
             typeId: number().required({typeId: ErrorCodes.emptyValue})
         }),
@@ -155,26 +150,25 @@ export default {
             statusId: number().required({statusId: ErrorCodes.emptyValue})
         })
     }),
-    putRank: object({
-        params: object({
-            typeId: number().required({typeId: ErrorCodes.emptyValue})
-        }),
-        body: object({
-            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
-            rank: number().required({rank: ErrorCodes.emptyValue})
-        })
-    }),
-    putView: object({
+    putOneRank: object({
         params: object({
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
             _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
         body: object({
-            url: string().default(""),
+            rank: number().required({rank: ErrorCodes.emptyValue})
+        })
+    }),
+    putOneView: object({
+        params: object({
+            typeId: number().required({typeId: ErrorCodes.emptyValue}),
+            _id: string().required({_id: ErrorCodes.emptyValue}),
+        }),
+        body: object({
             langId: string().required({langId: ErrorCodes.emptyValue})
         })
     }),
-    delete: object({
+    deleteMany: object({
         params: object({
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),

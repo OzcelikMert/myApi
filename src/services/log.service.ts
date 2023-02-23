@@ -1,11 +1,11 @@
 import Variable from "../library/variable";
-import {InsertLogParamDocument} from "../types/services/log";
+import {LogAddParamDocument} from "../types/services/log";
 import logModel from "../models/log.model";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import logObjectIdKeys from "../constants/objectIdKeys/log.objectIdKeys";
 
 export default {
-    async insert(params: InsertLogParamDocument) {
+    async insert(params: LogAddParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, logObjectIdKeys);
 

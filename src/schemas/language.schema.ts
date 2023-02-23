@@ -11,26 +11,31 @@ const postBody = object({
 })
 
 export default {
-    get: object({
-        params: object({
-            _id: string(),
-        }),
+    getMany: object({
         query: object({
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),
             statusId: number()
         })
+    }),
+    getOne: object({
+        params: object({
+            _id: string().required({_id: ErrorCodes.emptyValue}),
+        }),
     }),
     post: object({
         body: postBody
     }),
-    put: object({
+    putOne: object({
         params: object({
             _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
         body: postBody
     }),
-    putRank: object({
+    putOneRank: object({
+        params: object({
+            _id: string().required({_id: ErrorCodes.emptyValue}),
+        }),
         body: object({
-            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
             rank: number().required({rank: ErrorCodes.emptyValue})
         })
     }),

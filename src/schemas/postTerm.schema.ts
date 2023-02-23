@@ -10,7 +10,6 @@ const postBody = object({
         title: string().required({title: ErrorCodes.emptyValue}),
         image: string(),
         url: string(),
-        seoTitle: string(),
         seoContent: string(),
     }).required({contents: ErrorCodes.emptyValue})
 })

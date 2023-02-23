@@ -1,15 +1,3 @@
-import mongoose from "mongoose";
+import {LogDocument} from "../models/log";
 
-export type InsertLogParamDocument = {} & Omit<LogDocument, "_id">
-
-export interface LogDocument {
-    _id: mongoose.Types.ObjectId | string
-    url: string,
-    method: string
-    ip: string
-    message?: string
-    userId?: string
-    params?: object
-    body?: object
-    query?: object
-}
+export type LogAddParamDocument = {} & Omit<LogDocument, "_id">

@@ -35,16 +35,30 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
-    get: async (
+    getOne: async (
         req: Request<any, any,any, any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof languageSchema.get> = req;
+            let data: InferType<typeof languageSchema.getOne> = req;
 
-            serviceResult.data = await languageService.select({
+            serviceResult.data = await languageService.getOne({
                 ...data.params,
+            });
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
+    getMany: async (
+        req: Request<any, any,any, any>,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            let data: InferType<typeof languageSchema.getMany> = req;
+
+            serviceResult.data = await languageService.getMany({
                 ...data.query
             });
 
@@ -59,22 +73,22 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof languageSchema.post> = req;
 
-            serviceResult.data = await languageService.insert({
+            serviceResult.data = await languageService.add({
                 ...data.body,
             });
 
             res.status(serviceResult.statusCode).json(serviceResult);
         });
     },
-    update: async (
+    updateOne: async (
         req: Request<any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof languageSchema.put> = req;
+            let data: InferType<typeof languageSchema.putOne> = req;
 
-            serviceResult.data = await languageService.update({
+            serviceResult.data = await languageService.updateOne({
                 ...data.params,
                 ...data.body,
             });
@@ -82,15 +96,16 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
-    updateRank: async (
+    updateOneRank: async (
         req: Request<any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof languageSchema.putRank> = req;
+            let data: InferType<typeof languageSchema.putOneRank> = req;
 
-            serviceResult.data = await languageService.updateRank({
+            serviceResult.data = await languageService.updateOneRank({
+                ...data.params,
                 ...data.body,
             });
 

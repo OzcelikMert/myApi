@@ -8,15 +8,12 @@ import PagePaths from "../../constants/pagePaths";
 const componentRouter = Router();
 
 componentRouter.route(`/`)
-    .get([requestMiddleware.check(componentSchema.get)], componentController.get)
+    .get([requestMiddleware.check(componentSchema.getMany)], componentController.getMany)
     .post([requestMiddleware.check(componentSchema.post), sessionMiddleware.check, permissionMiddleware.check], componentController.add)
-    .delete([requestMiddleware.check(componentSchema.delete), sessionMiddleware.check, permissionMiddleware.check], componentController.delete)
+    .delete([requestMiddleware.check(componentSchema.deleteMany), sessionMiddleware.check, permissionMiddleware.check, componentMiddleware.checkMany], componentController.deleteMany)
 
-componentRouter.route(PagePaths.component(false).rank())
-    .put([requestMiddleware.check(componentSchema.putRank), sessionMiddleware.check, permissionMiddleware.check], componentController.updateRank)
-
-componentRouter.route(PagePaths.component(false).withId())
-    .get([requestMiddleware.check(componentSchema.get)], componentController.get)
-    .put([requestMiddleware.check(componentSchema.put), sessionMiddleware.check, permissionMiddleware.check, componentMiddleware.check], componentController.update)
+componentRouter.route(PagePaths.component(false).withId().self())
+    .get([requestMiddleware.check(componentSchema.getOne)], componentController.getOne)
+    .put([requestMiddleware.check(componentSchema.putOne), sessionMiddleware.check, permissionMiddleware.check, componentMiddleware.checkOne], componentController.updateOne)
 
 export default componentRouter;

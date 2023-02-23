@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import {ComponentDocument, ComponentTypeContentDocument, ComponentTypeDocument} from "../types/services/component";
+import {ComponentDocument, ComponentTypeContentDocument, ComponentTypeDocument} from "../types/models/component";
 import languageModel from "./language.model";
 import userModel from "./user.model";
 import {ComponentInputTypeId} from "../constants/componentInputTypes";
@@ -29,7 +29,6 @@ const schema = new mongoose.Schema<ComponentDocument>(
             lastAuthorId: {type: mongoose.Schema.Types.ObjectId, ref: userModel, required: true},
             langKey: {type: String, required: true},
             elementId: {type: String, required: true},
-            rank: {type: Number, default: 0},
             types: {type: [schemaType], default: []}
     },
     {timestamps: true}

@@ -2,7 +2,7 @@ import * as mongoose from "mongoose";
 import postModel from "../models/post.model";
 import {
     PostDocument,
-} from "../types/services/post";
+} from "../types/models/post";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
 import {StatusId} from "../constants/status";

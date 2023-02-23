@@ -1,29 +1,23 @@
-import mongoose from "mongoose";
+import {LanguageDocument} from "../models/language";
 
-export interface SelectLanguageParamDocument {
-    _id?: string
+export type LanguageUpdateOneRankParamDocument = {
+    _id: string
+    rank: number
+}
+
+export type LanguageUpdateOneParamDocument = {
+    _id: string
+} & LanguageAddParamDocument
+
+export type LanguageAddParamDocument = {} & Omit<LanguageDocument, "_id">
+
+export interface LanguageGetManyParamDocument {
+    _id?: string[]
     statusId?: number
 }
 
-export type UpdateLanguageRankParamDocument = {
-    _id?: string | string[]
-    rank: number
-}
-
-export type UpdateLanguageParamDocument = {
+export interface LanguageGetOneParamDocument {
     _id: string
-} & InsertLanguageParamDocument
-
-export type InsertLanguageParamDocument = {} & Omit<LanguageDocument, "_id">
-
-export type SelectLanguageResultDocument = {} & LanguageDocument
-
-export interface LanguageDocument {
-    _id?: mongoose.Types.ObjectId | string
-    title: string
-    image: string
-    shortKey: string
-    locale: string
-    statusId: number
-    rank: number
 }
+
+export type LanguageGetResultDocument = {} & LanguageDocument

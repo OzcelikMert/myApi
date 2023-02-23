@@ -1,65 +1,53 @@
-import mongoose from "mongoose";
 import {PopulateAuthorIdDocument} from "./user";
+import {NavigationContentDocument, NavigationDocument} from "../models/navigation";
 
-export interface DeleteNavigationParamDocument {
-    _id: string | string[]
+export interface NavigationDeleteManyParamDocument {
+    _id: string[]
 }
 
-export type UpdateNavigationStatusIdParamDocument = {
-    _id?: string | string[],
+export type NavigationUpdateManyStatusIdParamDocument = {
+    _id: string[],
     statusId: number,
     lastAuthorId: string
 }
 
-export type UpdateNavigationRankParamDocument = {
-    _id?: string | string[],
+export type NavigationUpdateOneRankParamDocument = {
+    _id: string
     rank: number,
     lastAuthorId: string
 }
 
-export type UpdateNavigationParamDocument = {
-    _id?: string
-} & Omit<InsertNavigationParamDocument, "authorId">
+export type NavigationUpdateOneParamDocument = {
+    _id: string
+} & Omit<NavigationAddParamDocument, "authorId">
 
-export type InsertNavigationParamDocument = {
+export type NavigationAddParamDocument = {
     contents?: Omit<NavigationContentDocument, "_id">
 } & Omit<NavigationDocument, "_id"|"contents">
 
-export interface SelectNavigationParamDocument {
-    _id?: string
+export interface NavigationGetManyParamDocument {
+    _id?: string[]
     langId?: string
-    url?: string
     statusId?: number
     ignoreDefaultLanguage?: boolean
 }
 
-export type SelectNavigationResultDocument = {
+export interface NavigationGetOneParamDocument {
+    _id: string
+    langId?: string
+    statusId?: number
+}
+
+export type NavigationGetResultDocument = {
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
     mainId?: {
-        _id: mongoose.Types.ObjectId | string
+        _id:  string
         contents: {
-            langId: mongoose.Types.ObjectId | string
+            langId: string
             title: string,
             url: string,
         }
     },
     contents?: NavigationContentDocument | NavigationContentDocument[]
 } & Omit<NavigationDocument, "contents">
-
-export interface NavigationContentDocument {
-    _id?: mongoose.Types.ObjectId | string
-    langId: mongoose.Types.ObjectId | string
-    title?: string,
-    url?: string,
-}
-
-export interface NavigationDocument {
-    _id?: mongoose.Types.ObjectId | string
-    statusId: number,
-    mainId?: mongoose.Types.ObjectId | string
-    authorId: mongoose.Types.ObjectId | string
-    lastAuthorId: mongoose.Types.ObjectId | string
-    rank: number,
-    contents: NavigationContentDocument[]
-}

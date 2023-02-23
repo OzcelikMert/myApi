@@ -1,19 +1,18 @@
 import * as mongoose from "mongoose";
 import languageModel from "../models/language.model";
 import {
-    LanguageDocument,
-    SelectLanguageResultDocument,
-    SelectLanguageParamDocument,
-    UpdateLanguageParamDocument,
-    InsertLanguageParamDocument,
-    UpdateLanguageRankParamDocument
+    LanguageGetResultDocument,
+    LanguageGetManyParamDocument,
+    LanguageAddParamDocument,
+    LanguageGetOneParamDocument, LanguageUpdateOneParamDocument, LanguageUpdateOneRankParamDocument
 } from "../types/services/language";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
 import languageObjectIdKeys from "../constants/objectIdKeys/language.objectIdKeys";
+import {LanguageDocument} from "../types/models/language";
 
 export default {
-    async select(params: SelectLanguageParamDocument): Promise<SelectLanguageResultDocument[]> {
+    async getOne(params: LanguageGetOneParamDocument) {
         let filters: mongoose.FilterQuery<LanguageDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, languageObjectIdKeys);
 
@@ -21,6 +20,21 @@ export default {
             filters = {
                 ...filters,
                 _id: params._id
+            }
+        }
+
+        let query = languageModel.findOne(filters, {});
+
+        return (await query.lean().exec()) as LanguageGetResultDocument;
+    },
+    async getMany(params: LanguageGetManyParamDocument) {
+        let filters: mongoose.FilterQuery<LanguageDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, languageObjectIdKeys);
+
+        if (params._id) {
+            filters = {
+                ...filters,
+                _id: {$in: params._id}
             }
         }
 
@@ -35,15 +49,15 @@ export default {
 
         query.sort({rank: 1, createdAt: -1});
 
-        return await query.lean().exec();
+        return (await query.lean().exec()) as LanguageGetResultDocument[];
     },
-    async insert(params: InsertLanguageParamDocument) {
+    async add(params: LanguageAddParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, languageObjectIdKeys);
 
         return await languageModel.create(params)
     },
-    async update(params: UpdateLanguageParamDocument) {
+    async updateOne(params: LanguageUpdateOneParamDocument) {
         let filters: mongoose.FilterQuery<LanguageDocument> = {}
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, languageObjectIdKeys);
@@ -54,18 +68,20 @@ export default {
             };
         }
 
-        return await Promise.all((await languageModel.find(filters).exec()).map(async doc => {
+        let doc = (await languageModel.findOne(filters).exec());
+
+        if(doc){
             doc = Object.assign(doc, params);
 
             await doc.save();
+        }
 
-            return {
-                ...params,
-                _id: doc._id,
-            };
-        }));
+        return {
+            ...params,
+            _id: doc?._id,
+        };
     },
-    async updateRank(params: UpdateLanguageRankParamDocument) {
+    async updateOneRank(params: LanguageUpdateOneRankParamDocument) {
         let filters: mongoose.FilterQuery<LanguageDocument> = {}
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, languageObjectIdKeys);
@@ -73,19 +89,21 @@ export default {
         if(params._id) {
             filters = {
                 ...filters,
-                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
+                _id: params._id
             }
         }
 
-        return await Promise.all((await languageModel.find(filters).exec()).map(async doc => {
+        let doc = (await languageModel.findOne(filters).exec());
+
+        if(doc){
             doc.rank = params.rank;
 
             await doc.save();
+        }
 
-            return {
-                _id: doc._id,
-                rank: doc.rank
-            };
-        }));
+        return {
+            _id: doc?._id,
+            rank: doc?.rank
+        };
     }
 };

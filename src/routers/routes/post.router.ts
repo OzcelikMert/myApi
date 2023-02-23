@@ -9,27 +9,26 @@ import PagePaths from "../../constants/pagePaths";
 const postRouter = Router();
 
 postRouter.route(`/`)
-    .get([requestMiddleware.check(postSchema.getGeneral)], postController.getGeneral)
+    .get([requestMiddleware.check(postSchema.getMany)], postController.getMany)
 
 postRouter.route(PagePaths.post(false).count())
-    .get([requestMiddleware.check(postSchema.getCount)], postController.getCount)
-
-postRouter.route(PagePaths.post(false).status().withTypeId().self())
-    .put([requestMiddleware.check(postSchema.putStatus), sessionMiddleware.check, permissionMiddleware.check], postController.updateStatus)
-
-postRouter.route(PagePaths.post(false).rank().withTypeId().self())
-    .put([requestMiddleware.check(postSchema.putRank), sessionMiddleware.check, permissionMiddleware.check], postController.updateRank)
-
-postRouter.route(PagePaths.post(false).view().withTypeId().withId())
-    .put([requestMiddleware.check(postSchema.putView), viewMiddleware.check, postMiddleware.check], postController.updateView)
+    .get([requestMiddleware.check(postSchema.getManyCount)], postController.getManyCount)
 
 postRouter.route(PagePaths.post(false).withTypeId().self())
-    .get([requestMiddleware.check(postSchema.get)], postController.get)
-    .post([requestMiddleware.check(postSchema.post), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkAndSetUrlAlready], postController.add)
-    .delete([requestMiddleware.check(postSchema.delete), sessionMiddleware.check, permissionMiddleware.check], postController.delete)
+    .post([requestMiddleware.check(postSchema.post), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkUrl], postController.add)
+    .delete([requestMiddleware.check(postSchema.deleteMany), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkMany], postController.deleteMany)
 
-postRouter.route(PagePaths.post(false).withTypeId().withId())
-    .get([requestMiddleware.check(postSchema.get)], postController.get)
-    .put([requestMiddleware.check(postSchema.put), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.check, postMiddleware.checkAndSetUrlAlready], postController.update)
+postRouter.route(PagePaths.post(false).withTypeId().status())
+    .put([requestMiddleware.check(postSchema.putManyStatus), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkMany], postController.updateManyStatus)
+
+postRouter.route(PagePaths.post(false).withTypeId().rank())
+    .put([requestMiddleware.check(postSchema.putOneRank), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkOne], postController.updateOneRank)
+
+postRouter.route(PagePaths.post(false).withTypeId().withId().self())
+    .get([requestMiddleware.check(postSchema.getOne)], postController.getOne)
+    .put([requestMiddleware.check(postSchema.putOne), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkOne, postMiddleware.checkUrl], postController.updateOne)
+
+postRouter.route(PagePaths.post(false).withTypeId().withId().view())
+    .put([requestMiddleware.check(postSchema.putOneView), viewMiddleware.check, postMiddleware.checkOne], postController.updateOneView)
 
 export default postRouter;

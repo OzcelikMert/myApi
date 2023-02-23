@@ -14,7 +14,6 @@ const schemaContent = new mongoose.Schema<PostTermContentDocument>(
         title: {type: String, default: ""},
         shortContent: {type: String, default: ""},
         url: {type: String, default: ""},
-        seoTitle: {type: String, default: ""},
         seoContent: {type: String, default: ""}
     },
     {timestamps: true}

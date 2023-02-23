@@ -2,17 +2,20 @@ import * as mongoose from "mongoose";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import {Config} from "../config";
 import {
-    ComponentDocument, DeleteComponentParamDocument, InsertComponentParamDocument,
-    SelectComponentParamDocument,
-    SelectComponentResultDocument, UpdateComponentParamDocument, UpdateComponentRankParamDocument
+    ComponentAddParamDocument,
+    ComponentGetResultDocument,
+    ComponentGetOneParamDocument,
+    ComponentGetManyParamDocument,
+    ComponentUpdateOneParamDocument,
+    ComponentDeleteManyParamDocument
 } from "../types/services/component";
 import componentModel from "../models/component.model";
 import Variable from "../library/variable";
 import componentObjectIdKeys from "../constants/objectIdKeys/component.objectIdKeys";
-import {SelectPostResultDocument} from "../types/services/post";
+import {ComponentDocument} from "../types/models/component";
 
 export default {
-    async select(params: SelectComponentParamDocument): Promise<SelectComponentResultDocument[]> {
+    async getOne(params: ComponentGetOneParamDocument) {
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
         let defaultLangId = MongoDBHelpers.createObjectId(Config.defaultLangId);
@@ -27,38 +30,73 @@ export default {
             elementId: params.elementId
         }
 
-        let query = componentModel.find(filters).populate<{ authorId: SelectPostResultDocument["authorId"], lastAuthorId: SelectPostResultDocument["lastAuthorId"] }>({
+        let query = componentModel.findOne(filters).populate<{ authorId: ComponentGetResultDocument["authorId"], lastAuthorId: ComponentGetResultDocument["lastAuthorId"] }>({
             path: [
                 "authorId",
                 "lastAuthorId"
             ].join(" "),
-            select: "_id name email url"
+            select: "_id name url"
         })
 
         query.sort({rank: 1, createdAt: -1});
 
-        return (await query.lean().exec()).map((doc: SelectComponentResultDocument) => {
-            doc.types.map(docType => {
+        let doc = (await query.lean().exec()) as ComponentGetResultDocument | null;
+
+        if(doc){
+            for(let docType of doc.types) {
+                if (Array.isArray(docType.contents)) {
+                    docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", defaultLangId);
+                }
+            }
+        }
+
+        return doc;
+    },
+    async getMany(params: ComponentGetManyParamDocument){
+        let filters: mongoose.FilterQuery<ComponentDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
+        let defaultLangId = MongoDBHelpers.createObjectId(Config.defaultLangId);
+
+        if (params._id) filters = {
+            ...filters,
+            _id: params._id
+        }
+
+        if (params.elementId) filters = {
+            ...filters,
+            elementId: {$in: params.elementId}
+        }
+
+        let query = componentModel.find(filters).populate<{ authorId: ComponentGetResultDocument["authorId"], lastAuthorId: ComponentGetResultDocument["lastAuthorId"] }>({
+            path: [
+                "authorId",
+                "lastAuthorId"
+            ].join(" "),
+            select: "_id name url"
+        })
+
+        query.sort({rank: 1, createdAt: -1});
+
+        return (await query.lean().exec()).map((doc: ComponentGetResultDocument) => {
+            for(let docType of doc.types) {
                 if (Array.isArray(docType.contents)) {
                     docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", defaultLangId);
                     if (docType.contents) {
-                        if (!params.getContents) {
-                            delete docType.contents.content;
-                        }
+                        delete docType.contents.content;
                     }
                 }
-            })
+            }
 
             return doc;
         });
     },
-    async insert(params: InsertComponentParamDocument) {
+    async add(params: ComponentAddParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
 
         return await componentModel.create(params)
     },
-    async update(params: UpdateComponentParamDocument) {
+    async updateOne(params: ComponentUpdateOneParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
 
@@ -70,14 +108,16 @@ export default {
             };
         }
 
-        return await Promise.all((await componentModel.find(filters).exec()).map(async doc => {
+        let doc = (await componentModel.findOne(filters).exec());
+
+        if(doc){
             if(params.types){
                 // Check delete
                 doc.types = doc.types.filter(docType =>  params.types && params.types.indexOfKey("_id", docType._id) > -1)
                 // Check Update
                 for (let paramThemeGroupType of params.types) {
                     let docThemeGroupType = doc.types.findSingle("_id", paramThemeGroupType._id);
-                    if (docThemeGroupType) {
+                    if (docThemeGroupType && Array.isArray(docThemeGroupType.contents)) {
                         let docGroupTypeContent = docThemeGroupType.contents.findSingle("langId", paramThemeGroupType.contents.langId);
                         if (docGroupTypeContent) {
                             docGroupTypeContent = Object.assign(docGroupTypeContent, paramThemeGroupType.contents);
@@ -102,43 +142,17 @@ export default {
             doc = Object.assign(doc, params);
 
             await doc.save();
-
-            return {_id: doc._id}
-        }));
-    },
-    async updateRank(params: UpdateComponentRankParamDocument) {
-        params = Variable.clearAllScriptTags(params);
-        params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
-
-        let filters: mongoose.FilterQuery<ComponentDocument> = {}
-
-        if(params._id) {
-            filters = {
-                ...filters,
-                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
-            }
         }
 
-        return await Promise.all((await componentModel.find(filters).exec()).map(async doc => {
-            doc.rank = params.rank;
-            doc.lastAuthorId = params.lastAuthorId;
-
-            await doc.save();
-
-            return {
-                _id: doc._id,
-                rank: doc.rank,
-                lastAuthorId: doc.lastAuthorId
-            };
-        }));
+        return {_id: doc?._id}
     },
-    async delete(params: DeleteComponentParamDocument) {
+    async deleteMany(params: ComponentDeleteManyParamDocument) {
         let filters: mongoose.FilterQuery<ComponentDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, componentObjectIdKeys);
 
         filters = {
             ...filters,
-            _id: Array.isArray(params._id) ? {$in: params._id} : params._id
+            _id: {$in: params._id}
         }
 
         return await Promise.all((await componentModel.find(filters).exec()).map(async doc => {

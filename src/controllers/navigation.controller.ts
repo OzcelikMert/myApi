@@ -6,17 +6,33 @@ import navigationSchema from "../schemas/navigation.schema";
 import navigationService from "../services/navigation.service";
 
 export default {
-    get: async (
+    getOne: async (
         req: Request<any, any, any, any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            let data: InferType<typeof navigationSchema.get> = req;
+            let data: InferType<typeof navigationSchema.getOne> = req;
 
-            serviceResult.data = await navigationService.select({
+            serviceResult.data = await navigationService.getOne({
                 ...data.params,
+                ...data.query
+            });
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        })
+    },
+    getMany: async (
+        req: Request<any, any, any, any>,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+
+            let data: InferType<typeof navigationSchema.getMany> = req;
+
+            serviceResult.data = await navigationService.getMany({
                 ...data.query
             });
 
@@ -31,7 +47,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof navigationSchema.post> = req;
 
-            let insertData = await navigationService.insert({
+            let insertData = await navigationService.add({
                 ...data.body,
                 authorId: req.session.data.id.toString(),
                 lastAuthorId: req.session.data.id.toString(),
@@ -40,15 +56,15 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult);
         });
     },
-    update: async (
+    updateOne: async (
         req: Request<any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof navigationSchema.put> = req;
+            let data: InferType<typeof navigationSchema.putOne> = req;
 
-            let updatedData = await navigationService.update({
+            let updatedData = await navigationService.updateOne({
                 ...data.params,
                 ...data.body,
                 lastAuthorId: req.session.data.id.toString(),
@@ -57,15 +73,15 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
-    updateStatus: async (
+    updateManyStatus: async (
         req: Request<any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof navigationSchema.putStatus> = req;
+            let data: InferType<typeof navigationSchema.putManyStatus> = req;
 
-            await navigationService.updateStatus({
+            await navigationService.updateManyStatus({
                 ...data.body,
                 lastAuthorId: req.session.data.id.toString()
             });
@@ -73,15 +89,16 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
-    updateRank: async (
+    updateOneRank: async (
         req: Request<any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof navigationSchema.putRank> = req;
+            let data: InferType<typeof navigationSchema.putOneRank> = req;
 
-            await navigationService.updateRank({
+            await navigationService.updateOneRank({
+                ...data.params,
                 ...data.body,
                 lastAuthorId: req.session.data.id.toString()
             });
@@ -89,15 +106,15 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
-    delete: async (
+    deleteMany: async (
         req: Request<any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof navigationSchema.delete> = req;
+            let data: InferType<typeof navigationSchema.deleteMany> = req;
 
-            let deletedData = await navigationService.delete({
+            let deletedData = await navigationService.deleteMany({
                 ...data.body
             });
 

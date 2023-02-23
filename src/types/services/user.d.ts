@@ -40,7 +40,6 @@ export type SelectUserResultDocument = {
 export interface PopulateAuthorIdDocument {
     _id: mongoose.Types.ObjectId | string
     name: string,
-    email: string,
     url: string
 }
 

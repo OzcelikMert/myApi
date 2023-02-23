@@ -22,32 +22,32 @@ const postBody = object({
 })
 
 export default {
-    get: object({
+    getOne: object({
         params: object({
-            _id: string()
+            _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
         query: object({
             elementId: string(),
             langId: string(),
-            getContents: boolean().default(false),
+        })
+    }),
+    getMany: object({
+        query: object({
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),
+            elementId: array(string().required({elementId: ErrorCodes.incorrectData})).default(undefined),
+            langId: string()
         })
     }),
     post: object({
         body: postBody
     }),
-    put: object({
+    putOne: object({
         params: object({
             _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
         body: postBody
     }),
-    putRank: object({
-        body: object({
-            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
-            rank: number().required({rank: ErrorCodes.emptyValue})
-        })
-    }),
-    delete: object({
+    deleteMany: object({
         body: object({
             _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
         })
