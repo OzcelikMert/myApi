@@ -201,15 +201,14 @@ const PagePaths = {
                 return this
             },
             withId(_id: string | number | undefined = ":_id") {
-                return pagePathUtil.setPath(path, _id);
+                path = pagePathUtil.setPath(path, _id);
+                return this
             },
             status() {
-                path = pagePathUtil.setPath(path, "status");
-                return this
+                return pagePathUtil.setPath(path, "status");
             },
             rank() {
-                path = pagePathUtil.setPath(path, "rank");
-                return this
+                return pagePathUtil.setPath(path, "rank");
             },
         }
     },

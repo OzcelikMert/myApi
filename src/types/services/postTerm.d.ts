@@ -1,50 +1,63 @@
 import mongoose from "mongoose";
 import {PopulateAuthorIdDocument} from "./user";
+import {PostTermContentDocument, PostTermDocument} from "../models/postTerm";
 
-export interface DeletePostTermParamDocument {
-    _id: string | string[]
+export interface PostTermDeleteManyParamDocument {
+    _id: string[]
     typeId: number,
     postTypeId: number
 }
 
-export type UpdatePostTermStatusIdParamDocument = {
-    _id?: string | string[],
-    postTypeId?: number,
-    typeId?: number
+export type PostTermUpdateManyStatusIdParamDocument = {
+    _id: string[],
+    postTypeId: number,
+    typeId: number
     statusId: number,
     lastAuthorId: string
 }
 
-export type UpdatePostTermRankParamDocument = {
-    _id?: string | string[],
-    postTypeId?: number,
-    typeId?: number
+export type PostTermUpdateOneRankParamDocument = {
+    _id: string,
+    postTypeId: number,
+    typeId: number
     rank: number,
     lastAuthorId: string
 }
 
-export type UpdatePostTermParamDocument = {
-    _id?: string,
-} & Omit<InsertPostTermParamDocument, "authorId">
+export type PostTermUpdateOneParamDocument = {
+    _id: string,
+} & Omit<PostTermAddParamDocument, "authorId">
 
-export type InsertPostTermParamDocument = {
+export type PostTermAddParamDocument = {
     contents?: PostTermContentDocument
 } & Omit<PostTermDocument, "_id"|"contents">
 
-export interface SelectPostTermParamDocument {
+export interface PostTermGetOneParamDocument {
     langId?: string
     _id?: string
-    typeId?: number | number[],
-    postTypeId?: number,
+    typeId: number,
+    postTypeId: number,
     url?: string
     statusId?: number,
     ignoreTermId?: string[],
+}
+
+export interface PostTermGetManyParamDocument {
+    langId?: string
+    _id?: string[]
+    typeId?: number[],
+    postTypeId: number,
+    url?: string
+    title?: string
+    statusId?: number,
+    ignoreTermId?: string[],
     count?: number
+    page?: number
     withPostCount?: boolean
     ignoreDefaultLanguage?: boolean
 }
 
-export type SelectPostTermResultDocument = {
+export type PostTermGetResultDocument = {
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
     mainId?: {
@@ -66,7 +79,7 @@ export interface PostTermAlternateDocument {
     url?: string
 }
 
-export interface PopulateTermsDocument {
+export interface PostTermPopulateDocument {
     _id: mongoose.Types.ObjectId | string,
     typeId: number,
     contents: {
@@ -75,27 +88,4 @@ export interface PopulateTermsDocument {
         image?: string
         url?: string
     }[]
-}
-
-export interface PostTermContentDocument {
-    langId: mongoose.Types.ObjectId | string
-    image?: string,
-    title?: string,
-    shortContent?: string,
-    url?: string,
-    seoContent?: string
-}
-
-export interface PostTermDocument {
-    _id: mongoose.Types.ObjectId | string
-    postTypeId?: number,
-    typeId: number,
-    mainId?: mongoose.Types.ObjectId | string
-    statusId: number,
-    authorId: mongoose.Types.ObjectId | string
-    lastAuthorId: mongoose.Types.ObjectId | string
-    rank: number,
-    contents: PostTermContentDocument[]
-    updatedAt?: string
-    createdAt?: string
 }

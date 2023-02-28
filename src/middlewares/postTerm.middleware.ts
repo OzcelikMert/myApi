@@ -4,7 +4,7 @@ import postTermService from "../services/postTerm.service";
 import logMiddleware from "./log.middleware";
 
 export default {
-    check: async (
+    checkOne: async (
         req: Request<any, any, any, any>,
         res: Response,
         next: NextFunction
@@ -12,21 +12,50 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            let _id = req.params._id ?? req.body._id;
-            let typeId = req.params.typeId;
-            let postTypeId = req.params.postTypeId;
-            let langId = req.query.langId ?? req.body.contents ? req.body.contents.langId : undefined;
+            let _id = req.params._id as string;
+            let typeId = req.params.typeId as number;
+            let postTypeId = req.params.postTypeId as number;
 
-            let resData = await postTermService.select({
+            let resData = await postTermService.getOne({
                 _id: _id,
                 postTypeId: postTypeId,
                 typeId: typeId,
-                langId: langId
+            });
+
+            if (!resData) {
+                serviceResult.status = false;
+                serviceResult.errorCode = ErrorCodes.notFound;
+                serviceResult.statusCode = StatusCodes.notFound;
+            }
+
+            if (serviceResult.status) {
+                next();
+            } else {
+                res.status(serviceResult.statusCode).json(serviceResult)
+            }
+        });
+    },
+    checkMany: async (
+        req: Request<any, any, any, any>,
+        res: Response,
+        next: NextFunction
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+
+            let _id = req.body._id as string[];
+            let typeId = req.params.typeId as number;
+            let postTypeId = req.params.postTypeId as number;
+
+            let resData = await postTermService.getMany({
+                _id: _id,
+                postTypeId: postTypeId,
+                typeId: [typeId],
             });
 
             if (
                 resData.length === 0 ||
-                (Array.isArray(_id) && resData.length != _id.length)
+                (resData.length != _id.length)
             ) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.notFound;
@@ -40,39 +69,36 @@ export default {
             }
         });
     },
-    checkAndSetUrlAlready: async (
+    checkUrl: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
     ) => {
         await logMiddleware.error(req, res, async () => {
-            let typeId = req.params.typeId;
-            let postTypeId = req.params.postTypeId;
-            let _id = req.params._id ?? req.body._id
+            let _id = req.params._id as string | undefined;
+            let typeId = req.params.typeId as number;
+            let postTypeId = req.params.postTypeId as number;
 
-            let url: string = req.body.contents.url;
-            let title: string = req.body.contents.title || "";
-            let langId: string = req.body.contents.langId;
+            if(req.body.contents){
+                let url: string = req.body.contents.url;
+                let title: string = req.body.contents.title || "";
 
-            let urlAlreadyCount = 2;
-            url = url && url.length > 0 ? url : title.convertSEOUrl();
+                let urlAlreadyCount = 2;
+                url = url && url.length > 0 ? url : title.convertSEOUrl();
 
-            let oldUrl = url;
-            while((await postTermService.select({
-                ignoreTermId: _id ? [_id] : undefined,
-                postTypeId: postTypeId,
-                typeId: typeId,
-                langId: langId,
-                url: url,
-                count: 1
-            })).length > 0) {
+                let oldUrl = url;
+                while((await postTermService.getOne({
+                    ignoreTermId: _id ? [_id] : undefined,
+                    typeId: typeId,
+                    postTypeId: postTypeId,
+                    url: url
+                }))) {
+                    url = `${oldUrl}-${urlAlreadyCount}`;
+                    urlAlreadyCount++;
+                }
 
-                url = `${oldUrl}-${urlAlreadyCount}`;
-                urlAlreadyCount++;
-
+                req.body.contents.url = url;
             }
-
-            req.body.contents.url = url;
 
             next();
         });

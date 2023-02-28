@@ -71,8 +71,8 @@ export default {
         next: NextFunction
     ) => {
         await logMiddleware.error(req, res, async () => {
+            let _id = req.params._id as string | undefined;
             let typeId = req.params.typeId as number;
-            let _id = req.params._id as string;
 
             if(req.body.contents){
                 let url: string = req.body.contents.url;

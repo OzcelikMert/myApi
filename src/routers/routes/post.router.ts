@@ -21,14 +21,14 @@ postRouter.route(PagePaths.post(false).withTypeId().self())
 postRouter.route(PagePaths.post(false).withTypeId().status())
     .put([requestMiddleware.check(postSchema.putManyStatus), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkMany], postController.updateManyStatus)
 
-postRouter.route(PagePaths.post(false).withTypeId().rank())
-    .put([requestMiddleware.check(postSchema.putOneRank), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkOne], postController.updateOneRank)
-
 postRouter.route(PagePaths.post(false).withTypeId().withId().self())
     .get([requestMiddleware.check(postSchema.getOne)], postController.getOne)
     .put([requestMiddleware.check(postSchema.putOne), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkOne, postMiddleware.checkUrl], postController.updateOne)
 
 postRouter.route(PagePaths.post(false).withTypeId().withId().view())
     .put([requestMiddleware.check(postSchema.putOneView), viewMiddleware.check, postMiddleware.checkOne], postController.updateOneView)
+
+postRouter.route(PagePaths.post(false).withTypeId().withId().rank())
+    .put([requestMiddleware.check(postSchema.putOneRank), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkOne], postController.updateOneRank)
 
 export default postRouter;

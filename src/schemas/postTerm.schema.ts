@@ -15,17 +15,31 @@ const postBody = object({
 })
 
 export default {
-    get: object({
+    getOne: object({
         params: object({
-            _id: string(),
-            postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
-            typeId: number(),
+            postTypeId: number().required({postTypeId: ErrorCodes.emptyValue}),
+            typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         query: object({
+            _id: string(),
+            url: string(),
+            langId: string(),
+            statusId: number(),
+        })
+    }),
+    getMany: object({
+        params: object({
+            postTypeId: number().required({postTypeId: ErrorCodes.emptyValue}),
+        }),
+        query: object({
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),
+            typeId: array(number().required({typeId: ErrorCodes.incorrectData})).required({typeId: ErrorCodes.emptyValue}),
             withPostCount: boolean().default(false),
             langId: string(),
             statusId: number(),
+            title: string(),
             count: number(),
+            page: number(),
             ignoreDefaultLanguage: boolean()
         })
     }),
@@ -36,41 +50,41 @@ export default {
         }),
         body: postBody
     }),
-    put: object({
+    putOne: object({
         params: object({
-            _id: string().required({termId: ErrorCodes.emptyValue}),
-            postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
+            _id: string().required({_id: ErrorCodes.emptyValue}),
+            postTypeId: number().required({postTypeId: ErrorCodes.emptyValue}),
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         body: postBody
     }),
-    putStatus: object({
+    putManyStatus: object({
         params: object({
-            postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
+            postTypeId: number().required({postTypeId: ErrorCodes.emptyValue}),
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         body: object({
-            _id: array(string().required({termId: ErrorCodes.incorrectData})).required({termId: ErrorCodes.emptyValue}),
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
             statusId: number().required({statusId: ErrorCodes.emptyValue})
         })
     }),
-    putRank: object({
+    putOneRank: object({
         params: object({
-            postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
+            _id: string().required({_id: ErrorCodes.emptyValue}),
+            postTypeId: number().required({postTypeId: ErrorCodes.emptyValue}),
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         body: object({
-            _id: array(string().required({termId: ErrorCodes.incorrectData})).required({termId: ErrorCodes.emptyValue}),
             rank: number().required({rank: ErrorCodes.emptyValue})
         })
     }),
-    delete: object({
+    deleteMany: object({
         params: object({
-            postTypeId: number().required({typeId: ErrorCodes.emptyValue}),
+            postTypeId: number().required({postTypeId: ErrorCodes.emptyValue}),
             typeId: number().required({typeId: ErrorCodes.emptyValue}),
         }),
         body: object({
-            _id: array(string().required({termId: ErrorCodes.incorrectData})).required({termId: ErrorCodes.emptyValue}),
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
         })
     })
 };

@@ -1,11 +1,11 @@
 import * as mongoose from "mongoose";
 import postTermModel from "../models/postTerm.model";
 import {
-    DeletePostTermParamDocument,
-    InsertPostTermParamDocument,
-    PostTermDocument,
-    SelectPostTermParamDocument, SelectPostTermResultDocument,
-    UpdatePostTermParamDocument, UpdatePostTermRankParamDocument, UpdatePostTermStatusIdParamDocument
+    PostTermDeleteManyParamDocument,
+    PostTermAddParamDocument,
+    PostTermGetOneParamDocument, PostTermGetResultDocument,
+    PostTermUpdateOneParamDocument, PostTermUpdateOneRankParamDocument, PostTermUpdateManyStatusIdParamDocument ,
+    PostTermGetManyParamDocument
 } from "../types/services/postTerm";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
@@ -14,9 +14,10 @@ import postTermObjectIdKeys from "../constants/objectIdKeys/postTerm.objectIdKey
 import postModel from "../models/post.model";
 import {PostTermTypeId} from "../constants/postTermTypes";
 import {StatusId} from "../constants/status";
+import {PostTermDocument} from "../types/models/postTerm";
 
 export default {
-    async select(params: SelectPostTermParamDocument): Promise<SelectPostTermResultDocument[]> {
+    async getOne(params: PostTermGetOneParamDocument) {
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, [...postTermObjectIdKeys, "ignoreTermId"]);
         let defaultLangId = MongoDBHelpers.createObjectId(Config.defaultLangId);
@@ -48,12 +49,12 @@ export default {
             }
         }
 
-        let query = postTermModel.find(filters, {}).populate<{ mainId: SelectPostTermResultDocument["mainId"] }>({
+        let query = postTermModel.findOne(filters, {}).populate<{ mainId: PostTermGetResultDocument["mainId"] }>({
             path: "mainId",
             select: "_id typeId contents.title contents.langId contents.url contents.image",
             match: {statusId: StatusId.Active},
             options: { omitUndefined: true },
-            transform: (doc: SelectPostTermResultDocument) => {
+            transform: (doc: PostTermGetResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
                         doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
@@ -61,7 +62,7 @@ export default {
                 }
                 return doc;
             }
-        }).populate<{ authorId: SelectPostTermResultDocument["authorId"], lastAuthorId: SelectPostTermResultDocument["lastAuthorId"] }>({
+        }).populate<{ authorId: PostTermGetResultDocument["authorId"], lastAuthorId: PostTermGetResultDocument["lastAuthorId"] }>({
             path: [
                 "authorId",
                 "lastAuthorId"
@@ -69,11 +70,84 @@ export default {
             select: "_id name url"
         })
 
+        let doc = (await query.lean().exec()) as PostTermGetResultDocument | null;
+
+        if(doc){
+            if (Array.isArray(doc.contents)) {
+                doc.alternates = doc.contents.map(content => ({
+                    langId: content.langId,
+                    title: content.title,
+                    url: content.url
+                }));
+                doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
+            }
+        }
+
+        return doc;
+    },
+    async getMany(params: PostTermGetManyParamDocument) {
+        let filters: mongoose.FilterQuery<PostTermDocument> = {}
+        params = MongoDBHelpers.convertObjectIdInData(params, [...postTermObjectIdKeys, "ignoreTermId"]);
+        let defaultLangId = MongoDBHelpers.createObjectId(Config.defaultLangId);
+
+        if (params._id) filters = {
+            ...filters,
+            _id: params._id
+        }
+        if (params.url) filters = {
+            ...filters,
+            "contents.url": params.url
+        }
+        if (params.title) filters = {
+            ...filters,
+            "contents.title": {$regex: new RegExp(params.title, "i")}
+        }
+        if (params.typeId) filters = {
+            ...filters,
+            typeId: {$in: params.typeId}
+        }
+        if (params.statusId) filters = {
+            ...filters,
+            statusId: params.statusId
+        }
+        if (params.postTypeId) filters = {
+            ...filters,
+            postTypeId: params.postTypeId
+        }
+        if (params.ignoreTermId) {
+            filters = {
+                ...filters,
+                _id: {$nin: params.ignoreTermId}
+            }
+        }
+
+        let query = postTermModel.find(filters, {}).populate<{ mainId: PostTermGetResultDocument["mainId"] }>({
+            path: "mainId",
+            select: "_id typeId contents.title contents.langId contents.url contents.image",
+            match: {statusId: StatusId.Active},
+            options: { omitUndefined: true },
+            transform: (doc: PostTermGetResultDocument) => {
+                if (doc) {
+                    if (Array.isArray(doc.contents)) {
+                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
+                    }
+                }
+                return doc;
+            }
+        }).populate<{ authorId: PostTermGetResultDocument["authorId"], lastAuthorId: PostTermGetResultDocument["lastAuthorId"] }>({
+            path: [
+                "authorId",
+                "lastAuthorId"
+            ].join(" "),
+            select: "_id name url"
+        })
+
+        if (params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));
         if (params.count) query.limit(params.count);
 
         query.sort({rank: 1, createdAt: -1});
 
-        return Promise.all((await query.lean().exec()).map(async ( doc: SelectPostTermResultDocument) => {
+        return Promise.all((await query.lean().exec()).map(async ( doc: PostTermGetResultDocument) => {
             if (Array.isArray(doc.contents)) {
                 doc.alternates = doc.contents.map(content => ({
                     langId: content.langId,
@@ -98,7 +172,7 @@ export default {
             return doc;
         }))
     },
-    async insert(params: InsertPostTermParamDocument) {
+    async add(params: PostTermAddParamDocument) {
         params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
 
         if (Variable.isEmpty(params.mainId)) {
@@ -107,7 +181,7 @@ export default {
 
         return await postTermModel.create(params)
     },
-    async update(params: UpdatePostTermParamDocument) {
+    async updateOne(params: PostTermUpdateOneParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
 
@@ -129,7 +203,9 @@ export default {
             postTypeId: params.postTypeId
         }
 
-        return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
+        let doc = (await postTermModel.findOne(filters).exec());
+
+        if(doc){
             if (params.contents) {
                 let docContent = doc.contents.findSingle("langId", params.contents.langId);
                 if (docContent) {
@@ -151,14 +227,14 @@ export default {
             }
 
             await doc.save();
+        }
 
-            return {
-                _id: doc._id,
-                lastAuthorId: doc.lastAuthorId
-            };
-        }));
+        return {
+            _id: doc?._id,
+            lastAuthorId: doc?.lastAuthorId
+        };
     },
-    async updateStatus(params: UpdatePostTermStatusIdParamDocument) {
+    async updateManyStatus(params: PostTermUpdateManyStatusIdParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
 
@@ -167,10 +243,9 @@ export default {
         if(params._id){
             filters = {
                 ...filters,
-                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
+                _id:{$in: params._id}
             }
         }
-
         if (params.typeId) {
             filters = {
                 ...filters,
@@ -195,7 +270,7 @@ export default {
             };
         }));
     },
-    async updateRank(params: UpdatePostTermRankParamDocument) {
+    async updateOneRank(params: PostTermUpdateOneRankParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
 
@@ -204,10 +279,9 @@ export default {
         if(params._id){
             filters = {
                 ...filters,
-                _id: Array.isArray(params._id) ? {$in: params._id} : params._id
+                _id: params._id
             }
         }
-
         if (params.typeId) {
             filters = {
                 ...filters,
@@ -219,35 +293,35 @@ export default {
             postTypeId: params.postTypeId
         }
 
-        return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
+        let doc = (await postTermModel.findOne(filters).exec());
+
+        if(doc){
             doc.rank = params.rank;
             doc.lastAuthorId = params.lastAuthorId;
 
             await doc.save();
+        }
 
-            return {
-                _id: doc._id,
-                rank: doc.rank,
-                lastAuthorId: doc.lastAuthorId
-            };
-        }));
+        return {
+            _id: doc?._id,
+            rank: doc?.rank,
+            lastAuthorId: doc?.lastAuthorId
+        };
     },
-    async delete(params: DeletePostTermParamDocument) {
+    async deleteMany(params: PostTermDeleteManyParamDocument) {
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
 
         filters = {
             ...filters,
-            _id: Array.isArray(params._id) ? {$in: params._id} : params._id
+            _id: {$in: params._id}
         }
-
         if (params.typeId) {
             filters = {
                 ...filters,
                 typeId: params.typeId
             }
         }
-
         if (params.postTypeId) {
             filters = {
                 ...filters,

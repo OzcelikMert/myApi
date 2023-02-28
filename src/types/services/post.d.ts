@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import {PopulateAuthorIdDocument} from "./user";
-import {PopulateTermsDocument} from "./postTerm";
+import {PostTermPopulateDocument} from "./postTerm";
 import {
     PostContentDocument,
     PostDocument,
@@ -40,7 +40,7 @@ export type PostUpdateOneParamDocument = {
 } & Omit<PostAddParamDocument, "authorId">
 
 export type PostAddParamDocument = {
-    contents: PostContentDocument
+    contents?: PostContentDocument
     eCommerce?: (Omit<PostECommerceDocument, "variations"> & {
         variations?: (Omit<PostECommerceVariationDocument, "contents"> & {
             contents: PostECommerceVariationContentDocument
@@ -86,13 +86,13 @@ export type PostGetResultDocument = {
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
     views?: number,
-    categories?: PopulateTermsDocument[]
-    tags?: PopulateTermsDocument[]
+    categories?: PostTermPopulateDocument[]
+    tags?: PostTermPopulateDocument[]
     contents?: PostContentDocument | PostContentDocument[]
     components?: ComponentDocument[],
     alternates?: PostAlternateDocument[]
-    eCommerce?: (Omit<PostECommerceDocument<PopulateTermsDocument, PopulateTermsDocument[]>, "variations"> & {
-        variations?: (Omit<PostECommerceVariationDocument<PopulateTermsDocument>, "contents"> & {
+    eCommerce?: (Omit<PostECommerceDocument<PostTermPopulateDocument, PostTermPopulateDocument[]>, "variations"> & {
+        variations?: (Omit<PostECommerceVariationDocument<PostTermPopulateDocument>, "contents"> & {
             contents?: PostECommerceVariationContentDocument | PostECommerceVariationContentDocument[]
         })[]
     })

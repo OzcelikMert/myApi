@@ -14,7 +14,7 @@ import {
 } from "../types/services/post";
 import {PostDocument} from "../types/models/post";
 import MongoDBHelpers from "../library/mongodb/helpers";
-import {SelectPostTermResultDocument} from "../types/services/postTerm";
+import {PostTermGetResultDocument} from "../types/services/postTerm";
 import Variable from "../library/variable";
 import {Config} from "../config";
 import {ComponentGetResultDocument} from "../types/services/component";
@@ -70,7 +70,7 @@ export default {
                 postTypeId: params.typeId
             },
             options: {omitUndefined: true},
-            transform: (doc: SelectPostTermResultDocument) => {
+            transform: (doc: PostTermGetResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
                         doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
@@ -94,7 +94,7 @@ export default {
                 postTypeId: PostTypeId.Product
             },
             options: {omitUndefined: true},
-            transform: (doc: SelectPostTermResultDocument) => {
+            transform: (doc: PostTermGetResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
                         doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
@@ -238,12 +238,10 @@ export default {
                 postTypeId: {$in: params.typeId}
             },
             options: {omitUndefined: true},
-            transform: (doc: SelectPostTermResultDocument) => {
+            transform: (doc: PostTermGetResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
                         doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
-                        delete doc.contents?.shortContent;
-                        delete doc.contents?.seoContent;
                     }
                 }
                 return doc;
@@ -264,12 +262,10 @@ export default {
                 postTypeId: {$in: params.typeId}
             },
             options: {omitUndefined: true},
-            transform: (doc: SelectPostTermResultDocument) => {
+            transform: (doc: PostTermGetResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
                         doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
-                        delete doc.contents?.shortContent;
-                        delete doc.contents?.seoContent;
                     }
                 }
                 return doc;
