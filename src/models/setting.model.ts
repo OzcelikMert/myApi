@@ -7,7 +7,7 @@ import {
     SettingSeoContentDocument,
     SettingStaticLanguageDocument,
     SettingStaticLanguageContentDocument, SettingSocialMediaDocument, SettingECommerceDocument
-} from "../types/services/setting";
+} from "../types/models/setting";
 import {CurrencyId} from "../constants/currencyTypes";
 
 const schemaStaticLanguageContent = new mongoose.Schema<SettingStaticLanguageContentDocument>(

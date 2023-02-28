@@ -5,7 +5,7 @@ import Variable, {DateMask} from "../library/variable";
 import logMiddleware from "./log.middleware";
 
 export default {
-    check: async (
+    checkOne: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
@@ -20,14 +20,14 @@ export default {
                 dateEnd = new Date(new Date().getStringWithMask(DateMask.DATE));
             dateEnd.addDays(1);
 
-            let resData = await viewService.select({
+            let resData = await viewService.getOne({
                 ip: req.ip,
                 url: url,
                 dateStart: dateStart,
                 dateEnd: dateEnd
             });
 
-            if (resData.length > 0) {
+            if (resData) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.alreadyData;
                 serviceResult.statusCode = StatusCodes.conflict;
@@ -38,24 +38,6 @@ export default {
             } else {
                 res.status(serviceResult.statusCode).json(serviceResult)
             }
-        });
-    },
-    delete: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
-    ) => {
-        await logMiddleware.error(req, res, async () => {
-            let dateEnd = new Date();
-            dateEnd.addDays(-7);
-
-            let resData = await viewService.select({dateEnd: dateEnd});
-
-            if (resData.length > 0) {
-                await viewService.delete({dateEnd: dateEnd})
-            }
-
-            next();
         });
     }
 };

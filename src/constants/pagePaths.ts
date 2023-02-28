@@ -71,6 +71,12 @@ const PagePaths = {
             withId(_id: string | number | undefined = ":_id") {
                 return pagePathUtil.setPath(path, _id);
             },
+            withUrl(url: string | undefined = ":url") {
+                return pagePathUtil.setPath(path, "url", url);
+            },
+            login(email: string | undefined = ":email", password: string | undefined = ":password") {
+                return pagePathUtil.setPath(path, "login", email, password);
+            },
             profile() {
                 return pagePathUtil.setPath(path, "profile");
             },
@@ -86,8 +92,11 @@ const PagePaths = {
             self() {
                 return pagePathUtil.setPath(path);
             },
+            withId(_id: string | number | undefined = ":_id") {
+                return pagePathUtil.setPath(path, _id);
+            },
             withEmail(email: string | number | undefined = ":email") {
-                return pagePathUtil.setPath(path, email);
+                return pagePathUtil.setPath(path, "email", email);
             },
         }
     },

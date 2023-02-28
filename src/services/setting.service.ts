@@ -1,24 +1,24 @@
 import * as mongoose from "mongoose";
 import settingModel from "../models/setting.model";
 import {
-    InsertSettingParamDocument,
-    SelectSettingParamDocument,
-    SelectSettingResultDocument,
-    SettingDocument,
-    UpdateSettingContactFormParamDocument,
-    UpdateSettingECommerceParamDocument,
-    UpdateSettingGeneralParamDocument,
-    UpdateSettingSEOParamDocument,
-    UpdateSettingSocialMediaParamDocument,
-    UpdateSettingStaticLanguageParamDocument
+    SettingAddParamDocument,
+    SettingGetParamDocument,
+    SettingGetResultDocument,
+    SettingUpdateStaticLanguageParamDocument,
+    SettingUpdateSocialMediaParamDocument,
+    SettingUpdateSEOParamDocument,
+    SettingUpdateContactFormParamDocument,
+    SettingUpdateECommerceParamDocument,
+    SettingUpdateGeneralParamDocument
 } from "../types/services/setting";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
 import {Config} from "../config";
 import settingObjectIdKeys from "../constants/objectIdKeys/setting.objectIdKeys";
+import {SettingDocument} from "../types/models/setting";
 
 export default {
-    async select(params: SelectSettingParamDocument): Promise<SelectSettingResultDocument[]> {
+    async get(params: SettingGetParamDocument) {
         let filters: mongoose.FilterQuery<SettingDocument> = {}
         let projection: mongoose.ProjectionType<SettingDocument> = {};
 
@@ -37,9 +37,11 @@ export default {
             }
         }
 
-        let query = settingModel.find(filters, projection);
+        let query = settingModel.findOne(filters, projection);
 
-        return (await query.lean().exec()).map((doc: SelectSettingResultDocument) => {
+        let doc = (await query.lean().exec()) as SettingGetResultDocument;
+
+        if(doc){
             if (Array.isArray(doc.seoContents)) {
                 doc.seoContents = doc.seoContents.findSingle("langId", params.langId) ?? doc.seoContents.findSingle("langId", defaultLangId);
             }
@@ -59,17 +61,17 @@ export default {
                     return contactForm;
                 })
             }
+        }
 
-            return doc;
-        });
+        return doc;
     },
-    async insert(params: InsertSettingParamDocument) {
+    async add(params: SettingAddParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, settingObjectIdKeys);
 
         return await settingModel.create(params)
     },
-    async updateGeneral(params: UpdateSettingGeneralParamDocument) {
+    async updateGeneral(params: SettingUpdateGeneralParamDocument) {
         params = Variable.clearAllScriptTags(params, ["head", "script"]);
         params = MongoDBHelpers.convertObjectIdInData(params, settingObjectIdKeys);
 
@@ -77,18 +79,23 @@ export default {
             Config.defaultLangId = params.defaultLangId.toString();
         }
 
-        return await Promise.all((await settingModel.find({}).exec()).map(async doc => {
+        let doc = (await settingModel.findOne({}).exec());
+
+        if(doc){
             doc = Object.assign(doc, params);
 
             await doc.save();
-            return params;
-        }));
+        }
+
+        return params;
     },
-    async updateSEO(params: UpdateSettingSEOParamDocument) {
+    async updateSEO(params: SettingUpdateSEOParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, settingObjectIdKeys);
 
-        return await Promise.all((await settingModel.find({}).exec()).map(async doc => {
+        let doc = (await settingModel.findOne({}).exec());
+
+        if(doc){
             if (params.seoContents) {
                 let docSeoContent = doc.seoContents.findSingle("langId", params.seoContents.langId);
                 if (docSeoContent) {
@@ -101,10 +108,11 @@ export default {
             doc = Object.assign(doc, params);
 
             await doc.save();
-            return params;
-        }));
+        }
+
+        return params;
     },
-    async updateContactForm(params: UpdateSettingContactFormParamDocument) {
+    async updateContactForm(params: SettingUpdateContactFormParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, settingObjectIdKeys);
 
@@ -117,17 +125,22 @@ export default {
             })
         }
 
-        return await Promise.all((await settingModel.find({}).exec()).map(async doc => {
+        let doc = (await settingModel.findOne({}).exec());
+
+        if(doc){
             doc.contactForms = params.contactForms;
             await doc.save();
-            return params;
-        }));
+        }
+
+        return params;
     },
-    async updateStaticLanguage(params: UpdateSettingStaticLanguageParamDocument) {
+    async updateStaticLanguage(params: SettingUpdateStaticLanguageParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, settingObjectIdKeys);
 
-        return await Promise.all((await settingModel.find({}).exec()).map(async doc => {
+        let doc = (await settingModel.findOne({}).exec());
+
+        if(doc){
             if (params.staticLanguages) {
                 // Check delete
                 doc.staticLanguages = doc.staticLanguages.filter(staticLanguage =>  params.staticLanguages && params.staticLanguages.indexOfKey("_id", staticLanguage._id) > -1)
@@ -143,8 +156,7 @@ export default {
                         }
                         docStaticLanguage = Object.assign(docStaticLanguage, {
                             ...paramStaticLanguage,
-                            contents: docStaticLanguage.contents,
-                            _id: docStaticLanguage._id
+                            contents: docStaticLanguage.contents
                         })
                     } else {
                         doc.staticLanguages.push({
@@ -159,27 +171,34 @@ export default {
             doc = Object.assign(doc, params);
 
             await doc.save();
-            return params;
-        }));
+        }
+
+        return params;
     },
-    async updateSocialMedia(params: UpdateSettingSocialMediaParamDocument) {
+    async updateSocialMedia(params: SettingUpdateSocialMediaParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, settingObjectIdKeys);
 
-        return await Promise.all((await settingModel.find({}).exec()).map(async doc => {
+        let doc = (await settingModel.findOne({}).exec());
+
+        if(doc){
             doc.socialMedia = params.socialMedia;
             await doc.save();
-            return params;
-        }));
+        }
+
+        return params;
     },
-    async updateECommerce(params: UpdateSettingECommerceParamDocument) {
+    async updateECommerce(params: SettingUpdateECommerceParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, settingObjectIdKeys);
 
-        return await Promise.all((await settingModel.find({}).exec()).map(async doc => {
+        let doc = (await settingModel.findOne({}).exec());
+
+        if(doc){
             doc = Object.assign(doc, params);
             await doc.save();
-            return params;
-        }));
+        }
+
+        return params;
     },
 };

@@ -13,15 +13,38 @@ const postBody = {
 };
 
 export default {
-    get: object({
+    getOne: object({
         params: object({
-            _id: string(),
+            _id: string().required({_id: ErrorCodes.emptyValue}),
+        }),
+        query: object({
+            statusId: number(),
+        }),
+    }),
+    getOneWithUrl: object({
+        params: object({
+            url: string().required({url: ErrorCodes.emptyValue}),
+        })
+    }),
+    getOneLogin: object({
+        params: object({
+            email: string().required({email: ErrorCodes.emptyValue}),
+            password: string().required({password: ErrorCodes.emptyValue}),
+        })
+    }),
+    getMany: object({
+        query: object({
+            _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),
+            statusId: number(),
+            email: string(),
+            count: number(),
+            page: number(),
         })
     }),
     post: object({
         body: object(postBody)
     }),
-    put: object({
+    putOne: object({
         params: object({
             _id: string().required({_id: ErrorCodes.emptyValue}),
         }),
@@ -47,7 +70,7 @@ export default {
             newPassword: string().required({newPassword: ErrorCodes.emptyValue})
         })
     }),
-    delete: object({
+    deleteOne: object({
         params: object({
             _id: string().required({_id: ErrorCodes.emptyValue}),
         })

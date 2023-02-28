@@ -14,7 +14,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof settingSchema.get> = req;
 
-            serviceResult.data = await settingService.select({
+            serviceResult.data = await settingService.get({
                 ...data.query
             });
 

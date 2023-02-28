@@ -1,10 +1,10 @@
-import mongoose from "mongoose";
+import {ViewDocument} from "../models/view";
 
-export interface DeleteViewParamDocument {
+export interface ViewDeleteManyParamDocument {
     dateEnd: Date
 }
 
-export interface SelectViewParamDocument {
+export interface ViewGetParamDocument {
     ip?: string
     langId?: string
     url?: string
@@ -15,7 +15,7 @@ export interface SelectViewParamDocument {
     dateEnd?: Date
 }
 
-export interface InsertViewParamDocument {
+export interface ViewAddParamDocument {
     url: string,
     langId: string
     ip: string,
@@ -24,23 +24,9 @@ export interface InsertViewParamDocument {
     region?: string
 }
 
-export type SelectViewResultDocument = {} & ViewDocument
-
-export interface SelectTotalViewResultDocument {
-    total: number
-}
-
-export type SelectTotalWithViewResultDocument = {
+export type ViewGetTotalResultDocument = {
     total: number
     _id: string
 }
 
-export interface ViewDocument {
-    _id: mongoose.Types.ObjectId | string
-    url: string,
-    langId: mongoose.Types.ObjectId | string
-    ip: string,
-    country: string,
-    city: string,
-    region: string
-}
+export type ViewGetResultDocument = {} & ViewDocument

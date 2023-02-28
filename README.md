@@ -21,3 +21,4 @@ Things to do:
 - servislerde tek data islemlerinde findOne coklu islemmlerde findMany yada find metodu kullan
 - servis interfacelerin siralamasini ayarla (result, get, add, update, delete)
 - servislerde find kullanilan yerlerde limit kullan
+- yeni routerlara gore izinleri tekrardan ayarla

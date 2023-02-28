@@ -5,21 +5,21 @@ import UserRoles from "../constants/userRoles";
 import logMiddleware from "./log.middleware";
 
 export default {
-    check: async (
-        req: Request,
+    checkOne: async (
+        req: Request<any, any, any, any>,
         res: Response,
         next: NextFunction
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            let _id = req.params._id;
+            let _id = req.params._id as string;
 
-            let resData = await userService.select({
+            let resData = await userService.getOne({
                 _id: _id
             });
 
-            if (resData.length === 0) {
+            if (!resData) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.notFound;
                 serviceResult.statusCode = StatusCodes.notFound;
@@ -32,7 +32,37 @@ export default {
             }
         });
     },
-    checkRoleRank: async (
+    checkMany: async (
+        req: Request<any, any, any, any>,
+        res: Response,
+        next: NextFunction
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+
+            let _id = req.body._id as string[];
+
+            let resData = await userService.getMany({
+                _id: _id
+            });
+
+            if (
+                resData.length == 0 ||
+                (resData.length != _id.length)
+            ) {
+                serviceResult.status = false;
+                serviceResult.errorCode = ErrorCodes.notFound;
+                serviceResult.statusCode = StatusCodes.notFound;
+            }
+
+            if (serviceResult.status) {
+                next();
+            } else {
+                res.status(serviceResult.statusCode).json(serviceResult)
+            }
+        });
+    },
+    checkOneRoleRank: async (
         req: Request,
         res: Response,
         next: NextFunction
@@ -41,17 +71,17 @@ export default {
             let serviceResult = new Result();
 
             let roleId = req.body.roleId;
-            let _id = req.params._id;
+            let _id = req.params._id as string;
             let userRoleId = 0;
 
             if (roleId) {
                 userRoleId = roleId;
             } else if (_id) {
-                let resData = await userService.select({
+                let resData = await userService.getOne({
                     _id: _id
                 });
-                if (resData.length > 0) {
-                    userRoleId = resData[0].roleId;
+                if (resData) {
+                    userRoleId = resData.roleId;
                 }
             }
 
@@ -84,29 +114,16 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            let _id = req.params._id;
-            let email = req.body.email;
-
-            if (_id) {
-                let resData = await userService.select({
-                    _id: _id
-                });
-                if (resData.length > 0) {
-                    if (email) {
-                        if (resData[0].email == email) {
-                            next();
-                            return;
-                        }
-                    }
-                }
-            }
-
+            let _id = req.params._id as string;
+            let email = req.body.email as string;
 
             if (email) {
-                let resData = await userService.select({
-                    email: email
+                let resData = await userService.getOne({
+                    email: email,
+                    ignoreUserId: _id ? [_id] : undefined
                 });
-                if (resData.length > 0) {
+
+                if (resData) {
                     serviceResult.status = false;
                     serviceResult.errorCode = ErrorCodes.alreadyData;
                     serviceResult.statusCode = StatusCodes.conflict;
@@ -120,27 +137,26 @@ export default {
             }
         });
     },
-    checkAndSetUrlAlready: async (
+    checkUrl: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
     ) => {
         await logMiddleware.error(req, res, async () => {
-            let url: string = req.body.url;
-            let name: string = req.body.name;
+            let url = req.body.url as string;
+            let name = req.body.name as string;
 
             if(name) {
-                let _id = req.body._id ? req.body._id : req.body.isProfile ? req.session.data.id : undefined;
+                let _id: string | undefined = req.body._id ?? req.params._id ?? req.body.isProfile ? req.session.data.id.toString() : undefined;
 
                 let urlAlreadyCount = 2;
                 url = url && url.length > 0 ? url : name.convertSEOUrl();
 
                 let oldUrl = url;
-                while ((await userService.select({
+                while ((await userService.getOne({
                     ignoreUserId: _id ? [_id] : undefined,
-                    url: url,
-                    count: 1
-                })).length > 0) {
+                    url: url
+                }))) {
 
                     url = `${oldUrl}-${urlAlreadyCount}`;
                     urlAlreadyCount++;
@@ -153,7 +169,7 @@ export default {
             next();
         });
     },
-    checkPassword: async (
+    checkPasswordWithSessionEmail: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
@@ -163,12 +179,12 @@ export default {
 
             let password = req.body.password;
 
-            let resData = await userService.select({
+            let resData = await userService.getOneLogin({
                 email: req.session.data.email,
                 password: password
             });
 
-            if (resData.length === 0) {
+            if (resData) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.notFound;
                 serviceResult.statusCode = StatusCodes.notFound;

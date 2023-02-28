@@ -6,15 +6,45 @@ import subscriberService from "../services/subscriber.service";
 import logMiddleware from "../middlewares/log.middleware";
 
 export default {
-    get: async (
+    getOne: async (
         req: Request<any, any, any, any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof subscriberSchema.get> = req;
+            let data: InferType<typeof subscriberSchema.getOne> = req;
 
-            serviceResult.data = await subscriberService.select({
+            serviceResult.data = await subscriberService.getOne({
+                ...data.params
+            })
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
+    getOneWithEmail: async (
+        req: Request<any, any, any, any>,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            let data: InferType<typeof subscriberSchema.getOneWithEmail> = req;
+
+            serviceResult.data = await subscriberService.getOneWithEmail({
+                ...data.params
+            })
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
+    getMany: async (
+        req: Request<any, any, any, any>,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            let data: InferType<typeof subscriberSchema.getMany> = req;
+
+            serviceResult.data = await subscriberService.getMany({
                 ...data.query
             })
 
@@ -29,38 +59,38 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof subscriberSchema.post> = req;
 
-            await subscriberService.insert({
+            await subscriberService.add({
                 ...data.body
             })
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
-    delete: async (
-        req: Request,
-        res: Response
-    ) => {
-        await logMiddleware.error(req, res, async () => {
-            let serviceResult = new Result();
-            let data: InferType<typeof subscriberSchema.delete> = req;
-
-            await subscriberService.delete({
-                ...data.body
-            })
-
-            res.status(serviceResult.statusCode).json(serviceResult)
-        });
-    },
-    deleteWithEmail: async (
+    deleteOneWithEmail: async (
         req: Request<any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof subscriberSchema.deleteWithEmail> = req;
+            let data: InferType<typeof subscriberSchema.deleteOneWithEmail> = req;
 
-            await subscriberService.delete({
+            await subscriberService.deleteOneWithEmail({
                 ...data.params
+            })
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
+    deleteMany: async (
+        req: Request,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            let data: InferType<typeof subscriberSchema.deleteMany> = req;
+
+            await subscriberService.deleteMany({
+                ...data.body
             })
 
             res.status(serviceResult.statusCode).json(serviceResult)

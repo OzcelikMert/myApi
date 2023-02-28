@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import {SubscriberDocument} from "../types/services/subscriber";
+import {SubscriberDocument} from "../types/models/subscriber";
 
 const schema = new mongoose.Schema<SubscriberDocument>(
     {

@@ -1,20 +1,26 @@
-import mongoose from "mongoose";
+import {SubscriberDocument} from "../models/subscriber";
 
-export interface DeleteSubscriberParamDocument {
+export interface SubscriberDeleteOneWithEmailParamDocument {
+    email: string
+}
+
+export interface SubscriberDeleteManyParamDocument {
+    _id: string[]
+}
+
+export interface SubscriberGetManyParamDocument {
     _id?: string[]
     email?: string
 }
 
-export interface SelectSubscriberParamDocument {
-    id?: string
-    email?: string
+export interface SubscriberGetOneParamDocument {
+    _id: string
 }
 
-export type InsertSubscriberDocument = {} & Omit<SubscriberDocument, "_id">
-
-export type SelectSubscriberResultDocument = {} & SubscriberDocument
-
-export interface SubscriberDocument {
-    _id: mongoose.Types.ObjectId | string
+export interface SubscriberGetOneWithEmailParamDocument {
     email: string
 }
+
+export type SubscriberAddDocument = {} & Omit<SubscriberDocument, "_id">
+
+export type SubscriberGetResultDocument = {} & SubscriberDocument

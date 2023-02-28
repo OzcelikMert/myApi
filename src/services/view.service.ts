@@ -1,18 +1,17 @@
 import * as mongoose from "mongoose";
 import viewModel from "../models/view.model";
 import {
-    DeleteViewParamDocument,
-    InsertViewParamDocument,
-    SelectViewParamDocument, SelectViewResultDocument,
-    ViewDocument,
-    SelectTotalWithViewResultDocument
+    ViewDeleteManyParamDocument,
+    ViewAddParamDocument,
+    ViewGetParamDocument, ViewGetTotalResultDocument
 } from "../types/services/view";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
 import viewObjectIdKeys from "../constants/objectIdKeys/view.objectIdKeys";
+import {ViewDocument} from "../types/models/view";
 
 export default {
-    async select(params: SelectViewParamDocument): Promise<SelectViewResultDocument[]> {
+    async getOne(params: ViewGetParamDocument) {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, viewObjectIdKeys);
 
@@ -50,9 +49,9 @@ export default {
             }
         }
 
-        return await viewModel.find(filters, {}).lean().exec();
+        return await viewModel.findOne(filters, {}).lean().exec();
     },
-    async selectTotalWithDate(params: SelectViewParamDocument): Promise<SelectTotalWithViewResultDocument[]> {
+    async getTotalWithDate(params: ViewGetParamDocument) {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, viewObjectIdKeys);
 
@@ -66,7 +65,7 @@ export default {
             }
         }
 
-        return await viewModel.aggregate([
+        return (await viewModel.aggregate([
             {
               $match: filters
             },
@@ -85,9 +84,9 @@ export default {
                     total: { $sum: 1 }
                 },
             }
-        ]).sort({_id: 1}).exec();
+        ]).sort({_id: 1}).exec()) as ViewGetTotalResultDocument[];
     },
-    async selectTotalWithCountry(params: SelectViewParamDocument): Promise<SelectTotalWithViewResultDocument[]> {
+    async getTotalWithCountry(params: ViewGetParamDocument) {
         let filters: mongoose.FilterQuery<ViewDocument> = {}
         params = MongoDBHelpers.convertObjectIdInData(params, viewObjectIdKeys);
 
@@ -101,7 +100,7 @@ export default {
             }
         }
 
-        return await viewModel.aggregate([
+        return (await viewModel.aggregate([
             {
                 $match: filters
             },
@@ -120,15 +119,15 @@ export default {
                     total: { $sum: 1 }
                 },
             }
-        ]).sort({_id: 1}).exec();
+        ]).sort({_id: 1}).exec()) as ViewGetTotalResultDocument[];
     },
-    async insert(params: InsertViewParamDocument) {
+    async add(params: ViewAddParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, viewObjectIdKeys);
 
         return await viewModel.create(params)
     },
-    async delete(params: DeleteViewParamDocument) {
+    async deleteMany(params: ViewDeleteManyParamDocument) {
         let filters: mongoose.FilterQuery<ViewDocument> = {};
         params = MongoDBHelpers.convertObjectIdInData(params, viewObjectIdKeys);
 

@@ -1,63 +1,61 @@
 import mongoose from "mongoose";
+import {UserDocument} from "../models/user";
 
-export interface SelectUserParamDocument {
+export type UserDeleteOneParamDocument = {
+    _id: string
+}
+
+export type UserUpdatePasswordParamDocument = {
+    _id: string
+    password: string
+}
+
+export type UserUpdateProfileParamDocument = {
+    _id: string
+} & Omit<UserDocument, "_id"|"password"|"permissions"|"roleId"|"statusId"|"email"|"banComment"|"banDateEnd">
+
+export type UserUpdateOneParamDocument = {
+    _id: string
+} & Omit<UserDocument, "_id">
+
+export type UserAddParamDocument = {
+    password: string
+} & Omit<UserDocument, "_id"|"password">
+
+export interface UserGetOneLoginParamDocument {
+    email: string,
+    password: string,
+}
+
+export interface UserGetOneWithUrlParamDocument {
+    url: string
+}
+
+export interface UserGetOneParamDocument {
     _id?: string
+    email?: string
+    statusId?: number
+    url?: string
+    ignoreUserId?: string[]
+}
+
+export interface UserGetManyParamDocument {
+    _id?: string[]
     statusId?: number
     email?: string,
-    password?: string,
-    url?: string,
     count?: number,
+    page?: number
     roleId?: number
     ignoreUserId?: string[]
 }
 
-export type DeleteUserParamDocument = {
-    _id: string
-}
-
-export type UpdateUserPasswordParamDocument = {
-    _id: string
-    password: string
-}
-
-export type UpdateUserProfileParamDocument = {
-    _id: string
-} & Omit<UserDocument, "_id"|"password"|"permissions"|"roleId"|"statusId"|"email"|"banComment"|"banDateEnd">
-
-export type UpdateUserParamDocument = {
-    _id: string
-} & Omit<UserDocument, "_id">
-
-export type InsertUserParamDocument = {
-    password: string
-} & Omit<UserDocument, "_id"|"password">
-
-
-export type SelectUserResultDocument = {
+export type UserGetResultDocument = {
     isOnline?: boolean
 } & UserDocument
 
-export interface PopulateAuthorIdDocument {
+export interface UserPopulateDocument {
     _id: mongoose.Types.ObjectId | string
     name: string,
-    url: string
-}
-
-export interface UserDocument {
-    _id: mongoose.Types.ObjectId | string
-    roleId: number,
-    statusId: number,
-    name: string,
-    email: string,
-    image?: string,
-    url?: string,
-    comment?: string,
-    phone?: string,
-    password?: string,
-    permissions: number[],
-    banDateEnd?: Date,
-    banComment?: string,
-    facebook?: string,
-    instagram?: string,
-    twitter?: string
+    url: string,
+    image: string
 }

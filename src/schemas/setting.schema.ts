@@ -1,12 +1,12 @@
 import { object, number, string, array, mixed } from "yup";
 import {ErrorCodes} from "../library/api";
-import {SelectSettingParamDocument} from "../types/services/setting";
+import {SettingGetParamDocument} from "../types/services/setting";
 
 export default {
     get: object({
         query: object({
             langId: string(),
-            projection: mixed<SelectSettingParamDocument["projection"]>()
+            projection: mixed<SettingGetParamDocument["projection"]>()
         }),
     }),
     putGeneral: object({

@@ -1,7 +1,7 @@
 import * as mongoose from "mongoose";
 import {StatusId} from "../constants/status";
 import {UserRoleId} from "../constants/userRoles";
-import {UserDocument} from "../types/services/user";
+import {UserDocument} from "../types/models/user";
 
 const schema = new mongoose.Schema<UserDocument>(
     {

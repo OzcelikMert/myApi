@@ -1,4 +1,4 @@
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import {Result} from "../library/api";
 import {lookup} from "geoip-lite";
 import {InferType} from "yup";
@@ -18,7 +18,7 @@ export default {
             let dateStart = new Date();
             dateStart.addDays(-7);
 
-            let resData = await viewService.selectTotalWithDate({
+            let resData = await viewService.getTotalWithDate({
                 dateStart: dateStart
             });
 
@@ -51,14 +51,14 @@ export default {
             dateStart.addDays(-7);
 
             serviceResult.data = {
-                day: await viewService.selectTotalWithDate({dateStart: dateStart}),
-                country: await viewService.selectTotalWithCountry({dateStart: dateStart}),
+                day: await viewService.getTotalWithDate({dateStart: dateStart}),
+                country: await viewService.getTotalWithCountry({dateStart: dateStart}),
             };
 
             res.status(serviceResult.statusCode).json(serviceResult);
         });
     },
-    set: async (
+    add: async (
         req: Request,
         res: Response
     ) => {
@@ -69,13 +69,31 @@ export default {
             let ip = req.ip;
             let ipDetail = lookup(req.ip);
 
-            await viewService.insert({
+            await viewService.add({
                 ...data.body,
                 ip: ip,
                 ...ipDetail
             })
 
             res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
+    deleteMany: async (
+        req: Request<any>,
+        res: Response,
+        next: NextFunction
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let dateEnd = new Date();
+            dateEnd.addDays(-7);
+
+            let resData = await viewService.getOne({dateEnd: dateEnd});
+
+            if (resData) {
+                await viewService.deleteMany({dateEnd: dateEnd})
+            }
+
+            next();
         });
     }
 };
