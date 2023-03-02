@@ -299,16 +299,14 @@ export default {
 
             if (doc.eCommerce) {
                 if (doc.eCommerce.variations) {
-                    let findItems = doc.eCommerce.variations.filter(variation => {
+                    doc.eCommerce.variations = doc.eCommerce.variations.filter(variation => {
                         return variation.selectedVariations.every(selectedVariation => {
                             return doc.eCommerce?.variationDefaults?.some(variationDefault => {
-                                return variationDefault.attributeId == selectedVariation.attributeId &&
-                                    variationDefault.variationId == selectedVariation.variationId
+                                return variationDefault.attributeId.toString() == selectedVariation.attributeId.toString() &&
+                                    variationDefault.variationId.toString() == selectedVariation.variationId.toString()
                             })
                         })
                     });
-
-                    doc.eCommerce.variations = findItems && findItems.length > 0 ? findItems : [];
 
                     for (let docECommerceVariation of doc.eCommerce.variations) {
                         if (Array.isArray(docECommerceVariation.contents)) {
@@ -317,6 +315,8 @@ export default {
                         }
                     }
                 }
+                doc.eCommerce.variationDefaults = [];
+                doc.eCommerce.attributes = [];
             }
 
             doc.views = views;
