@@ -29,7 +29,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof settingSchema.putGeneral> = req;
 
-            await settingService.updateGeneral(data.body)
+            serviceResult.data = await settingService.updateGeneral(data.body)
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -42,7 +42,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof settingSchema.putSeo> = req;
 
-            await settingService.updateSEO(data.body)
+            serviceResult.data = await settingService.updateSEO(data.body)
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -55,7 +55,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof settingSchema.putContactForm> = req;
 
-            await settingService.updateContactForm(data.body)
+            serviceResult.data = await settingService.updateContactForm(data.body)
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -68,7 +68,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof settingSchema.putStaticLanguage> = req;
 
-            await settingService.updateStaticLanguage(data.body)
+            serviceResult.data = await settingService.updateStaticLanguage(data.body)
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -81,7 +81,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof settingSchema.putSocialMedia> = req;
 
-            await settingService.updateSocialMedia(data.body)
+            serviceResult.data = await settingService.updateSocialMedia(data.body)
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -94,7 +94,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof settingSchema.putECommerce> = req;
 
-            await settingService.updateECommerce(data.body)
+            serviceResult.data = await settingService.updateECommerce(data.body)
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });

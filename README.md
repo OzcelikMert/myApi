@@ -13,12 +13,12 @@ Things to do:
 + sitemapi yapinca modellerde olan sitemap columnunu sil
 + Ecommerceda eslesen attribute ler ve variationlarin termden populatelerini cek
 + servislerde findone mi yoksa limit mi kullanilmali arastir
-- cekilen datalarda cogul ve tekil cekim yap cogul cekimlerde contentsde buyuk datalar gitmesin tekil cekimlerde contetsdeki tumm datalar gitsin
-- product icin gereksiz variation detaylari gonderme ve cogul ve tekil cekim olarak servisleri ayarla
-- tum servislerin interface isimlerini duzenle ve models interfacelerini ayir
-- tum servisler de cogul ve tekil fonksiyon isimleri olustur.
-- controllerde guncellenen, eklenen yada silinen datalarin return degerlerini result data ile gonder front ende
-- servislerde tek data islemlerinde findOne coklu islemmlerde findMany yada find metodu kullan
-- servis interfacelerin siralamasini ayarla (result, get, add, update, delete)
-- servislerde find kullanilan yerlerde limit kullan
-- yeni routerlara gore izinleri tekrardan ayarla
++ cekilen datalarda cogul ve tekil cekim yap cogul cekimlerde contentsde buyuk datalar gitmesin tekil cekimlerde contetsdeki tumm datalar gitsin
++ tum servislerin interface isimlerini duzenle ve models interfacelerini ayir
++ tum servisler de cogul ve tekil fonksiyon isimleri olustur.
++ controllerde guncellenen, eklenen yada silinen datalarin return degerlerini result data ile gonder front ende
++ servislerde tek data islemlerinde findOne coklu islemmlerde findMany yada find metodu kullan
++ servis interfacelerin siralamasini ayarla (result, get, add, update, delete)
++ servislerde find kullanilan yerlerde limit kullan
++ product icin gereksiz variation detaylari gonderme ve cogul ve tekil cekim olarak servisleri ayarla
++ yeni routerlara gore izinleri tekrardan ayarla

@@ -59,9 +59,13 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof subscriberSchema.post> = req;
 
-            await subscriberService.add({
+            let insertData = await subscriberService.add({
                 ...data.body
-            })
+            });
+
+            serviceResult.data = [{
+                _id: insertData._id
+            }]
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -74,7 +78,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof subscriberSchema.deleteOneWithEmail> = req;
 
-            await subscriberService.deleteOne({
+            serviceResult.data = await subscriberService.deleteOne({
                 ...data.params
             })
 
@@ -89,7 +93,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof subscriberSchema.deleteMany> = req;
 
-            await subscriberService.deleteMany({
+            serviceResult.data = await subscriberService.deleteMany({
                 ...data.body
             })
 

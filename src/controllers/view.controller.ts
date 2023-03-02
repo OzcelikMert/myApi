@@ -69,11 +69,15 @@ export default {
             let ip = req.ip;
             let ipDetail = lookup(req.ip);
 
-            await viewService.add({
+            let insertData = await viewService.add({
                 ...data.body,
                 ip: ip,
                 ...ipDetail
             })
+
+            serviceResult.data = [{
+                _id: insertData._id
+            }]
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });

@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 
-export interface ComponentTypeContentDocument {
+export interface ComponentDocument {
     _id?: mongoose.Types.ObjectId | string,
-    langId:  mongoose.Types.ObjectId | string
-    content?: string
-    url?: string
-    comment?: string
+    authorId: mongoose.Types.ObjectId | string
+    lastAuthorId: mongoose.Types.ObjectId | string
+    elementId: string
+    langKey: string,
+    types: ComponentTypeDocument[]
 }
 
 export interface ComponentTypeDocument {
@@ -17,11 +18,10 @@ export interface ComponentTypeDocument {
     contents: ComponentTypeContentDocument[]
 }
 
-export interface ComponentDocument {
+export interface ComponentTypeContentDocument {
     _id?: mongoose.Types.ObjectId | string,
-    authorId: mongoose.Types.ObjectId | string
-    lastAuthorId: mongoose.Types.ObjectId | string
-    elementId: string
-    langKey: string,
-    types: ComponentTypeDocument[]
+    langId:  mongoose.Types.ObjectId | string
+    content?: string
+    url?: string
+    comment?: string
 }

@@ -5,12 +5,12 @@ import {
     PostAddParamDocument,
     PostGetCountParamDocument,
     PostGetOneParamDocument,
-    PostGetResultDocument,
+    PostGetOneResultDocument,
     PostGetManyParamDocument,
     PostUpdateOneParamDocument,
     PostUpdateOneRankParamDocument,
     PostUpdateManyStatusIdParamDocument,
-    PostUpdateOneViewParamDocument
+    PostUpdateOneViewParamDocument, PostGetManyResultDocument
 } from "../types/services/post";
 import {PostDocument} from "../types/models/post";
 import MongoDBHelpers from "../library/mongodb/helpers";
@@ -58,7 +58,7 @@ export default {
             }
         }
 
-        let query = postModel.findOne(filters).populate<{ categories: PostGetResultDocument["categories"], tags: PostGetResultDocument["tags"] }>({
+        let query = postModel.findOne(filters).populate<{ categories: PostGetOneResultDocument["categories"], tags: PostGetOneResultDocument["tags"] }>({
             path: [
                 "categories",
                 "tags"
@@ -78,7 +78,7 @@ export default {
                 }
                 return doc;
             }
-        }).populate<{ eCommerce: PostGetResultDocument["eCommerce"] }>({
+        }).populate<{ eCommerce: PostGetOneResultDocument["eCommerce"] }>({
             path: [
                 "eCommerce.attributes.attributeId",
                 "eCommerce.attributes.variations",
@@ -102,7 +102,7 @@ export default {
                 }
                 return doc;
             }
-        }).populate<{ components: PostGetResultDocument["components"] }>({
+        }).populate<{ components: PostGetOneResultDocument["components"] }>({
             path: "components",
             options: {omitUndefined: true},
             transform: (doc: ComponentGetResultDocument) => {
@@ -110,15 +110,12 @@ export default {
                     doc.types.map(docType => {
                         if (Array.isArray(docType.contents)) {
                             docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", defaultLangId);
-                            if (docType.contents) {
-                                delete docType.contents.content;
-                            }
                         }
                     })
                 }
                 return doc;
             }
-        }).populate<{ authorId: PostGetResultDocument["authorId"], lastAuthorId: PostGetResultDocument["lastAuthorId"] }>({
+        }).populate<{ authorId: PostGetOneResultDocument["authorId"], lastAuthorId: PostGetOneResultDocument["lastAuthorId"] }>({
             path: [
                 "authorId",
                 "lastAuthorId"
@@ -128,7 +125,7 @@ export default {
 
         query.sort({isFixed: -1, rank: 1, createdAt: -1});
 
-        let doc = (await query.lean().exec()) as PostGetResultDocument | null;
+        let doc = (await query.lean().exec()) as PostGetOneResultDocument | null;
 
         if (doc) {
             let views = 0;
@@ -227,8 +224,7 @@ export default {
             }
         }
 
-
-        let query = postModel.find(filters).populate<{ categories: PostGetResultDocument["categories"], tags: PostGetResultDocument["tags"] }>({
+        let query = postModel.find(filters).populate<{ categories: PostGetManyResultDocument["categories"], tags: PostGetManyResultDocument["tags"] }>({
             path: [
                 "categories",
                 "tags"
@@ -248,47 +244,7 @@ export default {
                 }
                 return doc;
             }
-        }).populate<{ eCommerce: PostGetResultDocument["eCommerce"] }>({
-            path: [
-                "eCommerce.attributes.attributeId",
-                "eCommerce.attributes.variations",
-                "eCommerce.variations.selectedVariations.attributeId",
-                "eCommerce.variations.selectedVariations.variationId",
-                "eCommerce.variationDefaults.attributeId",
-                "eCommerce.variationDefaults.variationId",
-            ].join(" "),
-            select: "_id typeId contents.title contents.langId contents.url contents.image",
-            match: {
-                typeId: {$in: [PostTermTypeId.Attributes, PostTermTypeId.Variations]},
-                statusId: StatusId.Active,
-                postTypeId: {$in: params.typeId}
-            },
-            options: {omitUndefined: true},
-            transform: (doc: PostTermGetResultDocument) => {
-                if (doc) {
-                    if (Array.isArray(doc.contents)) {
-                        doc.contents = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
-                    }
-                }
-                return doc;
-            }
-        }).populate<{ components: PostGetResultDocument["components"] }>({
-            path: "components",
-            options: {omitUndefined: true},
-            transform: (doc: ComponentGetResultDocument) => {
-                if (doc) {
-                    doc.types.map(docType => {
-                        if (Array.isArray(docType.contents)) {
-                            docType.contents = docType.contents.findSingle("langId", params.langId) ?? docType.contents.findSingle("langId", defaultLangId);
-                            if (docType.contents) {
-                                delete docType.contents.content;
-                            }
-                        }
-                    })
-                }
-                return doc;
-            }
-        }).populate<{ authorId: PostGetResultDocument["authorId"], lastAuthorId: PostGetResultDocument["lastAuthorId"] }>({
+        }).populate<{ authorId: PostGetManyResultDocument["authorId"], lastAuthorId: PostGetManyResultDocument["lastAuthorId"] }>({
             path: [
                 "authorId",
                 "lastAuthorId"
@@ -305,7 +261,7 @@ export default {
         if (params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));
         if (params.count) query.limit(params.count);
 
-        return (await query.lean().exec()).map((doc: PostGetResultDocument) => {
+        return (await query.lean().exec()).map((doc: PostGetManyResultDocument) => {
             let views = 0;
 
             if (doc.categories) {
@@ -314,10 +270,6 @@ export default {
 
             if (doc.tags) {
                 doc.tags = doc.tags.filter(item => item);
-            }
-
-            if (doc.components) {
-                doc.components = doc.components.filter(item => item);
             }
 
             if (Array.isArray(doc.contents)) {
@@ -347,21 +299,23 @@ export default {
 
             if (doc.eCommerce) {
                 if (doc.eCommerce.variations) {
+                    let findItems = doc.eCommerce.variations.filter(variation => {
+                        return variation.selectedVariations.every(selectedVariation => {
+                            return doc.eCommerce?.variationDefaults?.some(variationDefault => {
+                                return variationDefault.attributeId == selectedVariation.attributeId &&
+                                    variationDefault.variationId == selectedVariation.variationId
+                            })
+                        })
+                    });
+
+                    doc.eCommerce.variations = findItems && findItems.length > 0 ? findItems : [];
+
                     for (let docECommerceVariation of doc.eCommerce.variations) {
-                        docECommerceVariation.selectedVariations = docECommerceVariation.selectedVariations.filter(item => item.attributeId);
                         if (Array.isArray(docECommerceVariation.contents)) {
                             docECommerceVariation.contents = docECommerceVariation.contents.findSingle("langId", params.langId) ?? docECommerceVariation.contents.findSingle("langId", defaultLangId);
                             delete docECommerceVariation.contents?.content;
                         }
                     }
-                }
-
-                if (doc.eCommerce.variationDefaults) {
-                    doc.eCommerce.variationDefaults = doc.eCommerce.variationDefaults.filter(item => item.attributeId);
-                }
-
-                if (doc.eCommerce.attributes) {
-                    doc.eCommerce.attributes = doc.eCommerce.attributes.filter(item => item.attributeId);
                 }
             }
 

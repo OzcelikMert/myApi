@@ -53,6 +53,10 @@ export default {
                 lastAuthorId: req.session.data.id.toString(),
             });
 
+            serviceResult.data = [{
+                _id: insertData._id
+            }]
+
             res.status(serviceResult.statusCode).json(serviceResult);
         });
     },
@@ -64,7 +68,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof navigationSchema.putOne> = req;
 
-            let updatedData = await navigationService.updateOne({
+            serviceResult.data = await navigationService.updateOne({
                 ...data.params,
                 ...data.body,
                 lastAuthorId: req.session.data.id.toString(),
@@ -81,7 +85,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof navigationSchema.putOneRank> = req;
 
-            await navigationService.updateOneRank({
+            serviceResult.data = await navigationService.updateOneRank({
                 ...data.params,
                 ...data.body,
                 lastAuthorId: req.session.data.id.toString()
@@ -98,7 +102,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof navigationSchema.putManyStatus> = req;
 
-            await navigationService.updateManyStatus({
+            serviceResult.data = await navigationService.updateManyStatus({
                 ...data.body,
                 lastAuthorId: req.session.data.id.toString()
             });
@@ -114,7 +118,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof navigationSchema.deleteMany> = req;
 
-            let deletedData = await navigationService.deleteMany({
+            serviceResult.data = await navigationService.deleteMany({
                 ...data.body
             });
 

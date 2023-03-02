@@ -1,22 +1,16 @@
 import mongoose from "mongoose";
 import {UserDocument} from "../models/user";
 
-export type UserDeleteOneParamDocument = {
-    _id: string
+export interface UserPopulateDocument {
+    _id: mongoose.Types.ObjectId | string
+    name: string,
+    url: string,
+    image: string
 }
 
-export type UserUpdateOneParamDocument = {
-    _id: string
-    roleId?: number
-    statusId?: number
-    name?: string
-    email?: string
-    permissions?: number[]
-} & Omit<UserDocument, "_id"|"roleId"|"statusId"|"name"|"email"|"permissions">
-
-export type UserAddParamDocument = {
-    password: string
-} & Omit<UserDocument, "_id"|"password">
+export type UserGetResultDocument = {
+    isOnline?: boolean
+} & UserDocument
 
 export interface UserGetOneParamDocument {
     _id?: string
@@ -38,13 +32,19 @@ export interface UserGetManyParamDocument {
     ignoreUserId?: string[]
 }
 
-export type UserGetResultDocument = {
-    isOnline?: boolean
-} & UserDocument
+export type UserAddParamDocument = {
+    password: string
+} & Omit<UserDocument, "_id"|"password">
 
-export interface UserPopulateDocument {
-    _id: mongoose.Types.ObjectId | string
-    name: string,
-    url: string,
-    image: string
+export type UserUpdateOneParamDocument = {
+    _id: string
+    roleId?: number
+    statusId?: number
+    name?: string
+    email?: string
+    permissions?: number[]
+} & Omit<UserDocument, "_id"|"roleId"|"statusId"|"name"|"email"|"permissions">
+
+export type UserDeleteOneParamDocument = {
+    _id: string
 }

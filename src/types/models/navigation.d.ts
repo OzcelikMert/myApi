@@ -1,12 +1,5 @@
 import mongoose from "mongoose";
 
-export interface NavigationContentDocument {
-    _id?: mongoose.Types.ObjectId | string
-    langId: mongoose.Types.ObjectId | string
-    title?: string,
-    url?: string,
-}
-
 export interface NavigationDocument {
     _id?: mongoose.Types.ObjectId | string
     statusId: number,
@@ -15,4 +8,11 @@ export interface NavigationDocument {
     lastAuthorId: mongoose.Types.ObjectId | string
     rank: number,
     contents: NavigationContentDocument[]
+}
+
+export interface NavigationContentDocument {
+    _id?: mongoose.Types.ObjectId | string
+    langId: mongoose.Types.ObjectId | string
+    title?: string,
+    url?: string,
 }

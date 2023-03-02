@@ -60,10 +60,14 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.post> = req;
 
-            await userService.add({
+            let insertData = await userService.add({
                 ...data.body,
                 ...(data.body.banDateEnd ? {banDateEnd: new Date(data.body.banDateEnd)} : {banDateEnd: undefined})
             });
+
+            serviceResult.data = [{
+                _id: insertData._id
+            }]
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -76,7 +80,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.putOne> = req;
 
-            await userService.getOne({
+            serviceResult.data = await userService.getOne({
                 ...data.params,
                 ...data.body,
                 ...(data.body.banDateEnd ? {banDateEnd: new Date(data.body.banDateEnd)} : {banDateEnd: undefined})
@@ -93,7 +97,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.putProfile> = req;
 
-            await userService.updateOne({
+            serviceResult.data = await userService.updateOne({
                 ...data.body,
                 _id: req.session.data.id.toString(),
             });
@@ -109,7 +113,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.putPassword> = req;
 
-            await userService.updateOne({
+            serviceResult.data = await userService.updateOne({
                 _id: req.session.data.id.toString(),
                 password: data.body.newPassword
             });
@@ -125,7 +129,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.deleteOne> = req;
 
-            await userService.deleteOne(data.params);
+            serviceResult.data = await userService.deleteOne(data.params);
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });

@@ -48,11 +48,15 @@ export default {
 
             let data: InferType<typeof componentSchema.post> = req;
 
-            await componentService.add({
+            let insertData = await componentService.add({
                 ...data.body,
                 authorId: req.session.data.id.toString(),
                 lastAuthorId: req.session.data.id.toString()
             });
+
+            serviceResult.data = [{
+                _id: insertData._id
+            }]
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -65,7 +69,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof componentSchema.putOne> = req;
 
-            await componentService.updateOne({
+            serviceResult.data = await componentService.updateOne({
                 ...data.params,
                 ...data.body,
                 lastAuthorId: req.session.data.id.toString()
@@ -82,7 +86,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof componentSchema.deleteMany> = req;
 
-            await componentService.deleteMany({
+            serviceResult.data = await componentService.deleteMany({
                 ...data.body
             });
 

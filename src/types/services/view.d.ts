@@ -1,8 +1,6 @@
 import {ViewDocument} from "../models/view";
 
-export interface ViewDeleteManyParamDocument {
-    dateEnd: Date
-}
+export type ViewGetResultDocument = {} & ViewDocument
 
 export interface ViewGetParamDocument {
     ip?: string
@@ -15,6 +13,11 @@ export interface ViewGetParamDocument {
     dateEnd?: Date
 }
 
+export type ViewGetTotalResultDocument = {
+    total: number
+    _id: string
+}
+
 export interface ViewAddParamDocument {
     url: string,
     langId: string
@@ -24,9 +27,6 @@ export interface ViewAddParamDocument {
     region?: string
 }
 
-export type ViewGetTotalResultDocument = {
-    total: number
-    _id: string
+export interface ViewDeleteManyParamDocument {
+    dateEnd: Date
 }
-
-export type ViewGetResultDocument = {} & ViewDocument

@@ -73,9 +73,13 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof languageSchema.post> = req;
 
-            serviceResult.data = await languageService.add({
+            let insertData = await languageService.add({
                 ...data.body,
             });
+
+            serviceResult.data = [{
+                _id: insertData._id
+            }]
 
             res.status(serviceResult.statusCode).json(serviceResult);
         });

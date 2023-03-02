@@ -1,14 +1,5 @@
 import mongoose from "mongoose";
 
-export interface PostTermContentDocument {
-    langId: mongoose.Types.ObjectId | string
-    image?: string,
-    title?: string,
-    shortContent?: string,
-    url?: string,
-    seoContent?: string
-}
-
 export interface PostTermDocument {
     _id: mongoose.Types.ObjectId | string
     postTypeId: number,
@@ -21,4 +12,13 @@ export interface PostTermDocument {
     contents: PostTermContentDocument[]
     updatedAt?: string
     createdAt?: string
+}
+
+export interface PostTermContentDocument {
+    langId: mongoose.Types.ObjectId | string
+    image?: string,
+    title?: string,
+    shortContent?: string,
+    url?: string,
+    seoContent?: string
 }
