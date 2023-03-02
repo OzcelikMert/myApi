@@ -74,9 +74,6 @@ const PagePaths = {
             withUrl(url: string | undefined = ":url") {
                 return pagePathUtil.setPath(path, "url", url);
             },
-            login(email: string | undefined = ":email", password: string | undefined = ":password") {
-                return pagePathUtil.setPath(path, "login", email, password);
-            },
             profile() {
                 return pagePathUtil.setPath(path, "profile");
             },

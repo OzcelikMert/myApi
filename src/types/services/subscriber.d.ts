@@ -1,7 +1,8 @@
 import {SubscriberDocument} from "../models/subscriber";
 
-export interface SubscriberDeleteOneWithEmailParamDocument {
-    email: string
+export interface SubscriberDeleteOneParamDocument {
+    email?: string
+    _id?: string
 }
 
 export interface SubscriberDeleteManyParamDocument {
@@ -14,11 +15,8 @@ export interface SubscriberGetManyParamDocument {
 }
 
 export interface SubscriberGetOneParamDocument {
-    _id: string
-}
-
-export interface SubscriberGetOneWithEmailParamDocument {
-    email: string
+    _id?: string
+    email?: string
 }
 
 export type SubscriberAddDocument = {} & Omit<SubscriberDocument, "_id">

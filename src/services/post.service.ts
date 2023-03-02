@@ -126,6 +126,8 @@ export default {
             select: "_id name url"
         });
 
+        query.sort({isFixed: -1, rank: 1, createdAt: -1});
+
         let doc = (await query.lean().exec()) as PostGetResultDocument | null;
 
         if (doc) {
@@ -294,7 +296,7 @@ export default {
             select: "_id name url"
         });
 
-        if (params.typeId.length > 1 && params.page) {
+        if (params.typeId.length > 1) {
             query.sort({createdAt: -1});
         } else {
             query.sort({isFixed: -1, rank: 1, createdAt: -1});
@@ -436,38 +438,6 @@ export default {
             lastAuthorId: doc?.lastAuthorId
         }
     },
-    async updateManyStatus(params: PostUpdateManyStatusIdParamDocument) {
-        params = Variable.clearAllScriptTags(params);
-        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
-
-        let filters: mongoose.FilterQuery<PostDocument> = {}
-
-        if (params._id) {
-            filters = {
-                ...filters,
-                _id: {$in: params._id}
-            }
-        }
-        if (params.typeId) {
-            filters = {
-                ...filters,
-                typeId: params.typeId
-            }
-        }
-
-        return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
-            doc.statusId = params.statusId;
-            doc.lastAuthorId = params.lastAuthorId;
-
-            await doc.save();
-
-            return {
-                _id: doc._id,
-                statusId: doc.statusId,
-                lastAuthorId: doc.lastAuthorId
-            };
-        }));
-    },
     async updateOneRank(params: PostUpdateOneRankParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
@@ -551,6 +521,38 @@ export default {
             views: views,
             totalViews: totalViews
         };
+    },
+    async updateManyStatus(params: PostUpdateManyStatusIdParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
+
+        let filters: mongoose.FilterQuery<PostDocument> = {}
+
+        if (params._id) {
+            filters = {
+                ...filters,
+                _id: {$in: params._id}
+            }
+        }
+        if (params.typeId) {
+            filters = {
+                ...filters,
+                typeId: params.typeId
+            }
+        }
+
+        return await Promise.all((await postModel.find(filters).exec()).map(async doc => {
+            doc.statusId = params.statusId;
+            doc.lastAuthorId = params.lastAuthorId;
+
+            await doc.save();
+
+            return {
+                _id: doc._id,
+                statusId: doc.statusId,
+                lastAuthorId: doc.lastAuthorId
+            };
+        }));
     },
     async deleteMany(params: PostDeleteManyParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {}

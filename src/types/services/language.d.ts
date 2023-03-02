@@ -17,7 +17,7 @@ export interface LanguageGetManyParamDocument {
 }
 
 export interface LanguageGetOneParamDocument {
-    _id: string
+    _id?: string
 }
 
 export type LanguageGetResultDocument = {} & LanguageDocument

@@ -4,10 +4,8 @@ import {
     UserDeleteOneParamDocument,
     UserAddParamDocument,
     UserGetOneParamDocument, UserGetResultDocument,
-    UserUpdateOneParamDocument, UserUpdatePasswordParamDocument,
-    UserGetOneLoginParamDocument,
-    UserGetOneWithUrlParamDocument,
-    UserGetManyParamDocument, UserUpdateProfileParamDocument
+    UserUpdateOneParamDocument,
+    UserGetManyParamDocument
 } from "../types/services/user";
 import {StatusId} from "../constants/status";
 import userUtil from "../utils/user.util";
@@ -25,22 +23,34 @@ export default {
             statusId: { $ne: StatusId.Deleted},
         }
 
-        if (params._id) {
+        if(params.email) {
+            filters = {
+                ...filters,
+                email: params.email
+            }
+        }
+        if(params.password) {
+            filters = {
+                ...filters,
+                password: userUtil.encodePassword(params.password)
+            }
+        }
+        if(params._id) {
             filters = {
                 ...filters,
                 _id: params._id
             }
         }
-        if (params.url) {
+        if(params.roleId) {
+            filters = {
+                ...filters,
+                roleId: params.roleId
+            }
+        }
+        if(params.url) {
             filters = {
                 ...filters,
                 url: params.url
-            }
-        }
-        if (params.email) {
-            filters = {
-                ...filters,
-                email: params.email
             }
         }
         if(params.statusId){
@@ -58,49 +68,7 @@ export default {
 
         let query = userModel.findOne(filters, {});
 
-        let doc = (await query.lean().exec()) as UserGetResultDocument | null;
-
-        if(doc){
-            delete doc.password;
-            doc.isOnline = Config.onlineUsers.indexOfKey("_id", doc._id.toString()) > -1;
-        }
-
-        return doc;
-    },
-    async getOneLogin(params: UserGetOneLoginParamDocument) {
-        params = MongoDBHelpers.convertObjectIdInData(params, userObjectIdKeys);
-
-        let filters: mongoose.FilterQuery<UserDocument> = {
-            statusId: { $ne: StatusId.Deleted},
-            email: params.email,
-            password: userUtil.encodePassword(params.password)
-        }
-
-        let query = userModel.findOne(filters, {});
-
-        let doc = (await query.lean().exec()) as UserGetResultDocument | null;
-
-        if(doc){
-            delete doc.password;
-        }
-
-        return doc;
-    },
-    async getOneWithUrl(params: UserGetOneWithUrlParamDocument) {
-        params = MongoDBHelpers.convertObjectIdInData(params, userObjectIdKeys);
-
-        let filters: mongoose.FilterQuery<UserDocument> = {
-            statusId: { $ne: StatusId.Deleted},
-        }
-
-        if(params.url){
-            filters = {
-                ...filters,
-                url: params.url
-            }
-        }
-
-        let query = userModel.findOne(filters, {});
+        query.sort({createdAt: -1});
 
         let doc = (await query.lean().exec()) as UserGetResultDocument | null;
 
@@ -194,50 +162,6 @@ export default {
                 doc.password = userUtil.encodePassword(params.password)
                 delete params.password;
             }
-            doc = Object.assign(doc, params);
-            await doc.save();
-        }
-
-        return params;
-    },
-    async updatePassword(params: UserUpdatePasswordParamDocument) {
-        params = Variable.clearAllScriptTags(params);
-        params = MongoDBHelpers.convertObjectIdInData(params, userObjectIdKeys);
-
-        let filters: mongoose.FilterQuery<UserDocument> = {}
-
-        if (params._id) {
-            filters = {
-                _id: params._id
-            }
-        }
-
-        let doc = (await userModel.findOne(filters).exec());
-
-        if(doc){
-            params.password = userUtil.encodePassword(params.password)
-            await doc.save();
-        }
-
-        return {
-            _id: doc?._id
-        };
-    },
-    async updateProfile(params: UserUpdateProfileParamDocument) {
-        params = Variable.clearAllScriptTags(params);
-        params = MongoDBHelpers.convertObjectIdInData(params, userObjectIdKeys);
-
-        let filters: mongoose.FilterQuery<UserDocument> = {}
-
-        if (params._id) {
-            filters = {
-                _id: params._id
-            }
-        }
-
-        let doc = (await userModel.findOne(filters).exec());
-
-        if(doc){
             doc = Object.assign(doc, params);
             await doc.save();
         }

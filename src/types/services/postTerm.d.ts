@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {PopulateAuthorIdDocument} from "./user";
+import {UserPopulateDocument} from "./user";
 import {PostTermContentDocument, PostTermDocument} from "../models/postTerm";
 
 export interface PostTermDeleteManyParamDocument {
@@ -58,8 +58,8 @@ export interface PostTermGetManyParamDocument {
 }
 
 export type PostTermGetResultDocument = {
-    authorId: PopulateAuthorIdDocument,
-    lastAuthorId: PopulateAuthorIdDocument,
+    authorId: UserPopulateDocument,
+    lastAuthorId: UserPopulateDocument,
     mainId?: {
         _id: mongoose.Types.ObjectId
         contents: {

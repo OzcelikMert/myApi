@@ -29,7 +29,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof subscriberSchema.getOneWithEmail> = req;
 
-            serviceResult.data = await subscriberService.getOneWithEmail({
+            serviceResult.data = await subscriberService.getOne({
                 ...data.params
             })
 
@@ -74,7 +74,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof subscriberSchema.deleteOneWithEmail> = req;
 
-            await subscriberService.deleteOneWithEmail({
+            await subscriberService.deleteOne({
                 ...data.params
             })
 

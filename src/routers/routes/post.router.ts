@@ -26,7 +26,7 @@ postRouter.route(PagePaths.post(false).withTypeId().withId().self())
     .put([requestMiddleware.check(postSchema.putOne), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkOne, postMiddleware.checkUrl], postController.updateOne)
 
 postRouter.route(PagePaths.post(false).withTypeId().withId().view())
-    .put([requestMiddleware.check(postSchema.putOneView), viewMiddleware.check, postMiddleware.checkOne], postController.updateOneView)
+    .put([requestMiddleware.check(postSchema.putOneView), viewMiddleware.checkOne, postMiddleware.checkOne], postController.updateOneView)
 
 postRouter.route(PagePaths.post(false).withTypeId().withId().rank())
     .put([requestMiddleware.check(postSchema.putOneRank), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkOne], postController.updateOneRank)

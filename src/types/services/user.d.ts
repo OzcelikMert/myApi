@@ -5,37 +5,26 @@ export type UserDeleteOneParamDocument = {
     _id: string
 }
 
-export type UserUpdatePasswordParamDocument = {
-    _id: string
-    password: string
-}
-
-export type UserUpdateProfileParamDocument = {
-    _id: string
-} & Omit<UserDocument, "_id"|"password"|"permissions"|"roleId"|"statusId"|"email"|"banComment"|"banDateEnd">
-
 export type UserUpdateOneParamDocument = {
     _id: string
-} & Omit<UserDocument, "_id">
+    roleId?: number
+    statusId?: number
+    name?: string
+    email?: string
+    permissions?: number[]
+} & Omit<UserDocument, "_id"|"roleId"|"statusId"|"name"|"email"|"permissions">
 
 export type UserAddParamDocument = {
     password: string
 } & Omit<UserDocument, "_id"|"password">
 
-export interface UserGetOneLoginParamDocument {
-    email: string,
-    password: string,
-}
-
-export interface UserGetOneWithUrlParamDocument {
-    url: string
-}
-
 export interface UserGetOneParamDocument {
     _id?: string
     email?: string
+    password?: string
     statusId?: number
     url?: string
+    roleId?: number
     ignoreUserId?: string[]
 }
 

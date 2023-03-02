@@ -16,7 +16,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof mailerSchema.post> = req;
 
-            let setting = (await settingService.select({getContactFormPasswords: true}))[0];
+            let setting = (await settingService.get({getContactFormPasswords: true}));
             let contactForm = setting.contactForms?.findSingle("_id", MongoDBHelpers.createObjectId(data.body.contactFormId));
             if(contactForm){
                 try {

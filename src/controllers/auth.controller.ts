@@ -1,12 +1,10 @@
 import {Request, Response} from "express";
-import V from "../library/variable"
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import {InferType} from "yup";
 import authSchema from "../schemas/auth.schema";
 import userService from "../services/user.service";
 import {StatusId} from "../constants/status";
 import logMiddleware from "../middlewares/log.middleware";
-import {Config} from "../config";
 import userUtil from "../utils/user.util";
 
 export default {
@@ -18,7 +16,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof authSchema.get> = req;
 
-            serviceResult.data = await userService.select({_id: req.session.data.id.toString()});
+            serviceResult.data = await userService.getOne({_id: req.session.data.id.toString()});
             res.status(serviceResult.statusCode).json(serviceResult)
         })
     },
@@ -30,12 +28,12 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof authSchema.post> = req;
 
-            let resData = await userService.select({
+            let resData = await userService.getOne({
                 ...data.body
             });
 
-            if(resData.length > 0){
-                let user = resData[0];
+            if(resData){
+                let user = resData;
                 if(user.statusId == StatusId.Active) {
                     let time = new Date().getTime();
                     req.session.data = {

@@ -25,7 +25,9 @@ export default {
 
         let query = languageModel.findOne(filters, {});
 
-        return (await query.lean().exec()) as LanguageGetResultDocument;
+        query.sort({rank: 1, createdAt: -1});
+
+        return (await query.lean().exec()) as LanguageGetResultDocument | null;
     },
     async getMany(params: LanguageGetManyParamDocument) {
         let filters: mongoose.FilterQuery<LanguageDocument> = {}

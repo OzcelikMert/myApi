@@ -30,23 +30,8 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.getOneWithUrl> = req;
 
-            serviceResult.data = await userService.getOneWithUrl({
+            serviceResult.data = await userService.getOne({
                 ...data.params,
-            });
-
-            res.status(serviceResult.statusCode).json(serviceResult)
-        });
-    },
-    getOneLogin: async (
-        req: Request<any>,
-        res: Response
-    ) => {
-        await logMiddleware.error(req, res, async () => {
-            let serviceResult = new Result();
-            let data: InferType<typeof userSchema.getOneLogin> = req;
-
-            serviceResult.data = await userService.getOneLogin({
-                ...data.params
             });
 
             res.status(serviceResult.statusCode).json(serviceResult)
@@ -108,7 +93,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.putProfile> = req;
 
-            await userService.updateProfile({
+            await userService.updateOne({
                 ...data.body,
                 _id: req.session.data.id.toString(),
             });
@@ -124,7 +109,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.putPassword> = req;
 
-            await userService.updatePassword({
+            await userService.updateOne({
                 _id: req.session.data.id.toString(),
                 password: data.body.newPassword
             });

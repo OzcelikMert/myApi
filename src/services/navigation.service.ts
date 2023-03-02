@@ -52,7 +52,9 @@ export default {
             select: "_id name url"
         })
 
-        let doc = (await query.lean().exec()) as NavigationGetResultDocument | undefined;
+        query.sort({rank: 1, createdAt: -1});
+
+        let doc = (await query.lean().exec()) as NavigationGetResultDocument | null;
 
         if(doc){
             if (Array.isArray(doc.contents)) {
@@ -101,7 +103,6 @@ export default {
         })
 
         query.sort({rank: 1, createdAt: -1});
-
 
         return (await query.lean().exec()).map((doc: NavigationGetResultDocument) => {
             if (Array.isArray(doc.contents)) {
@@ -171,32 +172,6 @@ export default {
             lastAuthorId: doc?.lastAuthorId
         }
     },
-    async updateManyStatus(params: NavigationUpdateManyStatusIdParamDocument) {
-        params = Variable.clearAllScriptTags(params);
-        params = MongoDBHelpers.convertObjectIdInData(params, navigationObjectIdKeys);
-
-        let filters: mongoose.FilterQuery<NavigationDocument> = {}
-
-        if(params._id) {
-            filters = {
-                ...filters,
-                _id: {$in: params._id}
-            }
-        }
-
-        return await Promise.all((await navigationModel.find(filters).exec()).map(async doc => {
-            doc.statusId = params.statusId;
-            doc.lastAuthorId = params.lastAuthorId;
-
-            await doc.save();
-
-            return {
-                _id: doc._id,
-                statusId: doc.statusId,
-                lastAuthorId: doc.lastAuthorId
-            };
-        }));
-    },
     async updateOneRank(params: NavigationUpdateOneRankParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, navigationObjectIdKeys);
@@ -224,6 +199,32 @@ export default {
             rank: doc?.rank,
             lastAuthorId: doc?.lastAuthorId
         };
+    },
+    async updateManyStatus(params: NavigationUpdateManyStatusIdParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, navigationObjectIdKeys);
+
+        let filters: mongoose.FilterQuery<NavigationDocument> = {}
+
+        if(params._id) {
+            filters = {
+                ...filters,
+                _id: {$in: params._id}
+            }
+        }
+
+        return await Promise.all((await navigationModel.find(filters).exec()).map(async doc => {
+            doc.statusId = params.statusId;
+            doc.lastAuthorId = params.lastAuthorId;
+
+            await doc.save();
+
+            return {
+                _id: doc._id,
+                statusId: doc.statusId,
+                lastAuthorId: doc.lastAuthorId
+            };
+        }));
     },
     async deleteMany(params: NavigationDeleteManyParamDocument) {
         params = MongoDBHelpers.convertObjectIdInData(params, navigationObjectIdKeys);

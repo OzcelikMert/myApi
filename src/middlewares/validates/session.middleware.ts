@@ -26,7 +26,7 @@ export default {
 
             if (
                 (typeof req.session === "undefined" || typeof req.session.data === "undefined") ||
-                (await userService.select({_id: req.session.data.id.toString(), statusId: StatusId.Active})).length === 0
+                !(await userService.getOne({_id: req.session.data.id.toString(), statusId: StatusId.Active}))
             ) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.notLoggedIn;

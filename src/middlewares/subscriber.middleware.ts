@@ -14,7 +14,7 @@ export default {
 
             let email = (req.body.email ?? req.params.email ?? "") as string;
 
-            let resData = await subscriberService.getOneWithEmail({
+            let resData = await subscriberService.getOne({
                 email: email
             });
 

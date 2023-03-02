@@ -15,7 +15,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof mailerSchema.post> = req;
 
-            let setting = (await settingService.select({}))[0];
+            let setting = (await settingService.get({}));
 
             if((typeof setting.contactForms === "undefined") || (setting.contactForms && setting.contactForms?.indexOfKey("_id", data.body.contactFormId) < 0)){
                 serviceResult.status = false;

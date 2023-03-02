@@ -24,7 +24,6 @@ export default {
             ...filters,
             _id: params._id
         }
-
         if (params.elementId) filters = {
             ...filters,
             elementId: params.elementId
@@ -38,7 +37,7 @@ export default {
             select: "_id name url"
         })
 
-        query.sort({rank: 1, createdAt: -1});
+        query.sort({createdAt: -1});
 
         let doc = (await query.lean().exec()) as ComponentGetResultDocument | null;
 
@@ -75,7 +74,7 @@ export default {
             select: "_id name url"
         })
 
-        query.sort({rank: 1, createdAt: -1});
+        query.sort({createdAt: -1});
 
         return (await query.lean().exec()).map((doc: ComponentGetResultDocument) => {
             for(let docType of doc.types) {

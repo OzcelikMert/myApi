@@ -3,12 +3,11 @@ import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
 import {
     SubscriberDeleteManyParamDocument,
-    SubscriberDeleteOneWithEmailParamDocument,
     SubscriberAddDocument,
     SubscriberGetManyParamDocument,
     SubscriberGetResultDocument,
     SubscriberGetOneParamDocument,
-    SubscriberGetOneWithEmailParamDocument
+    SubscriberDeleteOneParamDocument
 } from "../types/services/subscriber";
 import subscriberModel from "../models/subscriber.model";
 import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
@@ -25,15 +24,6 @@ export default {
                 _id: params._id
             }
         }
-
-        let query = subscriberModel.findOne(filters, {});
-
-        return (await query.lean().exec()) as SubscriberGetResultDocument | null;
-    },
-    async getOneWithEmail(params: SubscriberGetOneWithEmailParamDocument) {
-        let filters: mongoose.FilterQuery<SubscriberDocument> = {}
-        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
-
         if (params.email) {
             filters = {
                 ...filters,
@@ -42,6 +32,8 @@ export default {
         }
 
         let query = subscriberModel.findOne(filters, {});
+
+        query.sort({createdAt: -1});
 
         return (await query.lean().exec()) as SubscriberGetResultDocument | null;
     },
@@ -74,6 +66,33 @@ export default {
 
         return await subscriberModel.create(params)
     },
+    async deleteOne(params: SubscriberDeleteOneParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
+
+        let filters: mongoose.FilterQuery<SubscriberDocument> = {}
+
+        if (params._id) {
+            filters = {
+                ...filters,
+                _id: params._id
+            }
+        }
+        if (params.email) {
+            filters = {
+                ...filters,
+                email: params.email
+            }
+        }
+
+        let doc = (await subscriberModel.findOne(filters).exec());
+
+        if(doc){
+            await doc.remove();
+        }
+
+        return doc;
+    },
     async deleteMany(params: SubscriberDeleteManyParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
@@ -92,25 +111,4 @@ export default {
             return doc;
         }));
     },
-    async deleteOneWithEmail(params: SubscriberDeleteOneWithEmailParamDocument) {
-        params = Variable.clearAllScriptTags(params);
-        params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
-
-        let filters: mongoose.FilterQuery<SubscriberDocument> = {}
-
-        if (params.email) {
-            filters = {
-                ...filters,
-                email: params.email
-            }
-        }
-
-        let doc = (await subscriberModel.findOne(filters).exec());
-
-        if(doc){
-            await doc.remove();
-        }
-
-        return doc;
-    }
 };

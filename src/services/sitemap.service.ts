@@ -12,7 +12,7 @@ import postTermModel from "../models/postTerm.model";
 export const sitemapLimit = 500;
 
 export default {
-    async selectPost(params: { typeId: number, page?: number }) {
+    async getPost(params: { typeId: number, page?: number }) {
         let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
@@ -44,7 +44,7 @@ export default {
             };
         });
     },
-    async selectPostCountForType(params: { typeId?: number[] }) {
+    async getPostCountForType(params: { typeId?: number[] }) {
         let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
@@ -76,7 +76,7 @@ export default {
             }
         });
     },
-    async selectPostTerm(params: { typeId: number, postTypeId: number, page?: number }) {
+    async getPostTerm(params: { typeId: number, postTypeId: number, page?: number }) {
         let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
         params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
 
@@ -115,7 +115,7 @@ export default {
             };
         });
     },
-    async selectPostTermCountForType(params: { typeId?: number[] }) {
+    async getPostTermCountForType(params: { typeId?: number[] }) {
         let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 

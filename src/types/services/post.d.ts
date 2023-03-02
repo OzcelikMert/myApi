@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {PopulateAuthorIdDocument} from "./user";
+import {UserPopulateDocument} from "./user";
 import {PostTermPopulateDocument} from "./postTerm";
 import {
     PostContentDocument,
@@ -83,8 +83,8 @@ export interface PostAlternateDocument {
 }
 
 export type PostGetResultDocument = {
-    authorId: PopulateAuthorIdDocument,
-    lastAuthorId: PopulateAuthorIdDocument,
+    authorId: UserPopulateDocument,
+    lastAuthorId: UserPopulateDocument,
     views?: number,
     categories?: PostTermPopulateDocument[]
     tags?: PostTermPopulateDocument[]

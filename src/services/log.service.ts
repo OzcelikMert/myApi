@@ -5,7 +5,7 @@ import MongoDBHelpers from "../library/mongodb/helpers";
 import logObjectIdKeys from "../constants/objectIdKeys/log.objectIdKeys";
 
 export default {
-    async insert(params: LogAddParamDocument) {
+    async add(params: LogAddParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, logObjectIdKeys);
 

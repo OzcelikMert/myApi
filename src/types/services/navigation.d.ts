@@ -1,4 +1,4 @@
-import {PopulateAuthorIdDocument} from "./user";
+import {UserPopulateDocument} from "./user";
 import {NavigationContentDocument, NavigationDocument} from "../models/navigation";
 
 export interface NavigationDeleteManyParamDocument {
@@ -33,14 +33,14 @@ export interface NavigationGetManyParamDocument {
 }
 
 export interface NavigationGetOneParamDocument {
-    _id: string
+    _id?: string
     langId?: string
     statusId?: number
 }
 
 export type NavigationGetResultDocument = {
-    authorId: PopulateAuthorIdDocument,
-    lastAuthorId: PopulateAuthorIdDocument,
+    authorId: UserPopulateDocument,
+    lastAuthorId: UserPopulateDocument,
     mainId?: {
         _id:  string
         contents: {

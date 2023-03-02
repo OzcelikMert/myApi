@@ -12,7 +12,7 @@ export default {
             await func();
         }catch (e: any) {
             console.log(e);
-            await logService.insert({
+            await logService.add({
                 url: req.originalUrl,
                 ip: req.ip,
                 method: req.method,

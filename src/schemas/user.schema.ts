@@ -26,12 +26,6 @@ export default {
             url: string().required({url: ErrorCodes.emptyValue}),
         })
     }),
-    getOneLogin: object({
-        params: object({
-            email: string().required({email: ErrorCodes.emptyValue}),
-            password: string().required({password: ErrorCodes.emptyValue}),
-        })
-    }),
     getMany: object({
         query: object({
             _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),

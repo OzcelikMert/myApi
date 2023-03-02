@@ -179,7 +179,7 @@ export default {
 
             let password = req.body.password;
 
-            let resData = await userService.getOneLogin({
+            let resData = await userService.getOne({
                 email: req.session.data.email,
                 password: password
             });

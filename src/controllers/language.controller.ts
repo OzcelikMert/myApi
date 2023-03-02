@@ -9,32 +9,6 @@ import {Config} from "../config";
 import path from "path";
 
 export default {
-    getFlags: async (
-        req: Request<any, any,any, any>,
-        res: Response
-    ) => {
-        await logMiddleware.error(req, res, async () => {
-            let serviceResult = new Result();
-
-            const fileType = [".jpg", ".png", ".webp", ".gif", ".jpeg"];
-
-            await new Promise(resolve => {
-                fs.readdir(Config.paths.uploads.flags, (err, images) => {
-                    for(let i=0; i < images.length; i++) {
-                        let image = images[i];
-                        if(fs.existsSync(path.resolve(Config.paths.uploads.flags, image))) {
-                            if (fileType.includes(path.extname(image))){
-                                serviceResult.data.push(image)
-                            }
-                        }
-                    }
-                    resolve(0)
-                });
-            })
-
-            res.status(serviceResult.statusCode).json(serviceResult)
-        });
-    },
     getOne: async (
         req: Request<any, any,any, any>,
         res: Response
@@ -61,6 +35,32 @@ export default {
             serviceResult.data = await languageService.getMany({
                 ...data.query
             });
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
+    getFlags: async (
+        req: Request<any, any,any, any>,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+
+            const fileType = [".jpg", ".png", ".webp", ".gif", ".jpeg"];
+
+            await new Promise(resolve => {
+                fs.readdir(Config.paths.uploads.flags, (err, images) => {
+                    for(let i=0; i < images.length; i++) {
+                        let image = images[i];
+                        if(fs.existsSync(path.resolve(Config.paths.uploads.flags, image))) {
+                            if (fileType.includes(path.extname(image))){
+                                serviceResult.data.push(image)
+                            }
+                        }
+                    }
+                    resolve(0)
+                });
+            })
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });

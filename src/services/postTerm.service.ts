@@ -70,6 +70,8 @@ export default {
             select: "_id name url"
         })
 
+        query.sort({rank: 1, createdAt: -1});
+
         let doc = (await query.lean().exec()) as PostTermGetResultDocument | null;
 
         if(doc){
@@ -234,42 +236,6 @@ export default {
             lastAuthorId: doc?.lastAuthorId
         };
     },
-    async updateManyStatus(params: PostTermUpdateManyStatusIdParamDocument) {
-        params = Variable.clearAllScriptTags(params);
-        params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
-
-        let filters: mongoose.FilterQuery<PostTermDocument> = {}
-
-        if(params._id){
-            filters = {
-                ...filters,
-                _id:{$in: params._id}
-            }
-        }
-        if (params.typeId) {
-            filters = {
-                ...filters,
-                typeId: params.typeId
-            }
-        }
-        if (params.postTypeId) filters = {
-            ...filters,
-            postTypeId: params.postTypeId
-        }
-
-        return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
-            doc.statusId = params.statusId;
-            doc.lastAuthorId = params.lastAuthorId;
-
-            await doc.save();
-
-            return {
-                _id: doc._id,
-                statusId: doc.statusId,
-                lastAuthorId: doc.lastAuthorId
-            };
-        }));
-    },
     async updateOneRank(params: PostTermUpdateOneRankParamDocument) {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
@@ -307,6 +273,42 @@ export default {
             rank: doc?.rank,
             lastAuthorId: doc?.lastAuthorId
         };
+    },
+    async updateManyStatus(params: PostTermUpdateManyStatusIdParamDocument) {
+        params = Variable.clearAllScriptTags(params);
+        params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
+
+        let filters: mongoose.FilterQuery<PostTermDocument> = {}
+
+        if(params._id){
+            filters = {
+                ...filters,
+                _id:{$in: params._id}
+            }
+        }
+        if (params.typeId) {
+            filters = {
+                ...filters,
+                typeId: params.typeId
+            }
+        }
+        if (params.postTypeId) filters = {
+            ...filters,
+            postTypeId: params.postTypeId
+        }
+
+        return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
+            doc.statusId = params.statusId;
+            doc.lastAuthorId = params.lastAuthorId;
+
+            await doc.save();
+
+            return {
+                _id: doc._id,
+                statusId: doc.statusId,
+                lastAuthorId: doc.lastAuthorId
+            };
+        }));
     },
     async deleteMany(params: PostTermDeleteManyParamDocument) {
         let filters: mongoose.FilterQuery<PostTermDocument> = {}

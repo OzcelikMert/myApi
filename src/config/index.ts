@@ -88,11 +88,11 @@ class InitConfig {
     }
 
     private async checkSuperAdminUser() {
-        if ((await userService.select({roleId: UserRoleId.SuperAdmin})).length === 0) {
+        if (!(await userService.getOne({roleId: UserRoleId.SuperAdmin}))) {
             let password = generate({
                 length: 10
             })
-            await userService.insert({
+            await userService.add({
                 name: "Super Admin",
                 email: "admin@admin.com",
                 statusId: StatusId.Active,
@@ -102,12 +102,12 @@ class InitConfig {
             })
             console.log(chalk.green(`#Admin Account`))
             console.log(chalk.blue(`- Created`))
-            console.log(chalk.blue(`- ${password}`))
+            console.log(chalk.blue(`- Password: ${password}`))
         }
     }
 
     private async checkLanguages() {
-        if ((await languageService.getMany({})).length === 0) {
+        if (!(await languageService.getOne({}))) {
             await languageService.add({
                 title: "English",
                 image: "gb.webp",
@@ -124,14 +124,14 @@ class InitConfig {
     private async checkSettings() {
         let settings = await settingService.get({});
         if (!settings) {
-            let lang = await languageService.getMany({});
+            let lang = await languageService.getOne({});
             await settingService.add({
                 contactForms: [],
                 staticLanguages: [],
                 socialMedia: [],
-                defaultLangId: lang[0]._id?.toString() || "",
+                defaultLangId: lang?._id?.toString() || "",
             });
-            Config.defaultLangId = lang[0]._id?.toString() || "";
+            Config.defaultLangId = lang?._id?.toString() || "";
             console.log(chalk.green(`#Setting`))
             console.log(chalk.blue(`- Created`))
         } else {

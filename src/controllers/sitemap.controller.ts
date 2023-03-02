@@ -16,8 +16,8 @@ export default {
             let serviceResult = new Result();
 
             serviceResult.data = {
-                post: await sitemapService.selectPostCountForType({typeId: [PostTypeId.Page, PostTypeId.Portfolio, PostTypeId.Blog]}),
-                postTerm: [] //await sitemapService.selectPostTermCountForType({typeId: [PostTermTypeId.Category, PostTermTypeId.Tag]})
+                post: await sitemapService.getPostCountForType({typeId: [PostTypeId.Page, PostTypeId.Portfolio, PostTypeId.Blog]}),
+                postTerm: await sitemapService.getPostTermCountForType({typeId: [PostTermTypeId.Category, PostTermTypeId.Tag]})
             };
 
             res.status(serviceResult.statusCode).json(serviceResult)
@@ -31,7 +31,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof sitemapSchema.getPost> = req;
 
-            serviceResult.data = await sitemapService.selectPost(data.query);
+            serviceResult.data = await sitemapService.getPost(data.query);
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
@@ -44,7 +44,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof sitemapSchema.getPostTerm> = req;
 
-            serviceResult.data = await sitemapService.selectPostTerm(data.query)
+            serviceResult.data = await sitemapService.getPostTerm(data.query)
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });

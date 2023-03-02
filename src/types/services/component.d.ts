@@ -1,4 +1,4 @@
-import {PopulateAuthorIdDocument} from "./user";
+import {UserPopulateDocument} from "./user";
 import {ComponentDocument, ComponentTypeContentDocument, ComponentTypeDocument} from "../models/component";
 
 export interface ComponentDeleteManyParamDocument {
@@ -28,8 +28,8 @@ export interface ComponentGetOneParamDocument {
 }
 
 export type ComponentGetResultDocument = {
-    authorId: PopulateAuthorIdDocument,
-    lastAuthorId: PopulateAuthorIdDocument,
+    authorId: UserPopulateDocument,
+    lastAuthorId: UserPopulateDocument,
     types: (Omit<ComponentTypeDocument, "contents"> & {
         contents?: ComponentTypeContentDocument | ComponentTypeContentDocument[]
     })[]

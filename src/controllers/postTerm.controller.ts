@@ -78,23 +78,6 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
-    updateManyStatus: async (
-        req: Request<any>,
-        res: Response
-    ) => {
-        await logMiddleware.error(req, res, async () => {
-            let serviceResult = new Result();
-            let data: InferType<typeof postTermSchema.putManyStatus> = req;
-
-            serviceResult.data = await postTermService.updateManyStatus({
-                ...data.body,
-                ...data.params,
-                lastAuthorId: req.session.data.id.toString()
-            });
-
-            res.status(serviceResult.statusCode).json(serviceResult)
-        });
-    },
     updateOneRank: async (
         req: Request<any>,
         res: Response
@@ -104,6 +87,23 @@ export default {
             let data: InferType<typeof postTermSchema.putOneRank> = req;
 
             serviceResult.data = await postTermService.updateOneRank({
+                ...data.body,
+                ...data.params,
+                lastAuthorId: req.session.data.id.toString()
+            });
+
+            res.status(serviceResult.statusCode).json(serviceResult)
+        });
+    },
+    updateManyStatus: async (
+        req: Request<any>,
+        res: Response
+    ) => {
+        await logMiddleware.error(req, res, async () => {
+            let serviceResult = new Result();
+            let data: InferType<typeof postTermSchema.putManyStatus> = req;
+
+            serviceResult.data = await postTermService.updateManyStatus({
                 ...data.body,
                 ...data.params,
                 lastAuthorId: req.session.data.id.toString()
