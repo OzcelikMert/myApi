@@ -3,13 +3,9 @@ import {ErrorCodes} from "../library/api";
 
 export default {
     getOne: object({
-        params: object({
-            _id: string().required({_id: ErrorCodes.emptyValue}),
-        })
-    }),
-    getOneWithEmail: object({
-        params: object({
-            email: string().required({email: ErrorCodes.emptyValue}),
+        query: object({
+            _id: string(),
+            email: string()
         })
     }),
     getMany: object({
@@ -22,14 +18,15 @@ export default {
             email: string().required({email: ErrorCodes.emptyValue}),
         })
     }),
+    deleteOne: object({
+        query: object({
+            email: string().required({email: ErrorCodes.emptyValue}),
+            _id: string().required({_id: ErrorCodes.emptyValue})
+        })
+    }),
     deleteMany: object({
         body: object({
             _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
-        })
-    }),
-    deleteOneWithEmail: object({
-        params: object({
-            email: string().required({email: ErrorCodes.emptyValue}),
         })
     })
 };

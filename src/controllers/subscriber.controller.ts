@@ -15,22 +15,7 @@ export default {
             let data: InferType<typeof subscriberSchema.getOne> = req;
 
             serviceResult.data = await subscriberService.getOne({
-                ...data.params
-            })
-
-            res.status(serviceResult.statusCode).json(serviceResult)
-        });
-    },
-    getOneWithEmail: async (
-        req: Request<any, any, any, any>,
-        res: Response
-    ) => {
-        await logMiddleware.error(req, res, async () => {
-            let serviceResult = new Result();
-            let data: InferType<typeof subscriberSchema.getOneWithEmail> = req;
-
-            serviceResult.data = await subscriberService.getOne({
-                ...data.params
+                ...data.query
             })
 
             res.status(serviceResult.statusCode).json(serviceResult)
@@ -70,16 +55,16 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
-    deleteOneWithEmail: async (
-        req: Request<any>,
+    deleteOne: async (
+        req: Request<any, any, any, any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof subscriberSchema.deleteOneWithEmail> = req;
+            let data: InferType<typeof subscriberSchema.deleteOne> = req;
 
             serviceResult.data = await subscriberService.deleteOne({
-                ...data.params
+                ...data.query
             })
 
             res.status(serviceResult.statusCode).json(serviceResult)

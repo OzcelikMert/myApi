@@ -16,7 +16,6 @@ export default {
             let data: InferType<typeof componentSchema.getOne> = req;
 
             serviceResult.data = await componentService.getOne({
-                ...data.params,
                 ...data.query
             });
 

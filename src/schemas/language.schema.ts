@@ -11,16 +11,18 @@ const postBody = object({
 })
 
 export default {
+    getOne: object({
+        query: object({
+            _id: string(),
+            shortKey: string(),
+            locale: string(),
+        }),
+    }),
     getMany: object({
         query: object({
             _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),
             statusId: number()
         })
-    }),
-    getOne: object({
-        params: object({
-            _id: string().required({_id: ErrorCodes.emptyValue}),
-        }),
     }),
     post: object({
         body: postBody

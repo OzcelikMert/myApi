@@ -14,17 +14,11 @@ const postBody = {
 
 export default {
     getOne: object({
-        params: object({
-            _id: string().required({_id: ErrorCodes.emptyValue}),
-        }),
         query: object({
+            _id: string(),
+            url: string(),
             statusId: number(),
         }),
-    }),
-    getOneWithUrl: object({
-        params: object({
-            url: string().required({url: ErrorCodes.emptyValue}),
-        })
     }),
     getMany: object({
         query: object({

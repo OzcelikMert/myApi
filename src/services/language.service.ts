@@ -22,6 +22,18 @@ export default {
                 _id: params._id
             }
         }
+        if (params.shortKey) {
+            filters = {
+                ...filters,
+                shortKey: params.shortKey
+            }
+        }
+        if (params.locale) {
+            filters = {
+                ...filters,
+                locale: params.locale
+            }
+        }
 
         let query = languageModel.findOne(filters, {});
 

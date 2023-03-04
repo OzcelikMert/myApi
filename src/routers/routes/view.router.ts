@@ -7,7 +7,7 @@ import PagePaths from "../../constants/pagePaths";
 
 const viewRouter = Router();
 
-viewRouter.route(`/`)
+viewRouter.route(PagePaths.view(false).one().self())
     .post([requestMiddleware.check(viewSchema.post), viewMiddleware.checkOne],  viewController.deleteMany, viewController.add)
 
 viewRouter.route(PagePaths.view(false).number())

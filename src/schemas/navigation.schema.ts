@@ -14,10 +14,8 @@ const postBody = object({
 
 export default {
     getOne: object({
-        params: object({
-            _id: string().required({_id: ErrorCodes.emptyValue}),
-        }),
         query: object({
+            _id: string(),
             langId: string(),
             statusId: number()
         })

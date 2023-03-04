@@ -15,23 +15,7 @@ export default {
             let data: InferType<typeof userSchema.getOne> = req;
 
             serviceResult.data = await userService.getOne({
-                ...data.params,
                 ...data.query
-            });
-
-            res.status(serviceResult.statusCode).json(serviceResult)
-        });
-    },
-    getOneWithUrl: async (
-        req: Request<any>,
-        res: Response
-    ) => {
-        await logMiddleware.error(req, res, async () => {
-            let serviceResult = new Result();
-            let data: InferType<typeof userSchema.getOneWithUrl> = req;
-
-            serviceResult.data = await userService.getOne({
-                ...data.params,
             });
 
             res.status(serviceResult.statusCode).json(serviceResult)

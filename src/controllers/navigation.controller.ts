@@ -16,7 +16,6 @@ export default {
             let data: InferType<typeof navigationSchema.getOne> = req;
 
             serviceResult.data = await navigationService.getOne({
-                ...data.params,
                 ...data.query
             });
 

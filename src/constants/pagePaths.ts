@@ -16,6 +16,14 @@ const PagePaths = {
             self() {
                 return pagePathUtil.setPath(path);
             },
+            one() {
+                path = pagePathUtil.setPath(path, "one");
+                return this;
+            },
+            many() {
+                path = pagePathUtil.setPath(path, "many");
+                return this;
+            },
             withId(_id: string | number | undefined = ":_id") {
                 path = pagePathUtil.setPath(path, _id);
                 return this;
@@ -68,6 +76,14 @@ const PagePaths = {
             self() {
                 return pagePathUtil.setPath(path);
             },
+            one() {
+                path = pagePathUtil.setPath(path, "one");
+                return this;
+            },
+            many() {
+                path = pagePathUtil.setPath(path, "many");
+                return this;
+            },
             withId(_id: string | number | undefined = ":_id") {
                 return pagePathUtil.setPath(path, _id);
             },
@@ -88,6 +104,14 @@ const PagePaths = {
         return {
             self() {
                 return pagePathUtil.setPath(path);
+            },
+            one() {
+                path = pagePathUtil.setPath(path, "one");
+                return this;
+            },
+            many() {
+                path = pagePathUtil.setPath(path, "many");
+                return this;
             },
             withId(_id: string | number | undefined = ":_id") {
                 return pagePathUtil.setPath(path, _id);
@@ -122,6 +146,14 @@ const PagePaths = {
             self() {
                 return pagePathUtil.setPath(path);
             },
+            one() {
+                path = pagePathUtil.setPath(path, "one");
+                return this;
+            },
+            many() {
+                path = pagePathUtil.setPath(path, "many");
+                return this;
+            },
             number() {
                 return pagePathUtil.setPath(path, "number");
             },
@@ -137,6 +169,14 @@ const PagePaths = {
             self() {
                 return pagePathUtil.setPath(path);
             },
+            one() {
+                path = pagePathUtil.setPath(path, "one");
+                return this;
+            },
+            many() {
+                path = pagePathUtil.setPath(path, "many");
+                return this;
+            },
             withId(_id: string | number | undefined = ":_id") {
                 path = pagePathUtil.setPath(path, _id);
                 return this;
@@ -149,6 +189,14 @@ const PagePaths = {
         return {
             self() {
                 return pagePathUtil.setPath(path);
+            },
+            one() {
+                path = pagePathUtil.setPath(path, "one");
+                return this;
+            },
+            many() {
+                path = pagePathUtil.setPath(path, "many");
+                return this;
             },
             status() {
                 return pagePathUtil.setPath(path, "status");
@@ -168,6 +216,14 @@ const PagePaths = {
         return {
             self() {
                 return pagePathUtil.setPath(path);
+            },
+            one() {
+                path = pagePathUtil.setPath(path, "one");
+                return this;
+            },
+            many() {
+                path = pagePathUtil.setPath(path, "many");
+                return this;
             },
             withTypeId(typeId: string | PostTypeId | undefined = ":typeId") {
                 path = pagePathUtil.setPath(path, typeId);
@@ -197,6 +253,14 @@ const PagePaths = {
         return {
             self() {
                 return pagePathUtil.setPath(path);
+            },
+            one() {
+                path = pagePathUtil.setPath(path, "one");
+                return this;
+            },
+            many() {
+                path = pagePathUtil.setPath(path, "many");
+                return this;
             },
             withPostTypeId(postTypeId: string | PostTypeId | undefined = ":postTypeId") {
                 path = pagePathUtil.setPath(path, postTypeId);

@@ -4,7 +4,7 @@ import subscriberService from "../services/subscriber.service";
 import logMiddleware from "./log.middleware";
 
 export default {
-    checkOneWithEmail: async (
+    checkOne: async (
         req: Request<any>,
         res: Response,
         next: NextFunction
@@ -12,9 +12,11 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            let email = (req.body.email ?? req.params.email ?? "") as string;
+            let email = (req.body.email ?? req.params.email ?? req.query.email ?? "") as string;
+            let _id = (req.body._id ?? req.params._id ?? req.query._id ?? "") as string;
 
             let resData = await subscriberService.getOne({
+                _id: _id,
                 email: email
             });
 
