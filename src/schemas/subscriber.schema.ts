@@ -11,6 +11,7 @@ export default {
     getMany: object({
         query: object({
             _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),
+            email: string()
         })
     }),
     post: object({
