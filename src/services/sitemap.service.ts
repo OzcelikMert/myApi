@@ -8,11 +8,21 @@ import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
 import {StatusId} from "../constants/status";
 import postTermObjectIdKeys from "../constants/objectIdKeys/postTerm.objectIdKeys";
 import postTermModel from "../models/postTerm.model";
+import {
+    SitemapGetPostCountParamDocument,
+    SitemapGetPostParamDocument,
+    SitemapGetPostTermCountParamDocument,
+    SitemapGetPostTermParamDocument,
+    SitemapMapPostCountDocument,
+    SitemapMapPostTermCountDocument,
+    SitemapPostDocument,
+    SitemapPostTermDocument
+} from "../types/services/sitemap";
 
 export const sitemapLimit = 500;
 
 export default {
-    async getPost(params: { typeId: number, page?: number }) {
+    async getPost(params: SitemapGetPostParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
@@ -42,9 +52,9 @@ export default {
                     url: content.url
                 }))
             };
-        });
+        }) as SitemapPostDocument[];
     },
-    async getPostCountForType(params: { typeId?: number[] }) {
+    async getPostCount(params: SitemapGetPostCountParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
@@ -74,9 +84,9 @@ export default {
                 typeId: doc._id,
                 total: doc.total
             }
-        });
+        }) as SitemapMapPostCountDocument[];
     },
-    async getPostTerm(params: { typeId: number, postTypeId: number, page?: number }) {
+    async getPostTerm(params: SitemapGetPostTermParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
         params = MongoDBHelpers.convertObjectIdInData(params, postTermObjectIdKeys);
 
@@ -113,9 +123,9 @@ export default {
                     url: content.url
                 }))
             };
-        });
+        }) as SitemapPostTermDocument[];
     },
-    async getPostTermCountForType(params: { typeId?: number[] }) {
+    async getPostTermCount(params: SitemapGetPostTermCountParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
@@ -123,6 +133,12 @@ export default {
             filters = {
                 ...filters,
                 typeId: {$in: params.typeId}
+            }
+        }
+        if (params.postTypeId) {
+            filters = {
+                ...filters,
+                postTypeId: {$in: params.postTypeId}
             }
         }
 
@@ -146,6 +162,6 @@ export default {
                 postTypeId: doc._id.postTypeId,
                 total: doc.total
             }
-        });
+        }) as SitemapMapPostTermCountDocument[];
     },
 };

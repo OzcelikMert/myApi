@@ -16,8 +16,8 @@ export default {
             let serviceResult = new Result();
 
             serviceResult.data = {
-                post: await sitemapService.getPostCountForType({typeId: [PostTypeId.Page, PostTypeId.Portfolio, PostTypeId.Blog]}),
-                postTerm: await sitemapService.getPostTermCountForType({typeId: [PostTermTypeId.Category, PostTermTypeId.Tag]})
+                post: await sitemapService.getPostCount({typeId: [PostTypeId.Page, PostTypeId.Portfolio, PostTypeId.Blog]}),
+                postTerm: await sitemapService.getPostTermCount({postTypeId: [PostTypeId.Page, PostTypeId.Portfolio, PostTypeId.Blog], typeId: [PostTermTypeId.Category, PostTermTypeId.Tag]})
             };
 
             res.status(serviceResult.statusCode).json(serviceResult)
