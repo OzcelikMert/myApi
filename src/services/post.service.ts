@@ -3,14 +3,13 @@ import postModel from "../models/post.model";
 import {
     PostDeleteManyParamDocument,
     PostAddParamDocument,
-    PostGetCountParamDocument,
     PostGetOneParamDocument,
     PostGetOneResultDocument,
     PostGetManyParamDocument,
     PostUpdateOneParamDocument,
     PostUpdateOneRankParamDocument,
     PostUpdateManyStatusIdParamDocument,
-    PostUpdateOneViewParamDocument, PostGetManyResultDocument
+    PostUpdateOneViewParamDocument, PostGetManyResultDocument, PostGetCountParamDocument
 } from "../types/services/post";
 import {PostDocument} from "../types/models/post";
 import MongoDBHelpers from "../library/mongodb/helpers";
@@ -324,14 +323,14 @@ export default {
             return doc;
         });
     },
-    async getManyCount(params: PostGetCountParamDocument) {
+    async getCount(params: PostGetCountParamDocument) {
         let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
         if (params.typeId) {
             filters = {
                 ...filters,
-                typeId: {$in: params.typeId}
+                typeId: params.typeId
             }
         }
         if (params.statusId) filters = {

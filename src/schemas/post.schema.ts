@@ -122,9 +122,11 @@ export default {
             ignoreDefaultLanguage: boolean()
         })
     }),
-    getManyCount: object({
+    getCount: object({
+        params: object({
+            typeId: number().required({typeId: ErrorCodes.emptyValue}),
+        }),
         query: object({
-            typeId: array(number().required({typeId: ErrorCodes.incorrectData})).required({typeId: ErrorCodes.emptyValue}),
             statusId: number(),
         })
     }),

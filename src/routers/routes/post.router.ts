@@ -24,13 +24,13 @@ postRouter.route(PagePaths.post(false).one().withTypeId().withId().rank())
 postRouter.route(PagePaths.post(false).many().self())
     .get([requestMiddleware.check(postSchema.getMany)], postController.getMany)
 
-postRouter.route(PagePaths.post(false).many().count())
-    .get([requestMiddleware.check(postSchema.getManyCount)], postController.getManyCount)
-
 postRouter.route(PagePaths.post(false).many().withTypeId().self())
     .delete([requestMiddleware.check(postSchema.deleteMany), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkMany], postController.deleteMany)
 
 postRouter.route(PagePaths.post(false).many().withTypeId().status())
     .put([requestMiddleware.check(postSchema.putManyStatus), sessionMiddleware.check, permissionMiddleware.check, postMiddleware.checkMany], postController.updateManyStatus)
+
+postRouter.route(PagePaths.post(false).withTypeId().count())
+    .get([requestMiddleware.check(postSchema.getCount)], postController.getCount)
 
 export default postRouter;

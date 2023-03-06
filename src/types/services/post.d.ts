@@ -65,7 +65,7 @@ export interface PostGetManyParamDocument {
 }
 
 export interface PostGetCountParamDocument {
-    typeId: number[]
+    typeId: number
     statusId?: number
 }
 
@@ -79,7 +79,7 @@ export type PostAddParamDocument = {
 } & Omit<PostDocument, "_id"|"views"|"contents"|"eCommerce">
 
 export type PostUpdateOneParamDocument = {
-    _id?: string
+    _id: string
 } & Omit<PostAddParamDocument, "authorId">
 
 export type PostUpdateOneRankParamDocument = {

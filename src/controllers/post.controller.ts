@@ -36,26 +36,19 @@ export default {
                 ...data.query
             });
 
-            if(data.query.page) {
-                serviceResult.customData = {
-                    allCount: await postService.getManyCount({
-                        ...data.query
-                    })
-                }
-            }
-
             res.status(serviceResult.statusCode).json(serviceResult)
         })
     },
-    getManyCount: async (
+    getCount: async (
         req: Request<any, any, any, any>,
         res: Response
     ) => {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof postSchema.getManyCount> = req;
+            let data: InferType<typeof postSchema.getCount> = req;
 
-            serviceResult.data = await postService.getManyCount({
+            serviceResult.data = await postService.getCount({
+                ...data.params,
                 ...data.query
             });
 
