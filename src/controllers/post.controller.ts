@@ -71,9 +71,7 @@ export default {
                 dateStart: new Date(data.body.dateStart)
             });
 
-            serviceResult.data = [{
-                _id: insertData._id
-            }]
+            serviceResult.data = {_id: insertData._id};
 
             res.status(serviceResult.statusCode).json(serviceResult);
         });

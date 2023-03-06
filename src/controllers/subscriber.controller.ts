@@ -48,9 +48,7 @@ export default {
                 ...data.body
             });
 
-            serviceResult.data = [{
-                _id: insertData._id
-            }]
+            serviceResult.data = {_id: insertData._id};
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });

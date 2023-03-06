@@ -56,7 +56,7 @@ export default {
                 authorId: req.session.data.id.toString(),
             });
 
-            serviceResult.data = [{_id: insertData._id}];
+            serviceResult.data = {_id: insertData._id};
 
             res.status(serviceResult.statusCode).json(serviceResult)
         });
