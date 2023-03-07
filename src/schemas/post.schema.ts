@@ -111,7 +111,7 @@ export default {
     }),
     getMany: object({
         query: object({
-            typeId: array(number().required({typeId: ErrorCodes.incorrectData})).required({typeId: ErrorCodes.emptyValue}),
+            typeId: array(number().required({typeId: ErrorCodes.incorrectData})).default(undefined),
             _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),
             pageTypeId: array(number().required({typeId: ErrorCodes.incorrectData})).default(undefined),
             langId: string(),
@@ -119,7 +119,8 @@ export default {
             statusId: number(),
             count: number(),
             page: number(),
-            ignoreDefaultLanguage: boolean()
+            ignoreDefaultLanguage: boolean(),
+            isRecent: boolean()
         })
     }),
     getCount: object({

@@ -251,7 +251,7 @@ export default {
             select: "_id name url"
         });
 
-        if (params.typeId.length > 1) {
+        if (params.isRecent) {
             query.sort({createdAt: -1});
         } else {
             query.sort({isFixed: -1, rank: 1, createdAt: -1});

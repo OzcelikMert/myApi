@@ -53,7 +53,8 @@ export interface PostGetOneParamDocument {
 
 export interface PostGetManyParamDocument {
     _id?: string[]
-    typeId: number[],
+    isRecent?: boolean
+    typeId?: number[],
     pageTypeId?: number[]
     langId?: string
     statusId?: number,
