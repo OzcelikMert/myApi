@@ -33,7 +33,7 @@ export default {
         }),
         query: object({
             _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),
-            typeId: array(number().required({typeId: ErrorCodes.incorrectData})).required({typeId: ErrorCodes.emptyValue}),
+            typeId: array(number().required({typeId: ErrorCodes.incorrectData})).default(undefined),
             withPostCount: boolean().default(false),
             langId: string(),
             statusId: number(),
