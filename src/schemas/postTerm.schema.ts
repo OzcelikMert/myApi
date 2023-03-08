@@ -7,7 +7,7 @@ const postBody = object({
     rank: number().required({rank: ErrorCodes.emptyValue}),
     contents: object({
         langId: string().required({langId: ErrorCodes.emptyValue}),
-        title: string().required({title: ErrorCodes.emptyValue}),
+        title: string().min(3, {title: ErrorCodes.incorrectData}).required({title: ErrorCodes.emptyValue}),
         image: string(),
         url: string(),
     }).required({contents: ErrorCodes.emptyValue})

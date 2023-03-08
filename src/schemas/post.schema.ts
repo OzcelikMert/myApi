@@ -13,7 +13,7 @@ const postBody = object({
     siteMap: string().default(undefined),
     contents: object({
         langId: string().required({langId: ErrorCodes.emptyValue}),
-        title: string().default(""),
+        title: string().min(3, {title: ErrorCodes.incorrectData}).required({title: ErrorCodes.emptyValue}),
         image: string(),
         icon: string(),
         url: string(),

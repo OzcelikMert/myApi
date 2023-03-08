@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import postService from "../services/post.service";
 import logMiddleware from "./log.middleware";
+import Variable from "../library/variable";
 
 export default {
     checkOne: async (
@@ -75,11 +76,10 @@ export default {
             let typeId = req.params.typeId as number;
 
             if(req.body.contents){
-                let url: string = req.body.contents.url;
                 let title: string = req.body.contents.title || "";
 
                 let urlAlreadyCount = 2;
-                url = url && url.length > 0 ? url : title.convertSEOUrl();
+                let url = title.convertSEOUrl();
 
                 let oldUrl = url;
                 while((await postService.getOne({

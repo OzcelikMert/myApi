@@ -143,14 +143,13 @@ export default {
         next: NextFunction
     ) => {
         await logMiddleware.error(req, res, async () => {
-            let url = req.body.url as string;
             let name = req.body.name as string;
 
             if(name) {
                 let _id: string | undefined = req.body._id ?? req.params._id ?? req.body.isProfile ? req.session.data.id.toString() : undefined;
 
                 let urlAlreadyCount = 2;
-                url = url && url.length > 0 ? url : name.convertSEOUrl();
+                let url = name.convertSEOUrl();
 
                 let oldUrl = url;
                 while ((await userService.getOne({

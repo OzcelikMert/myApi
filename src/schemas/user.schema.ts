@@ -4,7 +4,7 @@ import {ErrorCodes} from "../library/api";
 const postBody = {
     roleId: number().required({roleId: ErrorCodes.emptyValue}),
     statusId: number().required({statusId: ErrorCodes.emptyValue}),
-    name: string().required({name: ErrorCodes.emptyValue}),
+    name: string().min(3, {name: ErrorCodes.incorrectData}).required({name: ErrorCodes.emptyValue}),
     email: string().required({email: ErrorCodes.emptyValue}).email({email: ErrorCodes.incorrectData}),
     password: string().required({password: ErrorCodes.emptyValue}),
     permissions: array(number().required({permissions: ErrorCodes.incorrectData})).required({permissions: ErrorCodes.emptyValue}),

@@ -80,11 +80,10 @@ export default {
             let postTypeId = req.params.postTypeId as number;
 
             if(req.body.contents){
-                let url: string = req.body.contents.url;
                 let title: string = req.body.contents.title || "";
 
                 let urlAlreadyCount = 2;
-                url = url && url.length > 0 ? url : title.convertSEOUrl();
+                let url = title.convertSEOUrl();
 
                 let oldUrl = url;
                 while((await postTermService.getOne({
