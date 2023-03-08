@@ -14,7 +14,6 @@ const postBody = object({
     contents: object({
         langId: string().required({langId: ErrorCodes.emptyValue}),
         title: string().default(""),
-        seoContent: string(),
         image: string(),
         icon: string(),
         url: string(),

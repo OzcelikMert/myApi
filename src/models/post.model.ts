@@ -126,7 +126,6 @@ const schemaContent = new mongoose.Schema<PostContentDocument>(
         content: {type: String, default: ""},
         shortContent: {type: String, default: ""},
         url: {type: String, default: ""},
-        seoContent: {type: String, default: ""},
         views: {type: Number, default: 0},
         buttons: {type: [schemaContentButton]},
     }

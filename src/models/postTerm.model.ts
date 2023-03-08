@@ -12,8 +12,7 @@ const schemaContent = new mongoose.Schema<PostTermContentDocument>(
         image: {type: String, default: ""},
         title: {type: String, default: ""},
         shortContent: {type: String, default: ""},
-        url: {type: String, default: ""},
-        seoContent: {type: String, default: ""}
+        url: {type: String, default: ""}
     },
     {timestamps: true}
 ).index({langId: 1});

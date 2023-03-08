@@ -20,5 +20,4 @@ export interface PostTermContentDocument {
     title?: string,
     shortContent?: string,
     url?: string,
-    seoContent?: string
 }
