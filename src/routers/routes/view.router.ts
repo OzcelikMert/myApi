@@ -8,7 +8,7 @@ import PagePaths from "../../constants/pagePaths";
 const viewRouter = Router();
 
 viewRouter.route(PagePaths.view(false).one().self())
-    .post([requestMiddleware.check(viewSchema.post), viewMiddleware.checkOne],  viewController.deleteMany, viewController.add)
+    .post([requestMiddleware.check(viewSchema.post), viewMiddleware.checkOne, viewMiddleware.checkAndDeleteMany], viewController.add)
 
 viewRouter.route(PagePaths.view(false).number())
     .get([sessionMiddleware.check], viewController.getNumber)

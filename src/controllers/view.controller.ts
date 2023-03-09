@@ -80,22 +80,4 @@ export default {
             res.status(serviceResult.statusCode).json(serviceResult)
         });
     },
-    deleteMany: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
-    ) => {
-        await logMiddleware.error(req, res, async () => {
-            let dateEnd = new Date();
-            dateEnd.addDays(-7);
-
-            let resData = await viewService.getOne({dateEnd: dateEnd});
-
-            if (resData) {
-                await viewService.deleteMany({dateEnd: dateEnd})
-            }
-
-            next();
-        });
-    }
 };
