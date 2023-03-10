@@ -4,7 +4,6 @@ import {ErrorCodes} from "../library/api";
 const postBody = object({
     elementId: string().required({elementId: ErrorCodes.emptyValue}),
     langKey: string().required({langKey: ErrorCodes.emptyValue}),
-    rank: number().required({rank: ErrorCodes.emptyValue}),
     types: (array(object({
         _id: string(),
         elementId: string().required({elementId: ErrorCodes.emptyValue}),
