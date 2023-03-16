@@ -63,6 +63,7 @@ export interface PostGetManyParamDocument {
     ignorePostId?: string[]
     title?: string
     ignoreDefaultLanguage?: boolean
+    categories?: string[]
 }
 
 export interface PostGetCountParamDocument {

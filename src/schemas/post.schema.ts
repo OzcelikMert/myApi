@@ -119,7 +119,8 @@ export default {
             count: number(),
             page: number(),
             ignoreDefaultLanguage: boolean(),
-            isRecent: boolean()
+            isRecent: boolean(),
+            categories: array(string().required({categories: ErrorCodes.incorrectData})).default(undefined),
         })
     }),
     getCount: object({

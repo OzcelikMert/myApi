@@ -222,6 +222,12 @@ export default {
                 _id: {$nin: params.ignorePostId}
             }
         }
+        if (params.categories) {
+            filters = {
+                ...filters,
+                categories: {$in: params.categories}
+            }
+        }
 
         let query = postModel.find(filters).populate<{ categories: PostGetManyResultDocument["categories"], tags: PostGetManyResultDocument["tags"] }>({
             path: [
