@@ -21,6 +21,7 @@ const schemaStaticLanguageContent = new mongoose.Schema<SettingStaticLanguageCon
 const schemaStaticLanguage = new mongoose.Schema<SettingStaticLanguageDocument>(
     {
         langKey: {type: String, default: "", required: true},
+        title: {type: String, default: ""},
         contents: {type: [schemaStaticLanguageContent], default: []}
     },
     {timestamps: true}

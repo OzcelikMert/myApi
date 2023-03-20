@@ -70,6 +70,7 @@ export default {
             staticLanguages: array(object({
                 _id: string(),
                 langKey: string().required({langKey: ErrorCodes.emptyValue}),
+                title: string().default(""),
                 contents: object({
                     _id: string(),
                     langId: string().required({langId: ErrorCodes.emptyValue}),

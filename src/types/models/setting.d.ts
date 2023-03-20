@@ -57,6 +57,7 @@ export interface SettingSeoContentDocument {
 export interface SettingStaticLanguageDocument {
     _id?: mongoose.Types.ObjectId | string
     langKey: string,
+    title: string
     contents: SettingStaticLanguageContentDocument[]
 }
 
