@@ -343,6 +343,16 @@ export default {
             ...filters,
             statusId: params.statusId
         }
+        if (params.title) filters = {
+            ...filters,
+            "contents.title": {$regex: new RegExp(params.title, "i")}
+        }
+        if (params.categories) {
+            filters = {
+                ...filters,
+                categories: {$in: params.categories}
+            }
+        }
 
         let query = postModel.find(filters);
 

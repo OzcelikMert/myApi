@@ -10,29 +10,29 @@ const PagePaths = {
         return pagePathUtil.setPath("gallery");
     },
     language(withMainPath: boolean = true) {
-        let path = withMainPath ? pagePathUtil.setPath("language") : "";
+        let pathLanguage = withMainPath ? pagePathUtil.setPath("language") : "";
 
         return {
             self() {
-                return pagePathUtil.setPath(path);
+                return pagePathUtil.setPath(pathLanguage);
             },
             one() {
-                path = pagePathUtil.setPath(path, "one");
+                pathLanguage = pagePathUtil.setPath(pathLanguage, "one");
                 return this;
             },
             many() {
-                path = pagePathUtil.setPath(path, "many");
+                pathLanguage = pagePathUtil.setPath(pathLanguage, "many");
                 return this;
             },
             withId(_id: string | number | undefined = ":_id") {
-                path = pagePathUtil.setPath(path, _id);
+                pathLanguage = pagePathUtil.setPath(pathLanguage, _id);
                 return this;
             },
             flags() {
-                return pagePathUtil.setPath(path, "flags");
+                return pagePathUtil.setPath(pathLanguage, "flags");
             },
             rank() {
-                return pagePathUtil.setPath(path, "rank");
+                return pagePathUtil.setPath(pathLanguage, "rank");
             }
         }
     },
@@ -43,242 +43,242 @@ const PagePaths = {
         return pagePathUtil.setPath("mailer");
     },
     setting(withMainPath: boolean = true) {
-        let path = withMainPath ? pagePathUtil.setPath("setting") : "";
+        let pathSetting = withMainPath ? pagePathUtil.setPath("setting") : "";
 
         return {
             self() {
-                return pagePathUtil.setPath(path);
+                return pagePathUtil.setPath(pathSetting);
             },
             seo() {
-                return pagePathUtil.setPath(path, "seo");
+                return pagePathUtil.setPath(pathSetting, "seo");
             },
             general() {
-                return pagePathUtil.setPath(path, "general");
+                return pagePathUtil.setPath(pathSetting, "general");
             },
             contactForm() {
-                return pagePathUtil.setPath(path, "contactForm");
+                return pagePathUtil.setPath(pathSetting, "contactForm");
             },
             staticLanguage() {
-                return pagePathUtil.setPath(path, "staticLanguage");
+                return pagePathUtil.setPath(pathSetting, "staticLanguage");
             },
             socialMedia() {
-                return pagePathUtil.setPath(path, "socialMedia");
+                return pagePathUtil.setPath(pathSetting, "socialMedia");
             },
             eCommerce() {
-                return pagePathUtil.setPath(path, "eCommerce");
+                return pagePathUtil.setPath(pathSetting, "eCommerce");
             },
         }
     },
     user(withMainPath: boolean = true) {
-        let path = withMainPath ? pagePathUtil.setPath("user") : "";
+        let pathUser = withMainPath ? pagePathUtil.setPath("user") : "";
 
         return {
             self() {
-                return pagePathUtil.setPath(path);
+                return pagePathUtil.setPath(pathUser);
             },
             one() {
-                path = pagePathUtil.setPath(path, "one");
+                pathUser = pagePathUtil.setPath(pathUser, "one");
                 return this;
             },
             many() {
-                path = pagePathUtil.setPath(path, "many");
+                pathUser = pagePathUtil.setPath(pathUser, "many");
                 return this;
             },
             withId(_id: string | number | undefined = ":_id") {
-                return pagePathUtil.setPath(path, _id);
+                return pagePathUtil.setPath(pathUser, _id);
             },
             withUrl(url: string | undefined = ":url") {
-                return pagePathUtil.setPath(path, "url", url);
+                return pagePathUtil.setPath(pathUser, "url", url);
             },
             profile() {
-                return pagePathUtil.setPath(path, "profile");
+                return pagePathUtil.setPath(pathUser, "profile");
             },
             changePassword() {
-                return pagePathUtil.setPath(path, "changePassword");
+                return pagePathUtil.setPath(pathUser, "changePassword");
             },
         }
     },
     subscriber(withMainPath: boolean = true) {
-        let path = withMainPath ? pagePathUtil.setPath("subscriber") : "";
+        let pathSubscriber = withMainPath ? pagePathUtil.setPath("subscriber") : "";
 
         return {
             self() {
-                return pagePathUtil.setPath(path);
+                return pagePathUtil.setPath(pathSubscriber);
             },
             one() {
-                path = pagePathUtil.setPath(path, "one");
+                pathSubscriber = pagePathUtil.setPath(pathSubscriber, "one");
                 return this;
             },
             many() {
-                path = pagePathUtil.setPath(path, "many");
+                pathSubscriber = pagePathUtil.setPath(pathSubscriber, "many");
                 return this;
             },
             withId(_id: string | number | undefined = ":_id") {
-                return pagePathUtil.setPath(path, _id);
+                return pagePathUtil.setPath(pathSubscriber, _id);
             },
             withEmail(email: string | number | undefined = ":email") {
-                return pagePathUtil.setPath(path, "email", email);
+                return pagePathUtil.setPath(pathSubscriber, "email", email);
             },
         }
     },
     sitemap(withMainPath: boolean = true) {
-        let path = withMainPath ? pagePathUtil.setPath("sitemap") : "";
+        let pathSitemap = withMainPath ? pagePathUtil.setPath("sitemap") : "";
 
         return {
             self() {
-                return pagePathUtil.setPath(path);
+                return pagePathUtil.setPath(pathSitemap);
             },
             post() {
-                return pagePathUtil.setPath(path, "post");
+                return pagePathUtil.setPath(pathSitemap, "post");
             },
             postTerm() {
-                return pagePathUtil.setPath(path, "postTerm");
+                return pagePathUtil.setPath(pathSitemap, "postTerm");
             },
             maps() {
-                return pagePathUtil.setPath(path, "maps");
+                return pagePathUtil.setPath(pathSitemap, "maps");
             },
         }
     },
     view(withMainPath: boolean = true) {
-        let path = withMainPath ? pagePathUtil.setPath("view") : "";
+        let pathView = withMainPath ? pagePathUtil.setPath("view") : "";
 
         return {
             self() {
-                return pagePathUtil.setPath(path);
+                return pagePathUtil.setPath(pathView);
             },
             one() {
-                path = pagePathUtil.setPath(path, "one");
+                pathView = pagePathUtil.setPath(pathView, "one");
                 return this;
             },
             many() {
-                path = pagePathUtil.setPath(path, "many");
+                pathView = pagePathUtil.setPath(pathView, "many");
                 return this;
             },
             number() {
-                return pagePathUtil.setPath(path, "number");
+                return pagePathUtil.setPath(pathView, "number");
             },
             statistics() {
-                return pagePathUtil.setPath(path, "statistics");
+                return pagePathUtil.setPath(pathView, "statistics");
             },
         }
     },
     component(withMainPath: boolean = true) {
-        let path = withMainPath ? pagePathUtil.setPath("component") : "";
+        let pathComponent = withMainPath ? pagePathUtil.setPath("component") : "";
 
         return {
             self() {
-                return pagePathUtil.setPath(path);
+                return pagePathUtil.setPath(pathComponent);
             },
             one() {
-                path = pagePathUtil.setPath(path, "one");
+                pathComponent = pagePathUtil.setPath(pathComponent, "one");
                 return this;
             },
             many() {
-                path = pagePathUtil.setPath(path, "many");
+                pathComponent = pagePathUtil.setPath(pathComponent, "many");
                 return this;
             },
             withId(_id: string | number | undefined = ":_id") {
-                path = pagePathUtil.setPath(path, _id);
+                pathComponent = pagePathUtil.setPath(pathComponent, _id);
                 return this;
             },
         }
     },
     navigation(withMainPath: boolean = true) {
-        let path = withMainPath ? pagePathUtil.setPath("navigation") : "";
+        let pathNavigation = withMainPath ? pagePathUtil.setPath("navigation") : "";
 
         return {
             self() {
-                return pagePathUtil.setPath(path);
+                return pagePathUtil.setPath(pathNavigation);
             },
             one() {
-                path = pagePathUtil.setPath(path, "one");
+                pathNavigation = pagePathUtil.setPath(pathNavigation, "one");
                 return this;
             },
             many() {
-                path = pagePathUtil.setPath(path, "many");
+                pathNavigation = pagePathUtil.setPath(pathNavigation, "many");
                 return this;
             },
             status() {
-                return pagePathUtil.setPath(path, "status");
+                return pagePathUtil.setPath(pathNavigation, "status");
             },
             rank() {
-                return pagePathUtil.setPath(path, "rank");
+                return pagePathUtil.setPath(pathNavigation, "rank");
             },
             withId(_id: string | number | undefined = ":_id") {
-                path = pagePathUtil.setPath(path, _id);
+                pathNavigation = pagePathUtil.setPath(pathNavigation, _id);
                 return this;
             },
         }
     },
     post(withMainPath: boolean = true) {
-        let path = withMainPath ? pagePathUtil.setPath("post") : "";
+        let pathPost = withMainPath ? pagePathUtil.setPath("post") : "";
 
         return {
             self() {
-                return pagePathUtil.setPath(path);
+                return pagePathUtil.setPath(pathPost);
             },
             one() {
-                path = pagePathUtil.setPath(path, "one");
+                pathPost = pagePathUtil.setPath(pathPost, "one");
                 return this;
             },
             many() {
-                path = pagePathUtil.setPath(path, "many");
+                pathPost = pagePathUtil.setPath(pathPost, "many");
                 return this;
             },
             withTypeId(typeId: string | PostTypeId | undefined = ":typeId") {
-                path = pagePathUtil.setPath(path, typeId);
+                pathPost = pagePathUtil.setPath(pathPost, typeId);
                 return this
             },
             withId(_id: string | number | undefined = ":_id") {
-                path = pagePathUtil.setPath(path, _id);
+                pathPost = pagePathUtil.setPath(pathPost, _id);
                 return this
             },
             view() {
-                return pagePathUtil.setPath(path, "view");
+                return pagePathUtil.setPath(pathPost, "view");
             },
             count() {
-                return pagePathUtil.setPath(path, "count");
+                return pagePathUtil.setPath(pathPost, "count");
             },
             status() {
-                return pagePathUtil.setPath(path, "status");
+                return pagePathUtil.setPath(pathPost, "status");
             },
             rank() {
-                return pagePathUtil.setPath(path, "rank");
+                return pagePathUtil.setPath(pathPost, "rank");
             },
         }
     },
     postTerm(withMainPath: boolean = true) {
-        let path = withMainPath ? pagePathUtil.setPath("postTerm") : "";
+        let pathPostTerm = withMainPath ? pagePathUtil.setPath("postTerm") : "";
 
         return {
             self() {
-                return pagePathUtil.setPath(path);
+                return pagePathUtil.setPath(pathPostTerm);
             },
             one() {
-                path = pagePathUtil.setPath(path, "one");
+                pathPostTerm = pagePathUtil.setPath(pathPostTerm, "one");
                 return this;
             },
             many() {
-                path = pagePathUtil.setPath(path, "many");
+                pathPostTerm = pagePathUtil.setPath(pathPostTerm, "many");
                 return this;
             },
             withPostTypeId(postTypeId: string | PostTypeId | undefined = ":postTypeId") {
-                path = pagePathUtil.setPath(path, postTypeId);
+                pathPostTerm = pagePathUtil.setPath(pathPostTerm, postTypeId);
                 return this
             },
             withTypeId(typeId: string | PostTermTypeId | undefined = ":typeId") {
-                path = pagePathUtil.setPath(path, typeId);
+                pathPostTerm = pagePathUtil.setPath(pathPostTerm, typeId);
                 return this
             },
             withId(_id: string | number | undefined = ":_id") {
-                path = pagePathUtil.setPath(path, _id);
+                pathPostTerm = pagePathUtil.setPath(pathPostTerm, _id);
                 return this
             },
             status() {
-                return pagePathUtil.setPath(path, "status");
+                return pagePathUtil.setPath(pathPostTerm, "status");
             },
             rank() {
-                return pagePathUtil.setPath(path, "rank");
+                return pagePathUtil.setPath(pathPostTerm, "rank");
             },
         }
     },

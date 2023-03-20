@@ -129,6 +129,8 @@ export default {
         }),
         query: object({
             statusId: number(),
+            categories: array(string().required({categories: ErrorCodes.incorrectData})).default(undefined),
+            title: string(),
         })
     }),
     post: object({

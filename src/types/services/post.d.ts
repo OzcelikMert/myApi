@@ -69,6 +69,8 @@ export interface PostGetManyParamDocument {
 export interface PostGetCountParamDocument {
     typeId: number
     statusId?: number
+    title?: string
+    categories?: string[]
 }
 
 export type PostAddParamDocument = {
