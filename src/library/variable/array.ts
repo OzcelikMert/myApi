@@ -105,6 +105,7 @@ Array.prototype.orderBy = function (key, sort_type) {
         );
     });
 }
+
 Array.prototype.serializeObject = function () {
     let result: any = {};
     this.forEach((item: { name: string, value: any }) => {

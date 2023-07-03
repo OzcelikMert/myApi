@@ -62,7 +62,7 @@ export default {
             let serviceResult = new Result();
             let data: InferType<typeof userSchema.putOne> = req;
 
-            serviceResult.data = await userService.getOne({
+            serviceResult.data = await userService.updateOne({
                 ...data.params,
                 ...data.body,
                 ...(data.body.banDateEnd ? {banDateEnd: new Date(data.body.banDateEnd)} : {banDateEnd: undefined})
