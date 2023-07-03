@@ -183,7 +183,7 @@ export default {
                 password: password
             });
 
-            if (resData) {
+            if (!resData) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.notFound;
                 serviceResult.statusCode = StatusCodes.notFound;

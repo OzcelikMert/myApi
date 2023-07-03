@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response} from "express";
+import {Request, Response} from "express";
 import {Result} from "../library/api";
 import {lookup} from "geoip-lite";
 import {InferType} from "yup";

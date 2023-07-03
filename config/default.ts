@@ -22,7 +22,7 @@ export default {
     serverPort: 5001,
     serverTrafficMBLimit: 2,
     dbProtocol: "mongodb+srv",
-    dbHost: "cluster0.2tvkcla.mongodb.net",
+    dbHost: "cluster0.kvd0jll.mongodb.net",
     dbHostParams: "",
     dbPort: "",
     dbName: "myadminpanel",
