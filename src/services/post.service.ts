@@ -11,16 +11,16 @@ import {
     PostUpdateManyStatusIdParamDocument,
     PostUpdateOneViewParamDocument, PostGetManyResultDocument, PostGetCountParamDocument
 } from "../types/services/post";
-import {PostDocument} from "../types/models/post";
+import { PostDocument } from "../types/models/post";
 import MongoDBHelpers from "../library/mongodb/helpers";
-import {PostTermGetResultDocument} from "../types/services/postTerm";
+import { PostTermGetResultDocument } from "../types/services/postTerm";
 import Variable from "../library/variable";
-import {Config} from "../config";
-import {ComponentGetResultDocument} from "../types/services/component";
+import { Config } from "../config";
+import { ComponentGetResultDocument } from "../types/services/component";
 import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
-import {StatusId} from "../constants/status";
-import {PostTermTypeId} from "../constants/postTermTypes";
-import {PostTypeId} from "../constants/postTypes";
+import { StatusId } from "../constants/status";
+import { PostTermTypeId } from "../constants/postTermTypes";
+import { PostTypeId } from "../constants/postTypes";
 
 export default {
     async getOne(params: PostGetOneParamDocument) {
@@ -53,7 +53,7 @@ export default {
         if (params.ignorePostId) {
             filters = {
                 ...filters,
-                _id: {$nin: params.ignorePostId}
+                _id: { $nin: params.ignorePostId }
             }
         }
 
@@ -64,11 +64,11 @@ export default {
             ].join(" "),
             select: "_id typeId contents.title contents.langId contents.url contents.image",
             match: {
-                typeId: {$in: [PostTermTypeId.Category, PostTermTypeId.Tag]},
+                typeId: { $in: [PostTermTypeId.Category, PostTermTypeId.Tag] },
                 statusId: StatusId.Active,
                 postTypeId: params.typeId
             },
-            options: {omitUndefined: true},
+            options: { omitUndefined: true },
             transform: (doc: PostTermGetResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
@@ -88,11 +88,11 @@ export default {
             ].join(" "),
             select: "_id typeId contents.title contents.langId contents.url contents.image",
             match: {
-                typeId: {$in: [PostTermTypeId.Attributes, PostTermTypeId.Variations]},
+                typeId: { $in: [PostTermTypeId.Attributes, PostTermTypeId.Variations] },
                 statusId: StatusId.Active,
                 postTypeId: PostTypeId.Product
             },
-            options: {omitUndefined: true},
+            options: { omitUndefined: true },
             transform: (doc: PostTermGetResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
@@ -103,7 +103,7 @@ export default {
             }
         }).populate<{ components: PostGetOneResultDocument["components"] }>({
             path: "components",
-            options: {omitUndefined: true},
+            options: { omitUndefined: true },
             transform: (doc: ComponentGetResultDocument) => {
                 if (doc) {
                     doc.types.map(docType => {
@@ -122,7 +122,7 @@ export default {
             select: "_id name url"
         });
 
-        query.sort({isFixed: -1, rank: 1, createdAt: -1});
+        query.sort({ isFixed: -1, rank: 1, createdAt: -1 });
 
         let doc = (await query.lean().exec()) as PostGetOneResultDocument | null;
 
@@ -196,21 +196,21 @@ export default {
 
         if (params._id) filters = {
             ...filters,
-            _id: {$in: params._id}
+            _id: { $in: params._id }
         }
         if (params.title) filters = {
             ...filters,
-            "contents.title": {$regex: new RegExp(params.title, "i")}
+            "contents.title": { $regex: new RegExp(params.title, "i") }
         }
         if (params.typeId) {
             filters = {
                 ...filters,
-                typeId: {$in: params.typeId}
+                typeId: { $in: params.typeId }
             }
         }
         if (params.pageTypeId) filters = {
             ...filters,
-            pageTypeId: {$in: params.pageTypeId}
+            pageTypeId: { $in: params.pageTypeId }
         }
         if (params.statusId) filters = {
             ...filters,
@@ -219,13 +219,13 @@ export default {
         if (params.ignorePostId) {
             filters = {
                 ...filters,
-                _id: {$nin: params.ignorePostId}
+                _id: { $nin: params.ignorePostId }
             }
         }
         if (params.categories) {
             filters = {
                 ...filters,
-                categories: {$in: params.categories}
+                categories: { $in: params.categories }
             }
         }
 
@@ -236,11 +236,11 @@ export default {
             ].join(" "),
             select: "_id typeId contents.title contents.langId contents.url contents.image",
             match: {
-                typeId: {$in: [PostTermTypeId.Category, PostTermTypeId.Tag]},
+                typeId: { $in: [PostTermTypeId.Category, PostTermTypeId.Tag] },
                 statusId: StatusId.Active,
-                postTypeId: {$in: params.typeId}
+                postTypeId: { $in: params.typeId }
             },
-            options: {omitUndefined: true},
+            options: { omitUndefined: true },
             transform: (doc: PostTermGetResultDocument) => {
                 if (doc) {
                     if (Array.isArray(doc.contents)) {
@@ -258,9 +258,9 @@ export default {
         });
 
         if (params.isRecent) {
-            query.sort({createdAt: -1});
+            query.sort({ createdAt: -1 });
         } else {
-            query.sort({isFixed: -1, rank: 1, createdAt: -1});
+            query.sort({ isFixed: -1, rank: 1, createdAt: -1 });
         }
 
         if (params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));
@@ -330,7 +330,7 @@ export default {
         });
     },
     async getCount(params: PostGetCountParamDocument) {
-        let filters: mongoose.FilterQuery<PostDocument> = {statusId: StatusId.Active}
+        let filters: mongoose.FilterQuery<PostDocument> = { statusId: StatusId.Active }
         params = MongoDBHelpers.convertObjectIdInData(params, postObjectIdKeys);
 
         if (params.typeId) {
@@ -345,12 +345,12 @@ export default {
         }
         if (params.title) filters = {
             ...filters,
-            "contents.title": {$regex: new RegExp(params.title, "i")}
+            "contents.title": { $regex: new RegExp(params.title, "i") }
         }
         if (params.categories) {
             filters = {
                 ...filters,
-                categories: {$in: params.categories}
+                categories: { $in: params.categories }
             }
         }
 
@@ -384,7 +384,7 @@ export default {
 
         let doc = (await postModel.findOne(filters).exec());
 
-        if(doc) {
+        if (doc) {
             if (params.contents) {
                 if (Array.isArray(doc.contents)) {
                     let docContent = doc.contents.findSingle("langId", params.contents.langId);
@@ -428,7 +428,7 @@ export default {
 
         let doc = (await postModel.findOne(filters).exec());
 
-        if(doc) {
+        if (doc) {
             doc.rank = params.rank;
             doc.lastAuthorId = params.lastAuthorId;
 
@@ -463,7 +463,7 @@ export default {
 
         let views = 0,
             totalViews = 0;
-        if(doc) {
+        if (doc) {
             let docContent = doc.contents.findSingle("langId", params.langId);
             if (docContent) {
                 if (docContent.views) {
@@ -500,7 +500,7 @@ export default {
         if (params._id) {
             filters = {
                 ...filters,
-                _id: {$in: params._id}
+                _id: { $in: params._id }
             }
         }
         if (params.typeId) {
@@ -529,7 +529,7 @@ export default {
 
         filters = {
             ...filters,
-            _id: {$in: params._id}
+            _id: { $in: params._id }
         }
 
         if (params.typeId) {
@@ -539,11 +539,6 @@ export default {
             }
         }
 
-        return await Promise.all(((await postModel.find(filters).exec()).map(async doc => {
-            await doc.remove();
-            return {
-                _id: doc._id,
-            };
-        })));
+        return (await postModel.deleteMany(filters).exec()).deletedCount;
     }
 };

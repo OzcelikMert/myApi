@@ -140,9 +140,6 @@ export default {
             }
         }
 
-        return await Promise.all((await viewModel.find(filters).exec()).map(async doc => {
-            await doc.remove();
-            return doc;
-        }));
+        return (await viewModel.deleteMany(filters).exec()).deletedCount;
     }
 };

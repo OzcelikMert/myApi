@@ -1,4 +1,5 @@
 import {SessionDataDocument} from "../session";
+import Express from 'express';
 
 interface OnlineUserDocument {
     ip: string,

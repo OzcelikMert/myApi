@@ -4,17 +4,17 @@ import {
     PostTermDeleteManyParamDocument,
     PostTermAddParamDocument,
     PostTermGetOneParamDocument, PostTermGetResultDocument,
-    PostTermUpdateOneParamDocument, PostTermUpdateOneRankParamDocument, PostTermUpdateManyStatusIdParamDocument ,
+    PostTermUpdateOneParamDocument, PostTermUpdateOneRankParamDocument, PostTermUpdateManyStatusIdParamDocument,
     PostTermGetManyParamDocument
 } from "../types/services/postTerm";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
-import {Config} from "../config";
+import { Config } from "../config";
 import postTermObjectIdKeys from "../constants/objectIdKeys/postTerm.objectIdKeys";
 import postModel from "../models/post.model";
-import {PostTermTypeId} from "../constants/postTermTypes";
-import {StatusId} from "../constants/status";
-import {PostTermDocument} from "../types/models/postTerm";
+import { PostTermTypeId } from "../constants/postTermTypes";
+import { StatusId } from "../constants/status";
+import { PostTermDocument } from "../types/models/postTerm";
 
 export default {
     async getOne(params: PostTermGetOneParamDocument) {
@@ -45,14 +45,14 @@ export default {
         if (params.ignoreTermId) {
             filters = {
                 ...filters,
-                _id: {$nin: params.ignoreTermId}
+                _id: { $nin: params.ignoreTermId }
             }
         }
 
         let query = postTermModel.findOne(filters, {}).populate<{ mainId: PostTermGetResultDocument["mainId"] }>({
             path: "mainId",
             select: "_id typeId contents.title contents.langId contents.url contents.image",
-            match: {statusId: StatusId.Active},
+            match: { statusId: StatusId.Active },
             options: { omitUndefined: true },
             transform: (doc: PostTermGetResultDocument) => {
                 if (doc) {
@@ -70,11 +70,11 @@ export default {
             select: "_id name url"
         })
 
-        query.sort({rank: 1, createdAt: -1});
+        query.sort({ rank: 1, createdAt: -1 });
 
         let doc = (await query.lean().exec()) as PostTermGetResultDocument | null;
 
-        if(doc){
+        if (doc) {
             if (Array.isArray(doc.contents)) {
                 doc.alternates = doc.contents.map(content => ({
                     langId: content.langId,
@@ -102,11 +102,11 @@ export default {
         }
         if (params.title) filters = {
             ...filters,
-            "contents.title": {$regex: new RegExp(params.title, "i")}
+            "contents.title": { $regex: new RegExp(params.title, "i") }
         }
         if (params.typeId) filters = {
             ...filters,
-            typeId: {$in: params.typeId}
+            typeId: { $in: params.typeId }
         }
         if (params.statusId) filters = {
             ...filters,
@@ -119,14 +119,14 @@ export default {
         if (params.ignoreTermId) {
             filters = {
                 ...filters,
-                _id: {$nin: params.ignoreTermId}
+                _id: { $nin: params.ignoreTermId }
             }
         }
 
         let query = postTermModel.find(filters, {}).populate<{ mainId: PostTermGetResultDocument["mainId"] }>({
             path: "mainId",
             select: "_id typeId contents.title contents.langId contents.url contents.image",
-            match: {statusId: StatusId.Active},
+            match: { statusId: StatusId.Active },
             options: { omitUndefined: true },
             transform: (doc: PostTermGetResultDocument) => {
                 if (doc) {
@@ -147,9 +147,9 @@ export default {
         if (params.page) query.skip((params.count ?? 10) * (params.page > 0 ? params.page - 1 : 0));
         if (params.count) query.limit(params.count);
 
-        query.sort({rank: 1, createdAt: -1});
+        query.sort({ rank: 1, createdAt: -1 });
 
-        return Promise.all((await query.lean().exec()).map(async ( doc: PostTermGetResultDocument) => {
+        return Promise.all((await query.lean().exec()).map(async (doc: PostTermGetResultDocument) => {
             if (Array.isArray(doc.contents)) {
                 doc.alternates = doc.contents.map(content => ({
                     langId: content.langId,
@@ -167,8 +167,8 @@ export default {
                 }
             }
 
-            if(params.withPostCount && [PostTermTypeId.Category].includes(doc.typeId)){
-                doc.postCount = (await postModel.find({typeId: doc.postTypeId, categories: { $in: [doc._id]}}).count().exec())
+            if (params.withPostCount && [PostTermTypeId.Category].includes(doc.typeId)) {
+                doc.postCount = (await postModel.find({ typeId: doc.postTypeId, categories: { $in: [doc._id] } }).count().exec())
             }
 
             return doc;
@@ -207,7 +207,7 @@ export default {
 
         let doc = (await postTermModel.findOne(filters).exec());
 
-        if(doc){
+        if (doc) {
             if (params.contents) {
                 let docContent = doc.contents.findSingle("langId", params.contents.langId);
                 if (docContent) {
@@ -224,7 +224,7 @@ export default {
                 doc.mainId = undefined;
             }
 
-            if(params.mainId){
+            if (params.mainId) {
                 doc.mainId = params.mainId;
             }
 
@@ -242,7 +242,7 @@ export default {
 
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
 
-        if(params._id){
+        if (params._id) {
             filters = {
                 ...filters,
                 _id: params._id
@@ -261,7 +261,7 @@ export default {
 
         let doc = (await postTermModel.findOne(filters).exec());
 
-        if(doc){
+        if (doc) {
             doc.rank = params.rank;
             doc.lastAuthorId = params.lastAuthorId;
 
@@ -280,10 +280,10 @@ export default {
 
         let filters: mongoose.FilterQuery<PostTermDocument> = {}
 
-        if(params._id){
+        if (params._id) {
             filters = {
                 ...filters,
-                _id:{$in: params._id}
+                _id: { $in: params._id }
             }
         }
         if (params.typeId) {
@@ -316,7 +316,7 @@ export default {
 
         filters = {
             ...filters,
-            _id: {$in: params._id}
+            _id: { $in: params._id }
         }
         if (params.typeId) {
             filters = {
@@ -331,11 +331,6 @@ export default {
             }
         }
 
-        return await Promise.all((await postTermModel.find(filters).exec()).map(async doc => {
-            await doc.remove();
-            return {
-                _id: doc._id,
-            };
-        }));
+        return (await postTermModel.deleteMany(filters).exec()).deletedCount;
     }
 };

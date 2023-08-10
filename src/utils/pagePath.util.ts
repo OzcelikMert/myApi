@@ -10,7 +10,7 @@ export default {
                 ) {
                     path = path.slice(1);
                 }
-
+                
                 returnPath += `/${path}`;
             }
         }

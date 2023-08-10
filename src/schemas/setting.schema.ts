@@ -1,13 +1,13 @@
-import { object, number, string, array, mixed } from "yup";
+import { object, number, string, array, mixed, ObjectSchema } from "yup";
 import {ErrorCodes} from "../library/api";
 import {SettingGetParamDocument} from "../types/services/setting";
 
 export default {
     get: object({
-        query: object({
+        query: object().shape({
             langId: string(),
-            projection: mixed<SettingGetParamDocument["projection"]>()
-        }),
+            projection: string()
+        }) as ObjectSchema<SettingGetParamDocument>,
     }),
     putGeneral: object({
         body: object({

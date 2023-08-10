@@ -1,7 +1,7 @@
 import * as mongoose from "mongoose";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
-import {Config} from "../config";
+import { Config } from "../config";
 import navigationObjectIdKeys from "../constants/objectIdKeys/navigation.objectIdKeys";
 import {
     NavigationDeleteManyParamDocument,
@@ -13,8 +13,8 @@ import {
     NavigationUpdateManyStatusIdParamDocument, NavigationGetManyParamDocument
 } from "../types/services/navigation";
 import navigationModel from "../models/navigation.model";
-import {StatusId} from "../constants/status";
-import {NavigationDocument} from "../types/models/navigation";
+import { StatusId } from "../constants/status";
+import { NavigationDocument } from "../types/models/navigation";
 
 export default {
     async getOne(params: NavigationGetOneParamDocument) {
@@ -34,7 +34,7 @@ export default {
         let query = navigationModel.findOne(filters).populate<{ mainId: NavigationGetResultDocument["mainId"] }>({
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
-            match: {statusId: StatusId.Active},
+            match: { statusId: StatusId.Active },
             options: { omitUndefined: true },
             transform: (doc: NavigationGetResultDocument) => {
                 if (doc) {
@@ -52,11 +52,11 @@ export default {
             select: "_id name url"
         })
 
-        query.sort({rank: 1, createdAt: -1});
+        query.sort({ rank: 1, createdAt: -1 });
 
         let doc = (await query.lean().exec()) as NavigationGetResultDocument | null;
 
-        if(doc){
+        if (doc) {
             if (Array.isArray(doc.contents)) {
                 let docContent = doc.contents.findSingle("langId", params.langId) ?? doc.contents.findSingle("langId", defaultLangId);
                 if (docContent) {
@@ -74,7 +74,7 @@ export default {
 
         if (params._id) filters = {
             ...filters,
-            _id: {$in: params._id }
+            _id: { $in: params._id }
         }
         if (params.statusId) filters = {
             ...filters,
@@ -84,7 +84,7 @@ export default {
         let query = navigationModel.find(filters).populate<{ mainId: NavigationGetResultDocument["mainId"] }>({
             path: "mainId",
             select: "_id contents.title contents.url contents.langId",
-            match: {statusId: StatusId.Active},
+            match: { statusId: StatusId.Active },
             options: { omitUndefined: true },
             transform: (doc: NavigationGetResultDocument) => {
                 if (doc) {
@@ -102,7 +102,7 @@ export default {
             select: "_id name url"
         })
 
-        query.sort({rank: 1, createdAt: -1});
+        query.sort({ rank: 1, createdAt: -1 });
 
         return (await query.lean().exec()).map((doc: NavigationGetResultDocument) => {
             if (Array.isArray(doc.contents)) {
@@ -143,7 +143,7 @@ export default {
 
         let doc = (await navigationModel.findOne(filters).exec());
 
-        if(doc){
+        if (doc) {
             if (params.contents) {
                 let docContent = doc.contents.findSingle("langId", params.contents.langId);
                 if (docContent) {
@@ -160,7 +160,7 @@ export default {
                 doc.mainId = undefined;
             }
 
-            if(params.mainId){
+            if (params.mainId) {
                 doc.mainId = params.mainId;
             }
 
@@ -178,7 +178,7 @@ export default {
 
         let filters: mongoose.FilterQuery<NavigationDocument> = {}
 
-        if(params._id) {
+        if (params._id) {
             filters = {
                 ...filters,
                 _id: params._id
@@ -187,7 +187,7 @@ export default {
 
         let doc = (await navigationModel.findOne(filters).exec());
 
-        if(doc){
+        if (doc) {
             doc.rank = params.rank;
             doc.lastAuthorId = params.lastAuthorId;
 
@@ -206,10 +206,10 @@ export default {
 
         let filters: mongoose.FilterQuery<NavigationDocument> = {}
 
-        if(params._id) {
+        if (params._id) {
             filters = {
                 ...filters,
-                _id: {$in: params._id}
+                _id: { $in: params._id }
             }
         }
 
@@ -233,14 +233,9 @@ export default {
 
         filters = {
             ...filters,
-            _id: {$in: params._id}
+            _id: { $in: params._id }
         }
 
-        return await Promise.all(((await navigationModel.find(filters).exec()).map(async doc => {
-            await doc.remove();
-            return {
-                _id: doc._id
-            };
-        })));
+        return (await navigationModel.deleteMany(filters).exec()).deletedCount;
     }
 };

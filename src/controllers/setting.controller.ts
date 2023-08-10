@@ -13,7 +13,7 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
             let data: InferType<typeof settingSchema.get> = req;
-
+            
             serviceResult.data = await settingService.get({
                 ...data.query
             });

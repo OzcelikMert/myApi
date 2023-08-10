@@ -47,7 +47,7 @@ export default {
     ) => {
         await logMiddleware.error(req, res, async () => {
             if (req.session && req.session.data) {
-                if (new Date().diffSeconds(new Date(req.session.data.updatedAt)) > sessionTTL) {
+                if (Number(new Date().diffSeconds(new Date(req.session.data.updatedAt))) > sessionTTL) {
                     await new Promise(resolve => {
                         req.session.destroy(async err => {
                             resolve(err)

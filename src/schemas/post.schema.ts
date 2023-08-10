@@ -1,4 +1,4 @@
-import {object, string, number, boolean, array, mixed, SchemaOf} from "yup";
+import {object, string, number, boolean, array, mixed} from "yup";
 import {ErrorCodes} from "../library/api";
 import {ProductTypeId} from "../constants/productTypes";
 

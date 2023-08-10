@@ -9,7 +9,7 @@ import {
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
 import languageObjectIdKeys from "../constants/objectIdKeys/language.objectIdKeys";
-import {LanguageDocument} from "../types/models/language";
+import { LanguageDocument } from "../types/models/language";
 
 export default {
     async getOne(params: LanguageGetOneParamDocument) {
@@ -37,7 +37,7 @@ export default {
 
         let query = languageModel.findOne(filters, {});
 
-        query.sort({rank: 1, createdAt: -1});
+        query.sort({ rank: 1, createdAt: -1 });
 
         return (await query.lean().exec()) as LanguageGetResultDocument | null;
     },
@@ -48,7 +48,7 @@ export default {
         if (params._id) {
             filters = {
                 ...filters,
-                _id: {$in: params._id}
+                _id: { $in: params._id }
             }
         }
 
@@ -61,7 +61,7 @@ export default {
 
         let query = languageModel.find(filters, {});
 
-        query.sort({rank: 1, createdAt: -1});
+        query.sort({ rank: 1, createdAt: -1 });
 
         return (await query.lean().exec()) as LanguageGetResultDocument[];
     },
@@ -84,7 +84,7 @@ export default {
 
         let doc = (await languageModel.findOne(filters).exec());
 
-        if(doc){
+        if (doc) {
             doc = Object.assign(doc, params);
 
             await doc.save();
@@ -100,7 +100,7 @@ export default {
         params = Variable.clearAllScriptTags(params);
         params = MongoDBHelpers.convertObjectIdInData(params, languageObjectIdKeys);
 
-        if(params._id) {
+        if (params._id) {
             filters = {
                 ...filters,
                 _id: params._id
@@ -109,7 +109,7 @@ export default {
 
         let doc = (await languageModel.findOne(filters).exec());
 
-        if(doc){
+        if (doc) {
             doc.rank = params.rank;
 
             await doc.save();

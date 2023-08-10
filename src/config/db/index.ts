@@ -1,24 +1,24 @@
-import mongoose from "mongoose";
+import mongoose, {ConnectOptions} from "mongoose";
 import config from "config";
 import Variable from "../../library/variable";
 
-const protocol = config.get("dbProtocol") as string;
-const name = config.get("dbName") as string;
-const host = config.get("dbHost") as string;
-const hostParams = config.get("dbHostParams") as string;
-const port = config.get("dbPort") as number;
-const user = config.get("dbUser") as string;
-const password = config.get("dbPassword") as string;
-
 function dbConnect() {
+    const protocol = config.get<string>("dbProtocol");
+    const name = config.get<string>("dbName");
+    const host = config.get<string>("dbHost");
+    const hostParams = config.get<string>("dbHostParams");
+    const port = config.get<number>("dbPort");
+    const user = config.get<string>("dbUser");
+    const password = config.get<string>("dbPassword");
+
     mongoose.set("strictQuery", false);
-    return mongoose.connect(`${protocol}://${host}${!Variable.isEmpty(port) ? `:${port}` : ""}${!Variable.isEmpty(hostParams) ? `${hostParams}` : ""}`, {
+    return mongoose.connect(`${protocol}://${host}${port ? `:${port}` : ""}${hostParams ? `${hostParams}` : ""}`, {
         autoCreate: true,
         autoIndex: true,
         dbName: name,
         user: user ?? undefined,
-        pass: password ?? undefined,
-    })
+        pass: password ?? undefined
+    } as ConnectOptions)
 }
 
 export default dbConnect;

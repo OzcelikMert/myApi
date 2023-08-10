@@ -14,7 +14,9 @@ import settingService from "../services/setting.service";
 import * as path from "path"
 import {generate} from "generate-password";
 import chalk from "chalk";
+
 import fs from "fs";
+import pagePathUtil from "../utils/pagePath.util";
 
 let Config: ConfigDocument = {
     app: null,
@@ -42,10 +44,10 @@ let Config: ConfigDocument = {
 class InitConfig {
     constructor(app: any) {
         Config.app = app;
-        Config.paths.root = `${path.resolve('./', "src")}`;
+        Config.paths.root = path.resolve('./', "src");
     }
 
-    init() {
+    async init() {
         return new Promise<void>(async resolve => {
             this.setPublicFolders();
             this.setSession();
@@ -64,21 +66,22 @@ class InitConfig {
     }
 
     private setPublicFolders() {
-        console.log(chalk.green('#Public Folders'));
+        console.log(chalk.green("#Public Folders"));
 
         Config.publicFolders.forEach((publicFolder, index) => {
             let folderPath = "";
 
             publicFolder.forEach(publicFolderPath => {
-                folderPath = path.resolve(folderPath, publicFolderPath);
-            })
+                folderPath = pagePathUtil.setPath(folderPath, publicFolderPath);
+            });
+            folderPath = folderPath.slice(1);
 
             if(!fs.existsSync(path.resolve(Config.paths.root, folderPath))){
                 fs.mkdirSync(path.resolve(Config.paths.root, folderPath));
             }
 
-            Config.app.use(folderPath, Express.static(path.resolve(Config.paths.root, folderPath)));
-            console.log(chalk.blue(` - /${folderPath}`) + ` = ${path.resolve(Config.paths.root, folderPath)}`)
+            Config.app.use(`/${folderPath}`, Express.static(path.resolve(Config.paths.root, folderPath)));
+            console.log(chalk.blue(` - /${folderPath}`) + ` : ${path.resolve(Config.paths.root, folderPath)}`)
         });
     }
 

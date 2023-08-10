@@ -85,13 +85,7 @@ export default {
             }
         }
 
-        let doc = (await subscriberModel.findOne(filters).exec());
-
-        if(doc){
-            await doc.remove();
-        }
-
-        return doc;
+        return (await subscriberModel.deleteOne(filters).exec()).deletedCount;
     },
     async deleteMany(params: SubscriberDeleteManyParamDocument) {
         params = Variable.clearAllScriptTags(params);
@@ -106,9 +100,6 @@ export default {
             }
         }
 
-        return await Promise.all((await subscriberModel.find(filters).exec()).map(async doc => {
-            await doc.remove();
-            return doc;
-        }));
+        return (await subscriberModel.deleteMany(filters).exec()).deletedCount;
     },
 };

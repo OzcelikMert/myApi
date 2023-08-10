@@ -2,7 +2,7 @@ import Express from 'express';
 import InitConfig from "./config";
 const chalk = require('chalk');
 let compression = require('compression');
-const bodyParser = require("body-parser");
+import bodyParser  from "body-parser";
 import cors from "cors";
 import routers from "./routers";
 import config from "config";
@@ -14,7 +14,7 @@ import "./library/variable/number"
 import "./library/variable/date"
 import "./library/variable/math"
 import viewInitMiddleware from "./middlewares/init/view.init.middleware";
-import {sessionMiddleware} from "./middlewares/validates";
+import sessionMiddleware from "./middlewares/validates/session.middleware";
 
 const port = config.get("serverPort") as number;
 const trafficMBLimit = config.get("serverTrafficMBLimit") as number || 2;

@@ -21,6 +21,7 @@ import {
 import componentModel from "./component.model";
 import {ProductTypeId} from "../constants/productTypes";
 import {AttributeTypeId} from "../constants/attributeTypes";
+import {Model} from "mongoose";
 
 const schemaPostECommerceVariationContent = new mongoose.Schema<PostECommerceVariationContentDocument>(
     {
