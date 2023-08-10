@@ -1,9 +1,11 @@
 import { Router } from "express";
-import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../middlewares/validates";
 import userController from "../../controllers/user.controller";
 import userSchema from "../../schemas/user.schema";
 import userMiddleware from "../../middlewares/user.middleware";
 import PagePaths from "../../constants/pagePaths";
+import requestMiddleware from "../../middlewares/validates/request.middleware";
+import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import permissionMiddleware from "../../middlewares/validates/permission.middleware";
 
 const userRouter = Router();
 

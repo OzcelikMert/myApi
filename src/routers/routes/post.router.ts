@@ -1,10 +1,12 @@
 import { Router } from "express";
-import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../middlewares/validates";
 import postSchema from "../../schemas/post.schema";
 import postController from "../../controllers/post.controller";
 import postMiddleware from "../../middlewares/post.middleware";
 import viewMiddleware from "../../middlewares/view.middleware";
 import PagePaths from "../../constants/pagePaths";
+import requestMiddleware from "../../middlewares/validates/request.middleware";
+import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import permissionMiddleware from "../../middlewares/validates/permission.middleware";
 
 const postRouter = Router();
 

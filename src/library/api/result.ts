@@ -5,7 +5,7 @@ class Result {
         data: any = [],
         customData: any = null,
         status: boolean = true,
-        message: string = "",
+        message: any = "",
         errorCode: number = ErrorCodes.success,
         statusCode: number = 200,
         source: string = ""
@@ -22,7 +22,7 @@ class Result {
     data: any;
     customData: any;
     status: boolean;
-    message: string;
+    message: any;
     errorCode: number;
     statusCode: number;
     source: string;

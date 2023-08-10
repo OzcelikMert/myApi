@@ -1,7 +1,8 @@
-import {requestMiddleware, sessionMiddleware} from "../../middlewares/validates";
 import authSchema from "../../schemas/auth.schema";
 import authController from "../../controllers/auth.controller";
 import {Router} from "express";
+import requestMiddleware from "../../middlewares/validates/request.middleware";
+import sessionMiddleware from "../../middlewares/validates/session.middleware";
 
 const authRouter = Router();
 

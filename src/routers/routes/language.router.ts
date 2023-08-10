@@ -1,9 +1,11 @@
-import {permissionMiddleware, requestMiddleware, sessionMiddleware} from "../../middlewares/validates";
 import {Router} from "express";
 import languageSchema from "../../schemas/language.schema";
 import languageController from "../../controllers/language.controller";
 import PagePaths from "../../constants/pagePaths";
 import languageMiddleware from "../../middlewares/language.middleware";
+import requestMiddleware from "../../middlewares/validates/request.middleware";
+import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import permissionMiddleware from "../../middlewares/validates/permission.middleware";
 
 const languageRouter = Router();
 

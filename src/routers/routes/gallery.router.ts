@@ -1,7 +1,9 @@
-import {permissionMiddleware, requestMiddleware, sessionMiddleware} from "../../middlewares/validates";
 import {Router} from "express";
 import galleryController from "../../controllers/gallery.controller";
 import gallerySchema from "../../schemas/gallery.schema";
+import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import permissionMiddleware from "../../middlewares/validates/permission.middleware";
+import requestMiddleware from "../../middlewares/validates/request.middleware";
 
 const galleryRouter = Router();
 

@@ -17,6 +17,8 @@ interface ConfigDocument {
         uploads: {
             images: string
             flags: string
+            video: string
+            static: string
         }
     },
     defaultLangId: string

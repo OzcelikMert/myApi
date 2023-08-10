@@ -1,9 +1,11 @@
 import { Router } from "express";
-import {sessionMiddleware, permissionMiddleware, requestMiddleware} from "../../middlewares/validates";
 import PagePaths from "../../constants/pagePaths";
 import navigationSchema from "../../schemas/navigation.schema";
 import navigationController from "../../controllers/navigation.controller";
 import navigationMiddleware from "../../middlewares/navigation.middleware";
+import permissionMiddleware from "../../middlewares/validates/permission.middleware";
+import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import requestMiddleware from "../../middlewares/validates/request.middleware";
 
 const navigationRouter = Router();
 

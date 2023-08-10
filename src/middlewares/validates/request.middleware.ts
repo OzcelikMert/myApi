@@ -20,7 +20,8 @@ export default {
                 req = Object.assign(req, validatedData);
             } catch (e: any) {
                 serviceResult.status = false;
-                serviceResult.data = e.errors;
+                serviceResult.data = [];
+                serviceResult.message = e.errors;
                 serviceResult.errorCode = ErrorCodes.incorrectData;
                 serviceResult.statusCode = StatusCodes.badRequest;
             } finally {

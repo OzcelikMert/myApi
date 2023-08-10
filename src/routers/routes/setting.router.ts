@@ -1,8 +1,10 @@
-import {permissionMiddleware, requestMiddleware, sessionMiddleware} from "../../middlewares/validates";
 import {Router} from "express";
 import settingSchema from "../../schemas/setting.schema";
 import settingController from "../../controllers/setting.controller";
 import PagePaths from "../../constants/pagePaths";
+import requestMiddleware from "../../middlewares/validates/request.middleware";
+import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import permissionMiddleware from "../../middlewares/validates/permission.middleware";
 
 const settingRouter = Router();
 

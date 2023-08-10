@@ -14,19 +14,26 @@ import settingService from "../services/setting.service";
 import * as path from "path"
 import {generate} from "generate-password";
 import chalk from "chalk";
+import fs from "fs";
 
 let Config: ConfigDocument = {
     app: null,
     passwordSalt: "_@QffsDh14Q",
     publicFolders: [
-        ["uploads"]
+        ["uploads"],
+        ["uploads", "flags"],
+        ["uploads", "images"],
+        ["uploads", "static"],
+        ["uploads", "video"]
     ],
     onlineUsers: [],
     paths: {
         root: "",
         uploads: {
             get images() {return path.resolve(Config.paths.root, "uploads", "images");},
-            get flags() {return path.resolve(Config.paths.root, "uploads", "flags");}
+            get flags() {return path.resolve(Config.paths.root, "uploads", "flags");},
+            get video() {return path.resolve(Config.paths.root, "uploads", "video");},
+            get static() {return path.resolve(Config.paths.root, "uploads", "static");}
         }
     },
     defaultLangId: ""
@@ -47,7 +54,7 @@ class InitConfig {
             await this.checkSuperAdminUser();
             await this.checkLanguages();
             await this.checkSettings();
-            resolve()
+            resolve();
         });
     }
 
@@ -57,17 +64,22 @@ class InitConfig {
     }
 
     private setPublicFolders() {
-        console.log(chalk.green('#Public Folders'))
+        console.log(chalk.green('#Public Folders'));
 
-        Config.publicFolders.forEach((item, index) => {
-            if (item.length === 1) {
-                Config.app.use(`/${item}`, Express.static(path.resolve(Config.paths.root, item[0])));
-                console.log(chalk.blue(` - /${item}`) + ` = ${path.resolve(Config.paths.root, item[0])}`)
-            } else {
-                Config.app.use(`/${item[0]}`, Express.static(path.resolve(Config.paths.root, item[1])));
-                console.log(chalk.blue(` - /${item[0]}`) + ` = ${path.resolve(Config.paths.root, item[1])}`)
+        Config.publicFolders.forEach((publicFolder, index) => {
+            let folderPath = "";
+
+            publicFolder.forEach(publicFolderPath => {
+                folderPath = path.resolve(folderPath, publicFolderPath);
+            })
+
+            if(!fs.existsSync(path.resolve(Config.paths.root, folderPath))){
+                fs.mkdirSync(path.resolve(Config.paths.root, folderPath));
             }
-        })
+
+            Config.app.use(folderPath, Express.static(path.resolve(Config.paths.root, folderPath)));
+            console.log(chalk.blue(` - /${folderPath}`) + ` = ${path.resolve(Config.paths.root, folderPath)}`)
+        });
     }
 
     private setSession() {
@@ -80,7 +92,7 @@ class InitConfig {
         try {
             await dbConnect();
             console.log(chalk.green(`#MongoDB`))
-            console.log(chalk.blue(`- Created`))
+            console.log(chalk.blue(`- Connected`))
         } catch (e) {
             console.error("MongoDB Connection Error")
             console.error(e)
