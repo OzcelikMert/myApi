@@ -1,6 +1,5 @@
 import mongoose, {ConnectOptions} from "mongoose";
 import config from "config";
-import Variable from "../../library/variable";
 
 function dbConnect() {
     const protocol = config.get<string>("dbProtocol");

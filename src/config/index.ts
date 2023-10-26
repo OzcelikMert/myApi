@@ -1,6 +1,7 @@
-import Express from "express";
-import ExpressSession from "express-session";
-import CookieParser from "cookie-parser";
+import {FastifyInstance} from 'fastify';
+import fastifySecureSession from '@fastify/secure-session';
+import fastifyCookie from '@fastify/cookie';
+import fastifyStatic from '@fastify/static';
 import http from "http";
 import https from "https";
 import Session from "./session";
@@ -19,7 +20,6 @@ import fs from "fs";
 import pagePathUtil from "../utils/pagePath.util";
 
 let Config: ConfigDocument = {
-    app: null,
     passwordSalt: "_@QffsDh14Q",
     publicFolders: [
         ["uploads"],
@@ -42,8 +42,10 @@ let Config: ConfigDocument = {
 }
 
 class InitConfig {
-    constructor(app: any) {
-        Config.app = app;
+    private server: FastifyInstance<any>;
+
+    constructor(server: FastifyInstance<any>) {
+        this.server = server;
         Config.paths.root = path.resolve('./', "src");
     }
 
@@ -80,15 +82,19 @@ class InitConfig {
                 fs.mkdirSync(path.resolve(Config.paths.root, folderPath));
             }
 
-            Config.app.use(`/${folderPath}`, Express.static(path.resolve(Config.paths.root, folderPath)));
+            this.server.register(fastifyStatic, {
+                root: path.resolve(Config.paths.root, folderPath),
+                prefix: `/${folderPath}`,
+            });
             console.log(chalk.blue(` - /${folderPath}`) + ` : ${path.resolve(Config.paths.root, folderPath)}`)
         });
     }
 
     private setSession() {
-        Config.app.set('trust proxy', 1)
-        Config.app.use(CookieParser(Session.sessionConfig.secret));
-        Config.app.use(ExpressSession(Session.sessionConfig))
+        this.server.register(fastifyCookie, {
+            secret: Session.sessionConfig.secret
+        });
+        this.server.register(fastifySecureSession, Session.sessionConfig)
     }
 
     private async mongodbConnect() {

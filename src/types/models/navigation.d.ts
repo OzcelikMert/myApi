@@ -1,18 +1,16 @@
-import mongoose from "mongoose";
-
 export interface NavigationDocument {
-    _id?: mongoose.Types.ObjectId | string
+    _id?: string
     statusId: number,
-    mainId?: mongoose.Types.ObjectId | string
-    authorId: mongoose.Types.ObjectId | string
-    lastAuthorId: mongoose.Types.ObjectId | string
+    mainId?: string
+    authorId: string
+    lastAuthorId: string
     rank: number,
     contents: NavigationContentDocument[]
 }
 
 export interface NavigationContentDocument {
-    _id?: mongoose.Types.ObjectId | string
-    langId: mongoose.Types.ObjectId | string
+    _id?: string
+    langId: string
     title?: string,
     url?: string,
 }

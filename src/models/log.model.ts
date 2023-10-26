@@ -16,4 +16,4 @@ const schema = new mongoose.Schema<LogDocument>(
     {timestamps: true}
 )
 
-export default mongoose.model<LogDocument>("logs", schema)
+export default mongoose.model<LogDocument, mongoose.Model<LogDocument>>("logs", schema)

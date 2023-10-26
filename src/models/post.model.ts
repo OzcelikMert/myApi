@@ -152,4 +152,4 @@ const schema = new mongoose.Schema<PostDocument>(
     {timestamps: true}
 ).index({typeId: 1, statusId: 1, authorId: 1});
 
-export default mongoose.model<PostDocument>("posts", schema)
+export default mongoose.model<PostDocument, mongoose.Model<PostDocument>>("posts", schema)

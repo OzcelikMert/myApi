@@ -14,4 +14,4 @@ const schema = new mongoose.Schema<LanguageDocument>(
     {timestamps: true}
 )
 
-export default mongoose.model<LanguageDocument>("languages", schema)
+export default mongoose.model<LanguageDocument, mongoose.Model<LanguageDocument>>("languages", schema)

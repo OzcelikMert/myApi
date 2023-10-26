@@ -8,4 +8,4 @@ const schema = new mongoose.Schema<SubscriberDocument>(
     {timestamps: true}
 )
 
-export default mongoose.model<SubscriberDocument>("subscribers", schema)
+export default mongoose.model<SubscriberDocument, mongoose.Model<SubscriberDocument>>("subscribers", schema)

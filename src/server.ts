@@ -1,12 +1,11 @@
-import Express from 'express';
+import fastify from 'fastify';
+import fastifyCors from '@fastify/cors';
+import fastifyFormBody from '@fastify/formbody';
+import fastifyCompress from '@fastify/compress';
 import InitConfig from "./config";
 const chalk = require('chalk');
-let compression = require('compression');
-import bodyParser  from "body-parser";
-import cors from "cors";
 import routers from "./routers";
 import config from "config";
-import responseTime from "response-time";
 
 import "./library/variable/array"
 import "./library/variable/string"
@@ -21,26 +20,34 @@ const trafficMBLimit = config.get("serverTrafficMBLimit") as number || 2;
 const whitelist = config.get("whiteList") as string[];
 
 console.time(`server`)
-console.log(chalk.cyan(`\n=========  SERVER LOADING =========`));
+console.log(chalk.cyan?.(`\n=========  SERVER LOADING =========`));
 
-const app = Express();
+const server = fastify({ trustProxy: true, logger: true, ignoreTrailingSlash: true });
 
-new InitConfig(app).init().then(()=> {
-    app.use(Express.json({limit: `${trafficMBLimit}mb`}));
-    app.use(bodyParser.json({limit: `${trafficMBLimit}mb`}));
-    app.use(bodyParser.urlencoded({limit: `${trafficMBLimit}mb`, extended: true, parameterLimit: 10000}));
+new InitConfig(server).init().then(()=> {
+    server.register(fastifyFormBody, {
+        limit: `${trafficMBLimit}MB`,
+    });
 
-    app.use(cors({
+    server.register(fastifyCors, {
         origin: whitelist,
-        methods: ['POST', 'PUT', 'GET', "DELETE", 'OPTIONS', 'HEAD'],
+        methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS', 'HEAD'],
         credentials: true,
-    }));
+    });
 
-    app.use(responseTime());
-    app.use(compression());
-    app.use([viewInitMiddleware.set, sessionMiddleware.reload], routers);
+    server.register(fastifyCompress);
 
-    app.listen(port,() => {
+    server.addHook('onResponse', async (request, reply) => {
+        const responseTime = reply.getResponseTime();
+        console.log(`Response time for ${request.method} ${request.url}: ${responseTime}ms`);
+    });
+
+    server.addHook('preHandler', sessionMiddleware.reload);
+    server.addHook('preHandler', sessionMiddleware.reload);
+
+    server.register(routers);
+
+    server.listen(port,() => {
         console.log(chalk.cyan(`=========  SERVER STARTED =========\n`));
         console.timeEnd(`server`);
     });

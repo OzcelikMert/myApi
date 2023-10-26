@@ -92,4 +92,4 @@ const schema = new mongoose.Schema<SettingDocument>(
     {timestamps: true}
 );
 
-export default mongoose.model<SettingDocument>("settings", schema)
+export default mongoose.model<SettingDocument, mongoose.Model<SettingDocument>>("settings", schema)

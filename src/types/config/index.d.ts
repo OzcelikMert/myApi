@@ -1,6 +1,3 @@
-import {SessionDataDocument} from "../session";
-import Express from 'express';
-
 interface OnlineUserDocument {
     ip: string,
     _id: string,
@@ -9,7 +6,6 @@ interface OnlineUserDocument {
 }
 
 interface ConfigDocument {
-    app: any
     passwordSalt: string
     publicFolders: string[][]
     onlineUsers: OnlineUserDocument[]
@@ -27,5 +23,5 @@ interface ConfigDocument {
 
 export {
     OnlineUserDocument,
-    ConfigDocument, SessionDataDocument
+    ConfigDocument
 }

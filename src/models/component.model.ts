@@ -34,4 +34,4 @@ const schema = new mongoose.Schema<ComponentDocument>(
     {timestamps: true}
 ).index({authorId: 1});
 
-export default mongoose.model<ComponentDocument>("components", schema)
+export default mongoose.model<ComponentDocument, mongoose.Model<ComponentDocument>>("components", schema)

@@ -1,9 +1,7 @@
-import mongoose from "mongoose";
-
 export interface ViewDocument {
-    _id: mongoose.Types.ObjectId | string
+    _id: string
     url: string,
-    langId: mongoose.Types.ObjectId | string
+    langId: string
     ip: string,
     country: string,
     city: string,

@@ -1,11 +1,11 @@
-import {Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import logService from "../services/log.service";
 
 export default {
     error: async (
-        req: Request,
-        res: Response,
+        req: FastifyRequest,
+        res: FastifyReply,
         func: () => void
     ) => {
         try {
@@ -20,13 +20,13 @@ export default {
                 params: req.params,
                 query: req.query,
                 body: req.body,
-                ...(req.session.data && req.session.data.id ? {userId: req.session.data.id.toString()} : {})
-            })
+                ...(req.session.data && req.sessionAuth.get("_id") ? {userId: req.sessionAuth.get("_id")} : {})
+            });
             let serviceResult = new Result();
             serviceResult.statusCode = StatusCodes.badRequest;
             serviceResult.errorCode = ErrorCodes.incorrectData;
             serviceResult.status = false;
-            res.status(serviceResult.statusCode).json(serviceResult)
+            res.status(serviceResult.statusCode).send(serviceResult)
         }
     }
 }

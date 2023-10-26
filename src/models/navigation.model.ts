@@ -24,4 +24,4 @@ const schema = new mongoose.Schema<NavigationDocument>(
     {timestamps: true}
 ).index({statusId: 1, authorId: 1});
 
-export default mongoose.model<NavigationDocument>("navigations", schema)
+export default mongoose.model<NavigationDocument, mongoose.Model<NavigationDocument>>("navigations", schema)

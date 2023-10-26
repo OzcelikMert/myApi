@@ -1,16 +1,14 @@
-import mongoose from "mongoose";
-
 export interface ComponentDocument {
-    _id?: mongoose.Types.ObjectId | string,
-    authorId: mongoose.Types.ObjectId | string
-    lastAuthorId: mongoose.Types.ObjectId | string
+    _id?: string,
+    authorId: string
+    lastAuthorId: string
     elementId: string
     langKey: string,
     types: ComponentTypeDocument[]
 }
 
 export interface ComponentTypeDocument {
-    _id?: mongoose.Types.ObjectId | string,
+    _id?: string,
     elementId: string
     typeId: number,
     langKey: string,
@@ -19,8 +17,8 @@ export interface ComponentTypeDocument {
 }
 
 export interface ComponentTypeContentDocument {
-    _id?: mongoose.Types.ObjectId | string,
-    langId:  mongoose.Types.ObjectId | string
+    _id?: string,
+    langId: string
     content?: string
     url?: string
     comment?: string

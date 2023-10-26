@@ -31,4 +31,4 @@ const schema = new mongoose.Schema<PostTermDocument>(
     {timestamps: true}
 ).index({typeId: 1, postTypeId: 1, statusId: 1, authorId: 1});
 
-export default mongoose.model<PostTermDocument>("postTerms", schema)
+export default mongoose.model<PostTermDocument, mongoose.Model<PostTermDocument>>("postTerms", schema)

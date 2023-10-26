@@ -1,7 +1,5 @@
-import mongoose from "mongoose";
-
 export interface UserDocument {
-    _id: mongoose.Types.ObjectId | string
+    _id: string
     roleId: number,
     statusId: number,
     name: string,

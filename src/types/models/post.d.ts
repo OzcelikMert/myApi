@@ -1,19 +1,17 @@
-import mongoose from "mongoose";
-
 export interface PostDocument {
-    _id?: mongoose.Types.ObjectId | string
+    _id?: string
     typeId?: number,
     statusId: number,
     pageTypeId?: number,
-    authorId: mongoose.Types.ObjectId | string
-    lastAuthorId: mongoose.Types.ObjectId | string
+    authorId: string
+    lastAuthorId: string
     dateStart: Date,
     rank: number,
     isFixed?: boolean,
-    categories?: mongoose.Types.ObjectId[] | string[]
-    tags?: mongoose.Types.ObjectId[] | string[]
+    categories?: string[]
+    tags?: string[]
     contents: PostContentDocument[]
-    components?: mongoose.Types.ObjectId[] | string []
+    components?: string []
     beforeAndAfter?: PostBeforeAndAfterDocument
     eCommerce?: PostECommerceDocument
     updatedAt?: string
@@ -21,8 +19,8 @@ export interface PostDocument {
 }
 
 export interface PostContentDocument {
-    _id?: mongoose.Types.ObjectId | string
-    langId: mongoose.Types.ObjectId | string
+    _id?: string
+    langId: string
     image?: string
     icon?: string
     title?: string,
@@ -40,12 +38,12 @@ export interface PostBeforeAndAfterDocument {
 }
 
 export interface PostContentButtonDocument {
-    _id?: mongoose.Types.ObjectId | string
+    _id?: string
     title: string,
     url?: string
 }
 
-export interface PostECommerceDocument<T = mongoose.Types.ObjectId | string, P = mongoose.Types.ObjectId[] | string[]> {
+export interface PostECommerceDocument<T = string, P = string[]> {
     typeId: number
     images: string[]
     pricing?: PostECommercePricingDocument
@@ -77,15 +75,15 @@ export interface PostECommerceShippingDocument {
     weight: string
 }
 
-export interface PostECommerceAttributeDocument<T = mongoose.Types.ObjectId | string, P = mongoose.Types.ObjectId[] | string[]> {
-    _id?: mongoose.Types.ObjectId | string
+export interface PostECommerceAttributeDocument<T = string, P = string[]> {
+    _id?: string
     attributeId: T
     variations: P
     typeId: number
 }
 
-export interface PostECommerceVariationDocument<T = mongoose.Types.ObjectId | string> {
-    _id?: mongoose.Types.ObjectId | string
+export interface PostECommerceVariationDocument<T = string> {
+    _id?: string
     rank: number
     selectedVariations: PostECommerceVariationSelectedDocument<T>[]
     images: string[]
@@ -95,15 +93,15 @@ export interface PostECommerceVariationDocument<T = mongoose.Types.ObjectId | st
     pricing: PostECommercePricingDocument
 }
 
-export interface PostECommerceVariationSelectedDocument<T = mongoose.Types.ObjectId | string> {
-    _id?: mongoose.Types.ObjectId | string
+export interface PostECommerceVariationSelectedDocument<T = string> {
+    _id?: string
     attributeId: T
     variationId: T
 }
 
 export interface PostECommerceVariationContentDocument {
-    _id?: mongoose.Types.ObjectId | string
-    langId: mongoose.Types.ObjectId | string
+    _id?: string
+    langId: string
     image?: string
     content?: string,
     shortContent?: string,

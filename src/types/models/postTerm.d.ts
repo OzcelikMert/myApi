@@ -1,13 +1,11 @@
-import mongoose from "mongoose";
-
 export interface PostTermDocument {
-    _id: mongoose.Types.ObjectId | string
+    _id: string
     postTypeId: number,
     typeId: number,
-    mainId?: mongoose.Types.ObjectId | string
+    mainId?: string
     statusId: number,
-    authorId: mongoose.Types.ObjectId | string
-    lastAuthorId: mongoose.Types.ObjectId | string
+    authorId: string
+    lastAuthorId: string
     rank: number,
     contents: PostTermContentDocument[]
     updatedAt?: string
@@ -15,7 +13,7 @@ export interface PostTermDocument {
 }
 
 export interface PostTermContentDocument {
-    langId: mongoose.Types.ObjectId | string
+    langId: string
     image?: string,
     title?: string,
     shortContent?: string,

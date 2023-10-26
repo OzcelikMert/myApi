@@ -1,7 +1,5 @@
-import mongoose from "mongoose";
-
 export interface LanguageDocument {
-    _id?: mongoose.Types.ObjectId | string
+    _id?: string
     title: string
     image: string
     shortKey: string

@@ -1,7 +1,5 @@
-import mongoose from "mongoose";
-
 export interface LogDocument {
-    _id: mongoose.Types.ObjectId | string
+    _id: string
     url: string,
     method: string
     ip: string
