@@ -1,36 +1,34 @@
-import { Router } from "express";
+import { FastifyInstance } from 'fastify';
 
-import userRouter from "./routes/user.router";
-import authRouter from "./routes/auth.router";
-import postRouter from "./routes/post.router";
-import postTermRouter from "./routes/postTerm.router";
-import galleryRouter from "./routes/gallery.router";
-import settingRouter from "./routes/setting.router";
-import languageRouter from "./routes/language.router";
-import serverInfoRouter from "./routes/serverInfo.router";
-import viewRouter from "./routes/view.router";
-import mailerRouter from "./routes/mailer.router";
-import subscriberRouter from "./routes/subscriber.router";
-import componentRouter from "./routes/component.router";
-import sitemapRouter from "./routes/sitemap.router";
-import PagePaths from "../constants/pagePaths";
-import navigationRouter from "./routes/navigation.router";
+import userRoute from "./routes/user.route";
+import authRoute from "./routes/auth.route";
+import postRoute from "./routes/post.route";
+import postTermRoute from "./routes/postTerm.route";
+import galleryRoute from "./routes/gallery.route";
+import settingRoute from "./routes/setting.route";
+import languageRoute from "./routes/language.route";
+import serverInfoRoute from "./routes/serverInfo.route";
+import viewRoute from "./routes/view.route";
+import mailerRoute from "./routes/mailer.route";
+import subscriberRoute from "./routes/subscriber.route";
+import componentRoute from "./routes/component.route";
+import sitemapRoute from "./routes/sitemap.route";
+import navigationRoute from "./routes/navigation.route";
 
-const routers = Router();
-
-routers.use(PagePaths.auth(), authRouter)
-routers.use(PagePaths.user().self(), userRouter)
-routers.use(PagePaths.gallery(), galleryRouter)
-routers.use(PagePaths.language().self(), languageRouter)
-routers.use(PagePaths.serverInfo(), serverInfoRouter)
-routers.use(PagePaths.subscriber().self(), subscriberRouter)
-routers.use(PagePaths.view().self(), viewRouter)
-routers.use(PagePaths.mailer(), mailerRouter)
-routers.use(PagePaths.sitemap().self(), sitemapRouter)
-routers.use(PagePaths.setting().self(), settingRouter)
-routers.use(PagePaths.component().self(), componentRouter)
-routers.use(PagePaths.post().self(), postRouter)
-routers.use(PagePaths.postTerm().self(), postTermRouter)
-routers.use(PagePaths.navigation().self(), navigationRouter)
-
-export default routers;
+export default function (fastify: FastifyInstance, opts: any, done: () => void) {
+    fastify.register(userRoute, { prefix: "/user" });
+    fastify.register(authRoute, { prefix: "/auth" });
+    fastify.register(postRoute, { prefix: "/post" });
+    fastify.register(postTermRoute, { prefix: "/post-term" });
+    fastify.register(galleryRoute, { prefix: "/gallery" });
+    fastify.register(settingRoute, { prefix: "/setting" });
+    fastify.register(languageRoute, { prefix: "/language" });
+    fastify.register(serverInfoRoute, { prefix: "/server-info" });
+    fastify.register(viewRoute, { prefix: "/view" });
+    fastify.register(mailerRoute, { prefix: "/mailer" });
+    fastify.register(subscriberRoute, { prefix: "/subscriber" });
+    fastify.register(componentRoute, { prefix: "/component" });
+    fastify.register(sitemapRoute, { prefix: "/sitemap" });
+    fastify.register(navigationRoute, { prefix: "/navigation" });
+    done();
+}

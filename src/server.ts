@@ -3,7 +3,7 @@ import fastifyCors from '@fastify/cors';
 import fastifyFormBody from '@fastify/formbody';
 import fastifyCompress from '@fastify/compress';
 import InitConfig from "./config";
-const chalk = require('chalk');
+import chalk from 'chalk';
 import routers from "./routers";
 import config from "config";
 
