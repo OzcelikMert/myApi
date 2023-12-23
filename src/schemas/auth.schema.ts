@@ -1,16 +1,18 @@
-import {object, string, boolean} from "yup";
+import { object, string, ZodObject } from 'zod';
 import {ErrorCodes} from "../library/api";
 
-export default {
-    get: object({
-        query: object({
+const getSchema: ZodObject<any> = object({
+    query: object({})
+});
 
-        })
+const postSchema: ZodObject<any> = object({
+    body: object({
+        email: string().min(1, { message: ErrorCodes.emptyValue.toString() }).email({ message: ErrorCodes.incorrectData.toString() }),
+        password: string().min(1,{ message: ErrorCodes.emptyValue.toString() }),
     }),
-    post: object({
-        body: object({
-            email: string().required({email: ErrorCodes.emptyValue}).email({email: ErrorCodes.incorrectData}),
-            password: string().required({password: ErrorCodes.emptyValue}),
-        })
-    })
+});
+
+export default {
+  get: getSchema,
+  post: postSchema
 };

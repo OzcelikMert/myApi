@@ -8,11 +8,11 @@ import permissionMiddleware from "../../middlewares/validates/permission.middlew
 
 export default function (fastify: FastifyInstance, opts: any, done: () => void) {
     fastify.get('/get', { preHandler: [sessionMiddleware.check] }, userController.getMany);
-    fastify.get('/get/:_id', { preHandler: [requestMiddleware.check(userSchema.getOne), sessionMiddleware.check] }, userController.getOne);
+    fastify.get('/get/:_id', { preHandler: [requestMiddleware.check(userSchema.get), sessionMiddleware.check] }, userController.getOne);
     fastify.post('/add', { preHandler: [requestMiddleware.check(userSchema.post), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.checkOneRoleRank, userMiddleware.checkAlreadyEmail, userMiddleware.checkUrl] }, userController.add);
     fastify.put('/update/profile', { preHandler: [requestMiddleware.check(userSchema.putProfile), sessionMiddleware.check, userMiddleware.setIsProfile, userMiddleware.checkUrl] }, userController.updateProfile);
     fastify.put('/update/change-password', { preHandler: [requestMiddleware.check(userSchema.putPassword), sessionMiddleware.check, userMiddleware.checkPasswordWithSessionEmail] }, userController.updatePassword);
-    fastify.put('/update/:_id', { preHandler: [requestMiddleware.check(userSchema.putOne), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.checkOne, userMiddleware.checkOneRoleRank, userMiddleware.checkAlreadyEmail, userMiddleware.checkUrl] }, userController.updateOne);
-    fastify.delete('/delete/:_id', { preHandler: [requestMiddleware.check(userSchema.deleteOne), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.checkOne, userMiddleware.checkOneRoleRank] }, userController.deleteOne);
+    fastify.put('/update/:_id', { preHandler: [requestMiddleware.check(userSchema.put), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.checkOne, userMiddleware.checkOneRoleRank, userMiddleware.checkAlreadyEmail, userMiddleware.checkUrl] }, userController.updateOne);
+    fastify.delete('/delete/:_id', { preHandler: [requestMiddleware.check(userSchema.delete), sessionMiddleware.check, permissionMiddleware.check, userMiddleware.checkOne, userMiddleware.checkOneRoleRank] }, userController.deleteOne);
     done();
 }

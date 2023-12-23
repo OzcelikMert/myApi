@@ -12,3 +12,4 @@ Things to do:
     - route daki linkleri duzgun yap updatede update olsun deletede delete olsun gibi
     - routedaki linkleri artik fonksyiondan cekme string icinde elinle yaz
     - post ve termlerdeki typeid urlden kaldir param olarak gonder
+    - schemalari ayarladigin routelera gore tekrar duzenle (parametrelere dikkat et)

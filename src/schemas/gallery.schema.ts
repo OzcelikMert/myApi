@@ -1,10 +1,12 @@
-import {object, string, array} from "yup";
+import { object, string, array, ZodObject } from 'zod';
 import {ErrorCodes} from "../library/api";
 
-export default {
-    delete: object({
-        body: object({
-            images: array(string().required({images: ErrorCodes.incorrectData})),
-        })
+const deleteSchema: ZodObject<any> = object({
+    body: object({
+        images: array(string().min(1, { message: ErrorCodes.emptyValue.toString() })),
     })
+});
+
+export default {
+    delete: deleteSchema
 };

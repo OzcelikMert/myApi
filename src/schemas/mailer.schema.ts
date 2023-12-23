@@ -1,13 +1,15 @@
-import {object, string} from "yup";
+import { object, string, ZodObject } from 'zod';
 import {ErrorCodes} from "../library/api";
 
-export default {
-    post: object({
-        body: object({
-            contactFormId: string().required({contactFormId: ErrorCodes.emptyValue}),
-            email: string().required({email: ErrorCodes.emptyValue}).email({email: ErrorCodes.incorrectData}),
-            message: string().required({message: ErrorCodes.emptyValue}),
-            replyMessage: string()
-        })
+const postSchema: ZodObject<any> = object({
+    body: object({
+        contactFormId: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+        email: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+        message: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+        replyMessage: string()
     })
+});
+
+export default {
+    post: postSchema
 };

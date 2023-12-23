@@ -1,52 +1,65 @@
-import {object, string, number, array, boolean} from "yup";
+import { object, string, array, boolean, number, ZodObject } from 'zod';
 import {ErrorCodes} from "../library/api";
 
 const postBody = object({
-    elementId: string().required({elementId: ErrorCodes.emptyValue}),
-    langKey: string().required({langKey: ErrorCodes.emptyValue}),
+    elementId: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+    langKey: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
     types: (array(object({
         _id: string(),
-        elementId: string().required({elementId: ErrorCodes.emptyValue}),
-        typeId: number().required({typeId: ErrorCodes.emptyValue}),
-        langKey: string().required({langKey: ErrorCodes.emptyValue}),
-        rank: number().required({rank: ErrorCodes.emptyValue}),
+        elementId: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+        typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
+        langKey: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+        rank: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
         contents: object({
             _id: string(),
             url: string(),
             comment: string(),
-            langId: string().required({langId: ErrorCodes.emptyValue}),
+            langId: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
             content: string()
-        }).required({contents: ErrorCodes.emptyValue})
+        }).required()
     }))).default([])
-})
+});
+
+const getSchema: ZodObject<any> = object({
+    params: object({
+        _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+    }),
+    query: object({
+        _id: string(),
+        elementId: string(),
+        langId: string(),
+    })
+});
+
+const getManySchema: ZodObject<any> = object({
+    query: object({
+        _id: array(string().min(1, { message: ErrorCodes.emptyValue.toString() })),
+        elementId: array(string().min(1, { message: ErrorCodes.emptyValue.toString() })).default([]),
+        langId: string()
+    })
+});
+
+const postSchema: ZodObject<any> = object({
+    body: postBody
+});
+
+const putSchema: ZodObject<any> = object({
+    params: object({
+        _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+    }),
+    body: postBody
+});
+
+const deleteManySchema: ZodObject<any> = object({
+    body: object({
+        _id: array(string().min(1, { message: ErrorCodes.emptyValue.toString() })).min(1, { message: ErrorCodes.emptyValue.toString() }),
+    })
+});
 
 export default {
-    getOne: object({
-        query: object({
-            _id: string(),
-            elementId: string(),
-            langId: string(),
-        })
-    }),
-    getMany: object({
-        query: object({
-            _id: array(string().required({_id: ErrorCodes.incorrectData})).default(undefined),
-            elementId: array(string().required({elementId: ErrorCodes.incorrectData})).default(undefined),
-            langId: string()
-        })
-    }),
-    post: object({
-        body: postBody
-    }),
-    putOne: object({
-        params: object({
-            _id: string().required({_id: ErrorCodes.emptyValue}),
-        }),
-        body: postBody
-    }),
-    deleteMany: object({
-        body: object({
-            _id: array(string().required({_id: ErrorCodes.incorrectData})).required({_id: ErrorCodes.emptyValue}),
-        })
-    })
+    get: getSchema,
+    getMany: getManySchema,
+    post: postSchema,
+    put: putSchema,
+    deleteMany: deleteManySchema
 };

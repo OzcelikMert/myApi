@@ -1,18 +1,22 @@
-import { object, string, number } from "yup";
+import { object, number, ZodObject } from 'zod';
 import {ErrorCodes} from "../library/api";
 
-export default {
-    getPostTerm: object({
-        query: object({
-            typeId: number().required({typeId: ErrorCodes.emptyValue}),
-            postTypeId: number().required({postTypeId: ErrorCodes.emptyValue}),
-            page: number(),
-        })
-    }),
-    getPost: object({
-        query: object({
-            typeId: number().required({typeId: ErrorCodes.emptyValue}),
-            page: number(),
-        })
+const getPostTermSchema: ZodObject<any> = object({
+    query: object({
+        typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
+        postTypeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
+        page: number(),
     })
+});
+
+const getPostSchema: ZodObject<any> = object({
+    query: object({
+        typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
+        page: number(),
+    })
+});
+
+export default {
+    getPostTerm: getPostTermSchema,
+    getPost: getPostSchema
 };

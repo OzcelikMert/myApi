@@ -1,89 +1,103 @@
-import { object, number, string, array, mixed, ObjectSchema } from "yup";
+import { object, string, array, number, ZodObject } from 'zod';
 import {ErrorCodes} from "../library/api";
 import {SettingGetParamDocument} from "../types/services/setting";
 
+const getSchema: ZodObject<any> = object({
+    query: object({
+        langId: string(),
+        projection: string()
+    }) as ZodObject<SettingGetParamDocument>
+});
+
+const putGeneralSchema: ZodObject<any> = object({
+    body: object({
+        defaultLangId: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+        icon: string(),
+        logo: string(),
+        logoTwo: string(),
+        head: string(),
+        script: string(),
+        contact: object({
+            email: string(),
+            phone: string(),
+            address: string(),
+            addressMap: string(),
+            facebook: string(),
+            instagram: string(),
+            twitter: string(),
+            linkedin: string(),
+            google: string(),
+        }),
+    })
+});
+
+const putSeoSchema: ZodObject<any> = object({
+    body: object({
+        seoContents: object({
+            langId: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+            title: string(),
+            content: string(),
+            tags: array(string().min(1, { message: ErrorCodes.emptyValue.toString() })).default([])
+        }),
+    })
+});
+
+const putContactFormSchema: ZodObject<any> = object({
+    body: object({
+        contactForms: array(object({
+            _id: string(),
+            name: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+            key: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+            outGoingEmail: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+            email: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+            password: string(),
+            outGoingServer: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+            inComingServer: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+            port: number().min(1, { message: ErrorCodes.emptyValue.toString() })
+        })).min(1, { message: ErrorCodes.emptyValue.toString() }),
+    })
+});
+
+const putSocialMediaSchema: ZodObject<any> = object({
+    body: object({
+        socialMedia: array(object({
+            _id: string(),
+            elementId: string().default(""),
+            title: string().default(""),
+            url: string().default(""),
+        })).min(1, { message: ErrorCodes.emptyValue.toString() }),
+    })
+});
+
+const putStaticLanguageSchema: ZodObject<any> = object({
+    body: object({
+        staticLanguages: array(object({
+            _id: string(),
+            langKey: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+            title: string().default(""),
+            contents: object({
+                _id: string(),
+                langId: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
+                content: string().default(""),
+            })
+        })).min(1, { message: ErrorCodes.emptyValue.toString() }),
+    })
+});
+
+const putECommerceSchema: ZodObject<any> = object({
+    body: object({
+        eCommerce: object({
+            currencyId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
+        }),
+    })
+});
+
 export default {
-    get: object({
-        query: object().shape({
-            langId: string(),
-            projection: string()
-        }) as ObjectSchema<SettingGetParamDocument>,
-    }),
-    putGeneral: object({
-        body: object({
-            defaultLangId: string().required({defaultLangId: ErrorCodes.emptyValue}),
-            icon: string(),
-            logo: string(),
-            logoTwo: string(),
-            head: string(),
-            script: string(),
-            contact: object({
-                email: string(),
-                phone: string(),
-                address: string(),
-                addressMap: string(),
-                facebook: string(),
-                instagram: string(),
-                twitter: string(),
-                linkedin: string(),
-                google: string(),
-            }).default(undefined),
-        })
-    }),
-    putSeo: object({
-        body: object({
-            seoContents: object({
-                langId: string().required({langId: ErrorCodes.emptyValue}),
-                title: string(),
-                content: string(),
-                tags: array(string().required({tags: ErrorCodes.incorrectData})).default([])
-            }).required({seoContents: ErrorCodes.emptyValue}),
-        })
-    }),
-    putContactForm: object({
-        body: object({
-            contactForms: array(object({
-                _id: string(),
-                name: string().required({name: ErrorCodes.emptyValue}),
-                key: string().required({key: ErrorCodes.emptyValue}),
-                outGoingEmail: string().required({outGoingEmail: ErrorCodes.emptyValue}),
-                email: string().required({email: ErrorCodes.emptyValue}),
-                password: string(),
-                outGoingServer: string().required({outGoingServer: ErrorCodes.emptyValue}),
-                inComingServer: string().required({inComingServer: ErrorCodes.emptyValue}),
-                port: number().required({port: ErrorCodes.emptyValue})
-            }).required({contactForms: ErrorCodes.incorrectData})).required({contactForms: ErrorCodes.emptyValue}),
-        })
-    }),
-    putSocialMedia: object({
-        body: object({
-            socialMedia: array(object({
-                _id: string(),
-                elementId: string().default(""),
-                title: string().default(""),
-                url: string().default(""),
-            }).required({socialMedia: ErrorCodes.incorrectData})).required({socialMedia: ErrorCodes.emptyValue}),
-        })
-    }),
-    putStaticLanguage: object({
-        body: object({
-            staticLanguages: array(object({
-                _id: string(),
-                langKey: string().required({langKey: ErrorCodes.emptyValue}),
-                title: string().default(""),
-                contents: object({
-                    _id: string(),
-                    langId: string().required({langId: ErrorCodes.emptyValue}),
-                    content: string().default(""),
-                })
-            }).required({staticLanguages: ErrorCodes.incorrectData})).required({staticLanguages: ErrorCodes.emptyValue}),
-        })
-    }),
-    putECommerce: object({
-        body: object({
-            eCommerce: object({
-                currencyId: number().required({currencyId: ErrorCodes.emptyValue}),
-            }).required({eCommerce: ErrorCodes.incorrectData}),
-        })
-    }),
+    get: getSchema,
+    putGeneral: putGeneralSchema,
+    putSeo: putSeoSchema,
+    putContactForm: putContactFormSchema,
+    putSocialMedia: putSocialMediaSchema,
+    putStaticLanguage: putStaticLanguageSchema,
+    putECommerce: putECommerceSchema,
 };
