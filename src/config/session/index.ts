@@ -1,5 +1,6 @@
 import config from "config";
 import mongoose from 'mongoose';
+import sessionAuthModel from "../../models/sessionAuth.model";
 
 const serverProtocol = config.get("serverProtocol") as string;
 
@@ -18,7 +19,7 @@ const sessionConfig = {
     },
     storage: {
         db: mongoose.connection.db,
-        collection: 'sessionAuths',
+        collection: sessionAuthModel,
     },
 }
 
