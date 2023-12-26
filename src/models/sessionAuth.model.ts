@@ -15,4 +15,4 @@ const schema = new mongoose.Schema<SessionAuthDocument>(
     {timestamps: true}
 )
 
-export default mongoose.model<SessionAuthDocument, mongoose.Model<SessionAuthDocument>>("sessionAuths", schema);
+export default mongoose.model<SessionAuthDocument, mongoose.Model<SessionAuthDocument>>("sessionAuth", schema);
