@@ -1,16 +1,15 @@
-import {NextFunction, Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import userService from "../services/user.service";
 import UserRoles from "../constants/userRoles";
 import logMiddleware from "./log.middleware";
 
 export default {
-    checkOne: async (
-        req: Request<any, any, any, any>,
-        res: Response,
-        next: NextFunction
+    check: async (
+        req: FastifyRequest<{Params: any}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let _id = req.params._id as string;
@@ -25,19 +24,16 @@ export default {
                 serviceResult.statusCode = StatusCodes.notFound;
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     },
     checkMany: async (
-        req: Request<any, any, any, any>,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest<{Body: any }>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let _id = req.body._id as string[];
@@ -55,19 +51,16 @@ export default {
                 serviceResult.statusCode = StatusCodes.notFound;
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     },
     checkOneRoleRank: async (
-        req: Request,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest<{Params: any, Body: any }>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let roleId = req.body.roleId;
@@ -86,7 +79,7 @@ export default {
             }
 
             if (userRoleId > 0) {
-                let sessionUserRole = UserRoles.findSingle("id", req.session.data.roleId);
+                let sessionUserRole = UserRoles.findSingle("id", req.sessionAuth.roleId);
                 let userRole = UserRoles.findSingle("id", userRoleId);
 
                 if(
@@ -99,19 +92,16 @@ export default {
                 }
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     },
     checkAlreadyEmail: async (
-        req: Request,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest<{Params: any, Body: any }>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let _id = req.params._id as string;
@@ -130,23 +120,20 @@ export default {
                 }
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     },
     checkUrl: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest<{Params: any, Body: any }>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let name = req.body.name as string;
 
             if(name) {
-                let _id: string | undefined = req.body._id ?? req.params._id ?? req.body.isProfile ? req.session.data.id.toString() : undefined;
+                let _id: string | undefined = req.body._id ?? req.params._id ?? req.body.isProfile ? req.sessionAuth._id.toString() : undefined;
 
                 let urlAlreadyCount = 2;
                 let url = name.convertSEOUrl();
@@ -164,22 +151,19 @@ export default {
 
                 req.body.url = url;
             }
-
-            next();
         });
     },
     checkPasswordWithSessionEmail: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest<{Params: any, Body: any }>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let password = req.body.password;
 
             let resData = await userService.getOne({
-                email: req.session.data.email,
+                email: req.sessionAuth.email,
                 password: password
             });
 
@@ -189,21 +173,17 @@ export default {
                 serviceResult.statusCode = StatusCodes.notFound;
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     },
     setIsProfile: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest<{Params: any, Body: any }>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             req.body.isProfile = true;
-            next();
         });
     }
 };

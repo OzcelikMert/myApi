@@ -1,16 +1,15 @@
-import {NextFunction, Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import viewService from "../services/view.service";
 import Variable, {DateMask} from "../library/variable";
 import logMiddleware from "./log.middleware";
 
 export default {
-    checkOne: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
+    check: async (
+        req: FastifyRequest<{Params: any}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             req.body.url = Variable.isEmpty(req.body.url) ? "/" : req.body.url;
@@ -33,19 +32,16 @@ export default {
                 serviceResult.statusCode = StatusCodes.conflict;
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     },
     checkAndDeleteMany: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest<{Body: any }>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let dateEnd = new Date();
             dateEnd.addDays(-7);
 
@@ -54,8 +50,6 @@ export default {
             if (resData) {
                 await viewService.deleteMany({dateEnd: dateEnd})
             }
-
-            next();
         });
     }
 };

@@ -1,15 +1,14 @@
-import {NextFunction, Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import subscriberService from "../services/subscriber.service";
 import logMiddleware from "./log.middleware";
 
 export default {
-    checkOne: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
+    check: async (
+        req: FastifyRequest<{Params: any}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let email = (req.body.email ?? req.params.email ?? req.query.email ?? "") as string;
@@ -26,19 +25,16 @@ export default {
                 serviceResult.statusCode = StatusCodes.conflict;
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     },
     checkMany: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest<{Body: any }>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let _id = req.body._id as string[];
@@ -56,10 +52,8 @@ export default {
                 serviceResult.statusCode = StatusCodes.conflict;
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     }

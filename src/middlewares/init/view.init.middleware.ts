@@ -1,17 +1,16 @@
-import {NextFunction, Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {Config} from "../../config";
 import logMiddleware from "../log.middleware";
 
 export default {
     set: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let ip = req.ip;
             let date = new Date();
-            let _id = (req.session && req.session.data && req.session.data.id) ? req.session.data.id.toString() : "";
+            let _id = (req.session && req.session.data && req.sessionAuth._id) ? req.sessionAuth._id.toString() : "";
 
             Config.onlineUsers = Config.onlineUsers.filter(onlineUser => Number(date.diffMinutes(onlineUser.updatedAt)) < 10);
 
@@ -27,8 +26,6 @@ export default {
                     _id: _id
                 })
             }
-
-            next();
         });
     }
 };

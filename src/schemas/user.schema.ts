@@ -12,7 +12,7 @@ const postBody = {
     banComment: string(),
 };
 
-const getSchema: ZodObject<any> = object({
+const getSchema = object({
     query: object({
         _id: string(),
         url: string(),
@@ -20,7 +20,7 @@ const getSchema: ZodObject<any> = object({
     })
 });
 
-const getManySchema: ZodObject<any> = object({
+const getManySchema = object({
     query: object({
         _id: array(string().min(1, { message: ErrorCodes.emptyValue.toString() })).min(1, { message: ErrorCodes.emptyValue.toString() }),
         statusId: number(),
@@ -30,11 +30,11 @@ const getManySchema: ZodObject<any> = object({
     })
 });
 
-const postSchema: ZodObject<any> = object({
+const postSchema = object({
     body: object(postBody)
 });
 
-const putSchema: ZodObject<any> = object({
+const putSchema = object({
     params: object({
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),
@@ -44,7 +44,7 @@ const putSchema: ZodObject<any> = object({
     })
 });
 
-const putProfileSchema: ZodObject<any> = object({
+const putProfileSchema = object({
     body: object({
         image: string(),
         name: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
@@ -56,14 +56,14 @@ const putProfileSchema: ZodObject<any> = object({
     })
 });
 
-const putPasswordSchema: ZodObject<any> = object({
+const putPasswordSchema = object({
     body: object({
         password: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
         newPassword: string().min(1, { message: ErrorCodes.emptyValue.toString() })
     })
 });
 
-const deleteSchema: ZodObject<any> = object({
+const deleteSchema = object({
     params: object({
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
     })

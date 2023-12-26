@@ -1,16 +1,14 @@
-import {NextFunction, Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import postService from "../services/post.service";
 import logMiddleware from "./log.middleware";
-import Variable from "../library/variable";
 
 export default {
-    checkOne: async (
-        req: Request<any, any, any, any>,
-        res: Response,
-        next: NextFunction
+    check: async (
+        req: FastifyRequest<{Params: any}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let _id = req.params._id as string;
@@ -27,19 +25,16 @@ export default {
                 serviceResult.statusCode = StatusCodes.notFound;
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     },
     checkMany: async (
-        req: Request<any, any, any, any>,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest<{Body: any }>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let _id = req.body._id as string[];
@@ -59,19 +54,16 @@ export default {
                 serviceResult.statusCode = StatusCodes.notFound;
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     },
     checkUrl: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest<{Params: any}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let _id = req.params._id as string | undefined;
             let typeId = req.params.typeId as number;
 
@@ -93,8 +85,6 @@ export default {
 
                 req.body.contents.url = url;
             }
-
-            next();
         });
     }
 };

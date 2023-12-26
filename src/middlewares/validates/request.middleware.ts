@@ -1,22 +1,21 @@
-import {AnySchema} from "yup";
-import {NextFunction, Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {ErrorCodes, Result, StatusCodes} from "../../library/api";
 import logMiddleware from "../log.middleware";
+import {ZodSchema} from "zod";
 
 export default {
-    check: (schema: AnySchema) => async (
-        req: Request,
-        res: Response,
-        next: NextFunction
+    check: (schema: ZodSchema) => async (
+        req: FastifyRequest,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
             try {
-                let validatedData = await schema.validate({
+                let validatedData = await schema.parse({
                     body: req.body,
                     query: req.query,
                     params: req.params
-                }, {abortEarly: false, stripUnknown: true});
+                });
                 req = Object.assign(req, validatedData);
             } catch (e: any) {
                 serviceResult.status = false;
@@ -25,10 +24,8 @@ export default {
                 serviceResult.errorCode = ErrorCodes.incorrectData;
                 serviceResult.statusCode = StatusCodes.badRequest;
             } finally {
-                if (serviceResult.status) {
-                    next();
-                } else {
-                    res.status(serviceResult.statusCode).json(serviceResult)
+                if (!serviceResult.status) {
+                    reply.status(serviceResult.statusCode).send(serviceResult)
                 }
             }
         });

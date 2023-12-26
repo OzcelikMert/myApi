@@ -5,7 +5,7 @@ import logService from "../services/log.service";
 export default {
     error: async (
         req: FastifyRequest,
-        res: FastifyReply,
+        reply: FastifyReply,
         func: () => void
     ) => {
         try {
@@ -26,7 +26,7 @@ export default {
             serviceResult.statusCode = StatusCodes.badRequest;
             serviceResult.errorCode = ErrorCodes.incorrectData;
             serviceResult.status = false;
-            res.status(serviceResult.statusCode).send(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         }
     }
 }

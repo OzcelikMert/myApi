@@ -1,17 +1,17 @@
-import {NextFunction, Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {ErrorCodes, Result, StatusCodes} from "../../library/api";
 import permissionUtil from "../../utils/permission.util";
 import logMiddleware from "../log.middleware";
+import {SessionAuthDocument} from "../../types/models/sessionAuth";
 
 export default {
     check: async (
-        req: Request,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let session = req.session.data;
+            let session = req.sessionAuth as SessionAuthDocument;
 
             let path = req.originalUrl.replace(`/api`, "");
 
@@ -19,17 +19,15 @@ export default {
                 path,
                 req.method,
                 session.roleId,
-                session.permission
+                session.permissions
             )) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.noPerm;
                 serviceResult.statusCode = StatusCodes.notFound;
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     }

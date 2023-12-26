@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
 import * as fs from "fs";
 import * as path from "path";
@@ -7,11 +7,10 @@ import logMiddleware from "./log.middleware";
 
 export default {
     check: async (
-        req: Request<any>,
-        res: Response,
-        next: NextFunction
+        req: FastifyRequest<{Params: any}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let name = req.params.name;
@@ -23,10 +22,8 @@ export default {
                 serviceResult.statusCode = StatusCodes.notFound;
             }
 
-            if (serviceResult.status) {
-                next();
-            } else {
-                res.status(serviceResult.statusCode).json(serviceResult)
+            if (!serviceResult.status) {
+                reply.status(serviceResult.statusCode).send(serviceResult)
             }
         });
     },

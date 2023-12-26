@@ -13,7 +13,7 @@ const postBody = object({
     })
 })
 
-const getSchema: ZodObject<any> = object({
+const getSchema = object({
     params: object({
         postTypeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
@@ -26,7 +26,7 @@ const getSchema: ZodObject<any> = object({
     })
 });
 
-const getManySchema: ZodObject<any> = object({
+const getManySchema = object({
     params: object({
         postTypeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),
@@ -43,7 +43,7 @@ const getManySchema: ZodObject<any> = object({
     })
 });
 
-const postSchema: ZodObject<any> = object({
+const postSchema = object({
     params: object({
         postTypeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
@@ -51,7 +51,7 @@ const postSchema: ZodObject<any> = object({
     body: postBody
 });
 
-const putSchema: ZodObject<any> = object({
+const putSchema = object({
     params: object({
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
         postTypeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
@@ -60,7 +60,7 @@ const putSchema: ZodObject<any> = object({
     body: postBody
 });
 
-const putManyStatusSchema: ZodObject<any> = object({
+const putManyStatusSchema = object({
     params: object({
         postTypeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
@@ -71,7 +71,7 @@ const putManyStatusSchema: ZodObject<any> = object({
     })
 });
 
-const putRankSchema: ZodObject<any> = object({
+const putRankSchema = object({
     params: object({
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
         postTypeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
@@ -82,7 +82,7 @@ const putRankSchema: ZodObject<any> = object({
     })
 });
 
-const deleteManySchema: ZodObject<any> = object({
+const deleteManySchema = object({
     params: object({
         postTypeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),

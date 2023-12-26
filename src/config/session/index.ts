@@ -8,7 +8,7 @@ export const sessionTTL = 60 * 60;
 
 const sessionConfig = {
     secret: 'ShMf250ld@__45slS',
-    sessionName: "auth",
+    sessionName: "sessionAuth",
     cookieName: "auth",
     cookie: {
         path: '/',

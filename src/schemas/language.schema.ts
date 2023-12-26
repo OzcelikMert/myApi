@@ -10,7 +10,7 @@ const postBody = object({
     rank: number().default(0)
 });
 
-const getSchema: ZodObject<any> = object({
+const getSchema = object({
     params: object({
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),
@@ -20,25 +20,25 @@ const getSchema: ZodObject<any> = object({
     }),
 });
 
-const getManySchema: ZodObject<any> = object({
+const getManySchema = object({
     query: object({
         _id: array(string().min(1, { message: ErrorCodes.emptyValue.toString() })).default([]),
         statusId: number()
     })
 });
 
-const postSchema: ZodObject<any> = object({
+const postSchema = object({
     body: postBody,
 });
 
-const putSchema: ZodObject<any> = object({
+const putSchema = object({
     params: object({
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),
     body: postBody
 });
 
-const putRankSchema: ZodObject<any> = object({
+const putRankSchema = object({
     params: object({
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),

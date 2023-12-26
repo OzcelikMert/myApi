@@ -20,7 +20,7 @@ const postBody = object({
     }))).default([])
 });
 
-const getSchema: ZodObject<any> = object({
+const getSchema = object({
     params: object({
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),
@@ -31,7 +31,7 @@ const getSchema: ZodObject<any> = object({
     })
 });
 
-const getManySchema: ZodObject<any> = object({
+const getManySchema = object({
     query: object({
         _id: array(string().min(1, { message: ErrorCodes.emptyValue.toString() })),
         elementId: array(string().min(1, { message: ErrorCodes.emptyValue.toString() })).default([]),
@@ -39,18 +39,18 @@ const getManySchema: ZodObject<any> = object({
     })
 });
 
-const postSchema: ZodObject<any> = object({
+const postSchema = object({
     body: postBody
 });
 
-const putSchema: ZodObject<any> = object({
+const putSchema = object({
     params: object({
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),
     body: postBody
 });
 
-const deleteManySchema: ZodObject<any> = object({
+const deleteManySchema = object({
     body: object({
         _id: array(string().min(1, { message: ErrorCodes.emptyValue.toString() })).min(1, { message: ErrorCodes.emptyValue.toString() }),
     })

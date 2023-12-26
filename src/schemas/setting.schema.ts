@@ -2,14 +2,14 @@ import { object, string, array, number, ZodObject } from 'zod';
 import {ErrorCodes} from "../library/api";
 import {SettingGetParamDocument} from "../types/services/setting";
 
-const getSchema: ZodObject<any> = object({
+const getSchema = object({
     query: object({
         langId: string(),
         projection: string()
     }) as ZodObject<SettingGetParamDocument>
 });
 
-const putGeneralSchema: ZodObject<any> = object({
+const putGeneralSchema = object({
     body: object({
         defaultLangId: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
         icon: string(),
@@ -31,7 +31,7 @@ const putGeneralSchema: ZodObject<any> = object({
     })
 });
 
-const putSeoSchema: ZodObject<any> = object({
+const putSeoSchema = object({
     body: object({
         seoContents: object({
             langId: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
@@ -42,7 +42,7 @@ const putSeoSchema: ZodObject<any> = object({
     })
 });
 
-const putContactFormSchema: ZodObject<any> = object({
+const putContactFormSchema = object({
     body: object({
         contactForms: array(object({
             _id: string(),
@@ -58,7 +58,7 @@ const putContactFormSchema: ZodObject<any> = object({
     })
 });
 
-const putSocialMediaSchema: ZodObject<any> = object({
+const putSocialMediaSchema = object({
     body: object({
         socialMedia: array(object({
             _id: string(),
@@ -69,7 +69,7 @@ const putSocialMediaSchema: ZodObject<any> = object({
     })
 });
 
-const putStaticLanguageSchema: ZodObject<any> = object({
+const putStaticLanguageSchema = object({
     body: object({
         staticLanguages: array(object({
             _id: string(),
@@ -84,7 +84,7 @@ const putStaticLanguageSchema: ZodObject<any> = object({
     })
 });
 
-const putECommerceSchema: ZodObject<any> = object({
+const putECommerceSchema = object({
     body: object({
         eCommerce: object({
             currencyId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),

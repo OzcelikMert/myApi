@@ -94,7 +94,7 @@ const postBody = object({
     })
 });
 
-const getSchema: ZodObject<any> = object({
+const getSchema = object({
     params: object({
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),
@@ -107,7 +107,7 @@ const getSchema: ZodObject<any> = object({
     })
 });
 
-const getManySchema: ZodObject<any> = object({
+const getManySchema = object({
     query: object({
         typeId: array(number().min(1, { message: ErrorCodes.emptyValue.toString() })).default([]),
         _id: array(string().min(1, { message: ErrorCodes.emptyValue.toString() })).default([]),
@@ -123,7 +123,7 @@ const getManySchema: ZodObject<any> = object({
     })
 });
 
-const getCountSchema: ZodObject<any> = object({
+const getCountSchema = object({
     params: object({
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),
@@ -134,14 +134,14 @@ const getCountSchema: ZodObject<any> = object({
     })
 });
 
-const postSchema: ZodObject<any> = object({
+const postSchema = object({
     params: object({
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),
     body: postBody
 });
 
-const putSchema: ZodObject<any> = object({
+const putSchema = object({
     params: object({
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
@@ -149,7 +149,7 @@ const putSchema: ZodObject<any> = object({
     body: postBody
 });
 
-const putManyStatusSchema: ZodObject<any> = object({
+const putManyStatusSchema = object({
     params: object({
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() })
     }),
@@ -159,7 +159,7 @@ const putManyStatusSchema: ZodObject<any> = object({
     }),
 });
 
-const putOneRankSchema: ZodObject<any> = object({
+const putOneRankSchema = object({
     params: object({
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
@@ -169,7 +169,7 @@ const putOneRankSchema: ZodObject<any> = object({
     }),
 });
 
-const putOneViewSchema: ZodObject<any> = object({
+const putOneViewSchema = object({
     params: object({
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
@@ -179,7 +179,7 @@ const putOneViewSchema: ZodObject<any> = object({
     }),
 });
 
-const deleteManySchema: ZodObject<any> = object({
+const deleteManySchema = object({
     params: object({
         typeId: number().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),
