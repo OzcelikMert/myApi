@@ -2,7 +2,7 @@ import {FastifyRequest, FastifyReply} from "fastify";
 import {ErrorCodes, Result, StatusCodes} from "../../library/api";
 import userService from "../../services/user.service";
 import {StatusId} from "../../constants/status";
-import {sessionTTL} from "../../config/session";
+import {sessionAuthTTL} from "../../config/session/session.auth";
 import logMiddleware from "../log.middleware";
 
 export default {
@@ -13,7 +13,7 @@ export default {
         await logMiddleware.error(req, res, async () => {
             let serviceResult = new Result();
 
-            if (req.session && req.session.data) {
+            if (req.sessionAuth && req.sessionAuth.data) {
                 if (req.sessionAuth.get("ip") != req.ip) {
                     await new Promise(resolve => {
                         req.sessionAuth.delete();
@@ -23,7 +23,7 @@ export default {
             }
 
             if (
-                (typeof req.session === "undefined" || typeof req.session.data === "undefined") ||
+                (typeof req.sessionAuth === "undefined" || typeof req.sessionAuth.data === "undefined") ||
                 !(await userService.getOne({_id: req.sessionAuth.get("_id"), statusId: StatusId.Active}))
             ) {
                 serviceResult.status = false;
@@ -43,16 +43,16 @@ export default {
         res: FastifyReply
     ) => {
         await logMiddleware.error(req, res, async () => {
-            if (req.session && req.session.data) {
-                if (Number(new Date().diffSeconds(new Date(req.session.data.updatedAt))) > sessionTTL) {
+            if (req.sessionAuth && req.sessionAuth.data) {
+                if (Number(new Date().diffSeconds(new Date(req.sessionAuth.data.updatedAt))) > sessionAuthTTL) {
                     await new Promise(resolve => {
                         req.sessionAuth.delete();
                         resolve();
                     })
                 }
             }
-            if (req.session && req.session.data) {
-                req.session.data.updatedAt = Date.now();
+            if (req.sessionAuth && req.sessionAuth.data) {
+                req.sessionAuth.data.updatedAt = Date.now();
             }
         });
     }

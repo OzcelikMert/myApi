@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import galleryController from "../../controllers/gallery.controller";
 import gallerySchema from "../../schemas/gallery.schema";
-import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import sessionMiddleware from "../../middlewares/validates/sessionAuth.middleware";
 import permissionMiddleware from "../../middlewares/validates/permission.middleware";
 import requestMiddleware from "../../middlewares/validates/request.middleware";
 

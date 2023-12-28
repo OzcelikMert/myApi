@@ -3,7 +3,7 @@ import viewController from "../../controllers/view.controller";
 import viewSchema from "../../schemas/view.schema";
 import viewMiddleware from "../../middlewares/view.middleware";
 import requestMiddleware from "../../middlewares/validates/request.middleware";
-import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import sessionMiddleware from "../../middlewares/validates/sessionAuth.middleware";
 
 export default function (fastify: FastifyInstance, opts: any, done: () => void) {
     fastify.get('/get/number', { preHandler: [sessionMiddleware.check] }, viewController.getNumber);

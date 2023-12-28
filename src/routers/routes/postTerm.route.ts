@@ -3,7 +3,7 @@ import postTermSchema from "../../schemas/postTerm.schema";
 import postTermMiddleware from "../../middlewares/postTerm.middleware";
 import postTermController from "../../controllers/postTerm.controller";
 import requestMiddleware from "../../middlewares/validates/request.middleware";
-import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import sessionMiddleware from "../../middlewares/validates/sessionAuth.middleware";
 import permissionMiddleware from "../../middlewares/validates/permission.middleware";
 
 export default function (fastify: FastifyInstance, opts: any, done: () => void) {

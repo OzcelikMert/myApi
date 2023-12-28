@@ -3,7 +3,7 @@ import languageSchema from "../../schemas/language.schema";
 import languageController from "../../controllers/language.controller";
 import languageMiddleware from "../../middlewares/language.middleware";
 import requestMiddleware from "../../middlewares/validates/request.middleware";
-import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import sessionMiddleware from "../../middlewares/validates/sessionAuth.middleware";
 import permissionMiddleware from "../../middlewares/validates/permission.middleware";
 
 export default function (fastify: FastifyInstance, opts: any, done: () => void) {

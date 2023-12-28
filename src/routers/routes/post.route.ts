@@ -4,7 +4,7 @@ import postController from "../../controllers/post.controller";
 import postMiddleware from "../../middlewares/post.middleware";
 import viewMiddleware from "../../middlewares/view.middleware";
 import requestMiddleware from "../../middlewares/validates/request.middleware";
-import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import sessionMiddleware from "../../middlewares/validates/sessionAuth.middleware";
 import permissionMiddleware from "../../middlewares/validates/permission.middleware";
 
 export default function (fastify: FastifyInstance, opts: any, done: () => void) {

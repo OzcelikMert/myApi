@@ -1,6 +1,6 @@
-import {Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
-import {InferType} from "yup";
+import zod from "zod";
 import authSchema from "../schemas/auth.schema";
 import userService from "../services/user.service";
 import {StatusId} from "../constants/status";
@@ -9,44 +9,40 @@ import userUtil from "../utils/user.util";
 
 export default {
     getSession: async (
-        req: Request<any, any,any, any>,
-        res: Response
+        req: FastifyRequest<{Params: any, Query: (zod.infer<typeof authSchema.get>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof authSchema.get> = req;
 
-            serviceResult.data = await userService.getOne({_id: req.session.data.id.toString()});
-            res.status(serviceResult.statusCode).json(serviceResult)
+            serviceResult.data = await userService.getOne({_id: req.sessionAuth.user?.userId.toString()});
+            reply.status(serviceResult.statusCode).send(serviceResult)
         })
     },
     login: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest<{Params: any, Body: (zod.infer<typeof authSchema.post>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof authSchema.post> = req;
 
             let resData = await userService.getOne({
-                ...data.body
+                ...req.body
             });
 
             if(resData){
                 let user = resData;
                 if(user.statusId == StatusId.Active) {
                     let time = new Date().getTime();
-                    req.session.data = {
-                        id: user._id,
+                    req.session.get("foo")
+                    req.sessionAuth.set("user", {
+                        userId: user._id,
                         email: user.email,
                         roleId: user.roleId,
                         ip: req.ip,
-                        permission: user.permissions,
+                        permissions: user.permissions,
                         token: userUtil.createToken(user._id.toString(), req.ip, time),
-                        createAt: time,
-                        updatedAt: time
-                    }
-                    req.session.save();
+                    });
                 }else {
                     serviceResult.status = false;
                     serviceResult.errorCode = ErrorCodes.noPerm;
@@ -59,19 +55,18 @@ export default {
                 serviceResult.statusCode = StatusCodes.notFound;
             }
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         })
     },
     logOut: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest<{Params: any}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
-            await req.session.destroy(() => {
-                res.status(serviceResult.statusCode).json(serviceResult)
-            });
+            req.sessionAuth.delete();
+            reply.status(serviceResult.statusCode).send(serviceResult);
         })
     }
 };

@@ -13,7 +13,7 @@ import "./library/variable/number"
 import "./library/variable/date"
 import "./library/variable/math"
 import viewInitMiddleware from "./middlewares/init/view.init.middleware";
-import sessionMiddleware from "./middlewares/validates/session.middleware";
+import sessionAuthMiddleware from "./middlewares/validates/sessionAuth.middleware";
 
 const port = config.get("serverPort") as number;
 const trafficMBLimit = config.get("serverTrafficMBLimit") as number || 2;
@@ -42,8 +42,8 @@ new InitConfig(server).init().then(()=> {
         console.log(`Response time for ${request.method} ${request.url}: ${responseTime}ms`);
     });
 
-    server.addHook('preHandler', sessionMiddleware.reload);
-    server.addHook('preHandler', sessionMiddleware.reload);
+    server.addHook('preHandler', viewInitMiddleware.set);
+    server.addHook('preHandler', sessionAuthMiddleware.reload);
 
     server.register(routers);
 

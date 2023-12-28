@@ -3,7 +3,7 @@ import navigationSchema from "../../schemas/navigation.schema";
 import navigationController from "../../controllers/navigation.controller";
 import navigationMiddleware from "../../middlewares/navigation.middleware";
 import permissionMiddleware from "../../middlewares/validates/permission.middleware";
-import sessionMiddleware from "../../middlewares/validates/session.middleware";
+import sessionMiddleware from "../../middlewares/validates/sessionAuth.middleware";
 import requestMiddleware from "../../middlewares/validates/request.middleware";
 
 export default function (fastify: FastifyInstance, opts: any, done: () => void) {

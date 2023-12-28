@@ -1,6 +1,6 @@
 import {UserRoleId} from "../../constants/userRoles";
 
-export interface SessionAuthDocument{
+export interface SessionAuthUserDocument{
     _id?: string
     userId: string
     roleId: UserRoleId,
@@ -10,4 +10,8 @@ export interface SessionAuthDocument{
     permissions: number[]
     createAt?: string,
     updatedAt?: string
+}
+
+export interface SessionAuthDocument{
+    user: SessionAuthUserDocument
 }

@@ -4,7 +4,7 @@ import fastifyCookie from '@fastify/cookie';
 import fastifyStatic from '@fastify/static';
 import http from "http";
 import https from "https";
-import Session from "./session";
+import SessionAuth, {sessionAuthKey} from "./session/session.auth";
 import {ConfigDocument} from "../types/config";
 import dbConnect from "./db";
 import userService from "../services/user.service";
@@ -18,6 +18,7 @@ import chalk from "chalk";
 
 import fs from "fs";
 import pagePathUtil from "../utils/pagePath.util";
+import sessionAuth from "./session/session.auth";
 
 let Config: ConfigDocument = {
     passwordSalt: "_@QffsDh14Q",
@@ -92,9 +93,10 @@ class InitConfig {
 
     private setSession() {
         this.server.register(fastifyCookie, {
-            secret: Session.sessionConfig.secret
+            secret: SessionAuth.sessionConfig.secret,
+            key: sessionAuthKey
         });
-        this.server.register(fastifySecureSession, Session.sessionConfig)
+        this.server.register(fastifySecureSession, SessionAuth.sessionConfig)
     }
 
     private async mongodbConnect() {

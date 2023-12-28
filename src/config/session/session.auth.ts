@@ -1,15 +1,18 @@
 import config from "config";
 import mongoose from 'mongoose';
 import sessionAuthModel from "../../models/sessionAuth.model";
+import crypto from "crypto";
 
 const serverProtocol = config.get("serverProtocol") as string;
 
-export const sessionTTL = 60 * 60;
+export const sessionAuthTTL = 60 * 60;
+export const sessionAuthKey = "ShMf250ld@__45slS";
 
 const sessionConfig = {
-    secret: 'ShMf250ld@__45slS',
-    sessionName: "sessionAuth",
-    cookieName: "auth",
+    key: sessionAuthKey,
+    secret: 'ShMf250ld@__45slS32_15@QeeR18',
+    sessionName: "auth",
+    cookieName: "sessionAuth",
     cookie: {
         path: '/',
         maxAge: 1000 * 60 * 60 * 24 * 365,
