@@ -2,6 +2,7 @@ import fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
 import fastifyFormBody from '@fastify/formbody';
 import fastifyCompress from '@fastify/compress';
+import fastifyMultipart from '@fastify/multipart';
 import InitConfig from "./config";
 import chalk from 'chalk';
 import routers from "./routers";
@@ -36,6 +37,7 @@ new InitConfig(server).init().then(()=> {
     });
 
     server.register(fastifyCompress);
+    server.register(fastifyMultipart);
 
     server.addHook('onResponse', async (request, reply) => {
         const responseTime = reply.getResponseTime();

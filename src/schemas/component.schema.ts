@@ -25,7 +25,6 @@ const getSchema = object({
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() }),
     }),
     query: object({
-        _id: string(),
         elementId: string(),
         langId: string(),
     })

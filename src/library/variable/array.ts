@@ -6,6 +6,8 @@ declare global {
         orderBy(key: string | "", sort_type: `asc` | `desc`): this
         serializeObject(): object,
         remove(index: number, deleteCount?: number): void;
+        includes(searchElement: T, fromIndex?: number): boolean;
+
     }
 }
 

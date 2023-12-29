@@ -9,7 +9,7 @@ import userUtil from "../utils/user.util";
 
 export default {
     getSession: async (
-        req: FastifyRequest<{Params: any, Query: (zod.infer<typeof authSchema.get>["query"])}>,
+        req: FastifyRequest<{Params: any, Querystring: (zod.infer<typeof authSchema.get>["query"])}>,
         reply: FastifyReply
     ) => {
         await logMiddleware.error(req, reply, async () => {

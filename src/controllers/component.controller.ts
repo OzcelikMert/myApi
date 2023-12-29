@@ -1,93 +1,86 @@
-import {Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {Result} from "../library/api";
-import {InferType} from "yup";
+import zod from "zod";
 import componentSchema from "../schemas/component.schema";
 import componentService from "../services/component.service";
 import logMiddleware from "../middlewares/log.middleware";
 
 export default {
     getOne: async (
-        req: Request<any, any, any, any>,
-        res: Response
+        req: FastifyRequest<{Params: (zod.infer<typeof componentSchema.get>["params"]), Querystring: (zod.infer<typeof componentSchema.get>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
-            let data: InferType<typeof componentSchema.getOne> = req;
-
             serviceResult.data = await componentService.getOne({
-                ...data.query
+                ...req.params,
+                ...req.query,
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         })
     },
     getMany: async (
-        req: Request<any, any, any, any>,
-        res: Response
+        req: FastifyRequest<{Querystring: (zod.infer<typeof componentSchema.getMany>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
-            let data: InferType<typeof componentSchema.getMany> = req;
-
             serviceResult.data = await componentService.getMany({
-                ...data.query
+                ...req.query
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         })
     },
     add: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof componentSchema.post>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
-            let data: InferType<typeof componentSchema.post> = req;
-
             let insertData = await componentService.add({
-                ...data.body,
-                authorId: req.session.data.id.toString(),
-                lastAuthorId: req.session.data.id.toString()
+                ...req.body,
+                authorId: req.sessionAuth.user?.userId.toString(),
+                lastAuthorId: req.sessionAuth.user?.userId.toString()
             });
 
             serviceResult.data = {_id: insertData._id};
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     updateOne: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Params: (zod.infer<typeof componentSchema.put>["params"]), Body: (zod.infer<typeof componentSchema.put>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof componentSchema.putOne> = req;
 
             serviceResult.data = await componentService.updateOne({
-                ...data.params,
-                ...data.body,
-                lastAuthorId: req.session.data.id.toString()
+                ...req.params,
+                ...req.body,
+                lastAuthorId: req.sessionAuth.user?.userId.toString()
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     deleteMany: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof componentSchema.deleteMany>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof componentSchema.deleteMany> = req;
 
             serviceResult.data = await componentService.deleteMany({
-                ...data.body
+                ...req.body
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     }
 };
