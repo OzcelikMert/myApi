@@ -1,86 +1,81 @@
-import {Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {Result} from "../library/api";
-import {InferType} from "yup";
+import zod from "zod";
 import subscriberSchema from "../schemas/subscriber.schema";
 import subscriberService from "../services/subscriber.service";
 import logMiddleware from "../middlewares/log.middleware";
 
 export default {
     getOne: async (
-        req: Request<any, any, any, any>,
-        res: Response
+        req: FastifyRequest<{Querystring: (zod.infer<typeof subscriberSchema.get>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof subscriberSchema.getOne> = req;
 
             serviceResult.data = await subscriberService.getOne({
-                ...data.query
+                ...req.query
             })
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     getMany: async (
-        req: Request<any, any, any, any>,
-        res: Response
+        req: FastifyRequest<{Querystring: (zod.infer<typeof subscriberSchema.getMany>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof subscriberSchema.getMany> = req;
 
             serviceResult.data = await subscriberService.getMany({
-                ...data.query
+                ...req.query
             })
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     add: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof subscriberSchema.post>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof subscriberSchema.post> = req;
 
             let insertData = await subscriberService.add({
-                ...data.body
+                ...req.body
             });
 
             serviceResult.data = {_id: insertData._id};
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     deleteOne: async (
-        req: Request<any, any, any, any>,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof subscriberSchema.delete>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof subscriberSchema.deleteOne> = req;
 
             serviceResult.data = await subscriberService.deleteOne({
-                ...data.query
+                ...req.body
             })
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     deleteMany: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof subscriberSchema.deleteMany>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof subscriberSchema.deleteMany> = req;
 
             serviceResult.data = await subscriberService.deleteMany({
-                ...data.body
+                ...req.body
             })
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     }
 };

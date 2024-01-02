@@ -1,125 +1,117 @@
-import {Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {Result} from "../library/api";
-import {InferType} from "yup";
+import zod from "zod";
 import logMiddleware from "../middlewares/log.middleware";
 import navigationSchema from "../schemas/navigation.schema";
 import navigationService from "../services/navigation.service";
 
 export default {
     getOne: async (
-        req: Request<any, any, any, any>,
-        res: Response
+        req: FastifyRequest<{Params: (zod.infer<typeof navigationSchema.get>["params"]), Querystring: (zod.infer<typeof navigationSchema.get>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
-            let data: InferType<typeof navigationSchema.getOne> = req;
-
             serviceResult.data = await navigationService.getOne({
-                ...data.query
+                ...req.params,
+                ...req.query
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         })
     },
     getMany: async (
-        req: Request<any, any, any, any>,
-        res: Response
+        req: FastifyRequest<{Querystring: (zod.infer<typeof navigationSchema.getMany>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
-            let data: InferType<typeof navigationSchema.getMany> = req;
-
             serviceResult.data = await navigationService.getMany({
-                ...data.query
+                ...req.query
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         })
     },
     add: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof navigationSchema.post>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof navigationSchema.post> = req;
 
             let insertData = await navigationService.add({
-                ...data.body,
-                authorId: req.session.data.id.toString(),
-                lastAuthorId: req.session.data.id.toString(),
+                ...req.body,
+                authorId: req.sessionAuth.user?._id.toString(),
+                lastAuthorId: req.sessionAuth.user?._id.toString(),
             });
 
             serviceResult.data = {_id: insertData._id};
 
-            res.status(serviceResult.statusCode).json(serviceResult);
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     updateOne: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Params: (zod.infer<typeof navigationSchema.put>["params"]), Body: (zod.infer<typeof navigationSchema.put>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof navigationSchema.putOne> = req;
 
             serviceResult.data = await navigationService.updateOne({
-                ...data.params,
-                ...data.body,
-                lastAuthorId: req.session.data.id.toString(),
+                ...req.params,
+                ...req.body,
+                lastAuthorId: req.sessionAuth.user?._id.toString(),
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     updateOneRank: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Params: (zod.infer<typeof navigationSchema.putRank>["params"]), Body: (zod.infer<typeof navigationSchema.putRank>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof navigationSchema.putOneRank> = req;
 
             serviceResult.data = await navigationService.updateOneRank({
-                ...data.params,
-                ...data.body,
-                lastAuthorId: req.session.data.id.toString()
+                ...req.params,
+                ...req.body,
+                lastAuthorId: req.sessionAuth.user?._id.toString(),
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     updateManyStatus: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof navigationSchema.putManyStatus>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof navigationSchema.putManyStatus> = req;
 
             serviceResult.data = await navigationService.updateManyStatus({
-                ...data.body,
-                lastAuthorId: req.session.data.id.toString()
+                ...req.body,
+                lastAuthorId: req.sessionAuth.user?._id.toString()
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     deleteMany: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof navigationSchema.deleteMany>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof navigationSchema.deleteMany> = req;
 
             serviceResult.data = await navigationService.deleteMany({
-                ...data.body
+                ...req.body
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     }
 };

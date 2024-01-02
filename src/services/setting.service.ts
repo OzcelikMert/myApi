@@ -18,7 +18,7 @@ import settingObjectIdKeys from "../constants/objectIdKeys/setting.objectIdKeys"
 import {SettingDocument} from "../types/models/setting";
 
 export default {
-    async get(params: SettingGetParamDocument) {
+    async get(params: SettingGetParamDocument, withPassword: boolean) {
         let filters: mongoose.FilterQuery<SettingDocument> = {}
         let projection: mongoose.ProjectionType<SettingDocument> = {};
 
@@ -55,7 +55,7 @@ export default {
                 })
             }
 
-            if (Variable.isEmpty(params.getContactFormPasswords)) {
+            if (!withPassword) {
                 doc.contactForms?.map(contactForm => {
                     delete contactForm.password;
                     return contactForm;

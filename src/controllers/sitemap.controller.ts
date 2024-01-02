@@ -1,6 +1,6 @@
-import {Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {Result} from "../library/api";
-import {InferType} from "yup";
+import zod from "zod";
 import sitemapSchema from "../schemas/sitemap.schema";
 import logMiddleware from "../middlewares/log.middleware";
 import sitemapService from "../services/sitemap.service";
@@ -9,10 +9,10 @@ import {PostTermTypeId} from "../constants/postTermTypes";
 
 export default {
     getMaps: async (
-        req: Request<any, any,any, any>,
-        res: Response
+        req: FastifyRequest,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             serviceResult.data = {
@@ -20,33 +20,31 @@ export default {
                 postTerm: await sitemapService.getPostTermCount({postTypeId: [PostTypeId.Page, PostTypeId.Portfolio, PostTypeId.Blog], typeId: [PostTermTypeId.Category, PostTermTypeId.Tag]})
             };
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     getPost: async (
-        req: Request<any, any,any, any>,
-        res: Response
+        req: FastifyRequest<{Querystring: (zod.infer<typeof sitemapSchema.getPost>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof sitemapSchema.getPost> = req;
 
-            serviceResult.data = await sitemapService.getPost(data.query);
+            serviceResult.data = await sitemapService.getPost(req.query);
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     getPostTerm: async (
-        req: Request<any, any,any, any>,
-        res: Response
+        req: FastifyRequest<{Querystring: (zod.infer<typeof sitemapSchema.getPostTerm>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof sitemapSchema.getPostTerm> = req;
 
-            serviceResult.data = await sitemapService.getPostTerm(data.query)
+            serviceResult.data = await sitemapService.getPostTerm(req.query)
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     }
 };

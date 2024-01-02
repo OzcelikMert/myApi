@@ -1,6 +1,6 @@
-import {Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {Result} from "../library/api";
-import {InferType} from "yup";
+import zod from "zod";
 import languageSchema from "../schemas/language.schema";
 import languageService from "../services/language.service";
 import logMiddleware from "../middlewares/log.middleware";
@@ -10,40 +10,39 @@ import path from "path";
 
 export default {
     getOne: async (
-        req: Request<any, any,any, any>,
-        res: Response
+        req: FastifyRequest<{Params: (zod.infer<typeof languageSchema.get>["params"]), Querystring: (zod.infer<typeof languageSchema.get>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof languageSchema.getOne> = req;
 
             serviceResult.data = await languageService.getOne({
-                ...data.query,
+                ...req.params,
+                ...req.query,
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     getMany: async (
-        req: Request<any, any,any, any>,
-        res: Response
+        req: FastifyRequest<{Querystring: (zod.infer<typeof languageSchema.getMany>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof languageSchema.getMany> = req;
 
             serviceResult.data = await languageService.getMany({
-                ...data.query
+                ...req.query
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     getFlags: async (
-        req: Request<any, any,any, any>,
-        res: Response
+        req: FastifyRequest,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             const fileType = [".jpg", ".png", ".webp", ".gif", ".jpeg"];
@@ -62,56 +61,53 @@ export default {
                 });
             })
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     add: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof languageSchema.post>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof languageSchema.post> = req;
 
             let insertData = await languageService.add({
-                ...data.body,
+                ...req.body,
             });
 
             serviceResult.data = {_id: insertData._id};
 
-            res.status(serviceResult.statusCode).json(serviceResult);
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     updateOne: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Params: (zod.infer<typeof languageSchema.put>["params"]), Body: (zod.infer<typeof languageSchema.put>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof languageSchema.putOne> = req;
 
             serviceResult.data = await languageService.updateOne({
-                ...data.params,
-                ...data.body,
+                ...req.params,
+                ...req.body,
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     updateOneRank: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Params: (zod.infer<typeof languageSchema.putRank>["params"]), Body: (zod.infer<typeof languageSchema.putRank>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof languageSchema.putOneRank> = req;
 
             serviceResult.data = await languageService.updateOneRank({
-                ...data.params,
-                ...data.body,
+                ...req.params,
+                ...req.body,
             });
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
 };

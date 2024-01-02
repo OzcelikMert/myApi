@@ -1,7 +1,7 @@
-import {Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {Result} from "../library/api";
 import {lookup} from "geoip-lite";
-import {InferType} from "yup";
+import zod from "zod";
 import viewSchema from "../schemas/view.schema";
 import viewService from "../services/view.service";
 import {Config} from "../config";
@@ -9,10 +9,10 @@ import logMiddleware from "../middlewares/log.middleware";
 
 export default {
     getNumber: async (
-        req: Request<any, any, any, any>,
-        res: Response
+        req: FastifyRequest,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let dateStart = new Date();
@@ -37,14 +37,14 @@ export default {
                 weeklyTotal: weeklyTotal
             };
 
-            res.status(serviceResult.statusCode).json(serviceResult);
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     getStatistics: async (
-        req: Request<any, any, any, any>,
-        res: Response
+        req: FastifyRequest,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let dateStart = new Date();
@@ -55,29 +55,28 @@ export default {
                 country: await viewService.getTotalWithCountry({dateStart: dateStart}),
             };
 
-            res.status(serviceResult.statusCode).json(serviceResult);
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     add: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof viewSchema.post>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof viewSchema.post> = req;
 
             let ip = req.ip;
             let ipDetail = lookup(req.ip);
 
             let insertData = await viewService.add({
-                ...data.body,
+                ...req.body,
                 ip: ip,
                 ...ipDetail
             })
 
             serviceResult.data = {_id: insertData._id};
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
 };

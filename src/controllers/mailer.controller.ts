@@ -1,6 +1,6 @@
-import {Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {ErrorCodes, Result, StatusCodes} from "../library/api";
-import {InferType} from "yup";
+import zod from "zod";
 import mailerSchema from "../schemas/mailer.schema";
 import * as NodeMailer from "nodemailer";
 import settingService from "../services/setting.service";
@@ -9,15 +9,14 @@ import logMiddleware from "../middlewares/log.middleware";
 
 export default {
     set: async (
-        req: Request<any>,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof mailerSchema.post>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof mailerSchema.post> = req;
 
-            let setting = (await settingService.get({getContactFormPasswords: true}));
-            let contactForm = setting.contactForms?.findSingle("_id", MongoDBHelpers.createObjectId(data.body.contactFormId));
+            let setting = (await settingService.get({}, true));
+            let contactForm = setting.contactForms?.findSingle("_id", MongoDBHelpers.createObjectId(req.body.contactFormId));
             if(contactForm){
                 try {
                     let transporter = NodeMailer.createTransport({
@@ -40,8 +39,8 @@ export default {
                             from: contactForm.email,
                             to: contactForm.outGoingEmail,
                             subject: contactForm.name,
-                            html: data.body.message,
-                            replyTo: data.body.email
+                            html: req.body.message,
+                            replyTo: req.body.email
                         });
 
                         serviceResult.data.push({
@@ -49,13 +48,13 @@ export default {
                             "response": sendMail.response
                         });
 
-                        if(data.body.replyMessage) {
+                        if(req.body.replyMessage) {
                             let sendMailReply = await transporter.sendMail({
                                 from: contactForm.email,
-                                to: data.body.email,
+                                to: req.body.email,
                                 subject: contactForm.name,
-                                html: data.body.replyMessage,
-                                replyTo: data.body.email
+                                html: req.body.replyMessage,
+                                replyTo: req.body.email
                             });
                             serviceResult.data.push({
                                 "_id": sendMailReply.messageId,
@@ -81,7 +80,7 @@ export default {
                 serviceResult.errorCode = ErrorCodes.incorrectData;
             }
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
 };

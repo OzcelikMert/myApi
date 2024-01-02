@@ -13,3 +13,5 @@ Things to do:
     - routedaki linkleri artik fonksyiondan cekme string icinde elinle yaz
     - post ve termlerdeki typeid urlden kaldir param olarak gonder
     - schemalari ayarladigin routelera gore tekrar duzenle (parametrelere dikkat et)
+    - heryerden One olanlari duzelt one i sil
+    - get lerde id leri paramtereden cekecceksen eger controller ve middlewarede zodda ayarladigin degisiklilkleri guncelle

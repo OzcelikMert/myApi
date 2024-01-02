@@ -1,4 +1,4 @@
-import { object, string, array, number, ZodObject } from 'zod';
+import {object, string, array, number, ZodType} from 'zod';
 import {ErrorCodes} from "../library/api";
 import {SettingGetParamDocument} from "../types/services/setting";
 
@@ -6,7 +6,7 @@ const getSchema = object({
     query: object({
         langId: string(),
         projection: string()
-    }) as ZodObject<SettingGetParamDocument>
+    }) as ZodType<SettingGetParamDocument>
 });
 
 const putGeneralSchema = object({

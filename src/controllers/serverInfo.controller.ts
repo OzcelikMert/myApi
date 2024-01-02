@@ -1,4 +1,4 @@
-import {Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {Result} from "../library/api";
 import osu from "node-os-utils";
 import checkDiskSpace from "check-disk-space";
@@ -8,10 +8,10 @@ import logMiddleware from "../middlewares/log.middleware";
 
 export default {
     get: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
 
             let cpu = await osu.cpu.usage();
@@ -23,7 +23,7 @@ export default {
                 storage: (100 - ((diskSpace.free * 100) / diskSpace.size)).toFixed(2)
             }
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
 };

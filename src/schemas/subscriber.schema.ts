@@ -22,7 +22,7 @@ const postSchema = object({
 });
 
 const deleteSchema = object({
-    query: object({
+    body: object({
         email: string().min(1, { message: ErrorCodes.emptyValue.toString() }).email({ message: ErrorCodes.incorrectData.toString() }),
         _id: string().min(1, { message: ErrorCodes.emptyValue.toString() })
     })

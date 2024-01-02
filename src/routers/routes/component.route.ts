@@ -10,7 +10,7 @@ export default function (fastify: FastifyInstance, opts: any, done: () => void) 
     fastify.get('/get', { preHandler: [requestMiddleware.check(componentSchema.getMany)] }, componentController.getMany);
     fastify.get('/get/:_id', { preHandler: [requestMiddleware.check(componentSchema.get)] }, componentController.getOne);
     fastify.post('/add', { preHandler: [requestMiddleware.check(componentSchema.post), sessionMiddleware.check, permissionMiddleware.check] }, componentController.add);
-    fastify.put('/update/:_id', { preHandler: [requestMiddleware.check(componentSchema.put), sessionMiddleware.check, permissionMiddleware.check, componentMiddleware.checkOne] }, componentController.updateOne);
+    fastify.put('/update/:_id', { preHandler: [requestMiddleware.check(componentSchema.put), sessionMiddleware.check, permissionMiddleware.check, componentMiddleware.check] }, componentController.updateOne);
     fastify.delete('/delete', { preHandler: [requestMiddleware.check(componentSchema.deleteMany), sessionMiddleware.check, permissionMiddleware.check, componentMiddleware.checkMany] }, componentController.deleteMany);
     done();
 }

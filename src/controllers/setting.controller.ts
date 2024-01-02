@@ -1,102 +1,95 @@
-import {Request, Response} from "express";
+import { FastifyRequest, FastifyReply } from 'fastify';
 import {Result} from "../library/api";
-import {InferType} from "yup";
+import zod from "zod";
 import settingSchema from "../schemas/setting.schema";
 import settingService from "../services/setting.service";
 import logMiddleware from "../middlewares/log.middleware";
 
 export default {
     get: async (
-        req: Request<any, any, any, any>,
-        res: Response
+        req: FastifyRequest<{Querystring: (zod.infer<typeof settingSchema.get>["query"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof settingSchema.get> = req;
             
             serviceResult.data = await settingService.get({
-                ...data.query
-            });
+                ...req.query
+            }, false);
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     setGeneral: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof settingSchema.putGeneral>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof settingSchema.putGeneral> = req;
 
-            serviceResult.data = await settingService.updateGeneral(data.body)
+            serviceResult.data = await settingService.updateGeneral(req.body)
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     setSeo: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof settingSchema.putSeo>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof settingSchema.putSeo> = req;
 
-            serviceResult.data = await settingService.updateSEO(data.body)
+            serviceResult.data = await settingService.updateSEO(req.body)
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     setContactForm: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof settingSchema.putContactForm>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof settingSchema.putContactForm> = req;
 
-            serviceResult.data = await settingService.updateContactForm(data.body)
+            serviceResult.data = await settingService.updateContactForm(req.body)
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     setStaticLanguage: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof settingSchema.putStaticLanguage>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof settingSchema.putStaticLanguage> = req;
 
-            serviceResult.data = await settingService.updateStaticLanguage(data.body)
+            serviceResult.data = await settingService.updateStaticLanguage(req.body)
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     setSocialMedia: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof settingSchema.putSocialMedia>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof settingSchema.putSocialMedia> = req;
 
-            serviceResult.data = await settingService.updateSocialMedia(data.body)
+            serviceResult.data = await settingService.updateSocialMedia(req.body)
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
     setECommerce: async (
-        req: Request,
-        res: Response
+        req: FastifyRequest<{Body: (zod.infer<typeof settingSchema.putECommerce>["body"])}>,
+        reply: FastifyReply
     ) => {
-        await logMiddleware.error(req, res, async () => {
+        await logMiddleware.error(req, reply, async () => {
             let serviceResult = new Result();
-            let data: InferType<typeof settingSchema.putECommerce> = req;
 
-            serviceResult.data = await settingService.updateECommerce(data.body)
+            serviceResult.data = await settingService.updateECommerce(req.body)
 
-            res.status(serviceResult.statusCode).json(serviceResult)
+            reply.status(serviceResult.statusCode).send(serviceResult)
         });
     },
 };

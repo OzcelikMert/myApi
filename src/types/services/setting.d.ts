@@ -13,7 +13,6 @@ export type SettingGetResultDocument = {
 
 export type SettingGetParamDocument = {
     langId?: string
-    getContactFormPasswords?: boolean
     projection?: "general" | "seo" | "eCommerce" | "contactForm" | "socialMedia" | "staticLanguage"
 }
 
