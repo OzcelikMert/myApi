@@ -14,7 +14,7 @@ export default {
             let serviceResult = new Result();
 
             if (req.sessionAuth && req.sessionAuth.data) {
-                if (req.sessionAuth.get("ip") != req.ip) {
+                if (req.sessionAuth.user?.ip != req.ip) {
                     await new Promise(resolve => {
                         req.sessionAuth.delete();
                         resolve();
@@ -23,8 +23,8 @@ export default {
             }
 
             if (
-                (typeof req.sessionAuth === "undefined" || typeof req.sessionAuth.data === "undefined") ||
-                !(await userService.getOne({_id: req.sessionAuth.get("_id"), statusId: StatusId.Active}))
+                (typeof req.sessionAuth === "undefined" || typeof req.sessionAuth.user === "undefined") ||
+                !(await userService.getOne({_id: req.sessionAuth.user?._id, statusId: StatusId.Active}))
             ) {
                 serviceResult.status = false;
                 serviceResult.errorCode = ErrorCodes.notLoggedIn;
@@ -44,7 +44,7 @@ export default {
     ) => {
         await logMiddleware.error(req, res, async () => {
             if (req.sessionAuth && req.sessionAuth.data) {
-                if (Number(new Date().diffSeconds(new Date(req.sessionAuth.data.updatedAt))) > sessionAuthTTL) {
+                if (Number(new Date().diffSeconds(new Date(req.sessionAuth.user?.updatedAt ?? ""))) > sessionAuthTTL) {
                     await new Promise(resolve => {
                         req.sessionAuth.delete();
                         resolve();

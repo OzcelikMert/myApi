@@ -15,3 +15,4 @@ Things to do:
     - schemalari ayarladigin routelera gore tekrar duzenle (parametrelere dikkat et)
     - heryerden One olanlari duzelt one i sil
     - get lerde id leri paramtereden cekecceksen eger controller ve middlewarede zodda ayarladigin degisiklilkleri guncelle
+    - sessionu kullandigin yerleri tekrar duzenle user ekledin sessiona datadan degil userdan cek verileri

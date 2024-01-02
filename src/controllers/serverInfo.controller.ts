@@ -1,4 +1,4 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import {FastifyRequest, FastifyReply, FastifyInstance} from 'fastify';
 import {Result} from "../library/api";
 import osu from "node-os-utils";
 import checkDiskSpace from "check-disk-space";
