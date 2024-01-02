@@ -1,4 +1,4 @@
-import { FastifyInstance } from 'fastify';
+import {FastifyInstance} from 'fastify';
 import serverInfoController from "../../controllers/serverInfo.controller";
 import sessionMiddleware from "../../middlewares/validates/sessionAuth.middleware";
 import permissionMiddleware from "../../middlewares/validates/permission.middleware";

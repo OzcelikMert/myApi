@@ -6,7 +6,7 @@ export default {
     error: async (
         req: FastifyRequest,
         reply: FastifyReply,
-        func: () => void
+        func: () => Promise<void>
     ) => {
         try {
             await func();
@@ -20,7 +20,7 @@ export default {
                 params: req.params,
                 query: req.query,
                 body: req.body,
-                ...(req.session.data && req.sessionAuth.get("_id") ? {userId: req.sessionAuth.get("_id")} : {})
+                ...(req.session.data && req.sessionAuth.user?._id ? {userId: req.sessionAuth.user?._id} : {})
             });
             let serviceResult = new Result();
             serviceResult.statusCode = StatusCodes.badRequest;
