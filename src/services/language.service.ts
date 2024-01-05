@@ -5,11 +5,11 @@ import {
     LanguageGetManyParamDocument,
     LanguageAddParamDocument,
     LanguageGetOneParamDocument, LanguageUpdateOneParamDocument, LanguageUpdateOneRankParamDocument
-} from "../types/services/language";
+} from "../types/services/language.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
 import languageObjectIdKeys from "../constants/objectIdKeys/language.objectIdKeys";
-import { LanguageDocument } from "../types/models/language";
+import { LanguageDocument } from "../types/models/language.model";
 
 export default {
     async getOne(params: LanguageGetOneParamDocument) {

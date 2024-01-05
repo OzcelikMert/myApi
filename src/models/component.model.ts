@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import {ComponentDocument, ComponentTypeContentDocument, ComponentTypeDocument} from "../types/models/component";
+import {ComponentDocument, ComponentTypeContentDocument, ComponentTypeDocument} from "../types/models/component.model";
 import languageModel from "./language.model";
 import userModel from "./user.model";
 import {ComponentInputTypeId} from "../constants/componentInputTypes";

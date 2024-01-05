@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {UserDocument} from "../models/user";
+import {UserDocument} from "../models/user.model";
 
 export interface UserPopulateDocument {
     _id: mongoose.Types.ObjectId | string

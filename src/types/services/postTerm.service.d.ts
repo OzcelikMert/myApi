@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import {UserPopulateDocument} from "./user";
-import {PostTermContentDocument, PostTermDocument} from "../models/postTerm";
+import {UserPopulateDocument} from "./user.service";
+import {PostTermContentDocument, PostTermDocument} from "../models/postTerm.model";
 
 export interface PostTermPopulateDocument {
     _id: mongoose.Types.ObjectId | string,

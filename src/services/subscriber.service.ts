@@ -8,10 +8,10 @@ import {
     SubscriberGetResultDocument,
     SubscriberGetOneParamDocument,
     SubscriberDeleteOneParamDocument
-} from "../types/services/subscriber";
+} from "../types/services/subscriber.service";
 import subscriberModel from "../models/subscriber.model";
 import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
-import {SubscriberDocument} from "../types/models/subscriber";
+import {SubscriberDocument} from "../types/models/subscriber.model";
 
 export default {
     async getOne(params: SubscriberGetOneParamDocument) {

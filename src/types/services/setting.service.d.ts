@@ -4,7 +4,7 @@ import {
     SettingSeoContentDocument, SettingSocialMediaDocument,
     SettingStaticLanguageContentDocument,
     SettingStaticLanguageDocument
-} from "../models/setting";
+} from "../models/setting.model";
 
 export type SettingGetResultDocument = {
     seoContents?: SettingSeoContentDocument | SettingSeoContentDocument[]

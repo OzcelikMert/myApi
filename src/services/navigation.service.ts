@@ -11,10 +11,10 @@ import {
     NavigationUpdateOneParamDocument,
     NavigationUpdateOneRankParamDocument,
     NavigationUpdateManyStatusIdParamDocument, NavigationGetManyParamDocument
-} from "../types/services/navigation";
+} from "../types/services/navigation.service";
 import navigationModel from "../models/navigation.model";
 import { StatusId } from "../constants/status";
-import { NavigationDocument } from "../types/models/navigation";
+import { NavigationDocument } from "../types/models/navigation.model";
 
 export default {
     async getOne(params: NavigationGetOneParamDocument) {

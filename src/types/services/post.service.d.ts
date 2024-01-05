@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
-import {UserPopulateDocument} from "./user";
-import {PostTermPopulateDocument} from "./postTerm";
+import {UserPopulateDocument} from "./user.service";
+import {PostTermPopulateDocument} from "./postTerm.service";
 import {
     PostContentDocument,
     PostDocument,
     PostECommerceDocument,
     PostECommerceVariationContentDocument,
     PostECommerceVariationDocument
-} from "../models/post";
-import {ComponentDocument} from "../models/component";
+} from "../models/post.model";
+import {ComponentDocument} from "../models/component.model";
 
 export interface PostAlternateDocument {
     langId: mongoose.Types.ObjectId | string

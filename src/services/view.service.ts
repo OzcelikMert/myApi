@@ -4,11 +4,11 @@ import {
     ViewDeleteManyParamDocument,
     ViewAddParamDocument,
     ViewGetParamDocument, ViewGetTotalResultDocument
-} from "../types/services/view";
+} from "../types/services/view.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
 import viewObjectIdKeys from "../constants/objectIdKeys/view.objectIdKeys";
-import {ViewDocument} from "../types/models/view";
+import {ViewDocument} from "../types/models/view.model";
 
 export default {
     async getOne(params: ViewGetParamDocument) {

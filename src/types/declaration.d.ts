@@ -1,4 +1,4 @@
-import {SessionAuthDocument} from "./models/sessionAuth";
+import {SessionAuthDocument} from "./models/sessionAuth.model";
 import {Session} from "@fastify/secure-session";
 
 declare module "*.png";

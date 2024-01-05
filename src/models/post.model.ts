@@ -17,7 +17,7 @@ import {
     PostECommerceVariationContentDocument,
     PostECommerceVariationDocument,
     PostECommerceVariationSelectedDocument
-} from "../types/models/post";
+} from "../types/models/post.model";
 import componentModel from "./component.model";
 import {ProductTypeId} from "../constants/productTypes";
 import {AttributeTypeId} from "../constants/attributeTypes";

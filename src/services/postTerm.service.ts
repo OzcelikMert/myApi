@@ -6,7 +6,7 @@ import {
     PostTermGetOneParamDocument, PostTermGetResultDocument,
     PostTermUpdateOneParamDocument, PostTermUpdateOneRankParamDocument, PostTermUpdateManyStatusIdParamDocument,
     PostTermGetManyParamDocument
-} from "../types/services/postTerm";
+} from "../types/services/postTerm.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
 import { Config } from "../config";
@@ -14,7 +14,7 @@ import postTermObjectIdKeys from "../constants/objectIdKeys/postTerm.objectIdKey
 import postModel from "../models/post.model";
 import { PostTermTypeId } from "../constants/postTermTypes";
 import { StatusId } from "../constants/status";
-import { PostTermDocument } from "../types/models/postTerm";
+import { PostTermDocument } from "../types/models/postTerm.model";
 
 export default {
     async getOne(params: PostTermGetOneParamDocument) {

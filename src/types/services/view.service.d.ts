@@ -1,4 +1,4 @@
-import {ViewDocument} from "../models/view";
+import {ViewDocument} from "../models/view.model";
 
 export type ViewGetResultDocument = {} & ViewDocument
 

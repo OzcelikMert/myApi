@@ -10,13 +10,13 @@ import {
     PostUpdateOneRankParamDocument,
     PostUpdateManyStatusIdParamDocument,
     PostUpdateOneViewParamDocument, PostGetManyResultDocument, PostGetCountParamDocument
-} from "../types/services/post";
-import { PostDocument } from "../types/models/post";
+} from "../types/services/post.service";
+import { PostDocument } from "../types/models/post.model";
 import MongoDBHelpers from "../library/mongodb/helpers";
-import { PostTermGetResultDocument } from "../types/services/postTerm";
+import { PostTermGetResultDocument } from "../types/services/postTerm.service";
 import Variable from "../library/variable";
 import { Config } from "../config";
-import { ComponentGetResultDocument } from "../types/services/component";
+import { ComponentGetResultDocument } from "../types/services/component.service";
 import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
 import { StatusId } from "../constants/status";
 import { PostTermTypeId } from "../constants/postTermTypes";

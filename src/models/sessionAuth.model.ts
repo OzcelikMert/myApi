@@ -1,7 +1,7 @@
 import * as mongoose from "mongoose";
 import userModel from "./user.model";
 import {UserRoleId} from "../constants/userRoles";
-import {SessionAuthDocument, SessionAuthUserDocument} from "../types/models/sessionAuth";
+import {SessionAuthDocument, SessionAuthUserDocument} from "../types/models/sessionAuth.model";
 
 const schemaUser = new mongoose.Schema<SessionAuthUserDocument>(
     {

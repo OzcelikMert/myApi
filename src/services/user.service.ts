@@ -6,14 +6,14 @@ import {
     UserGetOneParamDocument, UserGetResultDocument,
     UserUpdateOneParamDocument,
     UserGetManyParamDocument
-} from "../types/services/user";
+} from "../types/services/user.service";
 import {StatusId} from "../constants/status";
 import userUtil from "../utils/user.util";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import {Config} from "../config";
 import Variable from "../library/variable";
 import userObjectIdKeys from "../constants/objectIdKeys/user.objectIdKeys";
-import {UserDocument} from "../types/models/user";
+import {UserDocument} from "../types/models/user.model";
 
 export default {
     async getOne(params: UserGetOneParamDocument) {

@@ -10,12 +10,12 @@ import {
     SettingUpdateContactFormParamDocument,
     SettingUpdateECommerceParamDocument,
     SettingUpdateGeneralParamDocument
-} from "../types/services/setting";
+} from "../types/services/setting.service";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import Variable from "../library/variable";
 import {Config} from "../config";
 import settingObjectIdKeys from "../constants/objectIdKeys/setting.objectIdKeys";
-import {SettingDocument} from "../types/models/setting";
+import {SettingDocument} from "../types/models/setting.model";
 
 export default {
     async get(params: SettingGetParamDocument, withPassword: boolean) {

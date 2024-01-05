@@ -2,7 +2,7 @@ import * as mongoose from "mongoose";
 import postModel from "../models/post.model";
 import {
     PostDocument,
-} from "../types/models/post";
+} from "../types/models/post.model";
 import MongoDBHelpers from "../library/mongodb/helpers";
 import postObjectIdKeys from "../constants/objectIdKeys/post.objectIdKeys";
 import {StatusId} from "../constants/status";
@@ -17,7 +17,7 @@ import {
     SitemapMapPostTermCountDocument,
     SitemapPostDocument,
     SitemapPostTermDocument
-} from "../types/services/sitemap";
+} from "../types/services/sitemap.service";
 
 export const sitemapLimit = 500;
 

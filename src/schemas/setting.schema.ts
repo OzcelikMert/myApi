@@ -1,6 +1,6 @@
 import {object, string, array, number, ZodType} from 'zod';
 import {ErrorCodes} from "../library/api";
-import {SettingGetParamDocument} from "../types/services/setting";
+import {SettingGetParamDocument} from "../types/services/setting.service";
 
 const getSchema = object({
     query: object({

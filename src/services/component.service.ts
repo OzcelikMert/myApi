@@ -8,11 +8,11 @@ import {
     ComponentGetManyParamDocument,
     ComponentUpdateOneParamDocument,
     ComponentDeleteManyParamDocument
-} from "../types/services/component";
+} from "../types/services/component.service";
 import componentModel from "../models/component.model";
 import Variable from "../library/variable";
 import componentObjectIdKeys from "../constants/objectIdKeys/component.objectIdKeys";
-import { ComponentDocument } from "../types/models/component";
+import { ComponentDocument } from "../types/models/component.model";
 
 export default {
     async getOne(params: ComponentGetOneParamDocument) {
